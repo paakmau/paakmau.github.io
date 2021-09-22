@@ -1,8 +1,10 @@
 +++
 title = "Express + MySQL + Session搭建Web后端脚手架"
-tags = []
-categories = ["Node.js"]
 date = 2019-12-18 00:59:09
+
+[taxonomies]
+tags = ["MySQL", "Node.js", "Express"]
+categories = ["Node.js"]
 +++
 
 因为是我某门课的作业才顺便写的，因为感觉js后端偏向玩具所以不太感兴趣。但还是不得不说这玩具真好玩，贼牛逼。Express框架用几十行代码就能搭出几乎完整的后端脚手架

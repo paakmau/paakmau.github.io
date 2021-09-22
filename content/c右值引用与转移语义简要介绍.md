@@ -1,8 +1,10 @@
 +++
 title = "C++右值引用与转移语义简要介绍"
-tags = []
-categories = ["C++"]
 date = 2020-04-06 02:21:00
+
+[taxonomies]
+tags = ["C++"]
+categories = ["C++"]
 +++
 
 在C++11之前，值类型变量的传递会导致把它完整的拷贝一份  

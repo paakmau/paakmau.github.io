@@ -1,0 +1,165 @@
++++
+title = "Vulkan画三角形「一」 概要与环境配置"
+date = 2020-09-03 20:23:56
+
+[taxonomies]
+tags = ["CMake", "GLFW", "VS Code", "Vulkan"]
+categories = ["Vulkan"]
++++
+
+Vulkan是一个跨平台的图形与计算API，本系列文章将使用Vulkan绘制一个三角形，旨在为上手Vulkan提供帮助
+
+<!-- more -->
+
+使用CMake管理项目  
+使用VS Code编辑代码  
+使用GLFW管理窗体
+
+![](https://hebomou.top/wp-content/uploads/2020/09/image-1.png)
+
+本系列文章主要是下面这个教程的翻译，但是做了一些修改
+
+[https://vulkan-](https://vulkan-tutorial.com/)[tutorial](https://vulkan-tutorial.com/)[.com/](https://vulkan-tutorial.com/)
+
+## 安装Vulkan
+
+前往官网下载安装包直接安装
+
+[https://vulkan.lunarg.com/](https://vulkan.lunarg.com/)
+
+## 安装GLFW
+
+Vulkan只是一个图形API，无法管理窗体。为了方便，我们引入跨平台的GLFW库
+
+### macOS
+
+可以用brew安装
+
+```sh
+$ brew install glfw
+```
+
+### Windows
+
+稍微麻烦一点，可以用MinGW-w64编译GLFW的源码并安装，最后添加环境变量
+
+先去官网下载源码  
+[https://www.glfw.org/](https://www.glfw.org/)
+
+然后以管理员身份运行PowerShell，cd到GLFW源码项目文件夹下，输入以下命令
+
+```ps1
+PS mkdir build
+PS cd build
+PS cmake -G "MinGW Makefiles" ..
+PS mingw32-make install
+```
+
+这样GLFW默认会被安装在C:/Program Files (x86)/GLFW文件夹中，如果想装在别的地方可以修改CMAKE\_INSTALL\_PREFIX环境变量，当然也可以直接下载预编译的二进制文件，但是可能它不会提供配置GLFW所需的CMake模块
+
+最后需要添加一个glfw3\_DIR环境变量，指向存放配置GLFW的CMake模块的路径，值是C:\\Program Files (x86)\\GLFW\\lib\\cmake\\glfw3，如果你使用了不同的安装路径，请做相应修改，这样后续find\_package才能找到glfw3的头文件和依赖库
+
+## 安装CMake
+
+考虑到跨平台，我们用CMake配合VS Code会很方便
+
+mac下同样可以用brew安装
+
+```sh
+$ brew install cmake
+```
+
+Windows下使用官网安装包安装就行了
+
+## 安装VS Code插件
+
+- C/C++
+- CMake
+- CMake Tools
+
+## 创建CMake项目
+
+直接新建一个文件夹，用VS Code打开它
+
+在其中创建CMakeList.txt文件，内容如下
+
+```cmake
+cmake_minimum_required(VERSION 3.0.0)
+project(VulkanTest VERSION 0.1.0)
+
+set(CMAKE_CXX_STANDARD 17)
+
+add_executable(VulkanTest main.cpp)
+
+find_package(glfw3 3.3 REQUIRED)
+target_link_libraries(VulkanTest glfw)
+
+find_package(Vulkan REQUIRED)
+target_include_directories(VulkanTest PRIVATE ${Vulkan_INCLUDE_DIRS})
+target_link_libraries(VulkanTest ${Vulkan_LIBRARIES})
+```
+
+简单说就是这个项目只有main.cpp一个文件，然后寻找Vulkan和glfw3这两个库，并链接到我们的项目中
+
+## 用GLFW创建窗体
+
+接下来我们创建main.cpp文件
+
+```cpp
+#include <GLFW/glfw3.h>
+
+const uint32_t WIDTH = 800;
+const uint32_t HEIGHT = 600;
+
+class VulkanHelloWorld {
+   public:
+    void Run() {
+        initWindow();
+        initVulkan();
+        mainLoop();
+        cleanup();
+    }
+
+   private:
+    void initWindow() {
+        glfwInit();
+        glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+        window = glfwCreateWindow(WIDTH, HEIGHT, "VulkanHelloWorld", nullptr, nullptr);
+    }
+    void initVulkan() {}
+    void mainLoop() {
+        while (!glfwWindowShouldClose(window)) {
+            glfwPollEvents();
+        }
+    }
+    void cleanup() {
+        glfwDestroyWindow(window);
+        glfwTerminate();
+    }
+
+   private:
+    GLFWwindow *window;
+};
+
+int main() {
+    VulkanHelloWorld helloWorld;
+    helloWorld.Run();
+    return 0;
+}
+```
+
+这段代码主要是用GLFW处理窗体创建、主循环、窗体销毁等事情  
+因为GLFW不是本系列的主要内容，因此只是简单解释一下
+
+glfwWindowHint(GLFW\_CLIENT\_API, GLFW\_NO\_API);  
+GLFW原本设计就是要为OpenGL创建上下文，而这里我们只用它管理窗体，因此使用这行代码防止他为OpenGL创建上下文
+
+glfwWindowHint(GLFW\_RESIZABLE, GLFW\_FALSE);  
+处理可变大小窗体很麻烦，因此我们直接禁用它
+
+在VS Code中键入cmd + shift + p呼出命令面板，在其中输入CMake: Debug选项并回车调试项目，就能看到它创建了一个空窗体
+
+![](https://hebomou.top/wp-content/uploads/2020/09/image-2.png)
+
+在接下来的文章中我们会不断填充这段代码，最终在屏幕中渲染出一个三角形

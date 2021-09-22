@@ -1,0 +1,227 @@
++++
+title = "CMake项目结构的设计"
+date = 2020-12-12 01:12:24
+
+[taxonomies]
+tags = ["C++", "CMake"]
+categories = ["C++"]
++++
+
+CMake是一种比较灵活的构建工具，正因如此导致很多CMake项目的结构混乱不堪，甚至包括国外某知名大厂的高star项目，本文将介绍一种目前广泛使用的比较合理的CMake项目结构
+
+<!-- more -->
+
+一般来说，项目中会有src文件夹、include文件夹和external文件夹
+
+src文件夹中存放项目源文件和私有的头文件，私有的头文件是指仅供目标内部使用的头文件，其他目标不应当有权访问这些头文件，出于简洁考虑，就跟源文件堆在一起好了
+
+include文件夹存放公有的头文件，可以提供给链接了本目标的其他目标使用，把本目标的API暴露给其他目标，一般安装类库后就直接把里面的东西都扔进类似/usr/include的路径下
+
+external文件夹存放项目所依赖的外部开源库，也有人喜欢命名为third\_party
+
+需要注意一个问题是C++20提出的Modules，它允许我们使用代码来指定暴露给外部的API，这样的话也许根本就不需要区分公有跟私有头文件，并且头文件分开两个路径放也非常的难受，但是按照目前编译器对Modules的支持来看，还是一两年后再说吧  
+等Modules都能普及了说不定CMake早就凉透了本文也没用了哈哈没想到吧
+
+## 单类库项目
+
+于是我们直接来看一个单类库项目的例子，单类库就是指项目只包含一个库目标，其他项目中的目标链接这个单独的目标就能访问该单类库项目提供的所有API
+
+### 项目的目录结构
+
+```
+- example_library
+  - CMakeLists.txt
+  - external
+    - CMakeLists.txt
+  - include
+    - example_library
+      - public_example_library.h
+  - src
+    - private_example_library.h
+    - example_application.cpp
+```
+
+### example\_library/CMakeLists.txt
+
+稍微解释一下这段代码  
+添加external子目录，注意external子目录下的CMakeLists.txt可以直接为空文件，因为我们项目里没有外部库；添加一个库目标example\_library，它的源文件只有example\_library/src/example\_library.cpp；把example\_library/include/example\_library中的头文件提供给外部目标使用；而example\_library/src为私有头文件目录，仅供目标example\_library内部使用
+
+```cmake
+cmake_minimum_required(VERSION 3.0.0)
+project(example_library)
+
+add_subdirectory(external)
+
+add_library(example_library src/example_library.cpp)
+
+target_include_directories(example_library PUBLIC include)
+target_include_directories(example_library PRIVATE src)
+```
+
+### example\_library/src/utils.h
+
+提供一个内联方法用来输出一个字符串
+
+```cpp
+#ifndef UTILS_H
+#define UTILS_H
+
+#include <cstdio>
+
+inline void print_hello() {
+    std::printf("Hello, world!\n");
+}
+
+#endif  // UTILS_H
+```
+
+### example\_library/include/example\_library/example\_library.h
+
+给外部暴露一个print()全局函数的声明
+
+```cpp
+#ifndef EXAMPLE_LIBRARY_H
+#define EXAMPLE_LIBRARY_H
+
+void print();
+
+#endif  // EXAMPLE_LIBRARY_H
+```
+
+### example\_library/src/example\_library.cpp
+
+定义刚刚声明的函数，并使用utils.h中提供的内联函数
+
+```cpp
+#include <example_library/example_library.h>
+
+#include <utils.h>
+
+void print() {
+    print_hello();
+}
+```
+
+### 阐述
+
+这样对于其他目标而言，可以使用target\_link\_libraries链接example\_library，然后在代码里添加一个#include <example\_library/example\_library.h>，就能调用这个单类库项目提供的print方法了  
+然后utils.h只能example\_library内部使用，对于其他目标来说是不可见的
+
+注意到一个问题是example\_library/include里面没有直接存放头文件，而是多套了一个example\_library文件夹，这样设计看起来非常冗余，但是其实它的目的是避免头文件重名而造成冲突  
+另外的考量在于，安装项目的时候，example\_library/include目录下的东西应当被扔进系统安装路径的include文件夹里，这样设计会比较清晰
+
+## 单应用项目
+
+单应用项目构建后只会生成一个可执行程序，用于构建一个应用程序
+
+相比于单类库项目，它不会被别的目标链接，所以不需要暴露头文件，因此不需要include文件夹
+
+目录结构如下，具体代码就不贴了
+
+```
+- example_application
+  - CMakeLists.txt
+  - external
+    - CMakeLists.txt
+  - src
+    - example_application.h
+    - example_application.cpp
+```
+
+## 单类库单应用项目
+
+就是既包含一个类库，又包含一个可执行程序的项目
+
+目录结构如下，里面的源文件头文件因为太乱就省略了
+
+```
+- your_project_name
+  - app
+    - CMakeLists.txt
+    - src
+  - CMakeLists.txt
+  - external
+    - CMakeLists.txt
+  - lib
+    - CMakeLists.txt
+    - include
+      - your_library_name
+    - src
+```
+
+## 多类库单应用项目
+
+比较复杂的项目，类库需要拆分成多个，所以所有的具体类库目录都扔进一个libs目录下保持项目的整洁
+
+```
+- your_project_name
+  - app
+    - CMakeLists.txt
+    - src
+  - CMakeLists.txt
+  - external
+    - CMakeLists.txt
+  - libs
+    - CMakeLists.txt
+    - library_a
+      - CMakeLists.txt
+      - include
+        - library_a
+      - src
+    - library_b
+      - CMakeLists.txt
+      - include
+        - library_b
+      - src
+```
+
+## 其他情况
+
+如果是多应用的情况可以建一个apps目录，把各个具体的应用目录扔进去
+
+如果是多类库带多个使用例子的情况可以参考多应用的情况，把apps目录改成examples目录
+
+实际情况中可以做类似的修改，保证项目目录结构的整齐简洁就行了
+
+## 关于驼峰命名法
+
+没错，很关键，虽然C++标准库用的是全小写的下划线命名法，C++标准委员会也推荐下划线，但是下划线随随便便一个变量就会长长一坨，不用驼峰这能忍吗，这不能忍
+
+如果使用驼峰，首先就是源文件头文件内的变量、函数和类都使用驼峰命名法
+
+然后是CMakeLists.txt中的目标名和项目名都应当使用驼峰命名
+
+最后到了目录结构，项目根目录、具体类库目录、具体应用目录、头文件和源文件都应当使用首字母大写的驼峰，其他目录仍然保持下划线命名法  
+因为include目录最好跟系统的include路径保持一致，并且兼容旧有项目，所以都是用下划线命名法；而头文件和源文件应当与类名保持一致，具体类库和具体应用与CMakeLists.txt中的目标名保持一致，项目根目录跟CMakeLists.txt中的项目名保持一致，所以统一使用驼峰命名法
+
+不过混用有一点丑，激进一点的可以直接全部换成驼峰
+
+比如多类库单应用项目的目录结构就可以长这样
+
+```
+- YourProjectName
+  - app
+    - CMakeLists.txt
+    - src
+      - App.h
+      - App.cpp
+  - CMakeLists.txt
+  - external
+    - CMakeLists.txt
+  - libs
+    - CMakeLists.txt
+    - LibraryA
+      - CMakeLists.txt
+      - include
+        - LibraryA
+          - LibraryA.h
+      - src
+        - LibraryA.cpp
+    - LibraryB
+      - CMakeLists.txt
+      - include
+        - LibraryB
+          - LibraryA.h
+      - src
+        - LibraryA.cpp
+```

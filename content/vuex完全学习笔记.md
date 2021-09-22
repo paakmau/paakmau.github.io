@@ -1,0 +1,246 @@
++++
+title = "Vuex完全学习笔记"
+date = 2020-01-20 23:38:17
+
+[taxonomies]
+tags = ["Vue.js"]
+categories = ["Node.js"]
++++
+
+官网说，Vuex是为Vue.js应用开发的状态管理模式。个人理解就是管理全局变量的单例，支持响应式，存储状态或数据
+
+<!-- more -->
+
+可以用来处理多个页面数据共享，父子组件信息交互等麻烦的问题
+
+本文基于用Vue CLI创建的脚手架，包括State、Mutation、Action、Getter
+
+## 引入Vuex
+
+在使用Vue CLI创建项目的时候引入Vuex就行
+
+如果没有，需要安装vuex依赖，修改main.js，还可以新建一个目录用于存放Vuex相关的代码，初学避免踩坑不建议这么整
+
+## 脚手架中的相关文件
+
+介绍一下脚手架中与Vuex相关的部分
+
+src/store/index.js  
+用于配置Vuex的全局单例，贴一下代码
+
+```js
+import Vue from "vue";
+import Vuex from "vuex";
+
+Vue.use(Vuex);
+
+export default new Vuex.Store({
+  state: {},
+  mutations: {},
+  actions: {},
+  modules: {}
+});
+```
+
+src/main.js  
+它import了src/store，并在Vue对象实例化时传入，没什么好说的，这里随便贴一个
+
+```js
+import Vue from "vue";
+import App from "./App.vue";
+import store from "./store";
+
+Vue.config.productionTip = false;
+
+new Vue({
+  store,
+  render: h => h(App)
+}).$mount("#app");
+```
+
+## State与Mutation
+
+简单说State就是全局变量，而且它发生变化时，其他与之关联的DOM也会更新
+
+然后Mutation是用于修改State的方法，并且他能提供回滚等功能  
+官方不允许直接修改State，虽然直接修改也能触发相应DOM的更新
+
+然后我们尝试使用State在父子组件之间共享状态
+
+首先在src/store/index.js中添加一个showChr状态以及用于修改这个状态的Mutation，代码如下
+
+```js
+import Vue from "vue";
+import Vuex from "vuex";
+
+Vue.use(Vuex);
+
+export default new Vuex.Store({
+  state: {
+    showChr: false
+  },
+  mutations: {
+    changeShowChr(state, v) {
+      state.showChr = v
+    }
+  }
+});
+```
+
+然后子组件Chr.vue的代码如下
+
+```html
+<template>
+  <div v-show="$store.state.showChr">
+    <h1>这里是Chr</h1>
+    <button @click="$store.commit('changeShowChr', false)">隐藏</button>
+  </div>
+</template>
+
+<script>
+export default {};
+</script>
+```
+
+最后父组件Prt.vue的代码如下
+
+```html
+<template>
+  <div>
+      <button @click="$store.commit('changeShowChr', true)">显示</button>
+      <chr></chr>
+  </div>
+</template>
+
+<script>
+import chr from "../components/Chr.vue";
+export default {
+  components: {
+    chr: chr
+  }
+};
+</script>
+```
+
+这样，子组件的显示与showChr关联，且父子组件都能修改它的值
+
+注意：  
+Mutation中不能包含异步操作  
+并且它也需要遵守Vue的响应规则，可以提前在store中初始化所有的属性或者使用Vue.set添加新的属性
+
+另外再次强调：  
+虽然直接修改State也是响应式的，但官方明确说明必须使用Mutation
+
+## Action
+
+上面提到Mutation不能包含异步操作，如果需要异步，那么可以使用Action
+
+在Action中，可以使用State与Getter只读地访问状态，也可以提交Mutation修改状态，在其中能自由进行异步操作
+
+调用Action时使用$store.dispatch方法
+
+上面的例子可修改成这样
+
+在src/store/index.js中添加Action，这个Action中做了异步操作后提交Mutation
+
+```js
+import Vue from "vue";
+import Vuex from "vuex";
+
+Vue.use(Vuex);
+
+export default new Vuex.Store({
+  state: {
+    showChr: false
+  },
+  mutations: {
+    changeShowChr(state, v) {
+      state.showChr = v
+    }
+  },
+  actions: {
+    changeShowChr(context, v) {
+      setTimeout(() => { context.commit('changeShowChr', v) }, 1000)
+    }
+  }
+});
+```
+
+父组件不变，修改子组件如下
+
+```html
+<template>
+  <div v-show="$store.state.showChr">
+    <h1>这里是Chr</h1>
+    <button @click="$store.dispatch('changeShowChr', false)">隐藏</button>
+    <p>{{$store.getters.listAPositiveCnt}}</p>
+  </div>
+</template>
+
+<script>
+export default {};
+</script>
+```
+
+最后观察到点击隐藏，间隔一秒后子组件消失
+
+## Module
+
+把所有组件的状态或数据全部存储在$store.state中会很混乱且不好维护，可以把状态分割成多个模块（Module），每个模块都拥有自己的State，Getter，Mutation，Action，也可以嵌套子模块  
+比较简单，下面是示例
+
+```js
+import Vue from "vue";
+import Vuex from "vuex";
+
+Vue.use(Vuex);
+
+const moduleA = {
+  state: {
+    msg: 'This is a'
+  },
+  mutations: {},
+  actions: {},
+  getters: {}
+}
+
+const moduleB = {
+  state: {
+    tmp: ' This is b'
+  },
+  mutations: {},
+  actions: {}
+}
+
+export default new Vuex.Store({
+  modules: {
+    a: moduleA,
+    b: moduleB
+  }
+})
+
+store.state.a // -> moduleA 的状态
+store.state.b // -> moduleB 的状态
+```
+
+## Getter
+
+有时候，我们可以从store的state中派生出一些状态，例如对列表进行过滤然后计数。这种情况下我们可以在store中定义getter，下面贴一个简单的例子
+
+```js
+import Vue from "vue";
+import Vuex from "vuex";
+
+Vue.use(Vuex);
+
+export default new Vuex.Store({
+  state: {
+    listA: \[-1, 2, -2, 1, 0, 5\]
+  },
+  getters: {
+    listAPositiveCnt: state => {
+      return state.listA.filter(n => n > 0).length
+    }
+  }
+});
+```

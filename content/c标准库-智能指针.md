@@ -1,0 +1,75 @@
++++
+title = "C++标准库 智能指针"
+date = 2020-03-27 13:33:00
+
+[taxonomies]
+tags = ["C++", "C++ STL"]
+categories = ["C++"]
++++
+
+C++没有垃圾回收，因此new出来的对象都要自己管理  
+
+<!-- more -->
+为了方便的管理内存，我们发现垃圾回收中引用计数的思路很简单就能在C++中实现，而其实标准库中就已经有这样的实现，也就是智能指针
+
+它们的头文件都是memory
+
+## shared\_prt
+
+根据引用计数自动销毁对象，构造时引用数加一，析构时引用数减一，为零就销毁
+
+```cpp
+void Func(shared_ptr<string> ptr) {
+    printf("%ld\n", ptr.use_count());
+    auto ptr2 = ptr;
+    printf("%ld\n", ptr.use_count());
+}
+
+int main() {
+    auto ptr = make_shared<string>("Hello shared ptr");
+    printf("%ld\n", ptr.use_count());
+    Func(ptr);
+    printf("%ld\n", ptr.use_count());
+    return 0;
+}
+```
+
+## weak\_ptr
+
+有时候我们希望获得一个使用shared\_ptr管理的对象，但是又不希望影响原本shared\_ptr的生命期，此时就可以使用weak\_ptr
+
+它不会改变引用计数，可以查询是否被销毁，另外也可以调用lock方法来获取shared\_ptr续命
+
+把上面的例子修改一下
+
+```cpp
+void Func(weak_ptr<string> ptr) {
+    printf("%ld\n", ptr.use_count());
+    auto ptr2 = ptr.lock();
+    printf("%ld\n", ptr.use_count());
+}
+
+int main() {
+    auto ptr = make_shared<string>("Hello shared ptr");
+    printf("%ld\n", ptr.use_count());
+    Func(ptr);
+    printf("%ld\n", ptr.use_count());
+    return 0;
+}
+```
+
+## unique\_ptr
+
+可以理解为特殊的shared\_ptr，它的引用数至多为一，拷贝构造函数也被禁用
+
+如果想要转移一个使用unique\_ptr管理的对象，需要move
+
+```cpp
+int main() {
+    auto ptr = make_unique<string>("Hello shared ptr");
+    printf("%s\n", ptr->c_str());
+    auto ptr2 = move(ptr);
+    printf("%s\n", ptr2->c_str());
+    return 0;
+}
+```

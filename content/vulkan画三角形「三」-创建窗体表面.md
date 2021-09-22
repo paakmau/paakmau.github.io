@@ -1,0 +1,60 @@
++++
+title = "Vulkan画三角形「三」 创建窗体表面"
+date = 2020-09-05 23:02:56
+
+[taxonomies]
+tags = ["GLFW", "Vulkan"]
+categories = ["Vulkan"]
++++
+
+Vulkan是一个跨平台的API，它不能够直接与不同平台的窗体系统进行交互。为了在Vulkan与窗体系统之间建立连接来把渲染结果展示到屏幕上，我们需要使用一些WSI扩展。本文将会介绍VK\_KHR\_surface扩展。它暴露一个VkSurfaceKHR对象，这个对象代表一个我们可以把图像渲染上去的抽象表面
+
+<!-- more -->
+
+这个VK\_KHR\_surface是一个实例等级的扩展，并且我们其实在上一篇文章中就已经启用了它，因为它已经被包含在前文所用到的glfwGetRequiredInstanceExtensions所返回的列表中。这个列表同时还包含一些其他的WSI扩展，不过我们可以先不管这些
+
+另外需要注意的是，窗体表面其实并不一定需要创建，因为你可能只是要离屏渲染而不用把结果显示到屏幕上
+
+## 创建窗体表面
+
+首先跟上一篇文章一样，我们先添加一个私有成员变量用于保存创建好的窗体表面
+
+```cpp
+VkSurfaceKHR surface;
+```
+
+然后添加一个createSurface成员函数，并在initVulkan中调用它
+
+```cpp
+void initVulkan() {
+    createInstance();
+    createSurface();
+}
+```
+
+然后是这个成员函数的定义
+
+```cpp
+void createSurface() {
+    if (glfwCreateWindowSurface(instance, window, nullptr, &surface) != VK_SUCCESS)
+        throw std::runtime_error("failed to create window surface!");
+}
+```
+
+可以看到非常简单，而且是调了GLFW的API来实现的，说明GLFW对Vulkan有一定的支持。需要注意的是vulkan/vulkan.h这个头文件一定要写在GLFW/glfw3.h之前，因为GLFW会根据Vulkan的宏进行条件编译，头文件顺序不对的话将会无法使用glfwCreateWindowSurface这个函数
+
+## 销毁窗体表面
+
+最后我们要在cleanup中销毁掉窗体表面
+
+```cpp
+void cleanup() {
+    vkDestroySurfaceKHR(instance, surface, nullptr);
+    vkDestroyInstance(instance, nullptr);
+
+    glfwDestroyWindow(window);
+    glfwTerminate();
+}
+```
+
+当然销毁表面需要写在销毁实例之前

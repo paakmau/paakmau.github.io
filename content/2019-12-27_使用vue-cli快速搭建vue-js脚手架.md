@@ -1,6 +1,7 @@
 +++
 title = "使用Vue CLI快速搭建Vue.js脚手架"
 date = 2019-12-27 10:24:33
+slug = "201912271024"
 
 [taxonomies]
 tags = ["Vue.js"]

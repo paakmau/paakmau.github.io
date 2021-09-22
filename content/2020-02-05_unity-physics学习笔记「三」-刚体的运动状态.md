@@ -1,6 +1,7 @@
 +++
 title = "Unity Physics学习笔记「三」 刚体的运动状态"
 date = 2020-02-05 23:42:00
+slug = "202002052342"
 
 [taxonomies]
 tags = ["Unity ECS", "Unity Physics"]

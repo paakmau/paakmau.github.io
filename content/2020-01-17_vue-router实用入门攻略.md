@@ -1,6 +1,7 @@
 +++
 title = "Vue Router入门学习笔记"
 date = 2020-01-17 20:06:02
+slug = "202001172006"
 
 [taxonomies]
 tags = ["Vue.js"]

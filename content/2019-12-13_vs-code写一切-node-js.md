@@ -1,6 +1,7 @@
 +++
 title = "VS Code写一切 Node.js"
 date = 2019-12-13 21:36:11
+slug = "201912132136"
 
 [taxonomies]
 tags = ["Node.js", "VS Code"]

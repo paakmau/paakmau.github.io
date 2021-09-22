@@ -1,6 +1,7 @@
 +++
 title = "Unity Physics学习笔记「七」 精确的碰撞管理"
 date = 2020-03-15 22:07:48
+slug = "202003152207"
 
 [taxonomies]
 tags = ["Unity ECS", "Unity Physics"]

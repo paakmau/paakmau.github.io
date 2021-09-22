@@ -1,6 +1,7 @@
 +++
 title = "使用MockMvc对SpringBoot项目集成测试"
 date = 2020-03-30 20:12:40
+slug = "202003302012"
 
 [taxonomies]
 tags = ["MockMvc", "Spring Boot"]

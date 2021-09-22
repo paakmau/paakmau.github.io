@@ -1,6 +1,7 @@
 +++
 title = "Unity Physics学习笔记「二」 配置刚体与碰撞器属性"
 date = 2020-02-04 23:56:57
+slug = "202002042356"
 
 [taxonomies]
 tags = ["Unity ECS", "Unity Physics"]

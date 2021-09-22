@@ -1,6 +1,7 @@
 +++
 title = "VS Code写一切 Python"
 date = 2019-12-11 19:48:37
+slug = "201912111948"
 
 [taxonomies]
 tags = ["Python", "VS Code"]

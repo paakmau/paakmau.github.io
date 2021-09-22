@@ -1,6 +1,7 @@
 +++
 title = "Unity ECS框架摸索 第五章 利用Prefab实例化Entity及其销毁"
 date = 2020-02-03 14:05:00
+slug = "202002031405"
 
 [taxonomies]
 tags = ["Unity ECS"]

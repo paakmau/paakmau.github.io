@@ -1,6 +1,7 @@
 +++
 title = "VS Code写一切 CMake"
 date = 2020-12-11 21:41:47
+slug = "202012112141"
 
 [taxonomies]
 tags = ["C++", "CMake", "VS Code"]

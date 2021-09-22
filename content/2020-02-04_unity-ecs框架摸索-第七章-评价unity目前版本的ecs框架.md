@@ -1,6 +1,7 @@
 +++
 title = "Unity ECS框架摸索 第七章 评价Unity目前版本的ECS框架"
 date = 2020-02-04 03:15:00
+slug = "202002040315"
 
 [taxonomies]
 tags = ["Unity ECS"]

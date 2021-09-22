@@ -1,6 +1,7 @@
 +++
 title = "Unity ECS框架摸索 第四章 Chunk"
 date = 2020-02-03 01:37:42
+slug = "202002030137"
 
 [taxonomies]
 tags = ["Unity ECS"]

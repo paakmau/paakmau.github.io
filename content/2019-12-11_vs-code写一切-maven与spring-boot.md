@@ -1,6 +1,7 @@
 +++
 title = "VS Code写一切 Maven与Spring Boot"
 date = 2019-12-11 15:13:45
+slug = "201912111513"
 
 [taxonomies]
 tags = ["Java", "Maven", "Spring Boot", "VS Code"]

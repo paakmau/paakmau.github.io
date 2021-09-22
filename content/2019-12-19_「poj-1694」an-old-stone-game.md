@@ -1,6 +1,7 @@
 +++
 title = "「poj 1694」An Old Stone Game"
 date = 2019-12-19 17:51:23
+slug = "201912191751"
 
 [taxonomies]
 tags = ["动态规划", "树形DP"]

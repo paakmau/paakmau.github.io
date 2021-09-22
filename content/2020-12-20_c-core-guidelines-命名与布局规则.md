@@ -1,6 +1,7 @@
 +++
 title = "C++ Core Guidelines 命名与布局规则"
 date = 2020-12-20 00:30:45
+slug = "202012200030"
 
 [taxonomies]
 tags = ["C++"]

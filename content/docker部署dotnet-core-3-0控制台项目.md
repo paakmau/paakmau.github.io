@@ -7,7 +7,7 @@ tags = [".NET Core", "Docker"]
 categories = [".NET Core", "Docker"]
 +++
 
-为了方便描述，我们快速新建HelloWorld项目作为示例。
+本文将光速创建一个HelloWorld，然后使用Docker进行部署
 
 <!-- more -->
 

@@ -8,11 +8,11 @@ categories = ["VS Code"]
 +++
 
 VSC用于开发Maven项目已经比较成熟  
-
-<!-- more -->
 直接打开就行，没什么好说的
 
 因此本文介绍VS Code创建与调试Spring Boot项目
+
+<!-- more -->
 
 ## Java环境配置
 

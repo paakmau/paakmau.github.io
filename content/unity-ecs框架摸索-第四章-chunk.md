@@ -7,9 +7,11 @@ tags = ["Unity ECS"]
 categories = ["Unity"]
 +++
 
-## Unity中Component的Chunk式存储
+本文将介绍Unity ECS中对于Component的内存管理
 
 <!-- more -->
+
+## Component的Chunk式存储
 
 首先，一组Component是一个Archetype。多个Entity如果由相同的Component构成，那么他们属于同一个Archetype。
 

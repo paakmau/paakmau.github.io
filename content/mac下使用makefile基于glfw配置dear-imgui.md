@@ -9,8 +9,9 @@ categories = ["C++"]
 
 用Xcode配置起来很简单，但是OpenGL.framework被弃用了，会爆不少警告（其实是因为我习惯了VSC改不过来）  
 
-<!-- more -->
 于是尝试用Makefile搞一搞
+
+<!-- more -->
 
 ## 安装GLEW和GLFW
 

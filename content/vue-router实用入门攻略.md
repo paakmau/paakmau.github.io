@@ -7,11 +7,10 @@ tags = ["Vue.js"]
 categories = ["Node.js"]
 +++
 
-Vue Router是Vue.js官方提供的路由管理器，轻松构建单页应用
+Vue Router是Vue.js官方提供的路由管理器，轻松构建单页应用  
+本文基于用Vue CLI创建的脚手架，包括动态路径参数、嵌套路由、命名视图、懒加载
 
 <!-- more -->
-
-本文基于用Vue CLI创建的脚手架，包括动态路径参数、嵌套路由、命名视图、懒加载
 
 ## 引入Vue Router
 

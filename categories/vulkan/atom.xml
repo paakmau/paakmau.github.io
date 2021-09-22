@@ -11,8 +11,8 @@
 		<title>Vulkan画三角形「十五」 总结</title>
 		<published>2020-09-24T14:03:51+00:00</published>
 		<updated>2020-09-24T14:03:51+00:00</updated>
-		<link href="https://paakmau.github.io/vulkanhua-san-jiao-xing-shi-wu-zong-jie/" type="text/html"/>
-		<id>https://paakmau.github.io/vulkanhua-san-jiao-xing-shi-wu-zong-jie/</id>
+		<link href="https://paakmau.github.io/202009241403/" type="text/html"/>
+		<id>https://paakmau.github.io/202009241403/</id>
 		<content type="html">&lt;p&gt;现在我们已经成功地渲染并在屏幕上展示了一个三角形，更重要的是，我们把Vulkan中的大部分知识都过了一遍，现在让我们来回顾一下它的每个步骤&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;ul&gt;
@@ -71,8 +71,8 @@
 		<title>Vulkan画三角形「十四」渲染和展示</title>
 		<published>2020-09-19T17:50:24+00:00</published>
 		<updated>2020-09-19T17:50:24+00:00</updated>
-		<link href="https://paakmau.github.io/vulkanhua-san-jiao-xing-shi-si-xuan-ran-he-zhan-shi/" type="text/html"/>
-		<id>https://paakmau.github.io/vulkanhua-san-jiao-xing-shi-si-xuan-ran-he-zhan-shi/</id>
+		<link href="https://paakmau.github.io/202009191750/" type="text/html"/>
+		<id>https://paakmau.github.io/202009191750/</id>
 		<content type="html">&lt;p&gt;本文中我们将会结合之前的东西，最后在屏幕上把三角形画出来&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;首先添加一个drawFrame函数，并在mainLoop的循环中调用它&lt;&#x2F;p&gt;
@@ -213,8 +213,8 @@
 		<title>Vulkan画三角形「十三」 创建命令缓冲区</title>
 		<published>2020-09-17T00:07:30+00:00</published>
 		<updated>2020-09-17T00:07:30+00:00</updated>
-		<link href="https://paakmau.github.io/vulkanhua-san-jiao-xing-shi-san-chuang-jian-ming-ling-huan-chong-qu/" type="text/html"/>
-		<id>https://paakmau.github.io/vulkanhua-san-jiao-xing-shi-san-chuang-jian-ming-ling-huan-chong-qu/</id>
+		<link href="https://paakmau.github.io/202009170007/" type="text/html"/>
+		<id>https://paakmau.github.io/202009170007/</id>
 		<content type="html">&lt;p&gt;命令在Vulkan中，比如绘图操作和内存传递，并不能直接经过函数调用来执行。我们必须要把所有需要执行的操作记录到命令缓冲区对象中。这样做的优势在于配置绘图命令的复杂工作能够提前且多线程进行。这之后，我们只需要在主循环中通知Vulkan执行这些命令&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;ming-ling-chi&quot;&gt;命令池&lt;&#x2F;h2&gt;
 &lt;p&gt;在创建命令缓冲区之前，我们必须先创建一个命令池。命令池能够管理用于存储缓冲区的内存，命令缓冲区就从命令池中进行分配。我们添加一个成员变量用于保存VkCommandPool对象&lt;&#x2F;p&gt;
@@ -359,8 +359,8 @@
 		<title>Vulkan画三角形「十二」 创建帧缓冲区</title>
 		<published>2020-09-14T22:26:27+00:00</published>
 		<updated>2020-09-14T22:26:27+00:00</updated>
-		<link href="https://paakmau.github.io/vulkanhua-san-jiao-xing-shi-er-chuang-jian-zheng-huan-chong-qu/" type="text/html"/>
-		<id>https://paakmau.github.io/vulkanhua-san-jiao-xing-shi-er-chuang-jian-zheng-huan-chong-qu/</id>
+		<link href="https://paakmau.github.io/202009142226/" type="text/html"/>
+		<id>https://paakmau.github.io/202009142226/</id>
 		<content type="html">&lt;p&gt;在之前的文章中已经讨论了很多帧缓冲区相关的东西，并且我们已经配置了渲染路径，渲染路径基于一个单独的与交换链图像具有相同格式的帧缓冲区，但我们实际上还没有创建它&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;在渲染路径创建时指定的附着通过封装为VkFramebuffer对象进行绑定。一个帧缓冲区对象引用了代表这些附着的所有VkImageView对象。当然我们这里只有一个，也就是颜色附着。然而，我们需要用于附着的图像取决于我们在展示时交换链提供的图像。这意味这我们必须对交换链中所有的图像都创建一个帧缓冲区，并且在渲染的时候使用与交换链提供的图像相对应的那个帧缓冲区&lt;&#x2F;p&gt;
@@ -431,8 +431,8 @@
 		<title>Vulkan画三角形「十一」 创建图形流水线</title>
 		<published>2020-09-13T22:19:47+00:00</published>
 		<updated>2020-09-13T22:19:47+00:00</updated>
-		<link href="https://paakmau.github.io/vulkanhua-san-jiao-xing-shi-yi-chuang-jian-tu-xing-liu-shui-xian/" type="text/html"/>
-		<id>https://paakmau.github.io/vulkanhua-san-jiao-xing-shi-yi-chuang-jian-tu-xing-liu-shui-xian/</id>
+		<link href="https://paakmau.github.io/202009132219/" type="text/html"/>
+		<id>https://paakmau.github.io/202009132219/</id>
 		<content type="html">&lt;p&gt;首先还是添加一个成员函数并在initVulkan中调用它&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;initVulkan&lt;&#x2F;span&gt;&lt;span&gt;() {
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;createInstance&lt;&#x2F;span&gt;&lt;span&gt;();
@@ -695,8 +695,8 @@
 		<title>Vulkan画三角形「十」 着色器模块</title>
 		<published>2020-09-12T00:28:34+00:00</published>
 		<updated>2020-09-12T00:28:34+00:00</updated>
-		<link href="https://paakmau.github.io/vulkanhua-san-jiao-xing-shi-zhao-se-qi-mo-kuai/" type="text/html"/>
-		<id>https://paakmau.github.io/vulkanhua-san-jiao-xing-shi-zhao-se-qi-mo-kuai/</id>
+		<link href="https://paakmau.github.io/202009120028/" type="text/html"/>
+		<id>https://paakmau.github.io/202009120028/</id>
 		<content type="html">&lt;p&gt;与早期API不同，Vulkan中的着色器代码必须要以字节码的格式指定，而不是像GLSL、HLSL这样人类可读的语法。这种字节码格式是SPIR-V，它可以用于Vulkan和OpenCL。它是一个用来写图形与计算着色器的格式，但是现在我们只关心可用于Vulkan图形流水线的着色器&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;使用字节码的优点在于GPU厂商自己写的编译器把着色器代码编译为原生代码会非常简单。过去的经验告诉我们，对于像是GLSL这样的人类可读的语法，GPU厂商在对标准的解释上会有更大的灵活性。如果你正在写一些非常复杂的着色器，那么有可能存在这样的风险，在你的开发机上可以正常运行，但在其他GPU厂商提供的驱动上可能因为语法错误等问题而无法使用这些着色器。而使用简单的SPIR-V这样的字节码格式就可以避免这样的问题&lt;&#x2F;p&gt;
@@ -800,8 +800,8 @@
 		<title>Vulkan画三角形「九」 渲染路径</title>
 		<published>2020-09-11T14:30:21+00:00</published>
 		<updated>2020-09-11T14:30:21+00:00</updated>
-		<link href="https://paakmau.github.io/vulkanhua-san-jiao-xing-jiu-xuan-ran-lu-jing/" type="text/html"/>
-		<id>https://paakmau.github.io/vulkanhua-san-jiao-xing-jiu-xuan-ran-lu-jing/</id>
+		<link href="https://paakmau.github.io/202009111430/" type="text/html"/>
+		<id>https://paakmau.github.io/202009111430/</id>
 		<content type="html">&lt;p&gt;我们需要配置渲染时需要使用的帧缓冲区附着的相关信息。我们需要指定有多少个颜色和深度缓冲区，它们的采样数以及通过渲染操作应当如何处理它们的内容。所有的这些信息都会被封装到渲染路径对象中，于是我们添加一个成员变量来保存它&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span&gt;VkRenderPass renderPass;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
@@ -942,8 +942,8 @@
 		<title>Vulkan画三角形「八」 图形流水线介绍</title>
 		<published>2020-09-08T23:50:04+00:00</published>
 		<updated>2020-09-08T23:50:04+00:00</updated>
-		<link href="https://paakmau.github.io/vulkanhua-san-jiao-xing-ba-tu-xing-liu-shui-xian-jie-shao/" type="text/html"/>
-		<id>https://paakmau.github.io/vulkanhua-san-jiao-xing-ba-tu-xing-liu-shui-xian-jie-shao/</id>
+		<link href="https://paakmau.github.io/202009082350/" type="text/html"/>
+		<id>https://paakmau.github.io/202009082350/</id>
 		<content type="html">&lt;p&gt;接下来的文章我们将会配置图形流水线来绘制我们的三角形。图形流水线就是一系列的操作，这些操作把我们的网格体中的顶点和纹理转换成渲染目标上的像素点&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;下面是一个简化的概述&lt;&#x2F;p&gt;
@@ -973,8 +973,8 @@
 		<title>Vulkan画三角形「七」 创建图像视图</title>
 		<published>2020-09-08T23:04:35+00:00</published>
 		<updated>2020-09-08T23:04:35+00:00</updated>
-		<link href="https://paakmau.github.io/vulkanhua-san-jiao-xing-qi-chuang-jian-tu-xiang-shi-tu/" type="text/html"/>
-		<id>https://paakmau.github.io/vulkanhua-san-jiao-xing-qi-chuang-jian-tu-xiang-shi-tu/</id>
+		<link href="https://paakmau.github.io/202009082304/" type="text/html"/>
+		<id>https://paakmau.github.io/202009082304/</id>
 		<content type="html">&lt;p&gt;为了能够使用VkImage，包括交换链中的在内，我们需要在渲染管线中创建VkImageView。一个图像视图真的就是字面意思的图像的视图。它描述了如何访问这个图像以及访问这个图像的哪个部分，例如图像可能被当作不需要Mipmap的二维深度贴图&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;chuang-jian-tu-xiang-shi-tu&quot;&gt;创建图像视图&lt;&#x2F;h2&gt;
 &lt;p&gt;首先还是先定义一个成员变量用于保存图像视图&lt;&#x2F;p&gt;
@@ -1042,8 +1042,8 @@
 		<title>Vulkan画三角形「六」 创建交换链</title>
 		<published>2020-09-08T20:23:43+00:00</published>
 		<updated>2020-09-08T20:23:43+00:00</updated>
-		<link href="https://paakmau.github.io/vulkanhua-san-jiao-xing-liu-chuang-jian-jiao-huan-lian/" type="text/html"/>
-		<id>https://paakmau.github.io/vulkanhua-san-jiao-xing-liu-chuang-jian-jiao-huan-lian/</id>
+		<link href="https://paakmau.github.io/202009082023/" type="text/html"/>
+		<id>https://paakmau.github.io/202009082023/</id>
 		<content type="html">&lt;p&gt;我们在把图像展示到屏幕之前，需要先把它们渲染到缓冲区中，而交换链就是存放缓冲区的地方。交换链本质上是一个存放需要展示到屏幕的图像的队列。我们的应用程序要做的就是从这个队列中取出一个图像，然后在上面渲染，最后再返回给队列。这个队列是怎么工作的以及队列中的图像什么时候展示到屏幕上，它们都取决于交换链是怎么创建的，但是交换链一般的目的都是同步图像展示和屏幕刷新率&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;为了能够使用交换链，我们需要在创建逻辑设备的时候启用交换链扩展，此外也可以在选取物理设备的时候检查显卡是否支持交换链。之前文章的代码中已经包含了这些内容，所以我们继续往下看&lt;&#x2F;p&gt;
@@ -1203,8 +1203,8 @@
 		<title>Vulkan画三角形「五」 创建逻辑设备</title>
 		<published>2020-09-08T00:19:25+00:00</published>
 		<updated>2020-09-08T00:19:25+00:00</updated>
-		<link href="https://paakmau.github.io/vulkanhua-san-jiao-xing-wu-chuang-jian-luo-ji-she-bei/" type="text/html"/>
-		<id>https://paakmau.github.io/vulkanhua-san-jiao-xing-wu-chuang-jian-luo-ji-she-bei/</id>
+		<link href="https://paakmau.github.io/202009080019/" type="text/html"/>
+		<id>https://paakmau.github.io/202009080019/</id>
 		<content type="html">&lt;p&gt;选取了物理设备之后，我们需要创建一个逻辑设备来跟它进行交互。逻辑设备的创建过程跟实例的创建过程类似，我们需要描述要用到的特性。我们还需要根据之前查询好的队列族，指定需要创建的队列。我们甚至可以对于同一个物理设备创建多个逻辑设备来应对不同的需求&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;chuang-jian-luo-ji-she-bei&quot;&gt;创建逻辑设备&lt;&#x2F;h2&gt;
 &lt;p&gt;同样的，让我们添加一个成员变量&lt;&#x2F;p&gt;
@@ -1277,8 +1277,8 @@
 		<title>Vulkan画三角形「四」 选取物理设备</title>
 		<published>2020-09-06T00:59:35+00:00</published>
 		<updated>2020-09-06T00:59:35+00:00</updated>
-		<link href="https://paakmau.github.io/vulkanhua-san-jiao-xing-si-xuan-qu-wu-li-she-bei/" type="text/html"/>
-		<id>https://paakmau.github.io/vulkanhua-san-jiao-xing-si-xuan-qu-wu-li-she-bei/</id>
+		<link href="https://paakmau.github.io/202009060059/" type="text/html"/>
+		<id>https://paakmau.github.io/202009060059/</id>
 		<content type="html">&lt;p&gt;创建了表面之后我们接下来就可以在系统中选取一张显卡，事实上我们可以选取多张显卡并同时使用它们，但是在本文中我们只用一张显卡作为示范&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;还是一样，我们先添加一个私有成员变量&lt;&#x2F;p&gt;
@@ -1420,8 +1420,8 @@
 		<title>Vulkan画三角形「三」 创建窗体表面</title>
 		<published>2020-09-05T23:02:56+00:00</published>
 		<updated>2020-09-05T23:02:56+00:00</updated>
-		<link href="https://paakmau.github.io/vulkanhua-san-jiao-xing-san-chuang-jian-chuang-ti-biao-mian/" type="text/html"/>
-		<id>https://paakmau.github.io/vulkanhua-san-jiao-xing-san-chuang-jian-chuang-ti-biao-mian/</id>
+		<link href="https://paakmau.github.io/202009052302/" type="text/html"/>
+		<id>https://paakmau.github.io/202009052302/</id>
 		<content type="html">&lt;p&gt;Vulkan是一个跨平台的API，它不能够直接与不同平台的窗体系统进行交互。为了在Vulkan与窗体系统之间建立连接来把渲染结果展示到屏幕上，我们需要使用一些WSI扩展。本文将会介绍VK_KHR_surface扩展。它暴露一个VkSurfaceKHR对象，这个对象代表一个我们可以把图像渲染上去的抽象表面&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;这个VK_KHR_surface是一个实例等级的扩展，并且我们其实在上一篇文章中就已经启用了它，因为它已经被包含在前文所用到的glfwGetRequiredInstanceExtensions所返回的列表中。这个列表同时还包含一些其他的WSI扩展，不过我们可以先不管这些&lt;&#x2F;p&gt;
@@ -1460,8 +1460,8 @@
 		<title>Vulkan画三角形「二」 创建Vulkan实例</title>
 		<published>2020-09-04T20:49:09+00:00</published>
 		<updated>2020-09-04T20:49:09+00:00</updated>
-		<link href="https://paakmau.github.io/vulkanhua-san-jiao-xing-er-chuang-jian-vulkanshi-li/" type="text/html"/>
-		<id>https://paakmau.github.io/vulkanhua-san-jiao-xing-er-chuang-jian-vulkanshi-li/</id>
+		<link href="https://paakmau.github.io/202009042049/" type="text/html"/>
+		<id>https://paakmau.github.io/202009042049/</id>
 		<content type="html">&lt;p&gt;开始一切之前，我们先引入Vulkan的头文件&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;vulkan&#x2F;vulkan.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
@@ -1553,8 +1553,8 @@
 		<title>Vulkan画三角形「一」 概要与环境配置</title>
 		<published>2020-09-03T20:23:56+00:00</published>
 		<updated>2020-09-03T20:23:56+00:00</updated>
-		<link href="https://paakmau.github.io/vulkanhua-san-jiao-xing-yi-gai-yao-yu-huan-jing-pei-zhi/" type="text/html"/>
-		<id>https://paakmau.github.io/vulkanhua-san-jiao-xing-yi-gai-yao-yu-huan-jing-pei-zhi/</id>
+		<link href="https://paakmau.github.io/202009032023/" type="text/html"/>
+		<id>https://paakmau.github.io/202009032023/</id>
 		<content type="html">&lt;p&gt;Vulkan是一个跨平台的图形与计算API，本系列文章将使用Vulkan绘制一个三角形，旨在为上手Vulkan提供帮助&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;使用CMake管理项目&lt;br &#x2F;&gt;

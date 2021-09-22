@@ -11,8 +11,8 @@
 		<title>基于Vue.js和SpringBoot配置WebSocket</title>
 		<published>2020-07-07T18:21:46+00:00</published>
 		<updated>2020-07-07T18:21:46+00:00</updated>
-		<link href="https://paakmau.github.io/ji-yu-vue-jshe-springbootpei-zhi-websocket/" type="text/html"/>
-		<id>https://paakmau.github.io/ji-yu-vue-jshe-springbootpei-zhi-websocket/</id>
+		<link href="https://paakmau.github.io/202007071821/" type="text/html"/>
+		<id>https://paakmau.github.io/202007071821/</id>
 		<content type="html">&lt;p&gt;HTTP协议中的请求只能由客户端发起，如果需要服务端主动向客户端发送信息，就会用到WebSocket&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;hou-duan-bu-fen&quot;&gt;后端部分&lt;&#x2F;h2&gt;
 &lt;p&gt;首先需要一个配置类用于指定WebSocket的端口号&lt;&#x2F;p&gt;
@@ -128,8 +128,8 @@
 		<title>使用Mockito对SpringBoot项目单元测试</title>
 		<published>2020-03-30T20:30:55+00:00</published>
 		<updated>2020-03-30T20:30:55+00:00</updated>
-		<link href="https://paakmau.github.io/shi-yong-mockitodui-springbootxiang-mu-dan-yuan-ce-shi/" type="text/html"/>
-		<id>https://paakmau.github.io/shi-yong-mockitodui-springbootxiang-mu-dan-yuan-ce-shi/</id>
+		<link href="https://paakmau.github.io/202003302030/" type="text/html"/>
+		<id>https://paakmau.github.io/202003302030/</id>
 		<content type="html">&lt;p&gt;使用Mockito可以用来给模块打桩，实现单元测试&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;zai-pom-xmlli-yin-ru-yi-lai&quot;&gt;在pom.xml里引入依赖&lt;&#x2F;h2&gt;
 &lt;pre data-lang=&quot;xml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-xml &quot;&gt;&lt;code class=&quot;language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;dependency&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
@@ -191,8 +191,8 @@
 		<title>使用MockMvc对SpringBoot项目集成测试</title>
 		<published>2020-03-30T20:12:40+00:00</published>
 		<updated>2020-03-30T20:12:40+00:00</updated>
-		<link href="https://paakmau.github.io/shi-yong-mockmvcdui-springbootxiang-mu-ji-cheng-ce-shi/" type="text/html"/>
-		<id>https://paakmau.github.io/shi-yong-mockmvcdui-springbootxiang-mu-ji-cheng-ce-shi/</id>
+		<link href="https://paakmau.github.io/202003302012/" type="text/html"/>
+		<id>https://paakmau.github.io/202003302012/</id>
 		<content type="html">&lt;p&gt;对后端进行集成测试的时候，我们一般都希望从发送HTTP请求开始对后端进行完整的测试，可能会考虑用Postman或者Postwoman这类东西，但是直觉告诉我们应该也可以把集成测试写在代码里&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;zai-pom-xmlli-yin-ru-yi-lai&quot;&gt;在pom.xml里引入依赖&lt;&#x2F;h2&gt;
 &lt;pre data-lang=&quot;xml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-xml &quot;&gt;&lt;code class=&quot;language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;dependency&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
@@ -294,8 +294,8 @@
 		<title>SpringBoot JPA快速上手</title>
 		<published>2020-03-30T19:31:41+00:00</published>
 		<updated>2020-03-30T19:31:41+00:00</updated>
-		<link href="https://paakmau.github.io/springboot-jpakuai-su-shang-shou/" type="text/html"/>
-		<id>https://paakmau.github.io/springboot-jpakuai-su-shang-shou/</id>
+		<link href="https://paakmau.github.io/202003301931/" type="text/html"/>
+		<id>https://paakmau.github.io/202003301931/</id>
 		<content type="html">&lt;p&gt;现在SpringBoot上比较主流的持久层ORM框架应该就是MyBatis和JPA了。JPA对于简单查询（特别是作业）非常方便，可以说开箱即用，但是面对复杂查询就要稍微多学一点；而MyBatis写起来虽然没那么简洁，但在复杂查询的时候直接上SQL语句就完事了&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;yin-ru-jpayu-mysqlyi-lai&quot;&gt;引入JPA与MySQL依赖&lt;&#x2F;h2&gt;
 &lt;p&gt;在pom.xml中添加如下两条&lt;&#x2F;p&gt;
@@ -453,8 +453,8 @@
 		<title>VS Code写一切 Maven与Spring Boot</title>
 		<published>2019-12-11T15:13:45+00:00</published>
 		<updated>2019-12-11T15:13:45+00:00</updated>
-		<link href="https://paakmau.github.io/vs-codexie-yi-qie-mavenyu-spring-boot/" type="text/html"/>
-		<id>https://paakmau.github.io/vs-codexie-yi-qie-mavenyu-spring-boot/</id>
+		<link href="https://paakmau.github.io/201912111513/" type="text/html"/>
+		<id>https://paakmau.github.io/201912111513/</id>
 		<content type="html">&lt;p&gt;VSC用于开发Maven项目已经比较成熟&lt;br &#x2F;&gt;
 直接打开就行，没什么好说的&lt;&#x2F;p&gt;
 &lt;p&gt;因此本文介绍VS Code创建与调试Spring Boot项目&lt;&#x2F;p&gt;

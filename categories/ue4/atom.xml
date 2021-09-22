@@ -11,8 +11,8 @@
 		<title>UE4材质编辑器中材质结点的数据结构 源码浅析</title>
 		<published>2020-05-15T23:47:36+00:00</published>
 		<updated>2020-05-15T23:47:36+00:00</updated>
-		<link href="https://paakmau.github.io/ue4cai-zhi-bian-ji-qi-zhong-cai-zhi-jie-dian-de-shu-ju-jie-gou-yuan-ma-qian-xi/" type="text/html"/>
-		<id>https://paakmau.github.io/ue4cai-zhi-bian-ji-qi-zhong-cai-zhi-jie-dian-de-shu-ju-jie-gou-yuan-ma-qian-xi/</id>
+		<link href="https://paakmau.github.io/202005152347/" type="text/html"/>
+		<id>https://paakmau.github.io/202005152347/</id>
 		<content type="html">&lt;p&gt;UE4的材质编辑器中我们可以创建材质结点然后给它们连线来创建材质&lt;&#x2F;p&gt;
 &lt;p&gt;本文将根据源码解析材质结点在内存中的数据结构&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;uedgraph&quot;&gt;UEdGraph&lt;&#x2F;h2&gt;
@@ -77,8 +77,8 @@
 		<title>UE4材质结点生成HLSL代码 源码浅析</title>
 		<published>2020-05-11T21:50:26+00:00</published>
 		<updated>2020-05-11T21:50:26+00:00</updated>
-		<link href="https://paakmau.github.io/ue4cai-zhi-jie-dian-sheng-cheng-hlsldai-ma-yuan-ma-qian-xi/" type="text/html"/>
-		<id>https://paakmau.github.io/ue4cai-zhi-jie-dian-sheng-cheng-hlsldai-ma-yuan-ma-qian-xi/</id>
+		<link href="https://paakmau.github.io/202005112150/" type="text/html"/>
+		<id>https://paakmau.github.io/202005112150/</id>
 		<content type="html">&lt;p&gt;使用UE4的材质编辑器的时候我们可以为材质的颜色、粗糙度、金属度等连接一个常量或者纹理结点，如果要实现复杂效果可能还会用到混合结点，最后就可能看到一个完整的材质其实是由一堆结点和它们之间的连线组成&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;然后每一个结点可以理解为一段HLSL代码，然后结点之间的连线则是变量的传递&lt;&#x2F;p&gt;
@@ -295,8 +295,8 @@
 		<title>UE4 TaskGraph学习笔记「下」 源码浅析</title>
 		<published>2020-03-22T20:52:18+00:00</published>
 		<updated>2020-03-22T20:52:18+00:00</updated>
-		<link href="https://paakmau.github.io/ue4-taskgraphxue-xi-bi-ji-xia-yuan-ma-qian-xi/" type="text/html"/>
-		<id>https://paakmau.github.io/ue4-taskgraphxue-xi-bi-ji-xia-yuan-ma-qian-xi/</id>
+		<link href="https://paakmau.github.io/202003222052/" type="text/html"/>
+		<id>https://paakmau.github.io/202003222052/</id>
 		<content type="html">&lt;p&gt;接下来阅读TaskGraph的源码来了解其实现细节&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;taskgraphshi-xian-gai-gua&quot;&gt;TaskGraph实现概括&lt;&#x2F;h2&gt;
 &lt;p&gt;首先是线程管理。我们创建的TGraphTask并不能直接运行，需要把它交给某个FTaskThreadBase对象来控制执行。这个FTaskThreadBase可以理解为一个线程，可以把很多个TGraphTask交给他，它会依次执行这些任务（当然也要满足依赖）&lt;&#x2F;p&gt;
@@ -375,8 +375,8 @@
 		<title>UE4 TaskGraph学习笔记「上」 介绍与实践</title>
 		<published>2020-03-19T13:21:19+00:00</published>
 		<updated>2020-03-19T13:21:19+00:00</updated>
-		<link href="https://paakmau.github.io/ue4-taskgraphxue-xi-bi-ji-shang-shi-jian/" type="text/html"/>
-		<id>https://paakmau.github.io/ue4-taskgraphxue-xi-bi-ji-shang-shi-jian/</id>
+		<link href="https://paakmau.github.io/202003191321/" type="text/html"/>
+		<id>https://paakmau.github.io/202003191321/</id>
 		<content type="html">&lt;p&gt;这个东西跟Unity中的Job很相似，都是基于任务的并行程序设计，可以处理资源竞争与执行顺序问题&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;jian-dan-jie-shao&quot;&gt;简单介绍&lt;&#x2F;h2&gt;
 &lt;p&gt;简单说就是一张有向无环图，每一个任务是节点，任务的依赖关系是边，根据拓扑排序规划任务的执行。如果一个节点的入度为零就可以并行，并且执行完成后删掉自己的出边；否则等待入边的节点执行完成&lt;&#x2F;p&gt;

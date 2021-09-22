@@ -11,8 +11,8 @@
 		<title>SpringBoot JPA快速上手</title>
 		<published>2020-03-30T19:31:41+00:00</published>
 		<updated>2020-03-30T19:31:41+00:00</updated>
-		<link href="https://paakmau.github.io/springboot-jpakuai-su-shang-shou/" type="text/html"/>
-		<id>https://paakmau.github.io/springboot-jpakuai-su-shang-shou/</id>
+		<link href="https://paakmau.github.io/202003301931/" type="text/html"/>
+		<id>https://paakmau.github.io/202003301931/</id>
 		<content type="html">&lt;p&gt;现在SpringBoot上比较主流的持久层ORM框架应该就是MyBatis和JPA了。JPA对于简单查询（特别是作业）非常方便，可以说开箱即用，但是面对复杂查询就要稍微多学一点；而MyBatis写起来虽然没那么简洁，但在复杂查询的时候直接上SQL语句就完事了&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;yin-ru-jpayu-mysqlyi-lai&quot;&gt;引入JPA与MySQL依赖&lt;&#x2F;h2&gt;
 &lt;p&gt;在pom.xml中添加如下两条&lt;&#x2F;p&gt;

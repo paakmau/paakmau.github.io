@@ -11,8 +11,8 @@
 		<title>基于Vue.js和SpringBoot配置WebSocket</title>
 		<published>2020-07-07T18:21:46+00:00</published>
 		<updated>2020-07-07T18:21:46+00:00</updated>
-		<link href="https://paakmau.github.io/ji-yu-vue-jshe-springbootpei-zhi-websocket/" type="text/html"/>
-		<id>https://paakmau.github.io/ji-yu-vue-jshe-springbootpei-zhi-websocket/</id>
+		<link href="https://paakmau.github.io/202007071821/" type="text/html"/>
+		<id>https://paakmau.github.io/202007071821/</id>
 		<content type="html">&lt;p&gt;HTTP协议中的请求只能由客户端发起，如果需要服务端主动向客户端发送信息，就会用到WebSocket&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;hou-duan-bu-fen&quot;&gt;后端部分&lt;&#x2F;h2&gt;
 &lt;p&gt;首先需要一个配置类用于指定WebSocket的端口号&lt;&#x2F;p&gt;

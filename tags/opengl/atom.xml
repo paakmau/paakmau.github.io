@@ -11,8 +11,8 @@
 		<title>Mac下使用Makefile基于GLFW配置Dear ImGui</title>
 		<published>2020-03-31T23:47:45+00:00</published>
 		<updated>2020-03-31T23:47:45+00:00</updated>
-		<link href="https://paakmau.github.io/macxia-shi-yong-makefileji-yu-glfwpei-zhi-dear-imgui/" type="text/html"/>
-		<id>https://paakmau.github.io/macxia-shi-yong-makefileji-yu-glfwpei-zhi-dear-imgui/</id>
+		<link href="https://paakmau.github.io/202003312347/" type="text/html"/>
+		<id>https://paakmau.github.io/202003312347/</id>
 		<content type="html">&lt;p&gt;用Xcode配置起来很简单，但是OpenGL.framework被弃用了，会爆不少警告（其实是因为我习惯了VSC改不过来）&lt;&#x2F;p&gt;
 &lt;p&gt;于是尝试用Makefile搞一搞&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;an-zhuang-glewhe-glfw&quot;&gt;安装GLEW和GLFW&lt;&#x2F;h2&gt;

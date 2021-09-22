@@ -11,8 +11,8 @@
 		<title>使用Mockito对SpringBoot项目单元测试</title>
 		<published>2020-03-30T20:30:55+00:00</published>
 		<updated>2020-03-30T20:30:55+00:00</updated>
-		<link href="https://paakmau.github.io/shi-yong-mockitodui-springbootxiang-mu-dan-yuan-ce-shi/" type="text/html"/>
-		<id>https://paakmau.github.io/shi-yong-mockitodui-springbootxiang-mu-dan-yuan-ce-shi/</id>
+		<link href="https://paakmau.github.io/202003302030/" type="text/html"/>
+		<id>https://paakmau.github.io/202003302030/</id>
 		<content type="html">&lt;p&gt;使用Mockito可以用来给模块打桩，实现单元测试&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;zai-pom-xmlli-yin-ru-yi-lai&quot;&gt;在pom.xml里引入依赖&lt;&#x2F;h2&gt;
 &lt;pre data-lang=&quot;xml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-xml &quot;&gt;&lt;code class=&quot;language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;dependency&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;

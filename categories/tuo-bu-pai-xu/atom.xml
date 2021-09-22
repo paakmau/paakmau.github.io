@@ -11,8 +11,8 @@
 		<title>拓扑排序与基于任务的异步模式</title>
 		<published>2020-04-28T22:21:26+00:00</published>
 		<updated>2020-04-28T22:21:26+00:00</updated>
-		<link href="https://paakmau.github.io/tuo-bu-pai-xu-yu-ji-yu-ren-wu-de-yi-bu-mo-shi/" type="text/html"/>
-		<id>https://paakmau.github.io/tuo-bu-pai-xu-yu-ji-yu-ren-wu-de-yi-bu-mo-shi/</id>
+		<link href="https://paakmau.github.io/202004282221/" type="text/html"/>
+		<id>https://paakmau.github.io/202004282221/</id>
 		<content type="html">&lt;p&gt;Unreal的Task Graph、Unity的Job System、HPX还有C#的Task都属于TAP&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;tap&quot;&gt;TAP&lt;&#x2F;h2&gt;
 &lt;p&gt;Task-based asynchronous pattern&lt;&#x2F;p&gt;

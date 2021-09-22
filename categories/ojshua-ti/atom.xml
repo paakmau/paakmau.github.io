@@ -11,8 +11,8 @@
 		<title>「poj 1694」An Old Stone Game</title>
 		<published>2019-12-19T17:51:23+00:00</published>
 		<updated>2019-12-19T17:51:23+00:00</updated>
-		<link href="https://paakmau.github.io/poj-1694-an-old-stone-game/" type="text/html"/>
-		<id>https://paakmau.github.io/poj-1694-an-old-stone-game/</id>
+		<link href="https://paakmau.github.io/201912191751/" type="text/html"/>
+		<id>https://paakmau.github.io/201912191751/</id>
 		<content type="html">&lt;p&gt;一题简单的树形DP&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;ti-mu-miao-shu&quot;&gt;题目描述&lt;&#x2F;h2&gt;
 &lt;p&gt;There is an old stone game, played on an arbitrary general tree T. The goal is to put one stone on the root of T observing the following rules:&lt;&#x2F;p&gt;
@@ -113,8 +113,8 @@ F(p)表示p节点最少需要的石子数&lt;&#x2F;p&gt;
 		<title>「hdu 2955」Robberies</title>
 		<published>2019-12-19T00:40:51+00:00</published>
 		<updated>2019-12-19T00:40:51+00:00</updated>
-		<link href="https://paakmau.github.io/hdu-2955-robberies/" type="text/html"/>
-		<id>https://paakmau.github.io/hdu-2955-robberies/</id>
+		<link href="https://paakmau.github.io/201912190040/" type="text/html"/>
+		<id>https://paakmau.github.io/201912190040/</id>
 		<content type="html">&lt;p&gt;一个01背包问题&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;ti-mu-miao-shu&quot;&gt;题目描述&lt;&#x2F;h2&gt;
 &lt;p&gt;The aspiring Roy the Robber has seen a lot of American movies, and knows that the bad guys usually gets caught in the end, often because they become too greedy. He has decided to work in the lucrative business of bank robbery only for a short while, before retiring to a comfortable job at a university.&lt;&#x2F;p&gt;
@@ -198,8 +198,8 @@ F(i, j)表示前i个银行取得j的钱而不被抓的最大概率&lt;&#x2F;p&gt
 		<title>「luogu 1880」石子合并</title>
 		<published>2019-12-18T23:10:22+00:00</published>
 		<updated>2019-12-18T23:10:22+00:00</updated>
-		<link href="https://paakmau.github.io/luogu-1880-shi-zi-he-bing/" type="text/html"/>
-		<id>https://paakmau.github.io/luogu-1880-shi-zi-he-bing/</id>
+		<link href="https://paakmau.github.io/201912182310/" type="text/html"/>
+		<id>https://paakmau.github.io/201912182310/</id>
 		<content type="html">&lt;p&gt;退役了退役了，刷点水题准备面试&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;ti-mu-miao-shu&quot;&gt;题目描述&lt;&#x2F;h2&gt;
 &lt;p&gt;在一个圆形操场的四周摆放 N 堆石子，现要将石子有次序地合并成一堆。规定每次只能选相邻的2堆合并成新的一堆，并将新的一堆的石子数，记为该次合并的得分。&lt;&#x2F;p&gt;

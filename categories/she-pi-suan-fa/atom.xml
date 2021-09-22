@@ -11,8 +11,8 @@
 		<title>快排的多线程优化</title>
 		<published>2020-04-21T21:39:49+00:00</published>
 		<updated>2020-04-21T21:39:49+00:00</updated>
-		<link href="https://paakmau.github.io/kuai-pai-de-duo-xian-cheng-you-hua/" type="text/html"/>
-		<id>https://paakmau.github.io/kuai-pai-de-duo-xian-cheng-you-hua/</id>
+		<link href="https://paakmau.github.io/202004212139/" type="text/html"/>
+		<id>https://paakmau.github.io/202004212139/</id>
 		<content type="html">&lt;p&gt;讲真我从高中到现在就没有手写过一次快排（是sort不够好吗）&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;然后最近看书的时候看到划分数据块并行优化的思路，发现快排和堆排都能多线程优化&lt;&#x2F;p&gt;

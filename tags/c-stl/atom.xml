@@ -11,8 +11,8 @@
 		<title>并发环境下实现懒加载</title>
 		<published>2020-07-14T17:56:04+00:00</published>
 		<updated>2020-07-14T17:56:04+00:00</updated>
-		<link href="https://paakmau.github.io/bing-fa-huan-jing-xia-shi-xian-lan-jia-zai/" type="text/html"/>
-		<id>https://paakmau.github.io/bing-fa-huan-jing-xia-shi-xian-lan-jia-zai/</id>
+		<link href="https://paakmau.github.io/202007141756/" type="text/html"/>
+		<id>https://paakmau.github.io/202007141756/</id>
 		<content type="html">&lt;p&gt;懒加载是指在用到某个变量时才进行初始化&lt;br &#x2F;&gt;
 然后并发环境下懒加载可能会有访问冲突、重复初始化等问题，很容易爆炸&lt;br &#x2F;&gt;
 因此需要一些操作&lt;&#x2F;p&gt;
@@ -111,8 +111,8 @@
 		<title>快排的多线程优化</title>
 		<published>2020-04-21T21:39:49+00:00</published>
 		<updated>2020-04-21T21:39:49+00:00</updated>
-		<link href="https://paakmau.github.io/kuai-pai-de-duo-xian-cheng-you-hua/" type="text/html"/>
-		<id>https://paakmau.github.io/kuai-pai-de-duo-xian-cheng-you-hua/</id>
+		<link href="https://paakmau.github.io/202004212139/" type="text/html"/>
+		<id>https://paakmau.github.io/202004212139/</id>
 		<content type="html">&lt;p&gt;讲真我从高中到现在就没有手写过一次快排（是sort不够好吗）&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;然后最近看书的时候看到划分数据块并行优化的思路，发现快排和堆排都能多线程优化&lt;&#x2F;p&gt;
@@ -223,8 +223,8 @@
 		<title>Lock-free数据结构设计</title>
 		<published>2020-04-06T00:19:29+00:00</published>
 		<updated>2020-04-06T00:19:29+00:00</updated>
-		<link href="https://paakmau.github.io/lock-freeshu-ju-jie-gou-she-ji/" type="text/html"/>
-		<id>https://paakmau.github.io/lock-freeshu-ju-jie-gou-she-ji/</id>
+		<link href="https://paakmau.github.io/202004060019/" type="text/html"/>
+		<id>https://paakmau.github.io/202004060019/</id>
 		<content type="html">&lt;p&gt;根据名字我们知道它的内部没有使用锁，可以通过原语和一些蛇皮操作来实现&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;wu-suo-yu-wu-deng-dai&quot;&gt;无锁与无等待&lt;&#x2F;h2&gt;
 &lt;p&gt;需要注意的一个问题是无锁并不一定意味着访问一个资源的时候不需要等待&lt;br &#x2F;&gt;
@@ -329,8 +329,8 @@
 		<title>C++标准库 智能指针</title>
 		<published>2020-03-27T13:33:00+00:00</published>
 		<updated>2020-03-27T13:33:00+00:00</updated>
-		<link href="https://paakmau.github.io/cbiao-zhun-ku-zhi-neng-zhi-zhen/" type="text/html"/>
-		<id>https://paakmau.github.io/cbiao-zhun-ku-zhi-neng-zhi-zhen/</id>
+		<link href="https://paakmau.github.io/202003271333/" type="text/html"/>
+		<id>https://paakmau.github.io/202003271333/</id>
 		<content type="html">&lt;p&gt;C++没有垃圾回收，因此new出来的对象都要自己管理&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;为了方便的管理内存，我们发现垃圾回收中引用计数的思路很简单就能在C++中实现，而其实标准库中就已经有这样的实现，也就是智能指针&lt;&#x2F;p&gt;
@@ -386,8 +386,8 @@
 		<title>C++标准库 多线程编程不完全指南</title>
 		<published>2019-12-26T14:06:17+00:00</published>
 		<updated>2019-12-26T14:06:17+00:00</updated>
-		<link href="https://paakmau.github.io/cbiao-zhun-ku-duo-xian-cheng-bian-cheng-bu-wan-quan-zhi-nan/" type="text/html"/>
-		<id>https://paakmau.github.io/cbiao-zhun-ku-duo-xian-cheng-bian-cheng-bu-wan-quan-zhi-nan/</id>
+		<link href="https://paakmau.github.io/201912261406/" type="text/html"/>
+		<id>https://paakmau.github.io/201912261406/</id>
 		<content type="html">&lt;p&gt;某门课在讲管程，给的伪码十分丑陋看的我头痛，于是自己用C++写了一遍&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;本来是boost库的东西，然后在C++11被转入标准库了，从此C++标准库终于有多线程了&lt;&#x2F;p&gt;

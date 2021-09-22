@@ -11,8 +11,8 @@
 		<title>并发环境下实现懒加载</title>
 		<published>2020-07-14T17:56:04+00:00</published>
 		<updated>2020-07-14T17:56:04+00:00</updated>
-		<link href="https://paakmau.github.io/bing-fa-huan-jing-xia-shi-xian-lan-jia-zai/" type="text/html"/>
-		<id>https://paakmau.github.io/bing-fa-huan-jing-xia-shi-xian-lan-jia-zai/</id>
+		<link href="https://paakmau.github.io/202007141756/" type="text/html"/>
+		<id>https://paakmau.github.io/202007141756/</id>
 		<content type="html">&lt;p&gt;懒加载是指在用到某个变量时才进行初始化&lt;br &#x2F;&gt;
 然后并发环境下懒加载可能会有访问冲突、重复初始化等问题，很容易爆炸&lt;br &#x2F;&gt;
 因此需要一些操作&lt;&#x2F;p&gt;
@@ -111,8 +111,8 @@
 		<title>拓扑排序与基于任务的异步模式</title>
 		<published>2020-04-28T22:21:26+00:00</published>
 		<updated>2020-04-28T22:21:26+00:00</updated>
-		<link href="https://paakmau.github.io/tuo-bu-pai-xu-yu-ji-yu-ren-wu-de-yi-bu-mo-shi/" type="text/html"/>
-		<id>https://paakmau.github.io/tuo-bu-pai-xu-yu-ji-yu-ren-wu-de-yi-bu-mo-shi/</id>
+		<link href="https://paakmau.github.io/202004282221/" type="text/html"/>
+		<id>https://paakmau.github.io/202004282221/</id>
 		<content type="html">&lt;p&gt;Unreal的Task Graph、Unity的Job System、HPX还有C#的Task都属于TAP&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;tap&quot;&gt;TAP&lt;&#x2F;h2&gt;
 &lt;p&gt;Task-based asynchronous pattern&lt;&#x2F;p&gt;
@@ -154,8 +154,8 @@
 		<title>快排的多线程优化</title>
 		<published>2020-04-21T21:39:49+00:00</published>
 		<updated>2020-04-21T21:39:49+00:00</updated>
-		<link href="https://paakmau.github.io/kuai-pai-de-duo-xian-cheng-you-hua/" type="text/html"/>
-		<id>https://paakmau.github.io/kuai-pai-de-duo-xian-cheng-you-hua/</id>
+		<link href="https://paakmau.github.io/202004212139/" type="text/html"/>
+		<id>https://paakmau.github.io/202004212139/</id>
 		<content type="html">&lt;p&gt;讲真我从高中到现在就没有手写过一次快排（是sort不够好吗）&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;然后最近看书的时候看到划分数据块并行优化的思路，发现快排和堆排都能多线程优化&lt;&#x2F;p&gt;
@@ -266,8 +266,8 @@
 		<title>乒乓缓存与伪共享</title>
 		<published>2020-04-20T16:18:27+00:00</published>
 		<updated>2020-04-20T16:18:27+00:00</updated>
-		<link href="https://paakmau.github.io/ping-pang-huan-cun-yu-wei-gong-xiang/" type="text/html"/>
-		<id>https://paakmau.github.io/ping-pang-huan-cun-yu-wei-gong-xiang/</id>
+		<link href="https://paakmau.github.io/202004201618/" type="text/html"/>
+		<id>https://paakmau.github.io/202004201618/</id>
 		<content type="html">&lt;p&gt;这两个东西都是并行程序设计中必须考虑的问题&lt;br &#x2F;&gt;
 他跟多核CPU的缓存机制有关&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;cpuhuan-cun&quot;&gt;CPU缓存&lt;&#x2F;h2&gt;
@@ -296,8 +296,8 @@
 		<title>Lock-free数据结构设计</title>
 		<published>2020-04-06T00:19:29+00:00</published>
 		<updated>2020-04-06T00:19:29+00:00</updated>
-		<link href="https://paakmau.github.io/lock-freeshu-ju-jie-gou-she-ji/" type="text/html"/>
-		<id>https://paakmau.github.io/lock-freeshu-ju-jie-gou-she-ji/</id>
+		<link href="https://paakmau.github.io/202004060019/" type="text/html"/>
+		<id>https://paakmau.github.io/202004060019/</id>
 		<content type="html">&lt;p&gt;根据名字我们知道它的内部没有使用锁，可以通过原语和一些蛇皮操作来实现&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;wu-suo-yu-wu-deng-dai&quot;&gt;无锁与无等待&lt;&#x2F;h2&gt;
 &lt;p&gt;需要注意的一个问题是无锁并不一定意味着访问一个资源的时候不需要等待&lt;br &#x2F;&gt;
@@ -402,8 +402,8 @@
 		<title>UE4 TaskGraph学习笔记「下」 源码浅析</title>
 		<published>2020-03-22T20:52:18+00:00</published>
 		<updated>2020-03-22T20:52:18+00:00</updated>
-		<link href="https://paakmau.github.io/ue4-taskgraphxue-xi-bi-ji-xia-yuan-ma-qian-xi/" type="text/html"/>
-		<id>https://paakmau.github.io/ue4-taskgraphxue-xi-bi-ji-xia-yuan-ma-qian-xi/</id>
+		<link href="https://paakmau.github.io/202003222052/" type="text/html"/>
+		<id>https://paakmau.github.io/202003222052/</id>
 		<content type="html">&lt;p&gt;接下来阅读TaskGraph的源码来了解其实现细节&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;taskgraphshi-xian-gai-gua&quot;&gt;TaskGraph实现概括&lt;&#x2F;h2&gt;
 &lt;p&gt;首先是线程管理。我们创建的TGraphTask并不能直接运行，需要把它交给某个FTaskThreadBase对象来控制执行。这个FTaskThreadBase可以理解为一个线程，可以把很多个TGraphTask交给他，它会依次执行这些任务（当然也要满足依赖）&lt;&#x2F;p&gt;
@@ -482,8 +482,8 @@
 		<title>UE4 TaskGraph学习笔记「上」 介绍与实践</title>
 		<published>2020-03-19T13:21:19+00:00</published>
 		<updated>2020-03-19T13:21:19+00:00</updated>
-		<link href="https://paakmau.github.io/ue4-taskgraphxue-xi-bi-ji-shang-shi-jian/" type="text/html"/>
-		<id>https://paakmau.github.io/ue4-taskgraphxue-xi-bi-ji-shang-shi-jian/</id>
+		<link href="https://paakmau.github.io/202003191321/" type="text/html"/>
+		<id>https://paakmau.github.io/202003191321/</id>
 		<content type="html">&lt;p&gt;这个东西跟Unity中的Job很相似，都是基于任务的并行程序设计，可以处理资源竞争与执行顺序问题&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;jian-dan-jie-shao&quot;&gt;简单介绍&lt;&#x2F;h2&gt;
 &lt;p&gt;简单说就是一张有向无环图，每一个任务是节点，任务的依赖关系是边，根据拓扑排序规划任务的执行。如果一个节点的入度为零就可以并行，并且执行完成后删掉自己的出边；否则等待入边的节点执行完成&lt;&#x2F;p&gt;

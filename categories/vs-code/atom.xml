@@ -11,8 +11,8 @@
 		<title>VS Code写一切 CMake</title>
 		<published>2020-12-11T21:41:47+00:00</published>
 		<updated>2020-12-11T21:41:47+00:00</updated>
-		<link href="https://paakmau.github.io/vs-codexie-yi-qie-cmake/" type="text/html"/>
-		<id>https://paakmau.github.io/vs-codexie-yi-qie-cmake/</id>
+		<link href="https://paakmau.github.io/202012112141/" type="text/html"/>
+		<id>https://paakmau.github.io/202012112141/</id>
 		<content type="html">&lt;p&gt;VS Code写CMake感觉十分舒适，比VS爽多了&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;huan-jing-pei-zhi&quot;&gt;环境配置&lt;&#x2F;h2&gt;
 &lt;p&gt;安装C++编译器、C++调试器和CMake，并确保它们在PATH中&lt;&#x2F;p&gt;
@@ -65,8 +65,8 @@
 		<title>VS Code写一切 Node.js</title>
 		<published>2019-12-13T21:36:11+00:00</published>
 		<updated>2019-12-13T21:36:11+00:00</updated>
-		<link href="https://paakmau.github.io/vs-codexie-yi-qie-node-js/" type="text/html"/>
-		<id>https://paakmau.github.io/vs-codexie-yi-qie-node-js/</id>
+		<link href="https://paakmau.github.io/201912132136/" type="text/html"/>
+		<id>https://paakmau.github.io/201912132136/</id>
 		<content type="html">&lt;p&gt;开发Node.js项目可能还是WebStorm功能多一点？？&lt;br &#x2F;&gt;
 相比之下VS Code比较轻量级&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
@@ -84,8 +84,8 @@
 		<title>VS Code写一切 Jupyter Notebook</title>
 		<published>2019-12-12T01:35:40+00:00</published>
 		<updated>2019-12-12T01:35:40+00:00</updated>
-		<link href="https://paakmau.github.io/vs-codexie-yi-qie-jupyter-notebook/" type="text/html"/>
-		<id>https://paakmau.github.io/vs-codexie-yi-qie-jupyter-notebook/</id>
+		<link href="https://paakmau.github.io/201912120135/" type="text/html"/>
+		<id>https://paakmau.github.io/201912120135/</id>
 		<content type="html">&lt;p&gt;因为院里不少课程要机器学习，于是Notebook用的挺频繁的。当时用VSC写还行吧，就是快捷键有点问题，语法提示不太行，现在似乎好多了&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;jupyterhuan-jing-pei-zhi&quot;&gt;Jupyter环境配置&lt;&#x2F;h2&gt;
 &lt;p&gt;安装Python与Jupyter&lt;br &#x2F;&gt;
@@ -111,8 +111,8 @@ Mac下用brew安装即可&lt;&#x2F;p&gt;
 		<title>VS Code写一切 Python</title>
 		<published>2019-12-11T19:48:37+00:00</published>
 		<updated>2019-12-11T19:48:37+00:00</updated>
-		<link href="https://paakmau.github.io/vs-codexie-yi-qie-python/" type="text/html"/>
-		<id>https://paakmau.github.io/vs-codexie-yi-qie-python/</id>
+		<link href="https://paakmau.github.io/201912111948/" type="text/html"/>
+		<id>https://paakmau.github.io/201912111948/</id>
 		<content type="html">&lt;p&gt;VSC写Python也挺方便的，不过功能没那么多&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;pythonhuan-jing-pei-zhi&quot;&gt;Python环境配置&lt;&#x2F;h2&gt;
 &lt;p&gt;xjb装就行了&lt;br &#x2F;&gt;
@@ -134,8 +134,8 @@ macOS Catalina自带的Python3不建议用，brew install python3&lt;&#x2F;p&gt;
 		<title>VS Code写一切 .NET Core与C#</title>
 		<published>2019-12-11T19:37:00+00:00</published>
 		<updated>2019-12-11T19:37:00+00:00</updated>
-		<link href="https://paakmau.github.io/vs-codexie-yi-qie-net-coreyu-c/" type="text/html"/>
-		<id>https://paakmau.github.io/vs-codexie-yi-qie-net-coreyu-c/</id>
+		<link href="https://paakmau.github.io/201912111937/" type="text/html"/>
+		<id>https://paakmau.github.io/201912111937/</id>
 		<content type="html">&lt;p&gt;开发.NET Core项目VSC应该是首选了吧，毕竟跨平台而且它们还都是微软的私生子&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;net-corehuan-jing-pei-zhi&quot;&gt;.NET Core环境配置&lt;&#x2F;h2&gt;
 &lt;p&gt;到官网下安装包&lt;br &#x2F;&gt;
@@ -163,8 +163,8 @@ hello.csproj是项目配置&lt;&#x2F;p&gt;
 		<title>VS Code写一切 Maven与Spring Boot</title>
 		<published>2019-12-11T15:13:45+00:00</published>
 		<updated>2019-12-11T15:13:45+00:00</updated>
-		<link href="https://paakmau.github.io/vs-codexie-yi-qie-mavenyu-spring-boot/" type="text/html"/>
-		<id>https://paakmau.github.io/vs-codexie-yi-qie-mavenyu-spring-boot/</id>
+		<link href="https://paakmau.github.io/201912111513/" type="text/html"/>
+		<id>https://paakmau.github.io/201912111513/</id>
 		<content type="html">&lt;p&gt;VSC用于开发Maven项目已经比较成熟&lt;br &#x2F;&gt;
 直接打开就行，没什么好说的&lt;&#x2F;p&gt;
 &lt;p&gt;因此本文介绍VS Code创建与调试Spring Boot项目&lt;&#x2F;p&gt;
@@ -206,8 +206,8 @@ hello.csproj是项目配置&lt;&#x2F;p&gt;
 		<title>VS Code写一切 Java单文件</title>
 		<published>2019-12-11T00:44:50+00:00</published>
 		<updated>2019-12-11T00:44:50+00:00</updated>
-		<link href="https://paakmau.github.io/vs-codexie-yi-qie-javadan-wen-jian/" type="text/html"/>
-		<id>https://paakmau.github.io/vs-codexie-yi-qie-javadan-wen-jian/</id>
+		<link href="https://paakmau.github.io/201912110044/" type="text/html"/>
+		<id>https://paakmau.github.io/201912110044/</id>
 		<content type="html">&lt;p&gt;VSC可以直接编译调试单个Java源文件（虽然没什么用）&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;javahuan-jing-pei-zhi&quot;&gt;Java环境配置&lt;&#x2F;h2&gt;
 &lt;p&gt;与VSC无关，但提一下mac的配置&lt;&#x2F;p&gt;
@@ -263,8 +263,8 @@ hello.csproj是项目配置&lt;&#x2F;p&gt;
 		<title>VS Code写一切 C与C++单文件</title>
 		<published>2019-12-11T00:22:34+00:00</published>
 		<updated>2019-12-11T00:22:34+00:00</updated>
-		<link href="https://paakmau.github.io/vs-codexie-yi-qie-cyu-cdan-wen-jian/" type="text/html"/>
-		<id>https://paakmau.github.io/vs-codexie-yi-qie-cyu-cdan-wen-jian/</id>
+		<link href="https://paakmau.github.io/201912110022/" type="text/html"/>
+		<id>https://paakmau.github.io/201912110022/</id>
 		<content type="html">&lt;p&gt;配置很简单，刷题贼方便&lt;br &#x2F;&gt;
 这里以C++为例，C同理&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;c-c-huan-jing-pei-zhi&quot;&gt;C&#x2F;C++环境配置&lt;&#x2F;h2&gt;

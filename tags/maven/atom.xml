@@ -11,8 +11,8 @@
 		<title>VS Code写一切 Maven与Spring Boot</title>
 		<published>2019-12-11T15:13:45+00:00</published>
 		<updated>2019-12-11T15:13:45+00:00</updated>
-		<link href="https://paakmau.github.io/vs-codexie-yi-qie-mavenyu-spring-boot/" type="text/html"/>
-		<id>https://paakmau.github.io/vs-codexie-yi-qie-mavenyu-spring-boot/</id>
+		<link href="https://paakmau.github.io/201912111513/" type="text/html"/>
+		<id>https://paakmau.github.io/201912111513/</id>
 		<content type="html">&lt;p&gt;VSC用于开发Maven项目已经比较成熟&lt;br &#x2F;&gt;
 直接打开就行，没什么好说的&lt;&#x2F;p&gt;
 &lt;p&gt;因此本文介绍VS Code创建与调试Spring Boot项目&lt;&#x2F;p&gt;

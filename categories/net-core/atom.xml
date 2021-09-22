@@ -11,8 +11,8 @@
 		<title>支持.NET Core以及Unity的轻量级可靠UDP库LiteNetLib介绍</title>
 		<published>2019-12-15T20:20:31+00:00</published>
 		<updated>2019-12-15T20:20:31+00:00</updated>
-		<link href="https://paakmau.github.io/zhi-chi-net-coreyi-ji-unityde-qing-liang-ji-ke-kao-udpku-litenetlibjie-shao/" type="text/html"/>
-		<id>https://paakmau.github.io/zhi-chi-net-coreyi-ji-unityde-qing-liang-ji-ke-kao-udpku-litenetlibjie-shao/</id>
+		<link href="https://paakmau.github.io/201912152020/" type="text/html"/>
+		<id>https://paakmau.github.io/201912152020/</id>
 		<content type="html">&lt;p&gt;之前做Unity网络游戏开发的时候，想着后端也用C#就很方便，于是看上了开源跨平台的.NET Core，当时网络模块就是用了LiteNetLib实现的。&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;这个东西依然支持.NET Core 3.1和.NET Framework 4.x（虽然官网都没写）。功能不多，用起来方便，很适合小规模的实时联机游戏。&lt;&#x2F;p&gt;
@@ -208,8 +208,8 @@
 		<title>Docker部署.NET Core 3.0控制台项目</title>
 		<published>2019-12-12T17:24:24+00:00</published>
 		<updated>2019-12-12T17:24:24+00:00</updated>
-		<link href="https://paakmau.github.io/dockerbu-shu-dotnet-core-3-0kong-zhi-tai-xiang-mu/" type="text/html"/>
-		<id>https://paakmau.github.io/dockerbu-shu-dotnet-core-3-0kong-zhi-tai-xiang-mu/</id>
+		<link href="https://paakmau.github.io/201912121724/" type="text/html"/>
+		<id>https://paakmau.github.io/201912121724/</id>
 		<content type="html">&lt;p&gt;本文将光速创建一个HelloWorld，然后使用Docker进行部署&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;xin-jian-bing-fa-bu-net-corekong-zhi-tai-xiang-mu&quot;&gt;新建并发布.NET Core控制台项目&lt;&#x2F;h2&gt;
 &lt;p&gt;首先新建一个.NET Core控制台项目，并直接运行&lt;br &#x2F;&gt;

@@ -11,8 +11,8 @@
 		<title>拓扑排序与基于任务的异步模式</title>
 		<published>2020-04-28T22:21:26+00:00</published>
 		<updated>2020-04-28T22:21:26+00:00</updated>
-		<link href="https://paakmau.github.io/tuo-bu-pai-xu-yu-ji-yu-ren-wu-de-yi-bu-mo-shi/" type="text/html"/>
-		<id>https://paakmau.github.io/tuo-bu-pai-xu-yu-ji-yu-ren-wu-de-yi-bu-mo-shi/</id>
+		<link href="https://paakmau.github.io/202004282221/" type="text/html"/>
+		<id>https://paakmau.github.io/202004282221/</id>
 		<content type="html">&lt;p&gt;Unreal的Task Graph、Unity的Job System、HPX还有C#的Task都属于TAP&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;tap&quot;&gt;TAP&lt;&#x2F;h2&gt;
 &lt;p&gt;Task-based asynchronous pattern&lt;&#x2F;p&gt;
@@ -54,8 +54,8 @@
 		<title>UE4 TaskGraph学习笔记「下」 源码浅析</title>
 		<published>2020-03-22T20:52:18+00:00</published>
 		<updated>2020-03-22T20:52:18+00:00</updated>
-		<link href="https://paakmau.github.io/ue4-taskgraphxue-xi-bi-ji-xia-yuan-ma-qian-xi/" type="text/html"/>
-		<id>https://paakmau.github.io/ue4-taskgraphxue-xi-bi-ji-xia-yuan-ma-qian-xi/</id>
+		<link href="https://paakmau.github.io/202003222052/" type="text/html"/>
+		<id>https://paakmau.github.io/202003222052/</id>
 		<content type="html">&lt;p&gt;接下来阅读TaskGraph的源码来了解其实现细节&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;taskgraphshi-xian-gai-gua&quot;&gt;TaskGraph实现概括&lt;&#x2F;h2&gt;
 &lt;p&gt;首先是线程管理。我们创建的TGraphTask并不能直接运行，需要把它交给某个FTaskThreadBase对象来控制执行。这个FTaskThreadBase可以理解为一个线程，可以把很多个TGraphTask交给他，它会依次执行这些任务（当然也要满足依赖）&lt;&#x2F;p&gt;
@@ -134,8 +134,8 @@
 		<title>UE4 TaskGraph学习笔记「上」 介绍与实践</title>
 		<published>2020-03-19T13:21:19+00:00</published>
 		<updated>2020-03-19T13:21:19+00:00</updated>
-		<link href="https://paakmau.github.io/ue4-taskgraphxue-xi-bi-ji-shang-shi-jian/" type="text/html"/>
-		<id>https://paakmau.github.io/ue4-taskgraphxue-xi-bi-ji-shang-shi-jian/</id>
+		<link href="https://paakmau.github.io/202003191321/" type="text/html"/>
+		<id>https://paakmau.github.io/202003191321/</id>
 		<content type="html">&lt;p&gt;这个东西跟Unity中的Job很相似，都是基于任务的并行程序设计，可以处理资源竞争与执行顺序问题&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;jian-dan-jie-shao&quot;&gt;简单介绍&lt;&#x2F;h2&gt;
 &lt;p&gt;简单说就是一张有向无环图，每一个任务是节点，任务的依赖关系是边，根据拓扑排序规划任务的执行。如果一个节点的入度为零就可以并行，并且执行完成后删掉自己的出边；否则等待入边的节点执行完成&lt;&#x2F;p&gt;

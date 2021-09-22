@@ -11,8 +11,8 @@
 		<title>Win10下Perforce命令行快速上手</title>
 		<published>2020-07-11T20:38:43+00:00</published>
 		<updated>2020-07-11T20:38:43+00:00</updated>
-		<link href="https://paakmau.github.io/win10xia-perforceming-ling-xing-kuai-su-shang-shou/" type="text/html"/>
-		<id>https://paakmau.github.io/win10xia-perforceming-ling-xing-kuai-su-shang-shou/</id>
+		<link href="https://paakmau.github.io/202007112038/" type="text/html"/>
+		<id>https://paakmau.github.io/202007112038/</id>
 		<content type="html">&lt;p&gt;相对于Git和SVN，Perforce在管理二进制文件上更方便&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;本文参考了官网教程&lt;&#x2F;p&gt;
@@ -97,8 +97,8 @@
 		<title>解析游戏开发中环境场景的模块化设计</title>
 		<published>2020-05-14T21:07:40+00:00</published>
 		<updated>2020-05-14T21:07:40+00:00</updated>
-		<link href="https://paakmau.github.io/jie-xi-you-xi-kai-fa-zhong-huan-jing-chang-jing-de-mo-kuai-hua-she-ji/" type="text/html"/>
-		<id>https://paakmau.github.io/jie-xi-you-xi-kai-fa-zhong-huan-jing-chang-jing-de-mo-kuai-hua-she-ji/</id>
+		<link href="https://paakmau.github.io/202005142107/" type="text/html"/>
+		<id>https://paakmau.github.io/202005142107/</id>
 		<content type="html">&lt;p&gt;在游戏工业中的模块化设计是指把可复用、可内联的模块组织起来形成更大的结构或者环境，以此降低工作量，同时还能减少运行时内存消耗&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;总的说就是通过复用使用尽可能少的资源来提高游戏性能与开发效率，并且仍能实现比较好的显示质量&lt;&#x2F;p&gt;
@@ -204,8 +204,8 @@ Decal纹理：木头上大的裂纹或图案&lt;&#x2F;p&gt;
 		<title>渲染管线浅析</title>
 		<published>2020-05-06T23:56:00+00:00</published>
 		<updated>2020-05-06T23:56:00+00:00</updated>
-		<link href="https://paakmau.github.io/xuan-ran-guan-xian-qian-xi/" type="text/html"/>
-		<id>https://paakmau.github.io/xuan-ran-guan-xian-qian-xi/</id>
+		<link href="https://paakmau.github.io/202005062356/" type="text/html"/>
+		<id>https://paakmau.github.io/202005062356/</id>
 		<content type="html">&lt;p&gt;渲染管线会把内存中的三维模型输出到二维的屏幕上，它具有明显的先后顺序，每一个阶段的输出都会作为下一个阶段的输入。它也可以翻译为渲染流水线&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;大致上，渲染管线有数据预处理、顶点着色器、图元组装、光栅化和片元着色器这几个阶段&lt;br &#x2F;&gt;

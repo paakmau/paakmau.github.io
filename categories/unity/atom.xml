@@ -11,8 +11,8 @@
 		<title>Unity Physics学习笔记「七」 精确的碰撞管理</title>
 		<published>2020-03-15T22:07:48+00:00</published>
 		<updated>2020-03-15T22:07:48+00:00</updated>
-		<link href="https://paakmau.github.io/unity-physicsxue-xi-bi-ji-qi-jing-que-de-guan-li-peng-zhuang/" type="text/html"/>
-		<id>https://paakmau.github.io/unity-physicsxue-xi-bi-ji-qi-jing-que-de-guan-li-peng-zhuang/</id>
+		<link href="https://paakmau.github.io/202003152207/" type="text/html"/>
+		<id>https://paakmau.github.io/202003152207/</id>
 		<content type="html">&lt;p&gt;官方手册里有提到，但是没有具体描述。本文主要基于官方示例代码与实践&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;yu-dao-de-wen-ti&quot;&gt;遇到的问题&lt;&#x2F;h2&gt;
 &lt;p&gt;前文和手册中都有介绍过CollisionFilter，但是这个东西是跟Collider绑在一起扔进Blob里的。而Blob是一种类似引用的东西，因此由同一个带有Collider的Prefab实例化出的Entity，他们的CollisionFilter也是相同的。如果想要改变，必须要为每个实例化的Entity单独创建一个Collider的Blob资源来让他们的CollisionFilter不同。这就非常蛋疼&lt;&#x2F;p&gt;
@@ -60,8 +60,8 @@
 		<title>Unity Physics学习笔记「六」 触发器事件与碰撞事件</title>
 		<published>2020-02-11T01:01:00+00:00</published>
 		<updated>2020-02-11T01:01:00+00:00</updated>
-		<link href="https://paakmau.github.io/unity-physicsxue-xi-bi-ji-liu-hong-fa-qi-shi-jian-yu-peng-zhuang-shi-jian/" type="text/html"/>
-		<id>https://paakmau.github.io/unity-physicsxue-xi-bi-ji-liu-hong-fa-qi-shi-jian-yu-peng-zhuang-shi-jian/</id>
+		<link href="https://paakmau.github.io/202002110101/" type="text/html"/>
+		<id>https://paakmau.github.io/202002110101/</id>
 		<content type="html">&lt;p&gt;这部分内容手册中没有，本文参考的是官方示例代码与官方论坛&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;Unity-Technologies&#x2F;EntityComponentSystemSamples&quot;&gt;https:&#x2F;&#x2F;github.com&#x2F;Unity-Technologies&#x2F;EntityComponentSystemSamples&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
@@ -200,8 +200,8 @@ DetectCollisionSystem.cs&lt;&#x2F;p&gt;
 		<title>Unity Physics学习笔记「五」 核心组件详解</title>
 		<published>2020-02-08T21:55:32+00:00</published>
 		<updated>2020-02-08T21:55:32+00:00</updated>
-		<link href="https://paakmau.github.io/unity-physicsxue-xi-bi-ji-wu-he-xin-zu-jian/" type="text/html"/>
-		<id>https://paakmau.github.io/unity-physicsxue-xi-bi-ji-wu-he-xin-zu-jian/</id>
+		<link href="https://paakmau.github.io/202002082155/" type="text/html"/>
+		<id>https://paakmau.github.io/202002082155/</id>
 		<content type="html">&lt;p&gt;在编辑器为GameObject挂载Physics Body和Physics Shape这两个Authoring脚本会为转化出的Entity添加很多个组件&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;这些组件直接影响物理引擎中的运动、碰撞等计算，也能够被我们写的System获取或修改&lt;&#x2F;p&gt;
@@ -241,8 +241,8 @@ DetectCollisionSystem.cs&lt;&#x2F;p&gt;
 		<title>Unity Physics学习笔记「四」 碰撞查询</title>
 		<published>2020-02-07T23:39:46+00:00</published>
 		<updated>2020-02-07T23:39:46+00:00</updated>
-		<link href="https://paakmau.github.io/unity-physicsxue-xi-bi-ji-si-peng-zhuang-cha-xun/" type="text/html"/>
-		<id>https://paakmau.github.io/unity-physicsxue-xi-bi-ji-si-peng-zhuang-cha-xun/</id>
+		<link href="https://paakmau.github.io/202002072339/" type="text/html"/>
+		<id>https://paakmau.github.io/202002072339/</id>
 		<content type="html">&lt;p&gt;跟主流物理引擎一样，Unity Physics也具有碰撞查询的功能&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;目前Unity Physics中的碰撞查询有以下几种&lt;br &#x2F;&gt;
@@ -527,8 +527,8 @@ DetectCollisionSystem.cs&lt;&#x2F;p&gt;
 		<title>Unity Physics学习笔记「三」 刚体的运动状态</title>
 		<published>2020-02-05T23:42:00+00:00</published>
 		<updated>2020-02-05T23:42:00+00:00</updated>
-		<link href="https://paakmau.github.io/unity-physicsxue-xi-bi-ji-san-gang-ti-de-yun-dong-zhuang-tai/" type="text/html"/>
-		<id>https://paakmau.github.io/unity-physicsxue-xi-bi-ji-san-gang-ti-de-yun-dong-zhuang-tai/</id>
+		<link href="https://paakmau.github.io/202002052342/" type="text/html"/>
+		<id>https://paakmau.github.io/202002052342/</id>
 		<content type="html">&lt;p&gt;本文介绍获取与修改刚体速度的方法&lt;br &#x2F;&gt;
 并实现控制立方体每隔一段时间朝随机方向运动，具有匀速运动与施加冲量两种方式&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;tian-jia-zu-jian-kong-zhi-fang-xiang&quot;&gt;添加组件控制方向&lt;&#x2F;h2&gt;
@@ -614,8 +614,8 @@ DetectCollisionSystem.cs&lt;&#x2F;p&gt;
 		<title>Unity Physics学习笔记「二」 配置刚体与碰撞器属性</title>
 		<published>2020-02-04T23:56:57+00:00</published>
 		<updated>2020-02-04T23:56:57+00:00</updated>
-		<link href="https://paakmau.github.io/unity-physicsxue-xi-bi-ji-er-pei-zhi-gang-ti-yu-peng-zhuang-qi-shu-xing/" type="text/html"/>
-		<id>https://paakmau.github.io/unity-physicsxue-xi-bi-ji-er-pei-zhi-gang-ti-yu-peng-zhuang-qi-shu-xing/</id>
+		<link href="https://paakmau.github.io/202002042356/" type="text/html"/>
+		<id>https://paakmau.github.io/202002042356/</id>
 		<content type="html">&lt;p&gt;前文展示了一个简单的HelloWorld，本文将进一步介绍其中用到的Physics Shape和Physics Body这两个脚本的参数设置&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;这两个脚本其实都是Authoring，它们会根据编辑器中设定的值为Entity相应地添加组件&lt;&#x2F;p&gt;
@@ -657,8 +657,8 @@ Static，静态。无法运动的刚体，可以理解为质量无穷大&lt;&#x2
 		<title>Unity Physics学习笔记「一」 简要介绍与HelloWorld</title>
 		<published>2020-02-04T22:09:43+00:00</published>
 		<updated>2020-02-04T22:09:43+00:00</updated>
-		<link href="https://paakmau.github.io/unity-physicsxue-xi-bi-ji-yi-jian-yao-jie-shao-yu-helloworld/" type="text/html"/>
-		<id>https://paakmau.github.io/unity-physicsxue-xi-bi-ji-yi-jian-yao-jie-shao-yu-helloworld/</id>
+		<link href="https://paakmau.github.io/202002042209/" type="text/html"/>
+		<id>https://paakmau.github.io/202002042209/</id>
 		<content type="html">&lt;p&gt;现在Unity的Package Manager中已经有了适用于ECS框架的物理引擎，功能完善&lt;br &#x2F;&gt;
 可以说Unity的DOTS（面向数据技术栈）已经能够用于制作大部分游戏类型&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
@@ -700,8 +700,8 @@ com.unity.physics 0.2.5-preview.1&lt;&#x2F;p&gt;
 		<title>Unity ECS框架摸索 第七章 评价Unity目前版本的ECS框架</title>
 		<published>2020-02-04T03:15:00+00:00</published>
 		<updated>2020-02-04T03:15:00+00:00</updated>
-		<link href="https://paakmau.github.io/unity-ecskuang-jia-mo-suo-di-qi-zhang-ping-jie-unitymu-qian-ban-ben-de-ecskuang-jia/" type="text/html"/>
-		<id>https://paakmau.github.io/unity-ecskuang-jia-mo-suo-di-qi-zhang-ping-jie-unitymu-qian-ban-ben-de-ecskuang-jia/</id>
+		<link href="https://paakmau.github.io/202002040315/" type="text/html"/>
+		<id>https://paakmau.github.io/202002040315/</id>
 		<content type="html">&lt;p&gt;虽然还是预览版，但我感觉它已经完整地发挥了ECS架构的优点，上手也很快&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;就是坑多，文档不齐，官方例子也有一些小问题&lt;&#x2F;p&gt;
@@ -736,8 +736,8 @@ com.unity.physics 0.2.5-preview.1&lt;&#x2F;p&gt;
 		<title>Unity ECS框架摸索 第六章 更灵活的筛选与遍历</title>
 		<published>2020-02-04T01:23:00+00:00</published>
 		<updated>2020-02-04T01:23:00+00:00</updated>
-		<link href="https://paakmau.github.io/unity-ecskuang-jia-mo-suo-di-liu-zhang-geng-ling-huo-de-shai-xuan-yu-bian-li/" type="text/html"/>
-		<id>https://paakmau.github.io/unity-ecskuang-jia-mo-suo-di-liu-zhang-geng-ling-huo-de-shai-xuan-yu-bian-li/</id>
+		<link href="https://paakmau.github.io/202002040123/" type="text/html"/>
+		<id>https://paakmau.github.io/202002040123/</id>
 		<content type="html">&lt;p&gt;前文中我们用IJobForEach或者JobComponentSystem.Entities.ForEach都只能筛选并遍历具有特定Component的Entity，但其实有更灵活且同样高效的方式&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;entityquery&quot;&gt;EntityQuery&lt;&#x2F;h2&gt;
 &lt;p&gt;Unity提供了EntityQuery用于精确筛选Entity，并且文档中提到IJobForEach与JobComponentSystem.Entities.ForEach的内部实现其实都是EntityQuery&lt;&#x2F;p&gt;
@@ -826,8 +826,8 @@ com.unity.physics 0.2.5-preview.1&lt;&#x2F;p&gt;
 		<title>Unity ECS框架摸索 第五章 利用Prefab实例化Entity及其销毁</title>
 		<published>2020-02-03T14:05:00+00:00</published>
 		<updated>2020-02-03T14:05:00+00:00</updated>
-		<link href="https://paakmau.github.io/unity-ecskuang-jia-mo-suo-di-wu-zhang-li-yong-prefabshi-li-hua-entityji-qi-xiao-hui/" type="text/html"/>
-		<id>https://paakmau.github.io/unity-ecskuang-jia-mo-suo-di-wu-zhang-li-yong-prefabshi-li-hua-entityji-qi-xiao-hui/</id>
+		<link href="https://paakmau.github.io/202002031405/" type="text/html"/>
+		<id>https://paakmau.github.io/202002031405/</id>
 		<content type="html">&lt;p&gt;一般游戏中都避不开实体的动态生成与动态销毁。&lt;&#x2F;p&gt;
 &lt;p&gt;本文演示使用Prefab创建旋转的立方体方阵并定时销毁。&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
@@ -1042,8 +1042,8 @@ SpawnerSystem.cs&lt;&#x2F;p&gt;
 		<title>Unity ECS框架摸索 第四章 Chunk</title>
 		<published>2020-02-03T01:37:42+00:00</published>
 		<updated>2020-02-03T01:37:42+00:00</updated>
-		<link href="https://paakmau.github.io/unity-ecskuang-jia-mo-suo-di-si-zhang-chunk/" type="text/html"/>
-		<id>https://paakmau.github.io/unity-ecskuang-jia-mo-suo-di-si-zhang-chunk/</id>
+		<link href="https://paakmau.github.io/202002030137/" type="text/html"/>
+		<id>https://paakmau.github.io/202002030137/</id>
 		<content type="html">&lt;p&gt;本文将介绍Unity ECS中对于Component的内存管理&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;componentde-chunkshi-cun-chu&quot;&gt;Component的Chunk式存储&lt;&#x2F;h2&gt;
 &lt;p&gt;首先，一组Component是一个Archetype。多个Entity如果由相同的Component构成，那么他们属于同一个Archetype。&lt;&#x2F;p&gt;
@@ -1106,8 +1106,8 @@ RotationJob是用于规划Job的struct，Execute中传入的chunk变量就是当
 		<title>Unity ECS框架摸索 第三章 HelloWorld后续</title>
 		<published>2020-02-01T20:34:04+00:00</published>
 		<updated>2020-02-01T20:34:04+00:00</updated>
-		<link href="https://paakmau.github.io/unity-ecskuang-jia-mo-suo-di-san-zhang-helloworldhou-xu/" type="text/html"/>
-		<id>https://paakmau.github.io/unity-ecskuang-jia-mo-suo-di-san-zhang-helloworldhou-xu/</id>
+		<link href="https://paakmau.github.io/202002012034/" type="text/html"/>
+		<id>https://paakmau.github.io/202002012034/</id>
 		<content type="html">&lt;p&gt;上一章介绍了ECS并行处理的实现，接下来就这个HelloWorld进行深入的研究。&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;tian-jia-componentde-ji-qiao&quot;&gt;添加Component的技巧&lt;&#x2F;h2&gt;
 &lt;p&gt;第二章中为Entity添加Component的方式是直接在GameObject上挂载脚本，但是Unity编辑器目前并非为ECS设计，如果为每一个Component都挂载一个脚本会很麻烦，所以考虑使用代码添加组件。&lt;&#x2F;p&gt;
@@ -1170,8 +1170,8 @@ RotationSpeed.cs&lt;&#x2F;p&gt;
 		<title>Unity ECS框架摸索 第二章 HelloWorld</title>
 		<published>2020-01-31T15:15:00+00:00</published>
 		<updated>2020-01-31T15:15:00+00:00</updated>
-		<link href="https://paakmau.github.io/unity-ecskuang-jia-mo-suo-di-er-zhang-helloworld/" type="text/html"/>
-		<id>https://paakmau.github.io/unity-ecskuang-jia-mo-suo-di-er-zhang-helloworld/</id>
+		<link href="https://paakmau.github.io/202001311515/" type="text/html"/>
+		<id>https://paakmau.github.io/202001311515/</id>
 		<content type="html">&lt;p&gt;跟随本文，创建一个立方体Entity，利用一个System控制它不断旋转。&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;zui-zhong-xiao-guo&quot;&gt;最终效果&lt;&#x2F;h2&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191210-142039-HD.gif&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
@@ -1220,8 +1220,8 @@ RotationSpeedSystem.cs&lt;&#x2F;p&gt;
 		<title>Unity ECS框架摸索 第一章 ECS简介</title>
 		<published>2020-01-31T13:48:00+00:00</published>
 		<updated>2020-01-31T13:48:00+00:00</updated>
-		<link href="https://paakmau.github.io/unity-ecskuang-jia-mo-suo-di-yi-zhang-ecsjian-jie/" type="text/html"/>
-		<id>https://paakmau.github.io/unity-ecskuang-jia-mo-suo-di-yi-zhang-ecsjian-jie/</id>
+		<link href="https://paakmau.github.io/202001311348/" type="text/html"/>
+		<id>https://paakmau.github.io/202001311348/</id>
 		<content type="html">&lt;p&gt;之前接触ECS是因为看了守望先锋的架构分析。了解了一下发现这种架构天生支持多线程，而且对缓存非常友好，似乎做联网同步也很方便，感觉这应该是个挺有前途的设计思路。&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;这几天翻了一下Unity官网，看到ECS有文档了，例子也更新了许多，突然兴奋，准备写个Demo试试。顺便想记录看看Unity的正式版api能改成个什么鬼样子（大雾）&lt;&#x2F;p&gt;

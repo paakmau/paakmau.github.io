@@ -5,8 +5,74 @@
 	<link href="https://paakmau.github.io/categories/ue4/atom.xml" rel="self" type="application/atom+xml"/>
   <link href="https://paakmau.github.io"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
-	<updated>2020-05-11T21:50:26+00:00</updated>
+	<updated>2020-05-15T23:47:36+00:00</updated>
 	<id>https://paakmau.github.io/categories/ue4/atom.xml</id>
+	<entry xml:lang="zh">
+		<title>UE4材质编辑器中材质结点的数据结构 源码浅析</title>
+		<published>2020-05-15T23:47:36+00:00</published>
+		<updated>2020-05-15T23:47:36+00:00</updated>
+		<link href="https://paakmau.github.io/ue4cai-zhi-bian-ji-qi-zhong-cai-zhi-jie-dian-de-shu-ju-jie-gou-yuan-ma-qian-xi/" type="text/html"/>
+		<id>https://paakmau.github.io/ue4cai-zhi-bian-ji-qi-zhong-cai-zhi-jie-dian-de-shu-ju-jie-gou-yuan-ma-qian-xi/</id>
+		<content type="html">&lt;p&gt;UE4的材质编辑器中我们可以创建材质结点然后给它们连线来创建材质&lt;&#x2F;p&gt;
+&lt;p&gt;本文将根据源码解析材质结点在内存中的数据结构&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;uedgraph&quot;&gt;UEdGraph&lt;&#x2F;h2&gt;
+&lt;p&gt;先简单提一下UEdGraph&lt;&#x2F;p&gt;
+&lt;p&gt;它用来管理一张可视化的有向图，而且其实蓝图就是用这个东西来做的&lt;br &#x2F;&gt;
+一个UEdGraph对象会包括图中所有的UEdGraphNode也就是结点&lt;br &#x2F;&gt;
+一个结点包括位置等基础信息，然后它还有一个UEdGraphPin的指针数组&lt;br &#x2F;&gt;
+一个UEdGraphPin其实就是一个插槽，用一个字节表示是输入插槽还是输出插槽，然后持有它所属的UEdGraphNode指针，还有一个UEdGraphNode指针数组保存这个插槽连接到的结点&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;umaterialgraph&quot;&gt;UMaterialGraph&lt;&#x2F;h2&gt;
+&lt;p&gt;它派生自UEdGraph，保存一个材质在编辑器中的所有结点形成的有向图。虽然它主要用于管理由材质结点组成的可视化的有向图，但它也持有UMaterial指针用来获取材质输入插槽等信息&lt;br &#x2F;&gt;
+然后用户在编辑器中对材质的修改都会作用到这个对象上&lt;&#x2F;p&gt;
+&lt;p&gt;它有一个UMaterialGraphNode_Root类型的成员变量RootNode，这个RootNode其实就是编辑器中的材质结果结点，通过这个结点向前递归我们可以找到这个材质结果结点连接的所有结点，不过其实它的基类UEdGraph本身就具有这样的功能&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;umaterialgraphnode-base&quot;&gt;UMaterialGraphNode_Base&lt;&#x2F;h2&gt;
+&lt;p&gt;根据名字我们知道它是材质结点的基类，派生自UEdGraphNode&lt;&#x2F;p&gt;
+&lt;p&gt;比如前面提到的UMaterialGraphNode_Root就是它的一个派生类；此外它的派生类还有UMaterialGraphNode，这个派生类用于管理材质结果结点之外的其他结点&lt;&#x2F;p&gt;
+&lt;p&gt;这两个派生类之间的主要区别在于获取插槽等结点数据的方式不同&lt;&#x2F;p&gt;
+&lt;p&gt;UMaterialGraphNode_Root获取插槽数据是通过UEdGraphNode的GetGraph方法获取所属的UEdGraph指针，然后类型转换到UMaterialGraph指针，再通过UMaterialGraph的MaterialInputs得到材质结果结点上的各个输入&lt;&#x2F;p&gt;
+&lt;p&gt;下面贴一下它的CreateInputPins的实现&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span&gt;UMaterialGraphNode_Root::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;CreateInputPins&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    UMaterialGraph* MaterialGraph = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CastChecked&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;UMaterialGraph&amp;gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetGraph&lt;&#x2F;span&gt;&lt;span&gt;());
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const&lt;&#x2F;span&gt;&lt;span&gt; FMaterialInputInfo&amp;amp; MaterialInput : MaterialGraph-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;MaterialInputs&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;    {
+&lt;&#x2F;span&gt;&lt;span&gt;        UEdGraphPin* InputPin = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CreatePin&lt;&#x2F;span&gt;&lt;span&gt;(EGPD_Input, UMaterialGraphSchema::PC_MaterialInput, *FString::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Printf&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;TEXT&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%d&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;), (int32)MaterialInput.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetProperty&lt;&#x2F;span&gt;&lt;span&gt;()), *MaterialInput.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetName&lt;&#x2F;span&gt;&lt;span&gt;().&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ToString&lt;&#x2F;span&gt;&lt;span&gt;());
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;然后UMaterialGraphNode管理的是其他结点，其实也就是表达式结点，它持有一个UMaterialExpression指针，于是通过这个指针直接就能拿到结点表达式的输入输出的类型和名称&lt;&#x2F;p&gt;
+&lt;p&gt;UMaterialExpression&lt;br &#x2F;&gt;
+结点表达式&lt;&#x2F;p&gt;
+&lt;p&gt;因为不同类型的结点会具有不同的输入输出和功能，所以一个结点就是一个具有若干输入和输出表达式&lt;&#x2F;p&gt;
+&lt;p&gt;但是UMaterialExpression只是一个接口，因为不同表达式的输入输出不同，因此具体的表达式都会派生自UMaterialExpression，比如UMaterialExpressionAdd就是具体的加法表达式&lt;&#x2F;p&gt;
+&lt;p&gt;这里简单贴一下它的CreateInputPins的实现&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span&gt;UMaterialGraphNode::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;CreateInputPins&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const&lt;&#x2F;span&gt;&lt;span&gt; TArray&amp;lt;FExpressionInput*&amp;gt; ExpressionInputs = MaterialExpression-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetInputs&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;(int32 Index = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;; Index &amp;lt; ExpressionInputs.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Num&lt;&#x2F;span&gt;&lt;span&gt;() ; ++Index)
+&lt;&#x2F;span&gt;&lt;span&gt;    {
+&lt;&#x2F;span&gt;&lt;span&gt;        FExpressionInput* Input = ExpressionInputs[Index];
+&lt;&#x2F;span&gt;&lt;span&gt;        FName InputName = MaterialExpression-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetInputName&lt;&#x2F;span&gt;&lt;span&gt;(Index);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        InputName = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetShortenPinName&lt;&#x2F;span&gt;&lt;span&gt;(InputName);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const&lt;&#x2F;span&gt;&lt;span&gt; FName PinCategory = MaterialExpression-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;IsInputConnectionRequired&lt;&#x2F;span&gt;&lt;span&gt;(Index) ? UMaterialGraphSchema::PC_Required : UMaterialGraphSchema::PC_Optional;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        UEdGraphPin* NewPin = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CreatePin&lt;&#x2F;span&gt;&lt;span&gt;(EGPD_Input, PinCategory, InputName);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(NewPin-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;PinName&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;IsNone&lt;&#x2F;span&gt;&lt;span&gt;())
+&lt;&#x2F;span&gt;&lt;span&gt;        {
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Makes sure pin has a name for lookup purposes but user will never see it
+&lt;&#x2F;span&gt;&lt;span&gt;            NewPin-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;PinName &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CreateUniquePinName&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;TEXT&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Input&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;));
+&lt;&#x2F;span&gt;&lt;span&gt;            NewPin-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;PinFriendlyName &lt;&#x2F;span&gt;&lt;span&gt;= SpaceText;
+&lt;&#x2F;span&gt;&lt;span&gt;        }
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+</content>
+	</entry>
 	<entry xml:lang="zh">
 		<title>UE4材质结点生成HLSL代码 源码浅析</title>
 		<published>2020-05-11T21:50:26+00:00</published>

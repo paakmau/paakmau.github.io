@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh">
-	<title>泊谋 - Node.js</title>
+	<title>泊谋 - Express</title>
 	<subtitle>随便写写，开心就行。</subtitle>
-	<link href="https://paakmau.github.io/tags/node-js/atom.xml" rel="self" type="application/atom+xml"/>
+	<link href="https://paakmau.github.io/tags/express/atom.xml" rel="self" type="application/atom+xml"/>
   <link href="https://paakmau.github.io"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
 	<updated>2019-12-18T00:59:09+00:00</updated>
-	<id>https://paakmau.github.io/tags/node-js/atom.xml</id>
+	<id>https://paakmau.github.io/tags/express/atom.xml</id>
 	<entry xml:lang="zh">
 		<title>Express + MySQL + Session搭建Web后端脚手架</title>
 		<published>2019-12-18T00:59:09+00:00</published>
@@ -343,25 +343,6 @@ svg-captcha的create方法生成一个验证码对象&lt;br &#x2F;&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;app&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;listen&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;8080&lt;&#x2F;span&gt;&lt;span&gt;)
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;注释很详细，结合前文的科普应该不难理解了&lt;&#x2F;p&gt;
-</content>
-	</entry>
-	<entry xml:lang="zh">
-		<title>VS Code写一切 Node.js</title>
-		<published>2019-12-13T21:36:11+00:00</published>
-		<updated>2019-12-13T21:36:11+00:00</updated>
-		<link href="https://paakmau.github.io/vs-codexie-yi-qie-node-js/" type="text/html"/>
-		<id>https://paakmau.github.io/vs-codexie-yi-qie-node-js/</id>
-		<content type="html">&lt;p&gt;开发Node.js项目可能还是WebStorm功能多一点？？&lt;br &#x2F;&gt;
-相比之下VS Code比较轻量级&lt;&#x2F;p&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;VSC天生支持Node.js不装插件就能调试&lt;br &#x2F;&gt;
-但是，对于要装各种依赖的Node.js项目，VSC没有自带图形化的管理工具，重度依赖终端，有点蛋疼（虽然有插件我也不乐意装毕竟命令行多方便）&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;xiang-mu-xin-jian-yu-diao-shi&quot;&gt;项目新建与调试&lt;&#x2F;h2&gt;
-&lt;p&gt;打开一个空目录，ctrl+`呼出终端&lt;&#x2F;p&gt;
-&lt;p&gt;$ npm init&lt;&#x2F;p&gt;
-&lt;p&gt;一路回车，然后编辑工作区中的index.js如下&lt;&#x2F;p&gt;
-&lt;p&gt;console.log(&amp;quot;Hello World&amp;quot;)&lt;&#x2F;p&gt;
-&lt;p&gt;F9下断点，F5直接跑&lt;&#x2F;p&gt;
 </content>
 	</entry>
 </feed>

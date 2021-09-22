@@ -1,0 +1,127 @@
++++
+title = "C++ Lambda快速上手"
+tags = []
+categories = ["C++"]
+date = 2020-03-22 23:02:00
++++
+
+Lambda听起来非常的牛逼，很容易就会联想到函数式编程或者Lambda演算这样的东西。但是在C++里，没那么复杂，就把它当匿名函数用就好了
+
+<!-- more -->
+
+## HelloWorld
+
+对于降序排序，我们可以这样写（难道greater不好吗）
+
+```cpp
+int arr[] = {2, 4, 5, 0, 3, 1};
+sort(arr, arr + 6, [](int a, int b) { return a > b; });
+```
+
+## 按值捕获
+
+在Lambda函数中，如果想要访问变量，就需要用到变量捕获
+
+我们把想要捕获的东西写在Lambda的中括号里，然后函数体里就能直接使用这些变量了
+
+下面给个示范代码
+
+```cpp
+int num = 233;
+auto func = [num]() { printf("%d\n", num); };
+func();
+```
+
+执行后发现终端输出了233
+
+但需要注意的是，这里只是捕获了num的值，相当于拷贝了一份num  
+在Lambda里也无法对num进行修改，原本的num这个局部变量也不会变化
+
+如果想要在Lambda里修改num这个局部变量，就要捕获它的引用
+
+## 按引用捕获
+
+能够捕获到变量的引用
+
+看代码就完事了
+
+```cpp
+int num = 233;
+auto func = [&num]() { num++; };
+func();
+printf("%d\n", num);
+```
+
+看到终端里输出了234，num的值被修改了
+
+## 悬空引用
+
+C++跟某些高级语言不一样，捕获引用的时候真的就只是捕获变量的引用。如果变量被销毁，Lambda里捕获到的引用就失效了
+
+举个例子（危险操作请勿效仿）
+
+```cpp
+auto getFunc() {
+    string str = "Boomb!";
+    auto res = [&str]() { printf("%s\n", str.c_str()); };
+    res();
+    return res;
+}
+
+int main() {
+    auto func = getFunc();
+    func();
+    return 0;
+}
+```
+
+这个字符串在函数退出之前都是正常的，第一次调用Lambda也是正常的，但是函数退出之后这个字符串就被销毁了，因此在main里调用这个Lambda函数会爆炸
+
+## 初始化捕获
+
+C++14的特性，可以捕获经过处理的变量，捕获类型由编译器自动推断，能使代码更加简洁
+
+举个例子
+
+```cpp
+int a = 1, b = 3;
+auto func = [sum = a + b]() { printf("%d\n", sum); };
+func();
+```
+
+## 捕获成员变量
+
+如果需要捕获成员变量，需要在捕获列表中使用this
+
+不跟他多逼逼，看代码
+
+```cpp
+struct Test {
+    int num;
+    Test(int num) : num(num) {}
+    auto GetFunc() {
+        return [this]() { printf("%d\n", num); };
+    }
+};
+
+int main() {
+    Test t = Test(233);
+    auto func = t.GetFunc();
+    func();
+    return 0;
+}
+```
+
+## 捕获全部变量
+
+Lambda函数有个蛇皮操作，可以捕获所有的变量。在捕获列表里用=和&分别表示按值和按引用捕获全部变量
+
+举个例子
+
+```cpp
+int a = 1, b = 3;
+auto func = [=]() { printf("%d %d\n", a, b); };
+func();
+```
+
+但是出于安全性和可维护性的考虑不建议使用这两个东西

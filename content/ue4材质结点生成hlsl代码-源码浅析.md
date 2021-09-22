@@ -1,0 +1,268 @@
++++
+title = "UE4材质结点生成HLSL代码 源码浅析"
+date = 2020-05-11 21:50:26
+
+[taxonomies]
+tags = ["渲染"]
+categories = ["UE4"]
++++
+
+使用UE4的材质编辑器的时候我们可以为材质的颜色、粗糙度、金属度等连接一个常量或者纹理结点，如果要实现复杂效果可能还会用到混合结点，最后就可能看到一个完整的材质其实是由一堆结点和它们之间的连线组成
+
+<!-- more -->
+
+然后每一个结点可以理解为一段HLSL代码，然后结点之间的连线则是变量的传递
+
+比如说我们有一个材质长这样
+
+![](https://hebomou.top/wp-content/uploads/2020/05/image-1024x763.png)
+
+然后我们查看生成的HLSL代码，发现里面有这几行，基本上跟上图的材质结点对应
+
+如果要查看HLSL代码，依次点击  
+窗口->着色器代码->HLSL代码
+
+```c
+// Now the rest of the inputs
+MaterialFloat3 Local0 = lerp(MaterialFloat3(0.00000000,0.00000000,0.00000000),Material.VectorExpressions[1].rgb,MaterialFloat(Material.ScalarExpressions[0].x));
+MaterialFloat4 Local1 = ProcessMaterialColorTextureLookup(Texture2DSampleBias(Material.Texture2D_0, Material.Texture2D_0Sampler,Parameters.TexCoords[0].xy,View.MaterialTextureMipBias));
+MaterialFloat3 Local2 = (1.00000000 - Local1.rgb);
+MaterialFloat4 Local3 = ProcessMaterialColorTextureLookup(Texture2DSampleBias(Material.Texture2D_1, Material.Texture2D_1Sampler,Parameters.TexCoords[0].xy,View.MaterialTextureMipBias));
+MaterialFloat3 Local4 = (Local2 + Local3.r);
+MaterialFloat3 Local5 = (1.00000000 - Local4);
+```
+
+我们容易发现，要把材质结点翻译成HLSL代码，可以从左边出发拓扑排序，也可以从右边的材质结果结点出发递归往左（显然递归比拓排好写）  
+然后UE4是用递归的
+
+接下来我们结合源码看一下UE4是怎么实现的
+
+## 编译过程
+
+我们从FMaterial的一个成员函数开始
+
+```cpp
+/**
+* Compiles this material for Platform, storing the result in OutShaderMap if the compile was synchronous
+*/
+bool BeginCompileShaderMap(
+const FMaterialShaderMapId& ShaderMapId,
+const FStaticParameterSet &StaticParameterSet,
+EShaderPlatform Platform, 
+TRefCountPtr<class FMaterialShaderMap>& OutShaderMap, 
+const ITargetPlatform* TargetPlatform = nullptr);
+```
+
+这个函数会把材质的编译结果放到OutShaderMap里  
+并且每个材质ShaderMapId都是唯一的
+
+它会先创建一个FMaterialShaderMap对象  
+接下来创建FHLSLMaterialTranslator对象并用它生成着色器的HLSL代码  
+最后调用FMaterialShaderMap的Compile方法编译这段代码并保存结果
+
+节选关键代码如下
+
+```cpp
+// ...
+
+TRefCountPtr<FMaterialShaderMap> NewShaderMap = new FMaterialShaderMap();
+
+// ...
+
+// 生成着色器代码
+FMaterialCompilationOutput NewCompilationOutput;
+FHLSLMaterialTranslator MaterialTranslator(this, NewCompilationOutput, StaticParameterSet, Platform,GetQualityLevel(), ShaderMapId.FeatureLevel, TargetPlatform);
+bSuccess = MaterialTranslator.Translate();
+
+// ...
+
+// 为材质编译着色器
+NewShaderMap->Compile(this, ShaderMapId, MaterialEnvironment, NewCompilationOutput, Platform, bSynchronousCompile);
+```
+
+接下来，我们着重看FHLSLMaterialTranslator的Translate方法，在里面会发现一个很显眼的东西，没错这个就是材质结果结点的各个输入插槽
+
+```cpp
+// Rest of properties
+Chunk[MP_EmissiveColor]= Material->CompilePropertyAndSetMaterialProperty(MP_EmissiveColor,this);
+Chunk[MP_DiffuseColor]= Material->CompilePropertyAndSetMaterialProperty(MP_DiffuseColor,this);
+Chunk[MP_SpecularColor]= Material->CompilePropertyAndSetMaterialProperty(MP_SpecularColor,this);
+Chunk[MP_BaseColor]= Material->CompilePropertyAndSetMaterialProperty(MP_BaseColor,this);
+Chunk[MP_Metallic]= Material->CompilePropertyAndSetMaterialProperty(MP_Metallic,this);
+Chunk[MP_Specular]= Material->CompilePropertyAndSetMaterialProperty(MP_Specular,this);
+Chunk[MP_Roughness]= Material->CompilePropertyAndSetMaterialProperty(MP_Roughness,this);
+Chunk[MP_Opacity]= Material->CompilePropertyAndSetMaterialProperty(MP_Opacity,this);
+Chunk[MP_OpacityMask]= Material->CompilePropertyAndSetMaterialProperty(MP_OpacityMask,this);
+Chunk[MP_WorldPositionOffset]= Material->CompilePropertyAndSetMaterialProperty(MP_WorldPositionOffset,this);
+Chunk[MP_WorldDisplacement]= Material->CompilePropertyAndSetMaterialProperty(MP_WorldDisplacement,this);
+Chunk[MP_TessellationMultiplier]= Material->CompilePropertyAndSetMaterialProperty(MP_TessellationMultiplier,this);
+```
+
+于是我们去看FMaterialResource的CompilePropertyAndSetMaterialProperty方法
+
+注意一下FMaterialResource是FMaterial接口的一个实现，它里面会存一个UMaterial实例或者UMaterialInstance实例，这两种实例都是继承自UMaterialInterface接口
+
+这个方法里面有一个switch，对于不同类型的输入插槽（或者说EMaterialProperty），它有不同的处理，不过基本都是调用UMaterialInterface的CompileProperty方法，代码太乱就不贴了
+
+我们直接去看UMaterialInterface的CompileProperty方法，它调用了CompilePropertyEx方法，这个方法是个虚函数，发现UMaterial和UMaterialInterface都有自己的实现，但是UMaterialInterface是基于UMaterial的因此我们直接看UMaterial的CompilePropertyEx方法就行
+
+发现里面又是一个switch
+
+```cpp
+int32 UMaterial::CompilePropertyEx( FMaterialCompiler* Compiler, const FGuid& AttributeID )
+{
+    const EMaterialProperty Property = FMaterialAttributeDefinitionMap::GetProperty(AttributeID);
+
+    if( bUseMaterialAttributes && MP_DiffuseColor != Property && MP_SpecularColor != Property )
+    {
+        return MaterialAttributes.CompileWithDefault(Compiler, AttributeID);
+    }
+
+    switch (Property)
+    {
+        case MP_Opacity:return Opacity.CompileWithDefault(Compiler, Property);
+        case MP_OpacityMask:return OpacityMask.CompileWithDefault(Compiler, Property);
+        case MP_Metallic:return Metallic.CompileWithDefault(Compiler, Property);
+        case MP_Specular:return Specular.CompileWithDefault(Compiler, Property);
+        case MP_Roughness:return Roughness.CompileWithDefault(Compiler, Property);
+        case MP_TessellationMultiplier:return TessellationMultiplier.CompileWithDefault(Compiler, Property);
+        case MP_CustomData0:return ClearCoat.CompileWithDefault(Compiler, Property);
+        case MP_CustomData1:return ClearCoatRoughness.CompileWithDefault(Compiler, Property);
+        case MP_AmbientOcclusion:return AmbientOcclusion.CompileWithDefault(Compiler, Property);
+        case MP_Refraction:return Refraction.CompileWithDefault(Compiler, Property);
+        case MP_EmissiveColor:return EmissiveColor.CompileWithDefault(Compiler, Property);
+        case MP_BaseColor:return BaseColor.CompileWithDefault(Compiler, Property);
+        case MP_SubsurfaceColor:return SubsurfaceColor.CompileWithDefault(Compiler, Property);
+        case MP_Normal:return Normal.CompileWithDefault(Compiler, Property);
+        case MP_WorldPositionOffset:return WorldPositionOffset.CompileWithDefault(Compiler, Property);
+        case MP_WorldDisplacement:return WorldDisplacement.CompileWithDefault(Compiler, Property);
+        case MP_PixelDepthOffset:return PixelDepthOffset.CompileWithDefault(Compiler, Property);
+        case MP_ShadingModel:return ShadingModelFromMaterialExpression.CompileWithDefault(Compiler, Property);
+
+        default:
+            if (Property >= MP_CustomizedUVs0 && Property <= MP_CustomizedUVs7)
+            {
+                const int32 TextureCoordinateIndex = Property - MP_CustomizedUVs0;
+
+                if (CustomizedUVs[TextureCoordinateIndex].Expression && TextureCoordinateIndex < NumCustomizedUVs)
+                {
+                    return CustomizedUVs[TextureCoordinateIndex].CompileWithDefault(Compiler, Property);
+                }
+                else
+                {
+                    // The user did not customize this UV, pass through the vertex texture coordinates
+                    return Compiler->TextureCoordinate(TextureCoordinateIndex, false, false);
+                }
+            }
+
+    }
+
+    check(0);
+    return INDEX_NONE;
+}
+```
+
+于是我们随便看一个插槽的CompileWithDefault方法，比如说BaseColor，BaseColor变量是一个FColorMaterialInput类型的插槽
+
+```cpp
+int32 FColorMaterialInput::CompileWithDefault(class FMaterialCompiler* Compiler, EMaterialProperty Property)
+{
+    if (UseConstant)
+    {
+        FLinearColor LinearColor(Constant);
+        return Compiler->Constant3(LinearColor.R, LinearColor.G, LinearColor.B);
+    }
+    else if (Expression)
+    {
+        int32 ResultIndex = FExpressionInput::Compile(Compiler);
+        if (ResultIndex != INDEX_NONE)
+        {
+            return ResultIndex;
+        }
+    }
+
+    return Compiler->ForceCast(FMaterialAttributeDefinitionMap::CompileDefaultExpression(Compiler, Property), MCT_Float3);
+}
+```
+
+发现有常量和表达式两种情况，常量就是一个常量的颜色结点，表达式就是使用了混合结点或者纹理结点等等复杂的结点
+
+对于表达式我们看到它调用了基类FExpressionInput的Compile方法
+
+```cpp
+int32 FExpressionInput::Compile(class FMaterialCompiler* Compiler)
+{
+    if(Expression)
+    {
+        Expression->ValidateState();
+
+        int32 ExpressionResult = Compiler->CallExpression(FMaterialExpressionKey(Expression, OutputIndex, Compiler->GetMaterialAttribute(), Compiler->IsCurrentlyCompilingForPreviousFrame()),Compiler);
+
+        if(Mask && ExpressionResult != INDEX_NONE)
+        {
+            return Compiler->ComponentMask(
+                ExpressionResult,
+                !!MaskR,!!MaskG,!!MaskB,!!MaskA
+            );
+        }
+        else
+        {
+            return ExpressionResult;
+        }
+    }
+    else
+        return INDEX_NONE;
+}
+```
+
+又调用了FMaterialCompiler的CallExpression方法，而且把表达式传过去了
+
+在CallExpression方法里，它会调用表达式ExpressionKey.Expression的Compile方法
+
+然后我们可以看到Expression是一个UMaterialExpression接口的实例，它有多种实现
+
+稍微看一下加法表达式的Compile实现
+
+```cpp
+int32 UMaterialExpressionAdd::Compile(class FMaterialCompiler* Compiler, int32 OutputIndex)
+{
+    // if the input is hooked up, use it, otherwise use the internal constant
+    int32 Arg1 = A.GetTracedInput().Expression ? A.Compile(Compiler) : Compiler->Constant(ConstA);
+    // if the input is hooked up, use it, otherwise use the internal constant
+    int32 Arg2 = B.GetTracedInput().Expression ? B.Compile(Compiler) : Compiler->Constant(ConstB);
+
+    return Compiler->Add(Arg1, Arg2);
+}
+```
+
+可以看到递归是在这里实现的，然后最后一行Complier的Add方法是由FHLSLMaterialTranslator提供的  
+返回值是这个表达式的唯一索引值，可以通过索引找到表达式
+
+生成HLSL代码的逻辑就在FHLSLMaterialTranslator的Add方法里，我们也可以看一下
+
+```cpp
+virtual int32 Add(int32 A,int32 B) override
+{
+    if(A == INDEX_NONE  B == INDEX_NONE)
+    {
+        return INDEX_NONE;
+    }
+
+    const uint64 Hash = CityHash128to64({ GetParameterHash(A), GetParameterHash(B) });
+    if(GetParameterUniformExpression(A) && GetParameterUniformExpression(B))
+    {
+        return AddUniformExpressionWithHash(Hash, new FMaterialUniformExpressionFoldedMath(GetParameterUniformExpression(A),GetParameterUniformExpression(B),FMO_Add),GetArithmeticResultType(A,B),TEXT("(%s + %s)"),*GetParameterCode(A),*GetParameterCode(B));
+    }
+    else
+    {
+        return AddCodeChunkWithHash(Hash, GetArithmeticResultType(A,B),TEXT("(%s + %s)"),*GetParameterCode(A),*GetParameterCode(B));
+    }
+}
+```
+
+## 类的关系整理
+
+最后我整理了一下上面提到的各个类之间的关系，总的来说还是比较清晰的
+
+FMaterial和FMaterialResource是逻辑上的材质类，一个FMaterialResource对象可以管理一个UMaterial实例或UMaterialInstance实例，UMaterial上挂着不同类型的FExpressionInput插槽，这些FExpressionInput实现类又包含UMaterialExpression表达式，表达式会层层嵌套形成一张有向无环图  
+最后FMaterialCompiler的实现类FHLSLMaterialTranslator主要用于生成HLSL代码

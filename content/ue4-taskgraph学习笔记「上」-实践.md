@@ -1,0 +1,96 @@
++++
+title = "UE4 TaskGraph学习笔记「上」 介绍与实践"
+date = 2020-03-19 13:21:19
+
+[taxonomies]
+tags = ["图论", "并发", "拓扑排序"]
+categories = ["UE4"]
++++
+
+这个东西跟Unity中的Job很相似，都是基于任务的并行程序设计，可以处理资源竞争与执行顺序问题
+
+<!-- more -->
+
+## 简单介绍
+
+简单说就是一张有向无环图，每一个任务是节点，任务的依赖关系是边，根据拓扑排序规划任务的执行。如果一个节点的入度为零就可以并行，并且执行完成后删掉自己的出边；否则等待入边的节点执行完成
+
+- 节点是TGraphTask模版类，我们需要自己实现任务类满足它的要求。重点是实现DoTask方法
+- 边是FGraphEventRef，可以在CreateTask之后得到，可以理解为任务完成的事件；同时在CreateTask的时候可以把其他任务的FGraphEventRef以FGraphEventArray的形式传入以表示依赖（入边）
+
+另外，任务类的DoTask方法参数中有一个const FGraphEventRef &MyCompletionGraphEvent，根据变量名我们知道它是任务自身的完成事件。于是我们还可以在这个东西上进行蛇皮操作，比如在本任务完成之前再等待另一个任务完成，但是写起来很乱
+
+## HelloWorld
+
+跟随下面的指引建立两个任务类，然后通过FGraphEventRef指定他们的执行顺序
+
+准备两个任务类TestTaskA和TestTaskB  
+TestTaskA的代码如下，另外一个可以仿照着写
+
+```cpp
+class TestTaskA
+{
+
+public:
+    TestTaskA() {
+        // 底层使用了可变参数模板，因此构造函数可以添加任意的参数，但是注意不能传入引用
+    }
+
+    // 返回任务名
+    static const TCHAR* GetTaskName() { return TEXT("TestTask"); }
+    FORCEINLINE static TStatId GetStatId() { RETURN_QUICK_DECLARE_CYCLE_STAT(TestTask, STATGROUP_TaskGraphTasks); }
+    // 返回Task所在的线程
+    static ENamedThreads::Type GetDesiredThread() { return ENamedThreads::AnyThread; }
+
+    static ESubsequentsMode::Type GetSubsequentsMode() 
+    {
+        return ESubsequentsMode::TrackSubsequents;
+    }
+
+    // 任务的执行函数
+    void DoTask(ENamedThreads::Type CurrentThread, const FGraphEventRef& MyCompletionGraphEvent)
+    {
+        // 这里是任务的逻辑代码
+        for (int Idx = 0; Idx < 5; Idx++)
+        UE_LOG(LogTemp, Log, TEXT("Task A executing"));
+        UE_LOG(LogTemp, Log, TEXT("Task A completed"));
+    }
+};
+```
+
+创建一个Actor，并修改BeginPlay方法如下
+
+```cpp
+void AMyActor::BeginPlay()
+{
+    Super::BeginPlay();
+    FGraphEventRef TaskA = TGraphTask<TestTaskA>::CreateTask().ConstructAndDispatchWhenReady();
+    FGraphEventArray DependencyForTaskB = { TaskA };
+    FGraphEventRef TaskB = TGraphTask<TestTaskB>::CreateTask(&DependencyForTaskB).ConstructAndDispatchWhenReady();
+}
+```
+
+最后在输出里看到这样的结果
+
+![](https://hebomou.top/wp-content/uploads/2020/03/image.png)
+
+## ParallelFor
+
+UE4有一个ParallelFor，是对于简单遍历的并行处理，基于TaskGraph，具体去看Runtime/Core/Public/Async/ParallelFor.h  
+下面给个简单的例子
+
+```cpp
+ParallelFor(100, [](int32 CurrIdx) {
+    int32 Sum = 0;
+    for (int32 Idx = 0; Idx < CurrIdx * 100; ++Idx)
+        Sum += FMath::Sqrt(1234.56f);
+});
+```
+
+## 对比Unity C# Job System
+
+如果抽象成一张DAG来看，这两个本质上其实就是同一个东西。简单说就是通过建立依赖关系避免资源竞争实现易于管理的并行
+
+但是Job System相对于TaskGraph在用户代码中出现频率要高得多。因为Unity DOTS天生就能很好的设计并行，甚至Job其实是嵌入在SystemBase里的，对于游戏主逻辑都能被频繁使用；而UE4是OOP，个人理解的话应该主要用于耗时长的计算或者I/O任务等，但是把游戏主逻辑放到TaskGraph里是比较困难的
+
+另外有一个小区别，UE4的ParallerFor与Unity里的ScheduleParallel是不一样的。UE4的ParallelFor其实是基于TaskGraph的顶层；而Unity的ScheduleParallel是Job本身自带的方法

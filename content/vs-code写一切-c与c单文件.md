@@ -1,0 +1,132 @@
++++
+title = "VS Code写一切 C与C++单文件"
+date = 2019-12-11 00:22:34
+
+[taxonomies]
+tags = ["C", "C++", "VS Code"]
+categories = ["VS Code"]
++++
+
+配置很简单，刷题贼方便  
+
+<!-- more -->
+这里以C++为例，C同理
+
+## C/C++环境配置
+
+跟VS Code无关，但还是提一下
+
+Win下可以装MinGW  
+Max下装Xcode自带Clang  
+只要环境变量中有C/C++的编译器就行了
+
+## 需要安装的VS Code插件
+
+- C/C++
+
+## 工作区配置
+
+打开一个空文件夹，在其中新建文件hello.cpp，编辑内容如下
+
+```cpp
+#include <cstdio>
+
+using namespace std;
+
+int main() {
+    printf("Hello world");
+    return 0;
+}
+```
+
+按F5直接运行  
+VS Code提示选择环境，这里选择C++
+
+![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191220-161845@2x-1024x447.png)
+
+选择配置，随便一个C++编译器都行，我选了第一个clang++
+
+![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191220-161916@2x-1024x351.png)
+
+接下来VS Code自动生成了一个launch.json文件，我贴一下Mac下的
+
+```json
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "clang++ build and debug active file",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${fileDirname}/${fileBasenameNoExtension}",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "preLaunchTask": "clang++ build active file"
+        }
+    ]
+}
+```
+
+解释：启动类型为cppdbg，有各种参数，其中  
+externalConsole表示是否使用外部终端，如果需要用标准输入，这里要改成true  
+MIMode为调试器，Mac下用lldb，Win下用gdb  
+preLaunchTask表示launch之前执行的task  
+  
+这个launch其实只配置了调试器，它需要先执行preLaunchTask中配置的task用于编译，而这个task我们现在还没有请往后看
+
+切回之前的hello.cpp，再次按下F5  
+提示我们还没有配置task，于是点击Configure Task
+
+![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191220-162852@2x-1024x302.png)
+
+选与之前launch一样的，所以我选择clang++
+
+![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191220-163513@2x-1024x345.png)
+
+他生成了一个tasks.json文件，可以看到里面有个任务配置了编译器与编译命令等
+
+```json
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558 
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "clang++ build active file",
+            "command": "/usr/bin/clang++",
+            "args": [
+                "-g",
+                "${file}",
+                "-o",
+                "${fileDirname}/${fileBasenameNoExtension}"
+            ],
+            "options": {
+                "cwd": "/usr/bin"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build"
+        }
+    ]
+}
+```
+
+切回hello.cpp，F5，这次可以运行了
+
+![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191220-163937@2x-1024x215.png)
+
+## CodeLLDB插件
+
+也可以使用这个插件调试C/C++程序，它能在集成终端中进行输入  
+但调试控制台使用的是lldb命令就比较蛋疼
+
+另外升级macOS Catalina之后似乎C/C++插件出了点问题暂时不能调试，换成这个插件就行

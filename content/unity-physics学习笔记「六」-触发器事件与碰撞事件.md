@@ -1,0 +1,171 @@
++++
+title = "Unity Physics学习笔记「六」 触发器事件与碰撞事件"
+date = 2020-02-11 01:01:00
+
+[taxonomies]
+tags = ["Unity ECS", "Unity Physics"]
+categories = ["Unity"]
++++
+
+这部分内容手册中没有，本文参考的是官方示例代码与官方论坛  
+
+<!-- more -->
+[https://github.com/Unity-Technologies/EntityComponentSystemSamples](https://github.com/Unity-Technologies/EntityComponentSystemSamples)
+
+在OOP的物理引擎中，碰撞发生后引擎可以通过调用用户提供的回调函数将碰撞事件传递给用户程序。而在Unity的ECS框架中我们需要使用数据驱动的思路来处理碰撞  
+但是引擎已经把事件处理封装好了，因此我们实现的时候其实看起来跟回调差不多
+
+## 简介
+
+Unity Physics中，刚体可以通过Trigger或者Collision触发事件，需要勾选Physics Shape中的Is Trigger或Raises Collision Events  
+它们的区别在于Trigger不会引起物理上的碰撞，只产生事件
+
+![](https://hebomou.top/wp-content/uploads/2020/02/image-1.png)
+
+对于产生的Trigger事件或Collision事件，我们可以通过ITriggerEventsJob或ICollisionEventsJob来获取并处理
+
+下面的例子可以实现这样的效果  
+开始时所有的刚体不受重力影响，但是一个刚体被Trigger碰到后它就会重新受到重力并下坠
+
+## 准备Trigger
+
+首先准备一个Entity作为Trigger，并且让他受到键盘控制运动。  
+新建一个Cube的GameObject，移除Box Collider，添加Convert To Entity，Physics Body，Physics Shape。在Physics Body中把重力系数设为0，在Physics Shape中勾选Is Trigger  
+然后使用Authoring为它添加PlayerInput组件。
+
+保存键盘输入的组件  
+PlayerInput.cs
+
+```cs
+[Serializable]
+public struct PlayerInput : IComponentData {
+    public float2 moveDirection;
+}
+```
+
+获取键盘输入的系统  
+FetchInputSystem.cs
+
+```cs
+public class FetchInputSystem : ComponentSystem {
+    protected override void OnUpdate () {
+        float2 dir = float2.zero;
+        if (UnityEngine.Input.GetKey(UnityEngine.KeyCode.A))
+            dir += new float2 (-1, 0);
+        if (UnityEngine.Input.GetKey(UnityEngine.KeyCode.D))
+            dir += new float2 (1, 0);
+        if (UnityEngine.Input.GetKey(UnityEngine.KeyCode.W))
+            dir += new float2 (0, 1);
+        if (UnityEngine.Input.GetKey(UnityEngine.KeyCode.S))
+            dir += new float2 (0, -1);
+        dir = math.normalizesafe(dir);
+        Entities.ForEach((ref PlayerInput input) => {
+            input.moveDirection = dir;
+        });
+    }
+}
+```
+
+根据得到的键盘输入控制Trigger移动的系统  
+MoveSystem.cs
+
+```cs
+public class MoveSystem : JobComponentSystem {
+    [BurstCompile]
+    struct MoveJob : IJobForEach<PlayerInput, PhysicsVelocity> {
+        public void Execute ([ReadOnly] ref PlayerInput input, ref PhysicsVelocity velocity) {
+            var v = velocity.Linear;
+            v = new float3 (input.moveDirection, 0) * 1.8f;
+            velocity = new PhysicsVelocity { Linear = v };
+        }
+    }
+    protected override JobHandle OnUpdate (JobHandle inputDeps) {
+        return new MoveJob ().Schedule (this, inputDeps);
+    }
+}
+```
+
+## 准备用于被触发的Entity
+
+然后准备另一个用于被触发的Entity，它至少需要有Physics Shape、Physics Body  
+当然要在Physics Body中将重力系数设为0
+
+## 处理Trigger事件
+
+写一个简单的JobComponentSystem就行了  
+只是其中的Job需要使用ITriggerEventsJob接口，个人感觉是物理引擎Simulate之后会产生Trigger事件的数组，然后通过ITriggerEventsJob来遍历它处理每个Trigger事件
+
+DetectTriggerSystem.cs
+
+```cs
+[UpdateAfter (typeof (EndFramePhysicsSystem))]
+public class DetectTriggerSystem : JobComponentSystem {
+    [BurstCompile]
+    struct DetectTriggerJob : ITriggerEventsJob {
+        [ReadOnly] public ComponentDataFromEntity<PlayerInput> playerInputGroup;
+        public ComponentDataFromEntity<PhysicsGravityFactor> physicsGravityFactorGroup;
+        public void Execute (TriggerEvent triggerEvent) {
+            var triggeredEntity = triggerEvent.Entities.EntityA;
+            if (playerInputGroup.Exists (triggeredEntity))
+                triggeredEntity = triggerEvent.Entities.EntityB;
+            var cmpt = physicsGravityFactorGroup[triggeredEntity];
+            cmpt.Value = 1;
+            physicsGravityFactorGroup[triggeredEntity] = cmpt;
+        }
+    }
+    BuildPhysicsWorld buildPhysicsWorld;
+    StepPhysicsWorld stepPhysicsWorld;
+    protected override void OnCreate () {
+        buildPhysicsWorld = World.GetOrCreateSystem<BuildPhysicsWorld> ();
+        stepPhysicsWorld = World.GetOrCreateSystem<StepPhysicsWorld> ();
+    }
+    protected override JobHandle OnUpdate (JobHandle inputDeps) {
+        return new DetectTriggerJob {
+            playerInputGroup = GetComponentDataFromEntity<PlayerInput> (true),
+                physicsGravityFactorGroup = GetComponentDataFromEntity<PhysicsGravityFactor> ()
+        }.Schedule (stepPhysicsWorld.Simulation, ref buildPhysicsWorld.PhysicsWorld, inputDeps);
+    }
+}
+```
+
+## 处理Collision事件
+
+跟上文Trigger事件类似，也是使用JobComponentSystem，Job需要换成ICollisionEventsJob接口，然后调整Update的顺序并使用EndFramePhysicsSystem.HandlesToWaitFor处理同步，官方给的例子是有问题的，本文根据论坛作了一些修改
+
+贴一下代码  
+DetectCollisionSystem.cs
+
+```cs
+[UpdateAfter (typeof (StepPhysicsWorld))]
+[UpdateBefore (typeof (EndFramePhysicsSystem))]
+public class DetectCollisionSystem : JobComponentSystem {
+    [BurstCompile]
+    struct DetectCollisionJob : ICollisionEventsJob {
+        [ReadOnly] public ComponentDataFromEntity<PlayerInput> playerInputGroup;
+        public ComponentDataFromEntity<PhysicsGravityFactor> physicsGravityFactorGroup;
+        public void Execute (CollisionEvent collisionEvent) {
+            var triggeredEntity = collisionEvent.Entities.EntityA;
+            if (playerInputGroup.Exists (triggeredEntity))
+                triggeredEntity = collisionEvent.Entities.EntityB;
+            var cmpt = physicsGravityFactorGroup[triggeredEntity];
+            cmpt.Value = 1;
+            physicsGravityFactorGroup[triggeredEntity] = cmpt;
+        }
+    }
+    BuildPhysicsWorld buildPhysicsWorld;
+    StepPhysicsWorld stepPhysicsWorld;
+    EndFramePhysicsSystem endFramePhysicsSystem;
+    protected override void OnCreate () {
+        buildPhysicsWorld = World.GetOrCreateSystem<BuildPhysicsWorld> ();
+        stepPhysicsWorld = World.GetOrCreateSystem<StepPhysicsWorld> ();
+        endFramePhysicsSystem = World.GetOrCreateSystem<EndFramePhysicsSystem> ();
+    }
+    protected override JobHandle OnUpdate (JobHandle inputDeps) {
+        var jobHandle = new DetectCollisionJob {
+            playerInputGroup = GetComponentDataFromEntity<PlayerInput> (true), physicsGravityFactorGroup = GetComponentDataFromEntity<PhysicsGravityFactor> ()
+        }.Schedule (stepPhysicsWorld.Simulation, ref buildPhysicsWorld.PhysicsWorld, inputDeps);
+        endFramePhysicsSystem.HandlesToWaitFor.Add (jobHandle);
+        return jobHandle;
+    }
+}
+```

@@ -1,0 +1,123 @@
++++
+title = "Unity ECS框架摸索 第六章 更灵活的筛选与遍历"
+date = 2020-02-04 01:23:00
+
+[taxonomies]
+tags = ["Unity ECS"]
+categories = ["Unity"]
++++
+
+前文中我们用IJobForEach或者JobComponentSystem.Entities.ForEach都只能筛选并遍历具有特定Component的Entity，但其实有更灵活且同样高效的方式
+
+<!-- more -->
+
+## EntityQuery
+
+Unity提供了EntityQuery用于精确筛选Entity，并且文档中提到IJobForEach与JobComponentSystem.Entities.ForEach的内部实现其实都是EntityQuery
+
+### GetEntityQuery
+
+最简单的，我们可以筛选具有指定组件的实体，并规定这些组件的读写权限
+
+例如下面的代码选出了全部的同时拥有Translation与MoveSpeed组件的Entity，并且规定Translation可读可写，MoveSpeed只读
+
+```cs
+EntityQuery m_Query = GetEntityQuery(typeof(Translation), ComponentType.ReadOnly<MoveSpeed>());
+```
+
+### EntityQueryDesc
+
+对于更复杂的筛选，我们使用EntityQueryDesc来创建EntityQuery，一个EntityQueryDesc对象具有三个属性，它们的类型都是ComponentType数组
+
+- All：数组中所有的类型必须出现在Entity中，且可以在其中规定读写权限  
+- Any：数组中至少一个类型会出现在Entity中  
+- None：数组中任意类型都不会出现在Entity中
+
+下面举个例子，筛选同时具有Translation、MoveSpeed，不具有RotationSpeed，至少具有Wing或magic中的一个的所有Entity
+
+```cs
+var query = new EntityQueryDesc
+{
+    All = new ComponentType[] { ComponentType.ReadOnly<MoveSpeed>(), typeof(Translation) },
+    None = new ComponentType[] { typeof(RotationSpeed) },
+    Any = new ComponentType[] { typeof(Magic), typeof(Wing) }
+};
+EntityQuery m_Group = GetEntityQuery(query);
+```
+
+### 联合筛选
+
+我们可以在调用GetEntityQuery函数时传入EntityQueryDesc数组，数组中的筛选条件是「或」的关系，下面是例子
+
+```cs
+var query1 = new EntityQueryDesc
+{
+    All = new ComponentType[] { ComponentType.ReadOnly<MoveSpeed>(), typeof(Translation), typeof(Wing) },
+    None = new ComponentType[] { typeof(RotationSpeed) }
+};
+var query2 = new EntityQueryDesc
+{
+    All = new ComponentType[] { ComponentType.ReadOnly<MoveSpeed>(), typeof(Translation), typeof(Magic) }
+};
+m_Group = GetEntityQuery(new EntityQueryDesc[] { query1, query2 });
+```
+
+### Shared Component过滤
+
+可以对筛选出的Entity拥有的指定Shared Component进行过滤，保证过滤出的Entity拥有的指定Shared Component均为特定值
+
+例如下面代码用一个Shared Component作为分组标记，过滤出GroupId为5的所有Entity
+
+```cs
+public struct SharedGroup : ISharedComponentData {
+    public int GroupId;
+}
+
+public class FlySystem : JobComponentSystem
+{
+    [BurstCompile]
+    struct FlyJob : IJobForEach<MoveSpeed, Translation>
+    {
+        public void Execute([ReadOnly]ref MoveSpeed moveSpeed, ref Translation translation)
+        {
+            var v = translation.Value;
+            v.y += moveSpeed.MetrePerSecond;
+            translation = new Translation { Value = v };
+        }
+    }
+    EntityQuery m_Group;
+    protected override void OnCreate()
+    {
+        m_Group = GetEntityQuery(ComponentType.ReadOnly<SharedGroup>(), ComponentType.ReadOnly<MoveSpeed>(), typeof(Translation));
+        m_Group.AddSharedComponentFilter(new SharedGroup());
+    }
+    protected override JobHandle OnUpdate(JobHandle inputDeps)
+    {
+        m_Group.SetSharedComponentFilter(new SharedGroup { GroupId = 4 });
+        return new FlyJob().Schedule(m_Group, inputDeps);
+    }
+}
+```
+
+解释：  
+当前版本官方手册中这个地方的代码有误，上面代码中把AddSharedComponentFilter放在OnCreate，SetSharedComponentFilter放在OnUpdate的用法是我瞎猜的。当前版本的官方手册用的是之前版本的，根本不是这两个函数  
+另外我碰巧发现，就算没有Add，直接Set它也会自动Add
+
+### 版本修改过滤
+
+过滤出指定组件被修改过的
+
+同样也有Add和Set两个版本，官方手册同样不靠谱
+
+然后下面的代码用于过滤出Translation组件经过修改的实体  
+当然是我瞎猜的也没有试（反正API还会改）
+
+```cs
+m_Group.AddChangedVersionFilter(typeof(Translation));
+```
+
+## 手动遍历
+
+这种方式可以遍历所有的Entity，可以灵活访问任意Entity的任意Component，但显然效率低下，官方手册说蛇皮操作推荐用这个
+
+手册说用IJobParallelFor，懒得写了（反正API也会改）（看着语法提示干就完了，奥利给）

@@ -1,6 +1,7 @@
 +++
 title = "基于Vue.js和SpringBoot配置WebSocket"
 date = 2020-07-07 18:21:46
+slug = "202007071821"
 
 [taxonomies]
 tags = ["Spring Boot", "Vue.js", "WebSocket"]

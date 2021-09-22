@@ -1,6 +1,7 @@
 +++
 title = "Vulkan画三角形「二」 创建Vulkan实例"
 date = 2020-09-04 20:49:09
+slug = "202009042049"
 
 [taxonomies]
 tags = ["GLFW", "Vulkan"]

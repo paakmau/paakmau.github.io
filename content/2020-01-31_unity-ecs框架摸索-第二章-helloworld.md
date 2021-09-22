@@ -1,6 +1,7 @@
 +++
 title = "Unity ECS框架摸索 第二章 HelloWorld"
 date = 2020-01-31 15:15:00
+slug = "202001311515"
 
 [taxonomies]
 tags = ["Unity ECS"]

@@ -1,6 +1,7 @@
 +++
 title = "VS Code写一切 Jupyter Notebook"
 date = 2019-12-12 01:35:40
+slug = "201912120135"
 
 [taxonomies]
 tags = ["Python", "VS Code"]

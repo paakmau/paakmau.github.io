@@ -1,6 +1,7 @@
 +++
 title = "Docker简明介绍与安装"
 date = 2019-12-11 20:16:43
+slug = "201912112016"
 
 [taxonomies]
 tags = ["Docker"]

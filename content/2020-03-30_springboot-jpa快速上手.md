@@ -1,6 +1,7 @@
 +++
 title = "SpringBoot JPA快速上手"
 date = 2020-03-30 19:31:41
+slug = "202003301931"
 
 [taxonomies]
 tags = ["JPA", "Spring Boot"]

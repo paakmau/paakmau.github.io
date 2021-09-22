@@ -1,6 +1,7 @@
 +++
 title = "Docker Compose部署饥荒服务器"
 date = 2019-12-23 21:05:11
+slug = "201912232105"
 
 [taxonomies]
 tags = ["Docker"]

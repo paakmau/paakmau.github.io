@@ -1,6 +1,7 @@
 +++
 title = "Docker部署WordPress与数据备份"
 date = 2019-12-11 19:14:31
+slug = "201912111914"
 
 [taxonomies]
 tags = ["Docker"]

@@ -1,6 +1,7 @@
 +++
 title = "VS Code写一切 Java单文件"
 date = 2019-12-11 00:44:50
+slug = "201912110044"
 
 [taxonomies]
 tags = ["Java", "VS Code"]

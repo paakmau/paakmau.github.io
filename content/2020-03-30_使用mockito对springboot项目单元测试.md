@@ -1,6 +1,7 @@
 +++
 title = "使用Mockito对SpringBoot项目单元测试"
 date = 2020-03-30 20:30:55
+slug = "202003302030"
 
 [taxonomies]
 tags = ["Mockito", "Spring Boot"]

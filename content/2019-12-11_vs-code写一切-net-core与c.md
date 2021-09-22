@@ -1,6 +1,7 @@
 +++
 title = "VS Code写一切 .NET Core与C#"
 date = 2019-12-11 19:37:00
+slug = "201912111937"
 
 [taxonomies]
 tags = [".NET Core", "C#", "VS Code"]

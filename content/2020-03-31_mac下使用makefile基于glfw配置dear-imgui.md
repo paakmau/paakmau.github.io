@@ -1,6 +1,7 @@
 +++
 title = "Mac下使用Makefile基于GLFW配置Dear ImGui"
 date = 2020-03-31 23:47:45
+slug = "202003312347"
 
 [taxonomies]
 tags = ["C++", "GLFW", "ImGui", "OpenGL"]

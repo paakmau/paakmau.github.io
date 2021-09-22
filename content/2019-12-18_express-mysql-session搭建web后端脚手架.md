@@ -1,6 +1,7 @@
 +++
 title = "Express + MySQL + Session搭建Web后端脚手架"
 date = 2019-12-18 00:59:09
+slug = "201912180059"
 
 [taxonomies]
 tags = ["MySQL", "Node.js", "Express"]

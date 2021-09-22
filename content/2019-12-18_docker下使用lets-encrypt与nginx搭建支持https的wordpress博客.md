@@ -1,6 +1,7 @@
 +++
 title = "Docker下使用Let's Encrypt与nginx搭建支持HTTPS的WordPress博客"
 date = 2019-12-18 19:16:13
+slug = "201912181916"
 
 [taxonomies]
 tags = ["Docker"]

@@ -1,6 +1,7 @@
 +++
 title = "Unity Physics学习笔记「一」 简要介绍与HelloWorld"
 date = 2020-02-04 22:09:43
+slug = "202002042209"
 
 [taxonomies]
 tags = ["Unity ECS", "Unity Physics"]

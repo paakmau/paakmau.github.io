@@ -3,7 +3,7 @@ title = "VS Code写一切 C与C++单文件"
 date = 2019-12-11 00:22:34
 
 [taxonomies]
-tags = ["C", "C++", "VS Code"]
+tags = ["C++", "VS Code"]
 categories = ["VS Code"]
 +++
 

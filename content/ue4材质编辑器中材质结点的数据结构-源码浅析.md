@@ -1,8 +1,9 @@
 +++
 title = "UE4材质编辑器中材质结点的数据结构 源码浅析"
-tags = []
-categories = ["UE4"]
 date = 2020-05-15 23:47:36
+
+[taxonomies]
+categories = ["UE4"]
 +++
 
 UE4的材质编辑器中我们可以创建材质结点然后给它们连线来创建材质

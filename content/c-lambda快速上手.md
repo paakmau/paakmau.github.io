@@ -1,8 +1,10 @@
 +++
 title = "C++ Lambda快速上手"
-tags = []
-categories = ["C++"]
 date = 2020-03-22 23:02:00
+
+[taxonomies]
+tags = ["C++"]
+categories = ["C++"]
 +++
 
 Lambda听起来非常的牛逼，很容易就会联想到函数式编程或者Lambda演算这样的东西。但是在C++里，没那么复杂，就把它当匿名函数用就好了

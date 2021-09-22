@@ -78,10 +78,9 @@
 </span>
     </header>
     <div itemprop="articleBody">
-      <p>这两个东西都是并行程序设计中必须考虑的问题</p>
-<span id="continue-reading"></span>
-<p>他跟多核CPU的缓存机制有关</p>
-<h2 id="cpuhuan-cun">CPU缓存</h2>
+      <p>这两个东西都是并行程序设计中必须考虑的问题<br />
+他跟多核CPU的缓存机制有关</p>
+<span id="continue-reading"></span><h2 id="cpuhuan-cun">CPU缓存</h2>
 <p>因为CPU处理的速度远大于内存读写，因此在CPU的每个核心都会有小容量的高速缓存用于保存内存中的数据，CPU的处理都会直接基于缓存而不是内存</p>
 <p>把内存的东西搬到缓存里开销是比较大的，因此每次缓存的时候会把一块比较大的连续内存区域搬进去，这块区域就是一条Cache Line<br />
 整块内存就会被划分为一条一条的Cache Line</p>

@@ -56,8 +56,8 @@
 		<updated>2020-03-22T20:52:18+00:00</updated>
 		<link href="https://paakmau.github.io/ue4-taskgraphxue-xi-bi-ji-xia-yuan-ma-qian-xi/" type="text/html"/>
 		<id>https://paakmau.github.io/ue4-taskgraphxue-xi-bi-ji-xia-yuan-ma-qian-xi/</id>
-		<content type="html">&lt;h2 id=&quot;taskgraphshi-xian-gai-gua&quot;&gt;TaskGraph实现概括&lt;&#x2F;h2&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+		<content type="html">&lt;p&gt;接下来阅读TaskGraph的源码来了解其实现细节&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;taskgraphshi-xian-gai-gua&quot;&gt;TaskGraph实现概括&lt;&#x2F;h2&gt;
 &lt;p&gt;首先是线程管理。我们创建的TGraphTask并不能直接运行，需要把它交给某个FTaskThreadBase对象来控制执行。这个FTaskThreadBase可以理解为一个线程，可以把很多个TGraphTask交给他，它会依次执行这些任务（当然也要满足依赖）&lt;&#x2F;p&gt;
 &lt;p&gt;另外注意到我们可以为TGraphTask指定想要让他执行的线程，于是我们发现对于游戏中的每一个线程都会产生一个FTaskThreadBase对象，这个对象持有他所对应的线程的指针。我们创建的TGraphTask对象会被交给对应的FTaskThreadBase对象，从而在正确的线程上执行&lt;&#x2F;p&gt;
 &lt;p&gt;然后是任务之间依赖关系的处理。我们在CreateTask的时候看起来是把依赖传给了任务，但其实是TGraphTask被他所依赖的所有FGraphEvent持有。这样在一个TGraphTask结束时，他就可以立刻通过FGraphEvent更新依赖于自己的其他TGraphTask的依赖入度，然后如果入度为零就放入执行队列&lt;&#x2F;p&gt;

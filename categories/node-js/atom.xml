@@ -325,10 +325,9 @@ Mutation中不能包含异步操作&lt;br &#x2F;&gt;
 		<updated>2020-01-17T20:06:02+00:00</updated>
 		<link href="https://paakmau.github.io/vue-routershi-yong-ru-men-gong-lue/" type="text/html"/>
 		<id>https://paakmau.github.io/vue-routershi-yong-ru-men-gong-lue/</id>
-		<content type="html">&lt;p&gt;Vue Router是Vue.js官方提供的路由管理器，轻松构建单页应用&lt;&#x2F;p&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;本文基于用Vue CLI创建的脚手架，包括动态路径参数、嵌套路由、命名视图、懒加载&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;yin-ru-vue-router&quot;&gt;引入Vue Router&lt;&#x2F;h2&gt;
+		<content type="html">&lt;p&gt;Vue Router是Vue.js官方提供的路由管理器，轻松构建单页应用&lt;br &#x2F;&gt;
+本文基于用Vue CLI创建的脚手架，包括动态路径参数、嵌套路由、命名视图、懒加载&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;yin-ru-vue-router&quot;&gt;引入Vue Router&lt;&#x2F;h2&gt;
 &lt;p&gt;在使用Vue CLI构建时需要引入Router&lt;&#x2F;p&gt;
 &lt;p&gt;如果没有，需要安装vue-router依赖，然后修改main.js等，但很麻烦就懒得写了&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;jiao-shou-jia-zhong-de-xiang-guan-wen-jian&quot;&gt;脚手架中的相关文件&lt;&#x2F;h2&gt;
@@ -582,9 +581,11 @@ router-view是组件将会被渲染到的地方&lt;&#x2F;p&gt;
 		<updated>2019-12-27T10:24:33+00:00</updated>
 		<link href="https://paakmau.github.io/shi-yong-vue-clikuai-su-da-jian-vue-jsjiao-shou-jia/" type="text/html"/>
 		<id>https://paakmau.github.io/shi-yong-vue-clikuai-su-da-jian-vue-jsjiao-shou-jia/</id>
-		<content type="html">&lt;p&gt;本文基于&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;Vue CLI是Vue.js提供的命令行工具&lt;br &#x2F;&gt;
+我们可以使用它来快速创建一个脚手架项目&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;Vue CLI 4.1.2&lt;br &#x2F;&gt;
+&lt;p&gt;本文基于&lt;br &#x2F;&gt;
+Vue CLI 4.1.2&lt;br &#x2F;&gt;
 Node.js v13.5.0&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;jian-dan-jie-shao&quot;&gt;简单介绍&lt;&#x2F;h2&gt;
 &lt;p&gt;在Vue框架中，我们可以通过数据驱动视图，实现数据与视图的分离&lt;br &#x2F;&gt;

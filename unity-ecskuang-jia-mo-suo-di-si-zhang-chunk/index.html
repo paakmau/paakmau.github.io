@@ -67,7 +67,7 @@
         <circle cx="16" cy="16" r="14"/>
         <path d="M16 8 L16 16 20 20"/>
     </svg>
-    <span>4 minute read</span>
+    <span>5 minute read</span>
     <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
          width="16" height="16" fill="none" stroke="currentcolor"
          stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
@@ -78,8 +78,8 @@
 </span>
     </header>
     <div itemprop="articleBody">
-      <h2 id="unityzhong-componentde-chunkshi-cun-chu">Unity中Component的Chunk式存储</h2>
-<span id="continue-reading"></span>
+      <p>本文将介绍Unity ECS中对于Component的内存管理</p>
+<span id="continue-reading"></span><h2 id="componentde-chunkshi-cun-chu">Component的Chunk式存储</h2>
 <p>首先，一组Component是一个Archetype。多个Entity如果由相同的Component构成，那么他们属于同一个Archetype。</p>
 <p>Unity会把属于同种Archetype的Entity归成同一类，同一类实体的组件会被集中存储。首先他们被划分为若干个Chunk，一个Chunk内部的同种组件会存储在连续的内存中；然后同类的Chunk之间可能用链表或指针数组相连，从而能够遍历这个Archetype所有实体的所有组件。如下图所示。</p>
 <p><img src="https://hebomou.top/wp-content/uploads/2019/12/ArchetypeChunkDiagram.jpg" alt="" /></p>

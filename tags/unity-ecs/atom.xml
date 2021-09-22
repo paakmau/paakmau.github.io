@@ -63,8 +63,8 @@
 		<link href="https://paakmau.github.io/unity-physicsxue-xi-bi-ji-liu-hong-fa-qi-shi-jian-yu-peng-zhuang-shi-jian/" type="text/html"/>
 		<id>https://paakmau.github.io/unity-physicsxue-xi-bi-ji-liu-hong-fa-qi-shi-jian-yu-peng-zhuang-shi-jian/</id>
 		<content type="html">&lt;p&gt;这部分内容手册中没有，本文参考的是官方示例代码与官方论坛&lt;&#x2F;p&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;Unity-Technologies&#x2F;EntityComponentSystemSamples&quot;&gt;https:&#x2F;&#x2F;github.com&#x2F;Unity-Technologies&#x2F;EntityComponentSystemSamples&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;在OOP的物理引擎中，碰撞发生后引擎可以通过调用用户提供的回调函数将碰撞事件传递给用户程序。而在Unity的ECS框架中我们需要使用数据驱动的思路来处理碰撞&lt;br &#x2F;&gt;
 但是引擎已经把事件处理封装好了，因此我们实现的时候其实看起来跟回调差不多&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;jian-jie&quot;&gt;简介&lt;&#x2F;h2&gt;
@@ -529,10 +529,9 @@ DetectCollisionSystem.cs&lt;&#x2F;p&gt;
 		<updated>2020-02-05T23:42:00+00:00</updated>
 		<link href="https://paakmau.github.io/unity-physicsxue-xi-bi-ji-san-gang-ti-de-yun-dong-zhuang-tai/" type="text/html"/>
 		<id>https://paakmau.github.io/unity-physicsxue-xi-bi-ji-san-gang-ti-de-yun-dong-zhuang-tai/</id>
-		<content type="html">&lt;p&gt;本文介绍获取与修改刚体速度的方法&lt;&#x2F;p&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;并实现控制立方体每隔一段时间朝随机方向运动，具有匀速运动与施加冲量两种方式&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;tian-jia-zu-jian-kong-zhi-fang-xiang&quot;&gt;添加组件控制方向&lt;&#x2F;h2&gt;
+		<content type="html">&lt;p&gt;本文介绍获取与修改刚体速度的方法&lt;br &#x2F;&gt;
+并实现控制立方体每隔一段时间朝随机方向运动，具有匀速运动与施加冲量两种方式&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;tian-jia-zu-jian-kong-zhi-fang-xiang&quot;&gt;添加组件控制方向&lt;&#x2F;h2&gt;
 &lt;p&gt;我们新建一个用于控制运动方向的组件&lt;&#x2F;p&gt;
 &lt;p&gt;MoveDirection.cs&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cs&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cs &quot;&gt;&lt;code class=&quot;language-cs&quot; data-lang=&quot;cs&quot;&gt;&lt;span&gt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Serializable&lt;&#x2F;span&gt;&lt;span&gt;]
@@ -660,9 +659,9 @@ Static，静态。无法运动的刚体，可以理解为质量无穷大&lt;&#x2
 		<updated>2020-02-04T22:09:43+00:00</updated>
 		<link href="https://paakmau.github.io/unity-physicsxue-xi-bi-ji-yi-jian-yao-jie-shao-yu-helloworld/" type="text/html"/>
 		<id>https://paakmau.github.io/unity-physicsxue-xi-bi-ji-yi-jian-yao-jie-shao-yu-helloworld/</id>
-		<content type="html">&lt;p&gt;现在Unity的Package Manager中已经有了适用于ECS框架的物理引擎，功能完善&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;现在Unity的Package Manager中已经有了适用于ECS框架的物理引擎，功能完善&lt;br &#x2F;&gt;
+可以说Unity的DOTS（面向数据技术栈）已经能够用于制作大部分游戏类型&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;可以说Unity的DOTS（面向数据技术栈）已经能够用于制作大部分游戏类型&lt;&#x2F;p&gt;
 &lt;p&gt;这个系列会介绍目前Unity Physics中的绝大多数内容，与Havok Physics关系不大&lt;&#x2F;p&gt;
 &lt;p&gt;需要旧版Unity的基础，Unity ECS基础，并对常见物理引擎有一定了解&lt;&#x2F;p&gt;
 &lt;p&gt;本系列文章基于&lt;br &#x2F;&gt;
@@ -830,8 +829,8 @@ com.unity.physics 0.2.5-preview.1&lt;&#x2F;p&gt;
 		<link href="https://paakmau.github.io/unity-ecskuang-jia-mo-suo-di-wu-zhang-li-yong-prefabshi-li-hua-entityji-qi-xiao-hui/" type="text/html"/>
 		<id>https://paakmau.github.io/unity-ecskuang-jia-mo-suo-di-wu-zhang-li-yong-prefabshi-li-hua-entityji-qi-xiao-hui/</id>
 		<content type="html">&lt;p&gt;一般游戏中都避不开实体的动态生成与动态销毁。&lt;&#x2F;p&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;本文演示使用Prefab创建旋转的立方体方阵并定时销毁。&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191212-030831-HD.gif&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;ji-ben-si-lu&quot;&gt;基本思路&lt;&#x2F;h2&gt;
 &lt;p&gt;放置一个生成器实体在场景中，让一个SpawnerSystem根据它创建立方体方阵。&lt;br &#x2F;&gt;
@@ -1045,8 +1044,8 @@ SpawnerSystem.cs&lt;&#x2F;p&gt;
 		<updated>2020-02-03T01:37:42+00:00</updated>
 		<link href="https://paakmau.github.io/unity-ecskuang-jia-mo-suo-di-si-zhang-chunk/" type="text/html"/>
 		<id>https://paakmau.github.io/unity-ecskuang-jia-mo-suo-di-si-zhang-chunk/</id>
-		<content type="html">&lt;h2 id=&quot;unityzhong-componentde-chunkshi-cun-chu&quot;&gt;Unity中Component的Chunk式存储&lt;&#x2F;h2&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+		<content type="html">&lt;p&gt;本文将介绍Unity ECS中对于Component的内存管理&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;componentde-chunkshi-cun-chu&quot;&gt;Component的Chunk式存储&lt;&#x2F;h2&gt;
 &lt;p&gt;首先，一组Component是一个Archetype。多个Entity如果由相同的Component构成，那么他们属于同一个Archetype。&lt;&#x2F;p&gt;
 &lt;p&gt;Unity会把属于同种Archetype的Entity归成同一类，同一类实体的组件会被集中存储。首先他们被划分为若干个Chunk，一个Chunk内部的同种组件会存储在连续的内存中；然后同类的Chunk之间可能用链表或指针数组相连，从而能够遍历这个Archetype所有实体的所有组件。如下图所示。&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;ArchetypeChunkDiagram.jpg&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
@@ -1173,9 +1172,8 @@ RotationSpeed.cs&lt;&#x2F;p&gt;
 		<updated>2020-01-31T15:15:00+00:00</updated>
 		<link href="https://paakmau.github.io/unity-ecskuang-jia-mo-suo-di-er-zhang-helloworld/" type="text/html"/>
 		<id>https://paakmau.github.io/unity-ecskuang-jia-mo-suo-di-er-zhang-helloworld/</id>
-		<content type="html">&lt;h2 id=&quot;zui-zhong-xiao-guo&quot;&gt;最终效果&lt;&#x2F;h2&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;跟随本文，创建一个立方体Entity，利用一个System控制它不断旋转。&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;跟随本文，创建一个立方体Entity，利用一个System控制它不断旋转。&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;zui-zhong-xiao-guo&quot;&gt;最终效果&lt;&#x2F;h2&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191210-142039-HD.gif&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;bu-zou&quot;&gt;步骤&lt;&#x2F;h2&gt;
 &lt;p&gt;首先写一个控制旋转速度的组件&lt;br &#x2F;&gt;

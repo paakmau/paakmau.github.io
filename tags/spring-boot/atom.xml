@@ -455,11 +455,10 @@
 		<updated>2019-12-11T15:13:45+00:00</updated>
 		<link href="https://paakmau.github.io/vs-codexie-yi-qie-mavenyu-spring-boot/" type="text/html"/>
 		<id>https://paakmau.github.io/vs-codexie-yi-qie-mavenyu-spring-boot/</id>
-		<content type="html">&lt;p&gt;VSC用于开发Maven项目已经比较成熟&lt;&#x2F;p&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;直接打开就行，没什么好说的&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;VSC用于开发Maven项目已经比较成熟&lt;br &#x2F;&gt;
+直接打开就行，没什么好说的&lt;&#x2F;p&gt;
 &lt;p&gt;因此本文介绍VS Code创建与调试Spring Boot项目&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;javahuan-jing-pei-zhi&quot;&gt;Java环境配置&lt;&#x2F;h2&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;javahuan-jing-pei-zhi&quot;&gt;Java环境配置&lt;&#x2F;h2&gt;
 &lt;p&gt;问题不大，xjb装就行了&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;xu-yao-an-zhuang-de-vs-codecha-jian&quot;&gt;需要安装的VS Code插件&lt;&#x2F;h2&gt;
 &lt;ul&gt;

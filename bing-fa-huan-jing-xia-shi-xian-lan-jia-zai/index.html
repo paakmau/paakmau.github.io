@@ -78,8 +78,10 @@
 </span>
     </header>
     <div itemprop="articleBody">
-      <h2 id="dan-xian-cheng-lan-jia-zai">单线程懒加载</h2>
-<span id="continue-reading"></span>
+      <p>懒加载是指在用到某个变量时才进行初始化<br />
+然后并发环境下懒加载可能会有访问冲突、重复初始化等问题，很容易爆炸<br />
+因此需要一些操作</p>
+<span id="continue-reading"></span><h2 id="dan-xian-cheng-lan-jia-zai">单线程懒加载</h2>
 <p>一般这样写</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">Test
 </span><span style="color:#eff1f5;">{

@@ -13,8 +13,10 @@
 		<updated>2020-07-14T17:56:04+00:00</updated>
 		<link href="https://paakmau.github.io/bing-fa-huan-jing-xia-shi-xian-lan-jia-zai/" type="text/html"/>
 		<id>https://paakmau.github.io/bing-fa-huan-jing-xia-shi-xian-lan-jia-zai/</id>
-		<content type="html">&lt;h2 id=&quot;dan-xian-cheng-lan-jia-zai&quot;&gt;单线程懒加载&lt;&#x2F;h2&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+		<content type="html">&lt;p&gt;懒加载是指在用到某个变量时才进行初始化&lt;br &#x2F;&gt;
+然后并发环境下懒加载可能会有访问冲突、重复初始化等问题，很容易爆炸&lt;br &#x2F;&gt;
+因此需要一些操作&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;dan-xian-cheng-lan-jia-zai&quot;&gt;单线程懒加载&lt;&#x2F;h2&gt;
 &lt;p&gt;一般这样写&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Test
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
@@ -266,10 +268,9 @@
 		<updated>2020-04-20T16:18:27+00:00</updated>
 		<link href="https://paakmau.github.io/ping-pang-huan-cun-yu-wei-gong-xiang/" type="text/html"/>
 		<id>https://paakmau.github.io/ping-pang-huan-cun-yu-wei-gong-xiang/</id>
-		<content type="html">&lt;p&gt;这两个东西都是并行程序设计中必须考虑的问题&lt;&#x2F;p&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;他跟多核CPU的缓存机制有关&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;cpuhuan-cun&quot;&gt;CPU缓存&lt;&#x2F;h2&gt;
+		<content type="html">&lt;p&gt;这两个东西都是并行程序设计中必须考虑的问题&lt;br &#x2F;&gt;
+他跟多核CPU的缓存机制有关&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;cpuhuan-cun&quot;&gt;CPU缓存&lt;&#x2F;h2&gt;
 &lt;p&gt;因为CPU处理的速度远大于内存读写，因此在CPU的每个核心都会有小容量的高速缓存用于保存内存中的数据，CPU的处理都会直接基于缓存而不是内存&lt;&#x2F;p&gt;
 &lt;p&gt;把内存的东西搬到缓存里开销是比较大的，因此每次缓存的时候会把一块比较大的连续内存区域搬进去，这块区域就是一条Cache Line&lt;br &#x2F;&gt;
 整块内存就会被划分为一条一条的Cache Line&lt;&#x2F;p&gt;
@@ -297,10 +298,8 @@
 		<updated>2020-04-06T00:19:29+00:00</updated>
 		<link href="https://paakmau.github.io/lock-freeshu-ju-jie-gou-she-ji/" type="text/html"/>
 		<id>https://paakmau.github.io/lock-freeshu-ju-jie-gou-she-ji/</id>
-		<content type="html">&lt;h2 id=&quot;jian-jie&quot;&gt;简介&lt;&#x2F;h2&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;根据名字我们知道它的内部没有使用锁，可以通过原语和一些蛇皮操作来实现&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;wu-suo-yu-wu-deng-dai&quot;&gt;无锁与无等待&lt;&#x2F;h2&gt;
+		<content type="html">&lt;p&gt;根据名字我们知道它的内部没有使用锁，可以通过原语和一些蛇皮操作来实现&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;wu-suo-yu-wu-deng-dai&quot;&gt;无锁与无等待&lt;&#x2F;h2&gt;
 &lt;p&gt;需要注意的一个问题是无锁并不一定意味着访问一个资源的时候不需要等待&lt;br &#x2F;&gt;
 大多数情况下，无锁数据结构看起来像使用了一个自旋锁，但可以避免产生死锁&lt;&#x2F;p&gt;
 &lt;p&gt;不需要等待的数据结构称为无等待数据结构（废话）&lt;br &#x2F;&gt;
@@ -405,8 +404,8 @@
 		<updated>2020-03-22T20:52:18+00:00</updated>
 		<link href="https://paakmau.github.io/ue4-taskgraphxue-xi-bi-ji-xia-yuan-ma-qian-xi/" type="text/html"/>
 		<id>https://paakmau.github.io/ue4-taskgraphxue-xi-bi-ji-xia-yuan-ma-qian-xi/</id>
-		<content type="html">&lt;h2 id=&quot;taskgraphshi-xian-gai-gua&quot;&gt;TaskGraph实现概括&lt;&#x2F;h2&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+		<content type="html">&lt;p&gt;接下来阅读TaskGraph的源码来了解其实现细节&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;taskgraphshi-xian-gai-gua&quot;&gt;TaskGraph实现概括&lt;&#x2F;h2&gt;
 &lt;p&gt;首先是线程管理。我们创建的TGraphTask并不能直接运行，需要把它交给某个FTaskThreadBase对象来控制执行。这个FTaskThreadBase可以理解为一个线程，可以把很多个TGraphTask交给他，它会依次执行这些任务（当然也要满足依赖）&lt;&#x2F;p&gt;
 &lt;p&gt;另外注意到我们可以为TGraphTask指定想要让他执行的线程，于是我们发现对于游戏中的每一个线程都会产生一个FTaskThreadBase对象，这个对象持有他所对应的线程的指针。我们创建的TGraphTask对象会被交给对应的FTaskThreadBase对象，从而在正确的线程上执行&lt;&#x2F;p&gt;
 &lt;p&gt;然后是任务之间依赖关系的处理。我们在CreateTask的时候看起来是把依赖传给了任务，但其实是TGraphTask被他所依赖的所有FGraphEvent持有。这样在一个TGraphTask结束时，他就可以立刻通过FGraphEvent更新依赖于自己的其他TGraphTask的依赖入度，然后如果入度为零就放入执行队列&lt;&#x2F;p&gt;

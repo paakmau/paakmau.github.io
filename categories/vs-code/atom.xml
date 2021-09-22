@@ -13,8 +13,8 @@
 		<updated>2020-12-11T21:41:47+00:00</updated>
 		<link href="https://paakmau.github.io/vs-codexie-yi-qie-cmake/" type="text/html"/>
 		<id>https://paakmau.github.io/vs-codexie-yi-qie-cmake/</id>
-		<content type="html">&lt;h2 id=&quot;huan-jing-pei-zhi&quot;&gt;环境配置&lt;&#x2F;h2&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+		<content type="html">&lt;p&gt;VS Code写CMake感觉十分舒适，比VS爽多了&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;huan-jing-pei-zhi&quot;&gt;环境配置&lt;&#x2F;h2&gt;
 &lt;p&gt;安装C++编译器、C++调试器和CMake，并确保它们在PATH中&lt;&#x2F;p&gt;
 &lt;h3 id=&quot;macos&quot;&gt;macOS&lt;&#x2F;h3&gt;
 &lt;p&gt;安装Xcode命令行工具使用它的Clang，然后用brew安装CMake&lt;&#x2F;p&gt;
@@ -67,9 +67,9 @@
 		<updated>2019-12-13T21:36:11+00:00</updated>
 		<link href="https://paakmau.github.io/vs-codexie-yi-qie-node-js/" type="text/html"/>
 		<id>https://paakmau.github.io/vs-codexie-yi-qie-node-js/</id>
-		<content type="html">&lt;p&gt;开发Node.js项目可能还是WebStorm功能多一点？？&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;开发Node.js项目可能还是WebStorm功能多一点？？&lt;br &#x2F;&gt;
+相比之下VS Code比较轻量级&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;相比之下VS Code比较轻量级&lt;&#x2F;p&gt;
 &lt;p&gt;VSC天生支持Node.js不装插件就能调试&lt;br &#x2F;&gt;
 但是，对于要装各种依赖的Node.js项目，VSC没有自带图形化的管理工具，重度依赖终端，有点蛋疼（虽然有插件我也不乐意装毕竟命令行多方便）&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;xiang-mu-xin-jian-yu-diao-shi&quot;&gt;项目新建与调试&lt;&#x2F;h2&gt;
@@ -165,11 +165,10 @@ hello.csproj是项目配置&lt;&#x2F;p&gt;
 		<updated>2019-12-11T15:13:45+00:00</updated>
 		<link href="https://paakmau.github.io/vs-codexie-yi-qie-mavenyu-spring-boot/" type="text/html"/>
 		<id>https://paakmau.github.io/vs-codexie-yi-qie-mavenyu-spring-boot/</id>
-		<content type="html">&lt;p&gt;VSC用于开发Maven项目已经比较成熟&lt;&#x2F;p&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;直接打开就行，没什么好说的&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;VSC用于开发Maven项目已经比较成熟&lt;br &#x2F;&gt;
+直接打开就行，没什么好说的&lt;&#x2F;p&gt;
 &lt;p&gt;因此本文介绍VS Code创建与调试Spring Boot项目&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;javahuan-jing-pei-zhi&quot;&gt;Java环境配置&lt;&#x2F;h2&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;javahuan-jing-pei-zhi&quot;&gt;Java环境配置&lt;&#x2F;h2&gt;
 &lt;p&gt;问题不大，xjb装就行了&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;xu-yao-an-zhuang-de-vs-codecha-jian&quot;&gt;需要安装的VS Code插件&lt;&#x2F;h2&gt;
 &lt;ul&gt;
@@ -266,10 +265,9 @@ hello.csproj是项目配置&lt;&#x2F;p&gt;
 		<updated>2019-12-11T00:22:34+00:00</updated>
 		<link href="https://paakmau.github.io/vs-codexie-yi-qie-cyu-cdan-wen-jian/" type="text/html"/>
 		<id>https://paakmau.github.io/vs-codexie-yi-qie-cyu-cdan-wen-jian/</id>
-		<content type="html">&lt;p&gt;配置很简单，刷题贼方便&lt;&#x2F;p&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;这里以C++为例，C同理&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;c-c-huan-jing-pei-zhi&quot;&gt;C&#x2F;C++环境配置&lt;&#x2F;h2&gt;
+		<content type="html">&lt;p&gt;配置很简单，刷题贼方便&lt;br &#x2F;&gt;
+这里以C++为例，C同理&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;c-c-huan-jing-pei-zhi&quot;&gt;C&#x2F;C++环境配置&lt;&#x2F;h2&gt;
 &lt;p&gt;跟VS Code无关，但还是提一下&lt;&#x2F;p&gt;
 &lt;p&gt;Win下可以装MinGW&lt;br &#x2F;&gt;
 Max下装Xcode自带Clang&lt;br &#x2F;&gt;

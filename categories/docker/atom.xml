@@ -14,9 +14,8 @@
 		<link href="https://paakmau.github.io/docker-composebu-shu-ji-huang-fu-wu-qi/" type="text/html"/>
 		<id>https://paakmau.github.io/docker-composebu-shu-ji-huang-fu-wu-qi/</id>
 		<content type="html">&lt;p&gt;参考的是这个项目&lt;&#x2F;p&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;mathielo&#x2F;dst-dedicated-server&quot;&gt;https:&#x2F;&#x2F;github.com&#x2F;mathielo&#x2F;dst-dedicated-server&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;xiang-mu-clone&quot;&gt;项目Clone&lt;&#x2F;h2&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;xiang-mu-clone&quot;&gt;项目Clone&lt;&#x2F;h2&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; git clone https:&#x2F;&#x2F;github.com&#x2F;mathielo&#x2F;dst-dedicated-server.git
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;tokenpei-zhi&quot;&gt;Token配置&lt;&#x2F;h2&gt;
@@ -160,7 +159,7 @@ proxy_pass用于转发wordpress容器的80端口&lt;br &#x2F;&gt;
 		<updated>2019-12-12T17:24:24+00:00</updated>
 		<link href="https://paakmau.github.io/dockerbu-shu-dotnet-core-3-0kong-zhi-tai-xiang-mu/" type="text/html"/>
 		<id>https://paakmau.github.io/dockerbu-shu-dotnet-core-3-0kong-zhi-tai-xiang-mu/</id>
-		<content type="html">&lt;p&gt;为了方便描述，我们快速新建HelloWorld项目作为示例。&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;本文将光速创建一个HelloWorld，然后使用Docker进行部署&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;xin-jian-bing-fa-bu-net-corekong-zhi-tai-xiang-mu&quot;&gt;新建并发布.NET Core控制台项目&lt;&#x2F;h2&gt;
 &lt;p&gt;首先新建一个.NET Core控制台项目，并直接运行&lt;br &#x2F;&gt;
 控制台应该会输出“Hello World!”，如果没有可以自己写一个。&lt;&#x2F;p&gt;
@@ -210,9 +209,8 @@ FROM&lt;br &#x2F;&gt;
 		<link href="https://paakmau.github.io/dockeryuan-cheng-lian-jie-yi-ji-jia-mi/" type="text/html"/>
 		<id>https://paakmau.github.io/dockeryuan-cheng-lian-jie-yi-ji-jia-mi/</id>
 		<content type="html">&lt;p&gt;Docker Daemon运行在Debian上，Docker Client在macOS上&lt;&#x2F;p&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;因为不想在本地安装Docker，考虑在本地用Docker Client远程连接到远程服务器的Docker Daemon上。&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;ming-ci-jie-shi&quot;&gt;名词解释&lt;&#x2F;h2&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;ming-ci-jie-shi&quot;&gt;名词解释&lt;&#x2F;h2&gt;
 &lt;p&gt;Docker Daemon，可以理解为Docker的后端，也是Docker项目实际运行的地方。&lt;&#x2F;p&gt;
 &lt;p&gt;Docker client，Docker的客户端，可以用来控制Daemon运行Docker项目。&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;fu-wu-duan-debian-pei-zhi-yuan-cheng-lian-jie&quot;&gt;服务端（Debian）配置远程连接&lt;&#x2F;h2&gt;
@@ -310,8 +308,8 @@ FROM&lt;br &#x2F;&gt;
 		<updated>2019-12-11T20:16:43+00:00</updated>
 		<link href="https://paakmau.github.io/debianxia-dockeran-zhuang/" type="text/html"/>
 		<id>https://paakmau.github.io/debianxia-dockeran-zhuang/</id>
-		<content type="html">&lt;h2 id=&quot;jian-jie&quot;&gt;简介&lt;&#x2F;h2&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+		<content type="html">&lt;p&gt;本文将基于Debian介绍Docker的安装&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;jian-jie&quot;&gt;简介&lt;&#x2F;h2&gt;
 &lt;p&gt;根据官方文档，Docker是一个以容器形式构建、分享、运行应用的平台。&lt;&#x2F;p&gt;
 &lt;p&gt;民间说法，Docker是一个虚拟机，只要制作了应用的虚拟机镜像，就能在几乎任何平台上一键部署我们的应用。而且这个虚拟机的性能非常好。&lt;&#x2F;p&gt;
 &lt;p&gt;举个部署后端的例子说明Docker部署流程&lt;&#x2F;p&gt;

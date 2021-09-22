@@ -14,9 +14,8 @@
 		<link href="https://paakmau.github.io/macxia-shi-yong-makefileji-yu-glfwpei-zhi-dear-imgui/" type="text/html"/>
 		<id>https://paakmau.github.io/macxia-shi-yong-makefileji-yu-glfwpei-zhi-dear-imgui/</id>
 		<content type="html">&lt;p&gt;用Xcode配置起来很简单，但是OpenGL.framework被弃用了，会爆不少警告（其实是因为我习惯了VSC改不过来）&lt;&#x2F;p&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;于是尝试用Makefile搞一搞&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;an-zhuang-glewhe-glfw&quot;&gt;安装GLEW和GLFW&lt;&#x2F;h2&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;an-zhuang-glewhe-glfw&quot;&gt;安装GLEW和GLFW&lt;&#x2F;h2&gt;
 &lt;p&gt;使用brew安装就行，它会把对应的库和头文放在在&#x2F;usr&#x2F;local&#x2F;lib和&#x2F;usr&#x2F;local&#x2F;include下&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; brew install glew
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; brew install glfw

@@ -13,8 +13,8 @@
 		<updated>2019-12-19T17:51:23+00:00</updated>
 		<link href="https://paakmau.github.io/poj-1694-an-old-stone-game/" type="text/html"/>
 		<id>https://paakmau.github.io/poj-1694-an-old-stone-game/</id>
-		<content type="html">&lt;h2 id=&quot;ti-mu-miao-shu&quot;&gt;题目描述&lt;&#x2F;h2&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+		<content type="html">&lt;p&gt;一题简单的树形DP&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;ti-mu-miao-shu&quot;&gt;题目描述&lt;&#x2F;h2&gt;
 &lt;p&gt;There is an old stone game, played on an arbitrary general tree T. The goal is to put one stone on the root of T observing the following rules:&lt;&#x2F;p&gt;
 &lt;ol&gt;
 &lt;li&gt;At the beginning of the game, the player picks K stones and puts them all in one bucket.&lt;&#x2F;li&gt;
@@ -115,8 +115,8 @@ F(p)表示p节点最少需要的石子数&lt;&#x2F;p&gt;
 		<updated>2019-12-19T00:40:51+00:00</updated>
 		<link href="https://paakmau.github.io/hdu-2955-robberies/" type="text/html"/>
 		<id>https://paakmau.github.io/hdu-2955-robberies/</id>
-		<content type="html">&lt;h2 id=&quot;ti-mu-miao-shu&quot;&gt;题目描述&lt;&#x2F;h2&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+		<content type="html">&lt;p&gt;一个01背包问题&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;ti-mu-miao-shu&quot;&gt;题目描述&lt;&#x2F;h2&gt;
 &lt;p&gt;The aspiring Roy the Robber has seen a lot of American movies, and knows that the bad guys usually gets caught in the end, often because they become too greedy. He has decided to work in the lucrative business of bank robbery only for a short while, before retiring to a comfortable job at a university.&lt;&#x2F;p&gt;
 &lt;p&gt;For a few months now, Roy has been assessing the security of various banks and the amount of cash they hold. He wants to make a calculated risk, and grab as much money as possible.&lt;&#x2F;p&gt;
 &lt;p&gt;His mother, Ola, has decided upon a tolerable probability of getting caught. She feels that he is safe enough if the banks he robs together give a probability less than this.&lt;&#x2F;p&gt;

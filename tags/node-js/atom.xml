@@ -13,9 +13,9 @@
 		<updated>2019-12-13T21:36:11+00:00</updated>
 		<link href="https://paakmau.github.io/vs-codexie-yi-qie-node-js/" type="text/html"/>
 		<id>https://paakmau.github.io/vs-codexie-yi-qie-node-js/</id>
-		<content type="html">&lt;p&gt;开发Node.js项目可能还是WebStorm功能多一点？？&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;开发Node.js项目可能还是WebStorm功能多一点？？&lt;br &#x2F;&gt;
+相比之下VS Code比较轻量级&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;相比之下VS Code比较轻量级&lt;&#x2F;p&gt;
 &lt;p&gt;VSC天生支持Node.js不装插件就能调试&lt;br &#x2F;&gt;
 但是，对于要装各种依赖的Node.js项目，VSC没有自带图形化的管理工具，重度依赖终端，有点蛋疼（虽然有插件我也不乐意装毕竟命令行多方便）&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;xiang-mu-xin-jian-yu-diao-shi&quot;&gt;项目新建与调试&lt;&#x2F;h2&gt;

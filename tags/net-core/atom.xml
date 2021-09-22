@@ -210,7 +210,7 @@
 		<updated>2019-12-12T17:24:24+00:00</updated>
 		<link href="https://paakmau.github.io/dockerbu-shu-dotnet-core-3-0kong-zhi-tai-xiang-mu/" type="text/html"/>
 		<id>https://paakmau.github.io/dockerbu-shu-dotnet-core-3-0kong-zhi-tai-xiang-mu/</id>
-		<content type="html">&lt;p&gt;为了方便描述，我们快速新建HelloWorld项目作为示例。&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;本文将光速创建一个HelloWorld，然后使用Docker进行部署&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;xin-jian-bing-fa-bu-net-corekong-zhi-tai-xiang-mu&quot;&gt;新建并发布.NET Core控制台项目&lt;&#x2F;h2&gt;
 &lt;p&gt;首先新建一个.NET Core控制台项目，并直接运行&lt;br &#x2F;&gt;
 控制台应该会输出“Hello World!”，如果没有可以自己写一个。&lt;&#x2F;p&gt;

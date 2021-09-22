@@ -63,8 +63,8 @@
 		<link href="https://paakmau.github.io/unity-physicsxue-xi-bi-ji-liu-hong-fa-qi-shi-jian-yu-peng-zhuang-shi-jian/" type="text/html"/>
 		<id>https://paakmau.github.io/unity-physicsxue-xi-bi-ji-liu-hong-fa-qi-shi-jian-yu-peng-zhuang-shi-jian/</id>
 		<content type="html">&lt;p&gt;这部分内容手册中没有，本文参考的是官方示例代码与官方论坛&lt;&#x2F;p&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;Unity-Technologies&#x2F;EntityComponentSystemSamples&quot;&gt;https:&#x2F;&#x2F;github.com&#x2F;Unity-Technologies&#x2F;EntityComponentSystemSamples&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;在OOP的物理引擎中，碰撞发生后引擎可以通过调用用户提供的回调函数将碰撞事件传递给用户程序。而在Unity的ECS框架中我们需要使用数据驱动的思路来处理碰撞&lt;br &#x2F;&gt;
 但是引擎已经把事件处理封装好了，因此我们实现的时候其实看起来跟回调差不多&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;jian-jie&quot;&gt;简介&lt;&#x2F;h2&gt;
@@ -529,10 +529,9 @@ DetectCollisionSystem.cs&lt;&#x2F;p&gt;
 		<updated>2020-02-05T23:42:00+00:00</updated>
 		<link href="https://paakmau.github.io/unity-physicsxue-xi-bi-ji-san-gang-ti-de-yun-dong-zhuang-tai/" type="text/html"/>
 		<id>https://paakmau.github.io/unity-physicsxue-xi-bi-ji-san-gang-ti-de-yun-dong-zhuang-tai/</id>
-		<content type="html">&lt;p&gt;本文介绍获取与修改刚体速度的方法&lt;&#x2F;p&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;并实现控制立方体每隔一段时间朝随机方向运动，具有匀速运动与施加冲量两种方式&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;tian-jia-zu-jian-kong-zhi-fang-xiang&quot;&gt;添加组件控制方向&lt;&#x2F;h2&gt;
+		<content type="html">&lt;p&gt;本文介绍获取与修改刚体速度的方法&lt;br &#x2F;&gt;
+并实现控制立方体每隔一段时间朝随机方向运动，具有匀速运动与施加冲量两种方式&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;tian-jia-zu-jian-kong-zhi-fang-xiang&quot;&gt;添加组件控制方向&lt;&#x2F;h2&gt;
 &lt;p&gt;我们新建一个用于控制运动方向的组件&lt;&#x2F;p&gt;
 &lt;p&gt;MoveDirection.cs&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cs&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cs &quot;&gt;&lt;code class=&quot;language-cs&quot; data-lang=&quot;cs&quot;&gt;&lt;span&gt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Serializable&lt;&#x2F;span&gt;&lt;span&gt;]
@@ -660,9 +659,9 @@ Static，静态。无法运动的刚体，可以理解为质量无穷大&lt;&#x2
 		<updated>2020-02-04T22:09:43+00:00</updated>
 		<link href="https://paakmau.github.io/unity-physicsxue-xi-bi-ji-yi-jian-yao-jie-shao-yu-helloworld/" type="text/html"/>
 		<id>https://paakmau.github.io/unity-physicsxue-xi-bi-ji-yi-jian-yao-jie-shao-yu-helloworld/</id>
-		<content type="html">&lt;p&gt;现在Unity的Package Manager中已经有了适用于ECS框架的物理引擎，功能完善&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;现在Unity的Package Manager中已经有了适用于ECS框架的物理引擎，功能完善&lt;br &#x2F;&gt;
+可以说Unity的DOTS（面向数据技术栈）已经能够用于制作大部分游戏类型&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;可以说Unity的DOTS（面向数据技术栈）已经能够用于制作大部分游戏类型&lt;&#x2F;p&gt;
 &lt;p&gt;这个系列会介绍目前Unity Physics中的绝大多数内容，与Havok Physics关系不大&lt;&#x2F;p&gt;
 &lt;p&gt;需要旧版Unity的基础，Unity ECS基础，并对常见物理引擎有一定了解&lt;&#x2F;p&gt;
 &lt;p&gt;本系列文章基于&lt;br &#x2F;&gt;

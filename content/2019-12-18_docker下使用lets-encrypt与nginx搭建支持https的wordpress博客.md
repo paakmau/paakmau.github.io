@@ -66,7 +66,7 @@ nginx的配置文件会被放在data\_nginx\_conf数据卷中
 
 进入data\_nginx\_conf数据卷并修改default.conf如下
 
-```
+```conf
 server {
     listen 443 ssl;
     server_name example.com;

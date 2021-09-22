@@ -7,9 +7,11 @@ tags = ["Docker"]
 categories = ["Docker"]
 +++
 
-## 简介
+本文将基于Debian介绍Docker的安装
 
 <!-- more -->
+
+## 简介
 
 根据官方文档，Docker是一个以容器形式构建、分享、运行应用的平台。
 

@@ -7,9 +7,11 @@ tags = ["图论", "并发", "拓扑排序"]
 categories = ["UE4"]
 +++
 
-## TaskGraph实现概括
+接下来阅读TaskGraph的源码来了解其实现细节
 
 <!-- more -->
+
+## TaskGraph实现概括
 
 首先是线程管理。我们创建的TGraphTask并不能直接运行，需要把它交给某个FTaskThreadBase对象来控制执行。这个FTaskThreadBase可以理解为一个线程，可以把很多个TGraphTask交给他，它会依次执行这些任务（当然也要满足依赖）
 

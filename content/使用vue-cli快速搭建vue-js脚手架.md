@@ -7,9 +7,12 @@ tags = ["Vue.js"]
 categories = ["Node.js"]
 +++
 
-本文基于  
+Vue CLI是Vue.js提供的命令行工具  
+我们可以使用它来快速创建一个脚手架项目
 
 <!-- more -->
+
+本文基于  
 Vue CLI 4.1.2  
 Node.js v13.5.0
 

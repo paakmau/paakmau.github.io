@@ -9,9 +9,9 @@ categories = ["Unity"]
 
 一般游戏中都避不开实体的动态生成与动态销毁。
 
-<!-- more -->
-
 本文演示使用Prefab创建旋转的立方体方阵并定时销毁。
+
+<!-- more -->
 
 ![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191212-030831-HD.gif)
 

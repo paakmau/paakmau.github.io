@@ -7,9 +7,11 @@ tags = ["动态规划", "背包问题"]
 categories = ["算法", "OJ刷题"]
 +++
 
-## 题目描述
+一个01背包问题
 
 <!-- more -->
+
+## 题目描述
 
 The aspiring Roy the Robber has seen a lot of American movies, and knows that the bad guys usually gets caught in the end, often because they become too greedy. He has decided to work in the lucrative business of bank robbery only for a short while, before retiring to a comfortable job at a university.
 

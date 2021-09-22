@@ -7,11 +7,11 @@ tags = ["Unity ECS"]
 categories = ["Unity"]
 +++
 
-## 最终效果
+跟随本文，创建一个立方体Entity，利用一个System控制它不断旋转。
 
 <!-- more -->
 
-跟随本文，创建一个立方体Entity，利用一个System控制它不断旋转。
+## 最终效果
 
 ![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191210-142039-HD.gif)
 

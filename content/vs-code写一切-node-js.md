@@ -8,9 +8,9 @@ categories = ["VS Code"]
 +++
 
 开发Node.js项目可能还是WebStorm功能多一点？？  
+相比之下VS Code比较轻量级
 
 <!-- more -->
-相比之下VS Code比较轻量级
 
 VSC天生支持Node.js不装插件就能调试  
 但是，对于要装各种依赖的Node.js项目，VSC没有自带图形化的管理工具，重度依赖终端，有点蛋疼（虽然有插件我也不乐意装毕竟命令行多方便）

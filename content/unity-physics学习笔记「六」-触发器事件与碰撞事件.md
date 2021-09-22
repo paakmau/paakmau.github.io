@@ -9,8 +9,9 @@ categories = ["Unity"]
 
 这部分内容手册中没有，本文参考的是官方示例代码与官方论坛  
 
-<!-- more -->
 [https://github.com/Unity-Technologies/EntityComponentSystemSamples](https://github.com/Unity-Technologies/EntityComponentSystemSamples)
+
+<!-- more -->
 
 在OOP的物理引擎中，碰撞发生后引擎可以通过调用用户提供的回调函数将碰撞事件传递给用户程序。而在Unity的ECS框架中我们需要使用数据驱动的思路来处理碰撞  
 但是引擎已经把事件处理封装好了，因此我们实现的时候其实看起来跟回调差不多

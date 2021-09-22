@@ -8,9 +8,9 @@ categories = ["Unity"]
 +++
 
 现在Unity的Package Manager中已经有了适用于ECS框架的物理引擎，功能完善  
+可以说Unity的DOTS（面向数据技术栈）已经能够用于制作大部分游戏类型
 
 <!-- more -->
-可以说Unity的DOTS（面向数据技术栈）已经能够用于制作大部分游戏类型
 
 这个系列会介绍目前Unity Physics中的绝大多数内容，与Havok Physics关系不大
 

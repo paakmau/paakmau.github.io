@@ -7,9 +7,11 @@ tags = ["C++", "CMake", "VS Code"]
 categories = ["VS Code"]
 +++
 
-## 环境配置
+VS Code写CMake感觉十分舒适，比VS爽多了
 
 <!-- more -->
+
+## 环境配置
 
 安装C++编译器、C++调试器和CMake，并确保它们在PATH中
 

@@ -7,9 +7,11 @@ tags = ["动态规划", "树形DP"]
 categories = ["算法", "OJ刷题"]
 +++
 
-## 题目描述
+一题简单的树形DP
 
 <!-- more -->
+
+## 题目描述
 
 There is an old stone game, played on an arbitrary general tree T. The goal is to put one stone on the root of T observing the following rules:
 

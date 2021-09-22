@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh">
+	<title>泊谋 - UE4</title>
+	<subtitle>随便写写，开心就行。</subtitle>
+	<link href="https://paakmau.github.io/categories/ue4/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://paakmau.github.io"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2020-05-11T21:50:26+00:00</updated>
+	<id>https://paakmau.github.io/categories/ue4/atom.xml</id>
+	<entry xml:lang="zh">
+		<title>UE4材质结点生成HLSL代码 源码浅析</title>
+		<published>2020-05-11T21:50:26+00:00</published>
+		<updated>2020-05-11T21:50:26+00:00</updated>
+		<link href="https://paakmau.github.io/ue4cai-zhi-jie-dian-sheng-cheng-hlsldai-ma-yuan-ma-qian-xi/" type="text/html"/>
+		<id>https://paakmau.github.io/ue4cai-zhi-jie-dian-sheng-cheng-hlsldai-ma-yuan-ma-qian-xi/</id>
+		<content type="html">&lt;p&gt;使用UE4的材质编辑器的时候我们可以为材质的颜色、粗糙度、金属度等连接一个常量或者纹理结点，如果要实现复杂效果可能还会用到混合结点，最后就可能看到一个完整的材质其实是由一堆结点和它们之间的连线组成&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;然后每一个结点可以理解为一段HLSL代码，然后结点之间的连线则是变量的传递&lt;&#x2F;p&gt;
+&lt;p&gt;比如说我们有一个材质长这样&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;05&#x2F;image-1024x763.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;然后我们查看生成的HLSL代码，发现里面有这几行，基本上跟上图的材质结点对应&lt;&#x2F;p&gt;
+&lt;p&gt;如果要查看HLSL代码，依次点击&lt;br &#x2F;&gt;
+窗口-&amp;gt;着色器代码-&amp;gt;HLSL代码&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;c&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-c &quot;&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Now the rest of the inputs
+&lt;&#x2F;span&gt;&lt;span&gt;MaterialFloat3 Local0 = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;lerp&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;MaterialFloat3&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0.00000000&lt;&#x2F;span&gt;&lt;span&gt;,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0.00000000&lt;&#x2F;span&gt;&lt;span&gt;,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0.00000000&lt;&#x2F;span&gt;&lt;span&gt;),Material.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VectorExpressions&lt;&#x2F;span&gt;&lt;span&gt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;].&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;rgb&lt;&#x2F;span&gt;&lt;span&gt;,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;MaterialFloat&lt;&#x2F;span&gt;&lt;span&gt;(Material.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ScalarExpressions&lt;&#x2F;span&gt;&lt;span&gt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;].&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;x&lt;&#x2F;span&gt;&lt;span&gt;));
+&lt;&#x2F;span&gt;&lt;span&gt;MaterialFloat4 Local1 = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ProcessMaterialColorTextureLookup&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Texture2DSampleBias&lt;&#x2F;span&gt;&lt;span&gt;(Material.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Texture2D_0&lt;&#x2F;span&gt;&lt;span&gt;, Material.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Texture2D_0Sampler&lt;&#x2F;span&gt;&lt;span&gt;,Parameters.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;TexCoords&lt;&#x2F;span&gt;&lt;span&gt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;].&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;xy&lt;&#x2F;span&gt;&lt;span&gt;,View.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;MaterialTextureMipBias&lt;&#x2F;span&gt;&lt;span&gt;));
+&lt;&#x2F;span&gt;&lt;span&gt;MaterialFloat3 Local2 = (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1.00000000 &lt;&#x2F;span&gt;&lt;span&gt;- Local1.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;rgb&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;MaterialFloat4 Local3 = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ProcessMaterialColorTextureLookup&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Texture2DSampleBias&lt;&#x2F;span&gt;&lt;span&gt;(Material.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Texture2D_1&lt;&#x2F;span&gt;&lt;span&gt;, Material.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Texture2D_1Sampler&lt;&#x2F;span&gt;&lt;span&gt;,Parameters.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;TexCoords&lt;&#x2F;span&gt;&lt;span&gt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;].&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;xy&lt;&#x2F;span&gt;&lt;span&gt;,View.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;MaterialTextureMipBias&lt;&#x2F;span&gt;&lt;span&gt;));
+&lt;&#x2F;span&gt;&lt;span&gt;MaterialFloat3 Local4 = (Local2 + Local3.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;r&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;MaterialFloat3 Local5 = (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1.00000000 &lt;&#x2F;span&gt;&lt;span&gt;- Local4);
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;我们容易发现，要把材质结点翻译成HLSL代码，可以从左边出发拓扑排序，也可以从右边的材质结果结点出发递归往左（显然递归比拓排好写）&lt;br &#x2F;&gt;
+然后UE4是用递归的&lt;&#x2F;p&gt;
+&lt;p&gt;接下来我们结合源码看一下UE4是怎么实现的&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;bian-yi-guo-cheng&quot;&gt;编译过程&lt;&#x2F;h2&gt;
+&lt;p&gt;我们从FMaterial的一个成员函数开始&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;**
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;* Compiles this material for Platform, storing the result in OutShaderMap if the compile was synchronous
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;*&#x2F;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;bool &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;BeginCompileShaderMap&lt;&#x2F;span&gt;&lt;span&gt;(
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const&lt;&#x2F;span&gt;&lt;span&gt; FMaterialShaderMapId&amp;amp; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ShaderMapId&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const&lt;&#x2F;span&gt;&lt;span&gt; FStaticParameterSet &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;StaticParameterSet&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;EShaderPlatform &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Platform&lt;&#x2F;span&gt;&lt;span&gt;, 
+&lt;&#x2F;span&gt;&lt;span&gt;TRefCountPtr&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class&lt;&#x2F;span&gt;&lt;span&gt; FMaterialShaderMap&amp;gt;&amp;amp; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;OutShaderMap&lt;&#x2F;span&gt;&lt;span&gt;, 
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const&lt;&#x2F;span&gt;&lt;span&gt; ITargetPlatform* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;TargetPlatform &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;nullptr&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;这个函数会把材质的编译结果放到OutShaderMap里&lt;br &#x2F;&gt;
+并且每个材质ShaderMapId都是唯一的&lt;&#x2F;p&gt;
+&lt;p&gt;它会先创建一个FMaterialShaderMap对象&lt;br &#x2F;&gt;
+接下来创建FHLSLMaterialTranslator对象并用它生成着色器的HLSL代码&lt;br &#x2F;&gt;
+最后调用FMaterialShaderMap的Compile方法编译这段代码并保存结果&lt;&#x2F;p&gt;
+&lt;p&gt;节选关键代码如下&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; ...
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;TRefCountPtr&amp;lt;FMaterialShaderMap&amp;gt; NewShaderMap = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;new &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;FMaterialShaderMap&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; ...
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 生成着色器代码
+&lt;&#x2F;span&gt;&lt;span&gt;FMaterialCompilationOutput NewCompilationOutput;
+&lt;&#x2F;span&gt;&lt;span&gt;FHLSLMaterialTranslator &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;MaterialTranslator&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;this&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;NewCompilationOutput&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;StaticParameterSet&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Platform&lt;&#x2F;span&gt;&lt;span&gt;,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetQualityLevel&lt;&#x2F;span&gt;&lt;span&gt;(), ShaderMapId.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;FeatureLevel&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;TargetPlatform&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;bSuccess = MaterialTranslator.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Translate&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; ...
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 为材质编译着色器
+&lt;&#x2F;span&gt;&lt;span&gt;NewShaderMap-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Compile&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;this&lt;&#x2F;span&gt;&lt;span&gt;, ShaderMapId, MaterialEnvironment, NewCompilationOutput, Platform, bSynchronousCompile);
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;接下来，我们着重看FHLSLMaterialTranslator的Translate方法，在里面会发现一个很显眼的东西，没错这个就是材质结果结点的各个输入插槽&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Rest of properties
+&lt;&#x2F;span&gt;&lt;span&gt;Chunk[MP_EmissiveColor]= Material-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompilePropertyAndSetMaterialProperty&lt;&#x2F;span&gt;&lt;span&gt;(MP_EmissiveColor,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;this&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;Chunk[MP_DiffuseColor]= Material-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompilePropertyAndSetMaterialProperty&lt;&#x2F;span&gt;&lt;span&gt;(MP_DiffuseColor,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;this&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;Chunk[MP_SpecularColor]= Material-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompilePropertyAndSetMaterialProperty&lt;&#x2F;span&gt;&lt;span&gt;(MP_SpecularColor,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;this&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;Chunk[MP_BaseColor]= Material-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompilePropertyAndSetMaterialProperty&lt;&#x2F;span&gt;&lt;span&gt;(MP_BaseColor,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;this&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;Chunk[MP_Metallic]= Material-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompilePropertyAndSetMaterialProperty&lt;&#x2F;span&gt;&lt;span&gt;(MP_Metallic,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;this&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;Chunk[MP_Specular]= Material-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompilePropertyAndSetMaterialProperty&lt;&#x2F;span&gt;&lt;span&gt;(MP_Specular,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;this&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;Chunk[MP_Roughness]= Material-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompilePropertyAndSetMaterialProperty&lt;&#x2F;span&gt;&lt;span&gt;(MP_Roughness,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;this&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;Chunk[MP_Opacity]= Material-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompilePropertyAndSetMaterialProperty&lt;&#x2F;span&gt;&lt;span&gt;(MP_Opacity,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;this&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;Chunk[MP_OpacityMask]= Material-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompilePropertyAndSetMaterialProperty&lt;&#x2F;span&gt;&lt;span&gt;(MP_OpacityMask,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;this&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;Chunk[MP_WorldPositionOffset]= Material-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompilePropertyAndSetMaterialProperty&lt;&#x2F;span&gt;&lt;span&gt;(MP_WorldPositionOffset,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;this&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;Chunk[MP_WorldDisplacement]= Material-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompilePropertyAndSetMaterialProperty&lt;&#x2F;span&gt;&lt;span&gt;(MP_WorldDisplacement,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;this&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;Chunk[MP_TessellationMultiplier]= Material-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompilePropertyAndSetMaterialProperty&lt;&#x2F;span&gt;&lt;span&gt;(MP_TessellationMultiplier,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;this&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;于是我们去看FMaterialResource的CompilePropertyAndSetMaterialProperty方法&lt;&#x2F;p&gt;
+&lt;p&gt;注意一下FMaterialResource是FMaterial接口的一个实现，它里面会存一个UMaterial实例或者UMaterialInstance实例，这两种实例都是继承自UMaterialInterface接口&lt;&#x2F;p&gt;
+&lt;p&gt;这个方法里面有一个switch，对于不同类型的输入插槽（或者说EMaterialProperty），它有不同的处理，不过基本都是调用UMaterialInterface的CompileProperty方法，代码太乱就不贴了&lt;&#x2F;p&gt;
+&lt;p&gt;我们直接去看UMaterialInterface的CompileProperty方法，它调用了CompilePropertyEx方法，这个方法是个虚函数，发现UMaterial和UMaterialInterface都有自己的实现，但是UMaterialInterface是基于UMaterial的因此我们直接看UMaterial的CompilePropertyEx方法就行&lt;&#x2F;p&gt;
+&lt;p&gt;发现里面又是一个switch&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span&gt;int32 UMaterial::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;CompilePropertyEx&lt;&#x2F;span&gt;&lt;span&gt;( FMaterialCompiler* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Compiler&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const&lt;&#x2F;span&gt;&lt;span&gt; FGuid&amp;amp; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;AttributeID &lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const&lt;&#x2F;span&gt;&lt;span&gt; EMaterialProperty Property = FMaterialAttributeDefinitionMap::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetProperty&lt;&#x2F;span&gt;&lt;span&gt;(AttributeID);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span&gt;( bUseMaterialAttributes &amp;amp;&amp;amp; MP_DiffuseColor != Property &amp;amp;&amp;amp; MP_SpecularColor != Property )
+&lt;&#x2F;span&gt;&lt;span&gt;    {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; MaterialAttributes.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompileWithDefault&lt;&#x2F;span&gt;&lt;span&gt;(Compiler, AttributeID);
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;switch &lt;&#x2F;span&gt;&lt;span&gt;(Property)
+&lt;&#x2F;span&gt;&lt;span&gt;    {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;case&lt;&#x2F;span&gt;&lt;span&gt; MP_Opacity:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; Opacity.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompileWithDefault&lt;&#x2F;span&gt;&lt;span&gt;(Compiler, Property);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;case&lt;&#x2F;span&gt;&lt;span&gt; MP_OpacityMask:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; OpacityMask.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompileWithDefault&lt;&#x2F;span&gt;&lt;span&gt;(Compiler, Property);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;case&lt;&#x2F;span&gt;&lt;span&gt; MP_Metallic:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; Metallic.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompileWithDefault&lt;&#x2F;span&gt;&lt;span&gt;(Compiler, Property);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;case&lt;&#x2F;span&gt;&lt;span&gt; MP_Specular:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; Specular.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompileWithDefault&lt;&#x2F;span&gt;&lt;span&gt;(Compiler, Property);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;case&lt;&#x2F;span&gt;&lt;span&gt; MP_Roughness:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; Roughness.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompileWithDefault&lt;&#x2F;span&gt;&lt;span&gt;(Compiler, Property);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;case&lt;&#x2F;span&gt;&lt;span&gt; MP_TessellationMultiplier:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; TessellationMultiplier.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompileWithDefault&lt;&#x2F;span&gt;&lt;span&gt;(Compiler, Property);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;case&lt;&#x2F;span&gt;&lt;span&gt; MP_CustomData0:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; ClearCoat.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompileWithDefault&lt;&#x2F;span&gt;&lt;span&gt;(Compiler, Property);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;case&lt;&#x2F;span&gt;&lt;span&gt; MP_CustomData1:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; ClearCoatRoughness.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompileWithDefault&lt;&#x2F;span&gt;&lt;span&gt;(Compiler, Property);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;case&lt;&#x2F;span&gt;&lt;span&gt; MP_AmbientOcclusion:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; AmbientOcclusion.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompileWithDefault&lt;&#x2F;span&gt;&lt;span&gt;(Compiler, Property);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;case&lt;&#x2F;span&gt;&lt;span&gt; MP_Refraction:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; Refraction.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompileWithDefault&lt;&#x2F;span&gt;&lt;span&gt;(Compiler, Property);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;case&lt;&#x2F;span&gt;&lt;span&gt; MP_EmissiveColor:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; EmissiveColor.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompileWithDefault&lt;&#x2F;span&gt;&lt;span&gt;(Compiler, Property);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;case&lt;&#x2F;span&gt;&lt;span&gt; MP_BaseColor:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; BaseColor.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompileWithDefault&lt;&#x2F;span&gt;&lt;span&gt;(Compiler, Property);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;case&lt;&#x2F;span&gt;&lt;span&gt; MP_SubsurfaceColor:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; SubsurfaceColor.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompileWithDefault&lt;&#x2F;span&gt;&lt;span&gt;(Compiler, Property);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;case&lt;&#x2F;span&gt;&lt;span&gt; MP_Normal:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; Normal.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompileWithDefault&lt;&#x2F;span&gt;&lt;span&gt;(Compiler, Property);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;case&lt;&#x2F;span&gt;&lt;span&gt; MP_WorldPositionOffset:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; WorldPositionOffset.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompileWithDefault&lt;&#x2F;span&gt;&lt;span&gt;(Compiler, Property);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;case&lt;&#x2F;span&gt;&lt;span&gt; MP_WorldDisplacement:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; WorldDisplacement.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompileWithDefault&lt;&#x2F;span&gt;&lt;span&gt;(Compiler, Property);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;case&lt;&#x2F;span&gt;&lt;span&gt; MP_PixelDepthOffset:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; PixelDepthOffset.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompileWithDefault&lt;&#x2F;span&gt;&lt;span&gt;(Compiler, Property);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;case&lt;&#x2F;span&gt;&lt;span&gt; MP_ShadingModel:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; ShadingModelFromMaterialExpression.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompileWithDefault&lt;&#x2F;span&gt;&lt;span&gt;(Compiler, Property);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;default&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(Property &amp;gt;= MP_CustomizedUVs0 &amp;amp;&amp;amp; Property &amp;lt;= MP_CustomizedUVs7)
+&lt;&#x2F;span&gt;&lt;span&gt;            {
+&lt;&#x2F;span&gt;&lt;span&gt;                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const&lt;&#x2F;span&gt;&lt;span&gt; int32 TextureCoordinateIndex = Property - MP_CustomizedUVs0;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(CustomizedUVs[TextureCoordinateIndex].&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Expression &lt;&#x2F;span&gt;&lt;span&gt;&amp;amp;&amp;amp; TextureCoordinateIndex &amp;lt; NumCustomizedUVs)
+&lt;&#x2F;span&gt;&lt;span&gt;                {
+&lt;&#x2F;span&gt;&lt;span&gt;                    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; CustomizedUVs[TextureCoordinateIndex].&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompileWithDefault&lt;&#x2F;span&gt;&lt;span&gt;(Compiler, Property);
+&lt;&#x2F;span&gt;&lt;span&gt;                }
+&lt;&#x2F;span&gt;&lt;span&gt;                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;else
+&lt;&#x2F;span&gt;&lt;span&gt;                {
+&lt;&#x2F;span&gt;&lt;span&gt;                    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; The user did not customize this UV, pass through the vertex texture coordinates
+&lt;&#x2F;span&gt;&lt;span&gt;                    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; Compiler-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;TextureCoordinate&lt;&#x2F;span&gt;&lt;span&gt;(TextureCoordinateIndex, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;false&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;false&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;                }
+&lt;&#x2F;span&gt;&lt;span&gt;            }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;check&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; INDEX_NONE;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;于是我们随便看一个插槽的CompileWithDefault方法，比如说BaseColor，BaseColor变量是一个FColorMaterialInput类型的插槽&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span&gt;int32 FColorMaterialInput::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;CompileWithDefault&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class&lt;&#x2F;span&gt;&lt;span&gt; FMaterialCompiler* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Compiler&lt;&#x2F;span&gt;&lt;span&gt;, EMaterialProperty &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Property&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(UseConstant)
+&lt;&#x2F;span&gt;&lt;span&gt;    {
+&lt;&#x2F;span&gt;&lt;span&gt;        FLinearColor &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;LinearColor&lt;&#x2F;span&gt;&lt;span&gt;(Constant);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; Compiler-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Constant3&lt;&#x2F;span&gt;&lt;span&gt;(LinearColor.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;R&lt;&#x2F;span&gt;&lt;span&gt;, LinearColor.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;G&lt;&#x2F;span&gt;&lt;span&gt;, LinearColor.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;B&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;else if &lt;&#x2F;span&gt;&lt;span&gt;(Expression)
+&lt;&#x2F;span&gt;&lt;span&gt;    {
+&lt;&#x2F;span&gt;&lt;span&gt;        int32 ResultIndex = FExpressionInput::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Compile&lt;&#x2F;span&gt;&lt;span&gt;(Compiler);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(ResultIndex != INDEX_NONE)
+&lt;&#x2F;span&gt;&lt;span&gt;        {
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; ResultIndex;
+&lt;&#x2F;span&gt;&lt;span&gt;        }
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; Compiler-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ForceCast&lt;&#x2F;span&gt;&lt;span&gt;(FMaterialAttributeDefinitionMap::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompileDefaultExpression&lt;&#x2F;span&gt;&lt;span&gt;(Compiler, Property), MCT_Float3);
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;发现有常量和表达式两种情况，常量就是一个常量的颜色结点，表达式就是使用了混合结点或者纹理结点等等复杂的结点&lt;&#x2F;p&gt;
+&lt;p&gt;对于表达式我们看到它调用了基类FExpressionInput的Compile方法&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span&gt;int32 FExpressionInput::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;Compile&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class&lt;&#x2F;span&gt;&lt;span&gt; FMaterialCompiler* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Compiler&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span&gt;(Expression)
+&lt;&#x2F;span&gt;&lt;span&gt;    {
+&lt;&#x2F;span&gt;&lt;span&gt;        Expression-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ValidateState&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        int32 ExpressionResult = Compiler-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CallExpression&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;FMaterialExpressionKey&lt;&#x2F;span&gt;&lt;span&gt;(Expression, OutputIndex, Compiler-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetMaterialAttribute&lt;&#x2F;span&gt;&lt;span&gt;(), Compiler-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;IsCurrentlyCompilingForPreviousFrame&lt;&#x2F;span&gt;&lt;span&gt;()),Compiler);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span&gt;(Mask &amp;amp;&amp;amp; ExpressionResult != INDEX_NONE)
+&lt;&#x2F;span&gt;&lt;span&gt;        {
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; Compiler-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ComponentMask&lt;&#x2F;span&gt;&lt;span&gt;(
+&lt;&#x2F;span&gt;&lt;span&gt;                ExpressionResult,
+&lt;&#x2F;span&gt;&lt;span&gt;                !!MaskR,!!MaskG,!!MaskB,!!MaskA
+&lt;&#x2F;span&gt;&lt;span&gt;            );
+&lt;&#x2F;span&gt;&lt;span&gt;        }
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;else
+&lt;&#x2F;span&gt;&lt;span&gt;        {
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; ExpressionResult;
+&lt;&#x2F;span&gt;&lt;span&gt;        }
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;else
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; INDEX_NONE;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;又调用了FMaterialCompiler的CallExpression方法，而且把表达式传过去了&lt;&#x2F;p&gt;
+&lt;p&gt;在CallExpression方法里，它会调用表达式ExpressionKey.Expression的Compile方法&lt;&#x2F;p&gt;
+&lt;p&gt;然后我们可以看到Expression是一个UMaterialExpression接口的实例，它有多种实现&lt;&#x2F;p&gt;
+&lt;p&gt;稍微看一下加法表达式的Compile实现&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span&gt;int32 UMaterialExpressionAdd::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;Compile&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class&lt;&#x2F;span&gt;&lt;span&gt; FMaterialCompiler* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Compiler&lt;&#x2F;span&gt;&lt;span&gt;, int32 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;OutputIndex&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; if the input is hooked up, use it, otherwise use the internal constant
+&lt;&#x2F;span&gt;&lt;span&gt;    int32 Arg1 = A.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetTracedInput&lt;&#x2F;span&gt;&lt;span&gt;().&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Expression &lt;&#x2F;span&gt;&lt;span&gt;? A.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Compile&lt;&#x2F;span&gt;&lt;span&gt;(Compiler) : Compiler-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Constant&lt;&#x2F;span&gt;&lt;span&gt;(ConstA);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; if the input is hooked up, use it, otherwise use the internal constant
+&lt;&#x2F;span&gt;&lt;span&gt;    int32 Arg2 = B.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetTracedInput&lt;&#x2F;span&gt;&lt;span&gt;().&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Expression &lt;&#x2F;span&gt;&lt;span&gt;? B.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Compile&lt;&#x2F;span&gt;&lt;span&gt;(Compiler) : Compiler-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Constant&lt;&#x2F;span&gt;&lt;span&gt;(ConstB);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; Compiler-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Add&lt;&#x2F;span&gt;&lt;span&gt;(Arg1, Arg2);
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;可以看到递归是在这里实现的，然后最后一行Complier的Add方法是由FHLSLMaterialTranslator提供的&lt;br &#x2F;&gt;
+返回值是这个表达式的唯一索引值，可以通过索引找到表达式&lt;&#x2F;p&gt;
+&lt;p&gt;生成HLSL代码的逻辑就在FHLSLMaterialTranslator的Add方法里，我们也可以看一下&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;virtual&lt;&#x2F;span&gt;&lt;span&gt; int32 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;Add&lt;&#x2F;span&gt;&lt;span&gt;(int32 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;A&lt;&#x2F;span&gt;&lt;span&gt;,int32 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;B&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;override
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span&gt;(A == INDEX_NONE  B == INDEX_NONE)
+&lt;&#x2F;span&gt;&lt;span&gt;    {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; INDEX_NONE;
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const&lt;&#x2F;span&gt;&lt;span&gt; uint64 Hash = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CityHash128to64&lt;&#x2F;span&gt;&lt;span&gt;({ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetParameterHash&lt;&#x2F;span&gt;&lt;span&gt;(A), &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetParameterHash&lt;&#x2F;span&gt;&lt;span&gt;(B) });
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetParameterUniformExpression&lt;&#x2F;span&gt;&lt;span&gt;(A) &amp;amp;&amp;amp; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetParameterUniformExpression&lt;&#x2F;span&gt;&lt;span&gt;(B))
+&lt;&#x2F;span&gt;&lt;span&gt;    {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;AddUniformExpressionWithHash&lt;&#x2F;span&gt;&lt;span&gt;(Hash, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;new &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;FMaterialUniformExpressionFoldedMath&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetParameterUniformExpression&lt;&#x2F;span&gt;&lt;span&gt;(A),&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetParameterUniformExpression&lt;&#x2F;span&gt;&lt;span&gt;(B),FMO_Add),&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetArithmeticResultType&lt;&#x2F;span&gt;&lt;span&gt;(A,B),&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;TEXT&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%s&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; + &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%s&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;),*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetParameterCode&lt;&#x2F;span&gt;&lt;span&gt;(A),*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetParameterCode&lt;&#x2F;span&gt;&lt;span&gt;(B));
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;else
+&lt;&#x2F;span&gt;&lt;span&gt;    {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;AddCodeChunkWithHash&lt;&#x2F;span&gt;&lt;span&gt;(Hash, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetArithmeticResultType&lt;&#x2F;span&gt;&lt;span&gt;(A,B),&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;TEXT&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%s&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; + &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%s&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;),*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetParameterCode&lt;&#x2F;span&gt;&lt;span&gt;(A),*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetParameterCode&lt;&#x2F;span&gt;&lt;span&gt;(B));
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;lei-de-guan-xi-zheng-li&quot;&gt;类的关系整理&lt;&#x2F;h2&gt;
+&lt;p&gt;最后我整理了一下上面提到的各个类之间的关系，总的来说还是比较清晰的&lt;&#x2F;p&gt;
+&lt;p&gt;FMaterial和FMaterialResource是逻辑上的材质类，一个FMaterialResource对象可以管理一个UMaterial实例或UMaterialInstance实例，UMaterial上挂着不同类型的FExpressionInput插槽，这些FExpressionInput实现类又包含UMaterialExpression表达式，表达式会层层嵌套形成一张有向无环图&lt;br &#x2F;&gt;
+最后FMaterialCompiler的实现类FHLSLMaterialTranslator主要用于生成HLSL代码&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="zh">
+		<title>UE4 TaskGraph学习笔记「下」 源码浅析</title>
+		<published>2020-03-22T20:52:18+00:00</published>
+		<updated>2020-03-22T20:52:18+00:00</updated>
+		<link href="https://paakmau.github.io/ue4-taskgraphxue-xi-bi-ji-xia-yuan-ma-qian-xi/" type="text/html"/>
+		<id>https://paakmau.github.io/ue4-taskgraphxue-xi-bi-ji-xia-yuan-ma-qian-xi/</id>
+		<content type="html">&lt;h2 id=&quot;taskgraphshi-xian-gai-gua&quot;&gt;TaskGraph实现概括&lt;&#x2F;h2&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;首先是线程管理。我们创建的TGraphTask并不能直接运行，需要把它交给某个FTaskThreadBase对象来控制执行。这个FTaskThreadBase可以理解为一个线程，可以把很多个TGraphTask交给他，它会依次执行这些任务（当然也要满足依赖）&lt;&#x2F;p&gt;
+&lt;p&gt;另外注意到我们可以为TGraphTask指定想要让他执行的线程，于是我们发现对于游戏中的每一个线程都会产生一个FTaskThreadBase对象，这个对象持有他所对应的线程的指针。我们创建的TGraphTask对象会被交给对应的FTaskThreadBase对象，从而在正确的线程上执行&lt;&#x2F;p&gt;
+&lt;p&gt;然后是任务之间依赖关系的处理。我们在CreateTask的时候看起来是把依赖传给了任务，但其实是TGraphTask被他所依赖的所有FGraphEvent持有。这样在一个TGraphTask结束时，他就可以立刻通过FGraphEvent更新依赖于自己的其他TGraphTask的依赖入度，然后如果入度为零就放入执行队列&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;xian-cheng-guan-li&quot;&gt;线程管理&lt;&#x2F;h2&gt;
+&lt;p&gt;TaskGraph的线程管理是基于Runnable的，于是简单的介绍一下它&lt;&#x2F;p&gt;
+&lt;p&gt;一个线程其实是由一个FRunnableThread对象管理，包括了线程优先级，创建等；而我们想要在线程里执行逻辑代码就要需要通过FRunnable，把逻辑代码写在它的Run方法里，然后把它丢给FRunnableThread让真实的线程去执行它&lt;&#x2F;p&gt;
+&lt;p&gt;而TaskGraph里的FTaskThreadBase其实就继承自FRunnable；它同时还持有一个FWorkerThread对象，这个对象又持有FRunnableThread。也就是FTaskThreadBase自己不但能够管理线程，同时还能控制线程去执行逻辑代码&lt;br &#x2F;&gt;
+另外所有的FTaskThreadBase都由一个FTaskGraphImplementation单例持有&lt;&#x2F;p&gt;
+&lt;p&gt;最后看一下FTaskThreadBase的Run方法，就是不断地执行任务&lt;br &#x2F;&gt;
+需要注意的是这些任务都是在满足了依赖之后才会被Run方法访问到，后文会详细描述&lt;br &#x2F;&gt;
+这里贴一下Run的源码&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;virtual&lt;&#x2F;span&gt;&lt;span&gt; uint32 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;Run&lt;&#x2F;span&gt;&lt;span&gt;() &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;override
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;check&lt;&#x2F;span&gt;&lt;span&gt;(OwnerWorker); &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; make sure we are started up
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ProcessTasksUntilQuit&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;    FMemory::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ClearAndDisableTLSCachesOnCurrentThread&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;ftaskthreadbasede-pai-sheng-lei&quot;&gt;FTaskThreadBase的派生类&lt;&#x2F;h2&gt;
+&lt;p&gt;查看源码我们发现这个东西有两个派生类，FTaskThreadAnyThread和FNamedTaskThread，这里简单介绍一下&lt;&#x2F;p&gt;
+&lt;p&gt;FTaskThreadAnyThread比较符合我们的想象（如果你跟我想的一样）&lt;br &#x2F;&gt;
+它由FTaskGraphImplementation单例在实例化的时候创建若干个。然后这个单例维护一个待执行任务的队列，每个FTaskThreadAnyThread在自己的任务执行完成后不断地调用这个单例的FindWork方法获取队列中的任务然后去执行它，可以说所有的FTaskThreadAnyThread共享同一个任务队列（如果不考虑优先级的话）&lt;br &#x2F;&gt;
+还是贴一下FindWork的源码&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span&gt;FBaseGraphTask* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;FindWork&lt;&#x2F;span&gt;&lt;span&gt;(ENamedThreads::Type &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ThreadInNeed&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    int32 LocalNumWorkingThread = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetNumWorkerThreads&lt;&#x2F;span&gt;&lt;span&gt;() + GNumWorkerThreadsToIgnore;
+&lt;&#x2F;span&gt;&lt;span&gt;    int32 MyIndex = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;int32&lt;&#x2F;span&gt;&lt;span&gt;((&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;uint32&lt;&#x2F;span&gt;&lt;span&gt;(ThreadInNeed) - NumNamedThreads) % NumTaskThreadsPerSet);
+&lt;&#x2F;span&gt;&lt;span&gt;    int32 Priority = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;int32&lt;&#x2F;span&gt;&lt;span&gt;((&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;uint32&lt;&#x2F;span&gt;&lt;span&gt;(ThreadInNeed) - NumNamedThreads) &#x2F; NumTaskThreadsPerSet);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;check&lt;&#x2F;span&gt;&lt;span&gt;(MyIndex &amp;gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0 &lt;&#x2F;span&gt;&lt;span&gt;&amp;amp;&amp;amp; MyIndex &amp;lt; LocalNumWorkingThread &amp;amp;&amp;amp;
+&lt;&#x2F;span&gt;&lt;span&gt;    MyIndex &amp;lt; (PLATFORM_64BITS ? &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;63 &lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;32&lt;&#x2F;span&gt;&lt;span&gt;) &amp;amp;&amp;amp;
+&lt;&#x2F;span&gt;&lt;span&gt;    Priority &amp;gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0 &lt;&#x2F;span&gt;&lt;span&gt;&amp;amp;&amp;amp; Priority &amp;lt; ENamedThreads::NumThreadPriorities);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; IncomingAnyThreadTasks[Priority].&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Pop&lt;&#x2F;span&gt;&lt;span&gt;(MyIndex, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;true&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;而FNamedTaskThread比较特殊，根据类名我们知道它管理的是具名线程，也就是主线程、渲染线程这些。而且线程本身也不是由TaskGraph负责创建的&lt;br &#x2F;&gt;
+并且每一个FNamedTaskThread的任务队列是自己负责管理的（因为每个具名线程都是唯一，所以不会存在共享任务队列的可能），这里贴一下它把任务塞进队列的小部分代码&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;virtual void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;EnqueueFromThisThread&lt;&#x2F;span&gt;&lt;span&gt;(int32 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;QueueIndex&lt;&#x2F;span&gt;&lt;span&gt;, FBaseGraphTask* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Task&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;override
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;checkThreadGraph&lt;&#x2F;span&gt;&lt;span&gt;(Task &amp;amp;&amp;amp; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Queue&lt;&#x2F;span&gt;&lt;span&gt;(QueueIndex).&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;StallRestartEvent&lt;&#x2F;span&gt;&lt;span&gt;); &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; make sure we are started up
+&lt;&#x2F;span&gt;&lt;span&gt;    uint32 PriIndex = ENamedThreads::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetTaskPriority&lt;&#x2F;span&gt;&lt;span&gt;(Task-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ThreadToExecuteOn&lt;&#x2F;span&gt;&lt;span&gt;) ? &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0 &lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;    int32 ThreadToStart = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Queue&lt;&#x2F;span&gt;&lt;span&gt;(QueueIndex).&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;StallQueue&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Push&lt;&#x2F;span&gt;&lt;span&gt;(Task, PriIndex);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;check&lt;&#x2F;span&gt;&lt;span&gt;(ThreadToStart &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;); &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; if I am stalled, then how can I be queueing a task?
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;ren-wu-zhi-jian-de-yi-lai-guan-xi&quot;&gt;任务之间的依赖关系&lt;&#x2F;h2&gt;
+&lt;p&gt;上文中提到一个任务只有在满足了依赖的情况下才会被扔进任务队列里，并且任务的完成是通过FGraphEvent来通知依赖于自己的其他任务的&lt;&#x2F;p&gt;
+&lt;p&gt;于是我们先看看FGraphEvent是怎么拿到其他任务的，在CreateTask的时候我们会传入一个FGraphEventRef的数组表示这个任务的依赖，然后跟随调用往下查我们发现有个SetupPrereqs函数它遍历了这个数组然后对每个FGraphEvent都调用它的AddSubsequent方法，把任务自身扔进这些事件的SubsequentList里&lt;br &#x2F;&gt;
+简单贴一下源码&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;bool &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;AddSubsequent&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class&lt;&#x2F;span&gt;&lt;span&gt; FBaseGraphTask* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Task&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; SubsequentList.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;PushIfNotClosed&lt;&#x2F;span&gt;&lt;span&gt;(Task);
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;然后在一个TGraphTask执行结束后，他会调用自己的FGraphEvent的DispatchSubsequents方法，这个方法把SubsequentList里的TGraphTask都Pop出来，调用它们的ConditionalQueueTask方法，把每个任务的依赖数（入度）减一，如果为零了意味着依赖满足，就可以把这个任务扔进任务队列里&lt;br &#x2F;&gt;
+再贴一下源码&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;ConditionalQueueTask&lt;&#x2F;span&gt;&lt;span&gt;(ENamedThreads::Type &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CurrentThread&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(NumberOfPrerequistitesOutstanding.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Decrement&lt;&#x2F;span&gt;&lt;span&gt;()==&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;    {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;QueueTask&lt;&#x2F;span&gt;&lt;span&gt;(CurrentThread);
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;jie-yu&quot;&gt;结语&lt;&#x2F;h2&gt;
+&lt;p&gt;源码终于啃完了，感觉很多写法非常的牛逼&lt;br &#x2F;&gt;
+发现自己C++的高she级pi用cao法zuo还不是很熟悉，可能也是太久没碰UE4了，有空就去把改填的坑填了&lt;&#x2F;p&gt;
+&lt;p&gt;但是实现的思路感觉还是很好理解，甚至有一种随xia心ji所ba欲xie的感觉（比如FTaskThreadAnyThread的公共任务队列就直接扔在FTaskGraphImplementation单例里）&lt;&#x2F;p&gt;
+&lt;p&gt;结合了Runnable的TaskGraph是很好的跨平台基于任务的多线程实现方案，如果要自己写引擎的话这个很好用（抄就完事了）&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="zh">
+		<title>UE4 TaskGraph学习笔记「上」 介绍与实践</title>
+		<published>2020-03-19T13:21:19+00:00</published>
+		<updated>2020-03-19T13:21:19+00:00</updated>
+		<link href="https://paakmau.github.io/ue4-taskgraphxue-xi-bi-ji-shang-shi-jian/" type="text/html"/>
+		<id>https://paakmau.github.io/ue4-taskgraphxue-xi-bi-ji-shang-shi-jian/</id>
+		<content type="html">&lt;p&gt;这个东西跟Unity中的Job很相似，都是基于任务的并行程序设计，可以处理资源竞争与执行顺序问题&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;jian-dan-jie-shao&quot;&gt;简单介绍&lt;&#x2F;h2&gt;
+&lt;p&gt;简单说就是一张有向无环图，每一个任务是节点，任务的依赖关系是边，根据拓扑排序规划任务的执行。如果一个节点的入度为零就可以并行，并且执行完成后删掉自己的出边；否则等待入边的节点执行完成&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;节点是TGraphTask模版类，我们需要自己实现任务类满足它的要求。重点是实现DoTask方法&lt;&#x2F;li&gt;
+&lt;li&gt;边是FGraphEventRef，可以在CreateTask之后得到，可以理解为任务完成的事件；同时在CreateTask的时候可以把其他任务的FGraphEventRef以FGraphEventArray的形式传入以表示依赖（入边）&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;另外，任务类的DoTask方法参数中有一个const FGraphEventRef &amp;amp;MyCompletionGraphEvent，根据变量名我们知道它是任务自身的完成事件。于是我们还可以在这个东西上进行蛇皮操作，比如在本任务完成之前再等待另一个任务完成，但是写起来很乱&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;helloworld&quot;&gt;HelloWorld&lt;&#x2F;h2&gt;
+&lt;p&gt;跟随下面的指引建立两个任务类，然后通过FGraphEventRef指定他们的执行顺序&lt;&#x2F;p&gt;
+&lt;p&gt;准备两个任务类TestTaskA和TestTaskB&lt;br &#x2F;&gt;
+TestTaskA的代码如下，另外一个可以仿照着写&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;TestTaskA
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;:
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;TestTaskA&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;() {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 底层使用了可变参数模板，因此构造函数可以添加任意的参数，但是注意不能传入引用
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 返回任务名
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;static const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;TCHAR&lt;&#x2F;span&gt;&lt;span&gt;* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;GetTaskName&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;() { &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;TEXT&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;TestTask&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;); }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    FORCEINLINE &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;static&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; TStatId &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;GetStatId&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;() { &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;RETURN_QUICK_DECLARE_CYCLE_STAT&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(TestTask, STATGROUP_TaskGraphTasks); }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 返回Task所在的线程
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;static&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; ENamedThreads::Type &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;GetDesiredThread&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;() { &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; ENamedThreads::AnyThread; }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;static&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; ESubsequentsMode::Type &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;GetSubsequentsMode&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;() 
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; ESubsequentsMode::TrackSubsequents;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 任务的执行函数
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;DoTask&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(ENamedThreads::Type &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CurrentThread&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; FGraphEventRef&lt;&#x2F;span&gt;&lt;span&gt;&amp;amp; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;MyCompletionGraphEvent&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 这里是任务的逻辑代码
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; Idx &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;; Idx &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;5&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;; Idx&lt;&#x2F;span&gt;&lt;span&gt;++&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;UE_LOG&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(LogTemp, Log, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;TEXT&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Task A executing&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;));
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;UE_LOG&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(LogTemp, Log, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;TEXT&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Task A completed&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;));
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;创建一个Actor，并修改BeginPlay方法如下&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span&gt;AMyActor::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;BeginPlay&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    Super::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;BeginPlay&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    FGraphEventRef TaskA = TGraphTask&amp;lt;TestTaskA&amp;gt;::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CreateTask&lt;&#x2F;span&gt;&lt;span&gt;().&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ConstructAndDispatchWhenReady&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    FGraphEventArray DependencyForTaskB = { TaskA };
+&lt;&#x2F;span&gt;&lt;span&gt;    FGraphEventRef TaskB = TGraphTask&amp;lt;TestTaskB&amp;gt;::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CreateTask&lt;&#x2F;span&gt;&lt;span&gt;(&amp;amp;DependencyForTaskB).&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ConstructAndDispatchWhenReady&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;最后在输出里看到这样的结果&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;03&#x2F;image.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;parallelfor&quot;&gt;ParallelFor&lt;&#x2F;h2&gt;
+&lt;p&gt;UE4有一个ParallelFor，是对于简单遍历的并行处理，基于TaskGraph，具体去看Runtime&#x2F;Core&#x2F;Public&#x2F;Async&#x2F;ParallelFor.h&lt;br &#x2F;&gt;
+下面给个简单的例子&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ParallelFor&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;100&lt;&#x2F;span&gt;&lt;span&gt;, [](int32 CurrIdx) {
+&lt;&#x2F;span&gt;&lt;span&gt;    int32 Sum = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;(int32 Idx = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;; Idx &amp;lt; CurrIdx * &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;100&lt;&#x2F;span&gt;&lt;span&gt;; ++Idx)
+&lt;&#x2F;span&gt;&lt;span&gt;        Sum += FMath::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Sqrt&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1234.56&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;});
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;dui-bi-unity-c-job-system&quot;&gt;对比Unity C# Job System&lt;&#x2F;h2&gt;
+&lt;p&gt;如果抽象成一张DAG来看，这两个本质上其实就是同一个东西。简单说就是通过建立依赖关系避免资源竞争实现易于管理的并行&lt;&#x2F;p&gt;
+&lt;p&gt;但是Job System相对于TaskGraph在用户代码中出现频率要高得多。因为Unity DOTS天生就能很好的设计并行，甚至Job其实是嵌入在SystemBase里的，对于游戏主逻辑都能被频繁使用；而UE4是OOP，个人理解的话应该主要用于耗时长的计算或者I&#x2F;O任务等，但是把游戏主逻辑放到TaskGraph里是比较困难的&lt;&#x2F;p&gt;
+&lt;p&gt;另外有一个小区别，UE4的ParallerFor与Unity里的ScheduleParallel是不一样的。UE4的ParallelFor其实是基于TaskGraph的顶层；而Unity的ScheduleParallel是Job本身自带的方法&lt;&#x2F;p&gt;
+</content>
+	</entry>
+</feed>

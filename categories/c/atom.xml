@@ -1,0 +1,1398 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh">
+	<title>泊谋 - C++</title>
+	<subtitle>随便写写，开心就行。</subtitle>
+	<link href="https://paakmau.github.io/categories/c/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://paakmau.github.io"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2020-12-20T00:30:45+00:00</updated>
+	<id>https://paakmau.github.io/categories/c/atom.xml</id>
+	<entry xml:lang="zh">
+		<title>C++ Core Guidelines 命名与布局规则</title>
+		<published>2020-12-20T00:30:45+00:00</published>
+		<updated>2020-12-20T00:30:45+00:00</updated>
+		<link href="https://paakmau.github.io/c-core-guidelines-ming-ming-yu-bu-ju-gui-ze/" type="text/html"/>
+		<id>https://paakmau.github.io/c-core-guidelines-ming-ming-yu-bu-ju-gui-ze/</id>
+		<content type="html">&lt;p&gt;C++ Core Guidelines 是现代 C++（目前是 C++17）的一套核心指导方针，考虑了未来的增强与 ISO 技术规格。&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;本文翻译了 NL（Naming and layout rules）部分，原文在这里 &lt;a href=&quot;https:&#x2F;&#x2F;isocpp.github.io&#x2F;CppCoreGuidelines&#x2F;CppCoreGuidelines#nl-naming-and-layout-rules&quot;&gt;C++ Core Guidelines Naming and layout rules&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;统一的命名与布局非常有帮助。因为它最小化了「我的风格比你的风格更好」的争论。然而，目前有非常非常多的不同风格，人们对于它们也很热情（积极或消极）。并且，大多数现实世界的项目会包括许多不同来源的代码，因此对所有的代码使用单一风格进行标准化通常是不可能的。在用户对于指导方针的多次要求之后，ISO C++ 提出了一套规则供用户在没有更好的想法的情况下使用，但是真正的目标是统一风格而不是要提出某个特定的规则。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;nl-1-ru-guo-dai-ma-neng-biao-da-qing-chu-jiu-bu-yao-yong-zhu-shi&quot;&gt;NL.1 如果代码能表达清楚就不要用注释&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;strong&gt;理由&lt;&#x2F;strong&gt; IDE 不会读注释。注释不够代码精确。注释不会更新得像代码一样连贯。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;反面例子&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;auto&lt;&#x2F;span&gt;&lt;span&gt; x = m * v1 + vv;   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; multiply m with v1 and add the result to vv
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;强制措施&lt;&#x2F;strong&gt; 去写一个理解英语口语的 AI 程序，看看能不能比 C++ 更容易解读&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;nl-2-zai-zhu-shi-zhong-biao-da-yi-tu&quot;&gt;NL.2 在注释中表达意图&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;strong&gt;理由&lt;&#x2F;strong&gt; 代码描述的是具体做了什么事情，而不会描述这么做的目的。通常来说，比起代码实现，使用注释能够更加清晰和准确地表达意图。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;例子&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;stable_sort&lt;&#x2F;span&gt;&lt;span&gt;(Sortable&amp;amp; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;c&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; sort c in the order determined by &amp;lt;, keep equal elements (as defined by ==) in
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; their original relative order
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; ... quite a few lines of non-trivial code ...
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;&#x2F;strong&gt; 如果代码的行为跟注释不一致，错误可能在于注释也可能在于代码&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;nl-3-bao-chi-zhu-shi-de-jian-ming-e-yao&quot;&gt;NL.3 保持注释的简明扼要&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;strong&gt;理由&lt;&#x2F;strong&gt; 冗长的注释不易理解，并且因为注释是穿插在源代码中的，反而导致代码不易阅读。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;&#x2F;strong&gt; 使用通俗易懂的英语。我可能丹麦语更熟练，但大多数程序员也许不会；我的代码的维护者可能也不会。避免一些不正规的缩写（原文是指 SMS 用语），并且审查你的语法、标点和大小写。注释的目标是专业化而不是为了看起来酷炫。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;强制措施&lt;&#x2F;strong&gt; 不可能。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;nl-4-wei-hu-tong-yi-de-suo-jin-feng-ge&quot;&gt;NL.4 维护统一的缩进风格&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;strong&gt;理由&lt;&#x2F;strong&gt; 可读性。避免一些愚蠢的错误。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;反面例子&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; i;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;(i = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;; i &amp;lt; max; ++i); &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; bug waiting to happen
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(i == j)
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; i;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;&#x2F;strong&gt; 缩进 if (...)、for (...)、while (...) 之后的语句是一个好的想法。（译者注：但是我就是喜欢一行写完）&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(i &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;error&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;negative argument&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(i &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;error&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;negative argument&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;强制措施&lt;&#x2F;strong&gt; 使用工具&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;nl-5-bi-mian-ba-lei-xing-bian-ma-dao-ming-ming-zhong&quot;&gt;NL.5 避免把类型编码到命名中&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;strong&gt;根本原因&lt;&#x2F;strong&gt; 如果命名中反映的是类型而不是功能，用于提供那种功能的类型就会难以改变。并且，如果变量的类型改变了，使用它的其他代码也需要修改。应当最小化无意的转换&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;反面例子&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;print_int&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;i&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;print_string&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const char&lt;&#x2F;span&gt;&lt;span&gt;*);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;print_int&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;);          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; repetitive, manual type matching
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;print_string&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;xyzzy&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;); &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; repetitive, manual type matching
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;例子&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;i&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;string_view&lt;&#x2F;span&gt;&lt;span&gt;);    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; also works on any string-like sequence
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;);              &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; clear, automatic type matching
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;xyzzy&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; clear, automatic type matching
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;&#x2F;strong&gt; 把类型编码到命名中不仅冗余而且还难以理解（译者注：这是什么奇怪的行为艺术吗）&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span&gt;printS  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; print a std::string
+&lt;&#x2F;span&gt;&lt;span&gt;prints  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; print a C-style string
+&lt;&#x2F;span&gt;&lt;span&gt;printi  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; print an int
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;需要类似匈牙利命名法来编码类型的技术已经被用于无类型的语言中，但是它在诸如 C++ 这样的强类型且是静态类型的语言中通常是不必要的而且具有极大破坏性，因为这种技术已经过时并且它们还干涉了对语言的有效利用（比如函数重载）&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;&#x2F;strong&gt; 一些命名风格使用非常通用（而不是只局限于类型）的前缀来表示变量的通常用途&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;auto&lt;&#x2F;span&gt;&lt;span&gt; p = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;new &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;User&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;auto&lt;&#x2F;span&gt;&lt;span&gt; p = make_unique&amp;lt;User&amp;gt;();
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; note: &amp;quot;p&amp;quot; is not being used to say &amp;quot;raw pointer to type User,&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F;       just generally to say &amp;quot;this is an indirection&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;auto&lt;&#x2F;span&gt;&lt;span&gt; cntHits = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;calc_total_of_hits&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;*...*&#x2F;&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; note: &amp;quot;cnt&amp;quot; is not being used to encode a type,
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F;       just generally to say &amp;quot;this is a count of something&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;这样写不具有破坏性并且没有违反本指导方针因为它没有编码类型信息。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;&#x2F;strong&gt; 一些命名风格区分成员变量和局部变量，可能也有全局变量&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct &lt;&#x2F;span&gt;&lt;span&gt;S {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; m_;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;S&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;m&lt;&#x2F;span&gt;&lt;span&gt;) : &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;m_&lt;&#x2F;span&gt;&lt;span&gt;{&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;abs&lt;&#x2F;span&gt;&lt;span&gt;(m)} { }
+&lt;&#x2F;span&gt;&lt;span&gt;};
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;这样写不具有破坏性并且没有违反本指导方针因为它没有编码类型信息。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;&#x2F;strong&gt; 像 C++ 一样，一些风格区分类型与非类型。比如类型名的首字母大写而变量和函数不会&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;typename&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;typename&lt;&#x2F;span&gt;&lt;span&gt; T&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class&lt;&#x2F;span&gt;&lt;span&gt; HashTable {   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; maps string to T
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; ...
+&lt;&#x2F;span&gt;&lt;span&gt;};
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;HashTable&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt; index;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;这样写不具有破坏性并且没有违反本指导方针因为它没有编码类型信息。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;nl-7-ming-ming-de-chang-du-yao-yu-ta-suo-zai-de-zuo-yong-yu-fan-wei-cheng-da-zhi-de-bi-li&quot;&gt;NL.7 命名的长度要与它所在的作用域范围成大致的比例&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;strong&gt;根本原因&lt;&#x2F;strong&gt; 作用域范围越大，歧义和无意的命名冲突的可能性就越大。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;例子&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;double &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;sqrt&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;double &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;x&lt;&#x2F;span&gt;&lt;span&gt;);   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; return the square root of x; x must be non-negative
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;length&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const char&lt;&#x2F;span&gt;&lt;span&gt;* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;p&lt;&#x2F;span&gt;&lt;span&gt;);  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; return the number of characters in a zero-terminated C-style string
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;length_of_string&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const char &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;zero_terminated_array_of_char&lt;&#x2F;span&gt;&lt;span&gt;[])    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; bad: verbose
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; g;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; bad: global variable with a cryptic name
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; open;   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; bad: global variable with a short, popular name
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;使用 p 作为指针，使用 x 作为浮点变量是符合习俗的且在一个局部的作用域中不会产生歧义&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;强制措施&lt;&#x2F;strong&gt; 谁知道呢&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;nl-8-shi-yong-tong-yi-de-ming-ming-feng-ge&quot;&gt;NL.8 使用统一的命名风格&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;strong&gt;根本原因&lt;&#x2F;strong&gt; 统一的命名风格提高可读性。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;&#x2F;strong&gt; 命名风格有很多种且当你使用多个类库的时候，你不可能遵从它们全部的命名习惯。选择一个主体风格，导入的其他类库就保持它们原本的命名风格。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;例子&lt;&#x2F;strong&gt; ISO Standard：使用小写字母和数字，下划线分隔单词&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;int&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;vector&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;my_map&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;避免双下划线&lt;code&gt;__&lt;&#x2F;code&gt;。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;例子&lt;&#x2F;strong&gt; &lt;a href=&quot;http:&#x2F;&#x2F;www.stroustrup.com&#x2F;Programming&#x2F;PPP-style.pdf&quot;&gt;Stroustrup&lt;&#x2F;a&gt;：自定义的类型和 concepts 的首字母大写，其他与 ISO Standard 相同。&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;int&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;vector&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;My_map&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;例子&lt;&#x2F;strong&gt; 驼峰：单词的首字母大写&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;int&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;vector&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;MyMap&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;myMap&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;有些习惯会把第一个字母也大写，有的不会&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;&#x2F;strong&gt; 如果你使用首字母缩写，尽量和其他标识符长度保持统一&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; mtbf {&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;12&lt;&#x2F;span&gt;&lt;span&gt;};
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; mean_time_between_failures {&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;12&lt;&#x2F;span&gt;&lt;span&gt;}; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; make up your mind
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;强制措施&lt;&#x2F;strong&gt; 可以实现，除了使用外部库的情况&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;nl-9-zhi-you-hong-cai-neng-shi-yong-all-caps-de-xing-shi&quot;&gt;NL.9 只有宏才能使用 ALL_CAPS 的形式&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;strong&gt;理由&lt;&#x2F;strong&gt; 为了避免混淆宏与其他遵守了作用域和类型规则的命名。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;例子&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;SIZE&lt;&#x2F;span&gt;&lt;span&gt;{&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1000&lt;&#x2F;span&gt;&lt;span&gt;};  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Bad, use &amp;#39;size&amp;#39; instead
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; v[SIZE];
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;&#x2F;strong&gt; 不是宏的符号常量也不能用全大写&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;enum &lt;&#x2F;span&gt;&lt;span&gt;bad { BAD, WORSE, HORRIBLE }; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; BAD
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;强制措施&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;标记出现了小写字母的宏&lt;&#x2F;li&gt;
+&lt;li&gt;标记使用 ALL_CAPS 的非宏命名&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;nl-10-you-xian-kao-lu-underscore-style-ming-ming&quot;&gt;NL.10 优先考虑 underscore_style 命名&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;strong&gt;理由&lt;&#x2F;strong&gt; 下划线命名法是最初的 C 和 C++ 风格且它也用于C++标准库&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;&#x2F;strong&gt; 这条规则是只有在你没有其他选择的情况下的默认选项。通常来说，你没有选择而且必须遵守一种确定好的风格来保证代码的统一。对于统一的需求可能会与个人喜好冲突。&lt;&#x2F;p&gt;
+&lt;p&gt;这只是在你没有限制或者更好的想法的情况的一种推荐。这条规则是在对于指导方针的多次请求后才添加的。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;例子&lt;&#x2F;strong&gt; &lt;a href=&quot;http:&#x2F;&#x2F;www.stroustrup.com&#x2F;Programming&#x2F;PPP-style.pdf&quot;&gt;Stroustrup&lt;&#x2F;a&gt;：自定义的类型和 concepts 的首字母大写，其他与 ISO Standard 相同。&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;int&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;vector&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;My_map&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;强制措施&lt;&#x2F;strong&gt; 不可能。（译者注：谁都没有办法阻止我用驼峰，连 ISO C++ 都不行）&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;nl-11-bao-zheng-literal-ke-du-xing&quot;&gt;NL.11 保证 literal 可读性&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;strong&gt;理由&lt;&#x2F;strong&gt; 可读性&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;例子&lt;&#x2F;strong&gt; 使用数组分隔符来避免大段的数字字符串&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;auto&lt;&#x2F;span&gt;&lt;span&gt; c = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;299&amp;#39;792&amp;#39;458&lt;&#x2F;span&gt;&lt;span&gt;; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; m&#x2F;s2
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;auto&lt;&#x2F;span&gt;&lt;span&gt; q2 = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0b0000&amp;#39;1111&amp;#39;0000&amp;#39;0000&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;auto&lt;&#x2F;span&gt;&lt;span&gt; ss_number = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;123&amp;#39;456&amp;#39;7890&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;例子&lt;&#x2F;strong&gt; 在需要声明的地方使用 literal 后缀&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;auto&lt;&#x2F;span&gt;&lt;span&gt; hello = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Hello!&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;s; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; a std::string
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;auto&lt;&#x2F;span&gt;&lt;span&gt; world = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;world&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; a C-style string
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;auto&lt;&#x2F;span&gt;&lt;span&gt; interval = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;100&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;ms&lt;&#x2F;span&gt;&lt;span&gt;;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; using &amp;lt;chrono&amp;gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;&#x2F;strong&gt; Literals 不应当作为魔法常量穿插在代码中，但是让它们在被定义的地方保持可读性仍然是一种好想法。在一长串数字的字符串中打错字符是很常见的。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;强制措施&lt;&#x2F;strong&gt; 标记长串的数字。问题在于多长才算长；可能是7。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;nl-15-jin-ke-neng-shao-de-shi-yong-kong-ge&quot;&gt;NL.15 尽可能少的使用空格&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;strong&gt;理由&lt;&#x2F;strong&gt; 太多的空格使得文本变长而且会分散程序员的注意力。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;反面例子&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; map &lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;argc&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;char &lt;&#x2F;span&gt;&lt;span&gt;* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;argv &lt;&#x2F;span&gt;&lt;span&gt;[ ])
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; ...
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;例子&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;map&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;argc&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;char&lt;&#x2F;span&gt;&lt;span&gt;* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;argv&lt;&#x2F;span&gt;&lt;span&gt;[])
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; ...
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;&#x2F;strong&gt; 一些 IDE 有他们自己的见解并且会添加使人分心的空格。&lt;&#x2F;p&gt;
+&lt;p&gt;这只是在你没有限制或者更好的想法的情况的一种推荐。这条规则是在对于指导方针的多次请求后才添加的。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;&#x2F;strong&gt; 我们同样重视合理放置的空格，它能为可读性提供重大的帮助。不要矫枉过正。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;nl-16-shi-yong-guan-yong-de-lei-cheng-yuan-sheng-ming-shun-xu&quot;&gt;NL.16 使用惯用的类成员声明顺序&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;strong&gt;理由&lt;&#x2F;strong&gt; 一个惯用的成员顺序提高可读性。&lt;&#x2F;p&gt;
+&lt;p&gt;声明一个类的时候应当使用如下顺序&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;类型：类、enums 和别名（&lt;code&gt;using&lt;&#x2F;code&gt;）&lt;&#x2F;li&gt;
+&lt;li&gt;构造函数、赋值函数、析构函数&lt;&#x2F;li&gt;
+&lt;li&gt;普通函数&lt;&#x2F;li&gt;
+&lt;li&gt;数据成员&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;使用 public 到 protected 再到 private的顺序。&lt;&#x2F;p&gt;
+&lt;p&gt;这只是在你没有限制或者更好的想法的情况的一种推荐。这条规则是在对于指导方针的多次请求后才添加的。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;例子&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;X &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;:
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; interface
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;protected&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;:
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; unchecked function for use by derived class implementations
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;private&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;:
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; implementation details
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;例子&lt;&#x2F;strong&gt; 有时候成员的默认顺序会跟分离公共接口和实现细节的意愿产生冲突。这种情况下，私有类型和函数可以跟私有数据成员放在一起。（译者注：简单说就是优先考虑访问限定符）&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;X &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;:
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; interface
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;protected&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;:
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; unchecked function for use by derived class implementations
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;private&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;:
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; implementation details (types, functions, and data)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;反面例子&lt;&#x2F;strong&gt; 避免把同一个访问限定符分散地多次声明在另一种访问限定符之间&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;X &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; bad
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;:
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;();
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;:
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;g&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;();
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; ...
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;使用宏来声明成员的分组通常最终会导致违反这些成员声明顺序的规则。但是无论如何，宏还是会隐藏掉最终会表达出来的东西。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;强制措施&lt;&#x2F;strong&gt; 标记推荐的顺序的起点。将会有很多遗留代码不遵守这个规则。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;nl-17-shi-yong-yuan-yu-k-r-de-bu-ju&quot;&gt;NL.17 使用源于 K&amp;amp;R 的布局&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;strong&gt;理由&lt;&#x2F;strong&gt; 这是最初的 C 和 C++ 布局。它很好地保留了垂直空间。它很好地区分了不同不同的语言结构（比如函数和类）&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;&#x2F;strong&gt; 在 C++ 上下文中，这种风格通常被称作“Stroustrup”。&lt;&#x2F;p&gt;
+&lt;p&gt;这只是在你没有限制或者更好的想法的情况的一种推荐。这条规则是在对于指导方针的多次请求后才添加的。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;例子&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct &lt;&#x2F;span&gt;&lt;span&gt;Cable {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; x;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; ...
+&lt;&#x2F;span&gt;&lt;span&gt;};
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;double &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;foo&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;x&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0 &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt; x) {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; ...
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;switch &lt;&#x2F;span&gt;&lt;span&gt;(x) {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;case &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; ...
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;break&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;case&lt;&#x2F;span&gt;&lt;span&gt; amazing:
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; ...
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;break&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;default&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; ...
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;break&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0 &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt; x)
+&lt;&#x2F;span&gt;&lt;span&gt;        ++x;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(x &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;something&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;else
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;something_else&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; some_value;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;注意 if 和 ( 之间的空格&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;&#x2F;strong&gt; 对于每个语句使用单独的一行，比如 if 的一个分支，还有 for 的 body。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;&#x2F;strong&gt; 类和结构体的 { 不会另起一行，但是函数的 { 会占用单独的一行（译者注：邪教！！）&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;&#x2F;strong&gt; 你自己的用户定义类型应当首字母大写，从而跟标准库区分开来。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;&#x2F;strong&gt; 函数名不要首字母大写&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;强制措施&lt;&#x2F;strong&gt; 如果你需要的话，使用 IDE 的自动格式化。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;nl-18-shi-yong-c-feng-ge-de-sheng-ming-bu-ju&quot;&gt;NL.18 使用 C++ 风格的声明布局&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;strong&gt;理由&lt;&#x2F;strong&gt; C 风格的命名布局强调表达式跟语法的使用，然而 C++ 风格强调类型。表达式不会持有引用。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;例子&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span&gt;T&amp;amp; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;operator[]&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;size_t&lt;&#x2F;span&gt;&lt;span&gt;);   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; OK
+&lt;&#x2F;span&gt;&lt;span&gt;T &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;operator[]&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;size_t&lt;&#x2F;span&gt;&lt;span&gt;);   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; just strange
+&lt;&#x2F;span&gt;&lt;span&gt;T &amp;amp; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;operator[]&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;size_t&lt;&#x2F;span&gt;&lt;span&gt;);   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; undecided
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;这只是在你没有限制或者更好的想法的情况的一种推荐。这条规则是在对于指导方针的多次请求后才添加的。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;强制措施&lt;&#x2F;strong&gt; 由于历史原因，这是不可能的。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;nl-19-bi-mian-rong-yi-wu-du-de-ming-ming&quot;&gt;NL.19 避免容易误读的命名&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;strong&gt;理由&lt;&#x2F;strong&gt; 可读性。不是每个人都有轻易识别所有字母的屏幕。我们很容易就会误读具有相似拼写或者具有轻微拼写错误的单词。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;例子&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; oO01lL = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;6&lt;&#x2F;span&gt;&lt;span&gt;; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; bad
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; splunk = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;7&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; splonk = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;8&lt;&#x2F;span&gt;&lt;span&gt;; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; bad: splunk and splonk are easily confused
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;强制措施&lt;&#x2F;strong&gt; 谁知道呢&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;nl-20-bu-yao-ba-liang-ge-yu-ju-fang-tong-yi-xing&quot;&gt;NL.20 不要把两个语句放同一行&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;strong&gt;理由&lt;&#x2F;strong&gt; 可读性。如果两个语句放同一行真的很容易漏看。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;例子&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; x = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;7&lt;&#x2F;span&gt;&lt;span&gt;; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;char&lt;&#x2F;span&gt;&lt;span&gt;* p = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;29&lt;&#x2F;span&gt;&lt;span&gt;;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; don&amp;#39;t
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; x = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;7&lt;&#x2F;span&gt;&lt;span&gt;; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;(x);  ++x;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; don&amp;#39;t
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;强制措施&lt;&#x2F;strong&gt; 很简单&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;nl-21-mei-xing-zhi-sheng-ming-yi-ge-bian-liang&quot;&gt;NL.21 每行只声明一个变量&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;strong&gt;理由&lt;&#x2F;strong&gt; 可读性。最小化声明句法的误解。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;&#x2F;strong&gt; 更多细节可以参考 ES.10。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;nl-25-bu-yao-ba-void-fang-zai-han-shu-can-shu-li&quot;&gt;NL.25 不要把 void 放在函数参数里&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;strong&gt;理由&lt;&#x2F;strong&gt; 冗余并且只有在考虑 C 的兼容性时才需要这样做。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;例子&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void&lt;&#x2F;span&gt;&lt;span&gt;);   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; bad
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;g&lt;&#x2F;span&gt;&lt;span&gt;();       &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; better
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;&#x2F;strong&gt; 甚至连 Dennis Ritchie 都认为 &lt;code&gt;void f(void)&lt;&#x2F;code&gt; 是一个非常令人憎恨的东西。当函数原型非常少的时候，你可以为这个 C 的可恨的东西辩护。因此不应当使用：&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;2&lt;&#x2F;span&gt;&lt;span&gt;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;weird but valid C89&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; hope that f() is defined int f(a, b, c) char* c; { &#x2F;* ... *&#x2F; }
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;这会导致重大的问题，但是不会在 21 世纪出现，也不会在 C++ 中出现。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;nl-26-shi-yong-guan-yong-de-const-biao-ji&quot;&gt;NL.26 使用惯用的 const 标记&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;strong&gt;理由&lt;&#x2F;strong&gt; 对于更多的程序员而言，他们更熟悉惯用的标记。维持在大范围的代码库中的统一性。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;例子&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const int&lt;&#x2F;span&gt;&lt;span&gt; x = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;7&lt;&#x2F;span&gt;&lt;span&gt;;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; OK
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int const&lt;&#x2F;span&gt;&lt;span&gt; y = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;9&lt;&#x2F;span&gt;&lt;span&gt;;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; bad
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const int &lt;&#x2F;span&gt;&lt;span&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const&lt;&#x2F;span&gt;&lt;span&gt; p = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;nullptr&lt;&#x2F;span&gt;&lt;span&gt;;   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; OK, constant pointer to constant int
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int const &lt;&#x2F;span&gt;&lt;span&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const&lt;&#x2F;span&gt;&lt;span&gt; p = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;nullptr&lt;&#x2F;span&gt;&lt;span&gt;;   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; bad, constant pointer to constant int
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;&#x2F;strong&gt; 我们当然知道你可能会说把 const 放在后面更加的符合逻辑，但是这可能会使得更多的人非常困惑，特别是初学者，他们依赖于使用更加常用的符合习惯的风格的教学材料。&lt;&#x2F;p&gt;
+&lt;p&gt;跟之前一样，记住这些命名和布局的规则的目的只是为了保持统一性，不可能符合所有人的审美。&lt;&#x2F;p&gt;
+&lt;p&gt;这只是在你没有限制或者更好的想法的情况的一种推荐。这条规则是在对于指导方针的多次请求后才添加的。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;强制措施&lt;&#x2F;strong&gt; 标记出现在类型名之后的 const。&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="zh">
+		<title>C++依赖包管理解决方案对比</title>
+		<published>2020-12-12T02:39:41+00:00</published>
+		<updated>2020-12-12T02:39:41+00:00</updated>
+		<link href="https://paakmau.github.io/cyi-lai-bao-guan-li-jie-jue-fang-an-dui-bi/" type="text/html"/>
+		<id>https://paakmau.github.io/cyi-lai-bao-guan-li-jie-jue-fang-an-dui-bi/</id>
+		<content type="html">&lt;p&gt;刚刚有个朋友问我加老师发生甚么事了，我说两个年轻人，一个C#，一个Java&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;他们说，哎，我在加包依赖的时候冲突了，加老师你能不能教教我CMake功法，帮助治疗一下，我的依赖包，我说可以&lt;br &#x2F;&gt;
+我说你们在构建工具里练死劲不好用，他不服气，我说小朋友，你用两行的dependency，折我一行的find_package，他折不动，他说你这没用我说我这有用，这用了系统包管理，是化劲，传统编程是讲化劲的四两拨千斤，两百多斤的pip install再import，都折不动我这一行依赖系统包管理器的find_package&lt;br &#x2F;&gt;
+啊，他非和我试手，我说可以，啪就站起来了，很快啊！然后上来就是一个import，一个using，我全都防出去了，防出去了啊，防出去以后自然是传统编程以点到为止我用#include加宏手放键盘上没有用CMake构建，我笑一下准备关掉VS Code，由于这时间，按照传统编程点到为止他已经输了，如果这一构建下去，编译完立刻链接就直接把他的Runtime打骨折了，他也承认我先导入的依赖库，啊，我关掉VS Code的时候不构建了，他突然袭击连续导了几个包来编译，我大意了啊，没有闪，当时就流眼泪了，我说小伙子你不讲武德你懂不懂，他说加老师对不起，对不起，我不懂规矩&lt;br &#x2F;&gt;
+他说他的库是乱导的，他可不是乱导的啊，构建工具与包依赖集成、中央仓库、依赖包多版本管理、命令行工具，训练有素，后来他说他在甲骨文和微软练过三四年，啊，看来是有备而来！这两个年轻人不讲武德！来骗！来偷袭！我69岁的老同志，这好吗，这不好，我劝，这两位年轻人耗子尾汁，好好反思，以后不要再犯，这样的聪明，小聪明啊&lt;&#x2F;p&gt;
+&lt;p&gt;许多高级语言都有方便的包管理器，比如Java的Maven和Gradle、.NET的NuGet、node.js的npm、Rust的Cargo，它们具备多版本管理功能，可以控制项目依赖特定版本的包&lt;&#x2F;p&gt;
+&lt;p&gt;但是一般来说C++项目通常使用CMake来构建，CMake具备一定的包管理功能，但是会比较弱鸡，可以配合其他软件来使用，也可以直接抛弃CMake这个又陈旧又臃肿的构建工具，使用其他更先进的集成了包管理器的构建工具&lt;&#x2F;p&gt;
+&lt;p&gt;接下来介绍几种解决方案&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;pei-he-xi-tong-bao-guan-li-qi-shi-yong-find-package&quot;&gt;配合系统包管理器使用find_package&lt;&#x2F;h2&gt;
+&lt;p&gt;find_package是CMake的一个指令，重度依赖apt、pacman、brew这类能把包装到系统里的包管理器，而且不能控制依赖包的版本&lt;&#x2F;p&gt;
+&lt;p&gt;对于有brew而且还是类UNIX的macOS来说还好，对于没有自带包管理器就而且算有也不知道包要装到哪里去的Windows来说，使用find_package是一件非常折磨的事情&lt;&#x2F;p&gt;
+&lt;p&gt;非常易用&lt;br &#x2F;&gt;
+不支持多版本包管理&lt;br &#x2F;&gt;
+只能导入支持CMake的用系统包管理器安装的包&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;externalproject&quot;&gt;ExternalProject&lt;&#x2F;h2&gt;
+&lt;p&gt;ExternalProject是CMake自带的功能，可以下载外部库的源代码，然后通过写脚本进行配置、构建和安装，虽然这使得项目可以依赖于特定版本的外部库，但是过程非常繁琐，不同外部库的配置还是不一样的，复杂的程度几乎就相当于自己往包管理器的仓库提交代码，不过好处还是有的，外部库不会占用项目的空间，并且一定程度上可以比较轻松地更新外部库&lt;&#x2F;p&gt;
+&lt;p&gt;非常麻烦&lt;br &#x2F;&gt;
+支持多版本包管理&lt;br &#x2F;&gt;
+可以导入所有项目&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;zhi-jie-ba-wai-bu-ku-yuan-ma-reng-jin-xiang-mu-li&quot;&gt;直接把外部库源码扔进项目里&lt;&#x2F;h2&gt;
+&lt;p&gt;其实也是最常见的解决方法，把外部库源码都扔进external文件夹里，手动管理外部库的编译和链接，优点是不需要使用其他乱七八糟的东西，还可以去掉外部库里没用的东西，缺点是编译时间长，如果要更新外部库就要重新下载源码然后再一通爆改&lt;&#x2F;p&gt;
+&lt;p&gt;非常原始，比较麻烦&lt;br &#x2F;&gt;
+支持多版本包管理&lt;br &#x2F;&gt;
+可以导入所有项目&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;ba-wai-bu-ku-reng-xiang-mu-li-zai-yong-find-package&quot;&gt;把外部库扔项目里再用find_package&lt;&#x2F;h2&gt;
+&lt;p&gt;把依赖包的源码扔进项目中后再使用依赖包提供的类似FindGLFW.cmake这样的脚本来find_package，当然这也非常折磨，而且要求依赖库有写好的这种脚本，不然就要自己写&lt;&#x2F;p&gt;
+&lt;p&gt;有一点麻烦&lt;br &#x2F;&gt;
+支持多版本包管理&lt;br &#x2F;&gt;
+只能导入支持find_package的项目，或者自己写&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;gitde-submodules&quot;&gt;Git的Submodules&lt;&#x2F;h2&gt;
+&lt;p&gt;使用Git的子模块功能把依赖包的Git仓库加到项目里，可以不用占用项目的空间，但是这要求外部库必须使用Git进行版本管理&lt;br &#x2F;&gt;
+然后构建的时候跟直接扔项目里的外部库源码没什么区别&lt;&#x2F;p&gt;
+&lt;p&gt;比较麻烦&lt;br &#x2F;&gt;
+支持多版本包管理&lt;br &#x2F;&gt;
+只能导入用Git的项目&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;vcpkg&quot;&gt;vcpkg&lt;&#x2F;h2&gt;
+&lt;p&gt;微软写的，需要安装，没有构建功能，可以配合CMake，有一点类似apt、pacman这些东西，但是不支持版本控制，开发的初衷应该就是要解决Windows上没有系统包管理器的问题，不过它支持的包的数量非常多，而且版本管理功能受到重视且正在被添加，估计很快就能用了&lt;&#x2F;p&gt;
+&lt;p&gt;有趣的是，安装多个vcpkg可以使得不同vcpkg持有不同版本的依赖包，这样对于每个项目都安装一个vcpkg就能实现版本管理，这是一种非常蛇皮而且折磨的解决方法，但是竟然被写到了微软的官方文档里&lt;&#x2F;p&gt;
+&lt;p&gt;还算易用&lt;br &#x2F;&gt;
+对于包依赖的多版本管理有非常脑瘫的支持，截止到发文，它还在试图实现多版本管理&lt;br &#x2F;&gt;
+支持的依赖包较多&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;conan&quot;&gt;Conan&lt;&#x2F;h2&gt;
+&lt;p&gt;跟vcpkg差不多，也是依赖CMake，但是好一点，因为具有版本管理功能，但是支持的包的数量少一点&lt;&#x2F;p&gt;
+&lt;p&gt;还算易用&lt;br &#x2F;&gt;
+支持多版本管理&lt;br &#x2F;&gt;
+支持的依赖包较少&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;hunter&quot;&gt;Hunter&lt;&#x2F;h2&gt;
+&lt;p&gt;看起来像是正统的CMake上包管理解决方法，它不需要安装，直接在CMakeLists.txt里添加代码就可以了&lt;&#x2F;p&gt;
+&lt;p&gt;非常易用&lt;br &#x2F;&gt;
+没有包的版本管理&lt;br &#x2F;&gt;
+支持的包也比较少&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;xmake&quot;&gt;xmake&lt;&#x2F;h2&gt;
+&lt;p&gt;国人大佬写的，不依赖CMake，能够独立构建项目，使用内嵌的Lua来配置项目，具有依赖包多版本管理功能；在VS Code、IDEA等IDE上有插件支持；安装方便，Homebrew和AUR的仓库里都有；开源社区目前正在活跃&lt;&#x2F;p&gt;
+&lt;p&gt;牛逼的是可以导vcpkg和conan的包，这使得还在发展初期的xmake已经具备了应用于实际项目的能力&lt;&#x2F;p&gt;
+&lt;p&gt;不过有一些小问题&lt;br &#x2F;&gt;
+虽然作者表示了反对态度，但是issue和pull request里还是出现了大量中文，可能会影响老外参与贡献的程度；且目前原生支持的包还比较少；目前xmake的API变化还比较剧烈；使用Lua语法配置项目可能会导致配置比较冗长，而且xmake传参用的是字符串不好做语法检查&lt;&#x2F;p&gt;
+&lt;p&gt;比较易用&lt;br &#x2F;&gt;
+比较高雅&lt;br &#x2F;&gt;
+多种IDE插件支持&lt;br &#x2F;&gt;
+支持多版本包管理&lt;br &#x2F;&gt;
+支持的包非常多，但是原生包很少&lt;br &#x2F;&gt;
+发展初期，前景未知&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;build2&quot;&gt;build2&lt;&#x2F;h2&gt;
+&lt;p&gt;似乎是唯一正统的全新的C++构建工具，未来之星，明日之子，人类最后的希望&lt;br &#x2F;&gt;
+项目组里的人都是神仙级大佬；文档也写的非常牛逼；支持包多版本管理；但是使用独立的语法学习成本高；似乎作者比较刚且还要规定统一的项目规范；同样在开发初期&lt;&#x2F;p&gt;
+&lt;p&gt;需要注意，C++开源项目的结构通常都乱七八糟，而build2对于依赖包的项目结构有明确的非强制性但强烈建议的要求，大量遗留的开源项目可能难以修改项目结构就导致不便于加入build2的包仓库中，并且这有一点强制施加个人观点的意味在里面也就是篡改信仰最关键是它生成的项目结构是真的有够丑，需要较长时间磨合或者说妥协，可能正是因为这样，现在支持的包非常非常少，增速也非常缓慢&lt;br &#x2F;&gt;
+但其实统一C++的项目结构是一件喜闻乐见的事情，而且build2默认生成的项目结构其实非常符合C++20 Modules，另外有个好消息是它虽然限制很多但是允许驼峰虽然可能它是不乐意的&lt;&#x2F;p&gt;
+&lt;p&gt;比较易用&lt;br &#x2F;&gt;
+非常非常高雅&lt;br &#x2F;&gt;
+支持多版本包管理&lt;br &#x2F;&gt;
+支持的包太少了&lt;br &#x2F;&gt;
+还在发展初期，前景未知&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;spack&quot;&gt;Spack&lt;&#x2F;h2&gt;
+&lt;p&gt;集成了多版本包管理的独立构建工具，似乎是为了超算设计的；依赖Python；支持macOS，Linux，但是不支持Windows，没想到吧；包也挺多，还支持把用C&#x2F;C++&#x2F;Fortran写的类库链接到用Python&#x2F;R写的应用上；社区目前非常非常活跃&lt;br &#x2F;&gt;
+Windows的支持似乎受到了重视，现在有个好心人在试图添加MinGW，估计快了，吧&lt;&#x2F;p&gt;
+&lt;p&gt;不过&lt;&#x2F;p&gt;
+&lt;p&gt;比较易用&lt;br &#x2F;&gt;
+比较高雅&lt;br &#x2F;&gt;
+支持多版本包管理&lt;br &#x2F;&gt;
+支持的包很多&lt;br &#x2F;&gt;
+暂不支持Windows&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;ge-ren-jian-yi&quot;&gt;个人建议&lt;&#x2F;h2&gt;
+&lt;p&gt;目前新的构建工具还没有能够广泛使用，所以CMake估计还能坚挺很长时间&lt;&#x2F;p&gt;
+&lt;p&gt;所以使用Git的Submodules或者直接把源码扔项目里再配合CMake是比较稳妥的方法，这个解决方案可以很好的保持包的版本依赖，并且可以在未来很长一段时间内不用改动&lt;&#x2F;p&gt;
+&lt;p&gt;不嫌麻烦的可以用Conan&lt;&#x2F;p&gt;
+&lt;p&gt;vcpkg也跟Conan一样麻烦，如果多版本包管理的feature加好了那就比Conan好一点吧&lt;&#x2F;p&gt;
+&lt;p&gt;激进一点可以试试XMake和Spack&lt;br &#x2F;&gt;
+反正XMake可以偷vcpkg和Conan的包来用，如果想用原生包还能自己提pull request，作者都会很快回复，而且有中文文档上手非常简单&lt;br &#x2F;&gt;
+Spack的话，如果主力开发环境不在Windows的话也可以先试试，因为原生包真的非常多，Windows的支持估计也快了&lt;&#x2F;p&gt;
+&lt;p&gt;build2暂时还不建议用，因为支持的包太少了，而且包的增加也很缓慢&lt;br &#x2F;&gt;
+如果要自己提交包的话，虽然非常麻烦，但最好还是遵守build2对包的项目结构的建议性要求&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="zh">
+		<title>CMake项目结构的设计</title>
+		<published>2020-12-12T01:12:24+00:00</published>
+		<updated>2020-12-12T01:12:24+00:00</updated>
+		<link href="https://paakmau.github.io/cmakexiang-mu-jie-gou-de-she-ji/" type="text/html"/>
+		<id>https://paakmau.github.io/cmakexiang-mu-jie-gou-de-she-ji/</id>
+		<content type="html">&lt;p&gt;CMake是一种比较灵活的构建工具，正因如此导致很多CMake项目的结构混乱不堪，甚至包括国外某知名大厂的高star项目，本文将介绍一种目前广泛使用的比较合理的CMake项目结构&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;一般来说，项目中会有src文件夹、include文件夹和external文件夹&lt;&#x2F;p&gt;
+&lt;p&gt;src文件夹中存放项目源文件和私有的头文件，私有的头文件是指仅供目标内部使用的头文件，其他目标不应当有权访问这些头文件，出于简洁考虑，就跟源文件堆在一起好了&lt;&#x2F;p&gt;
+&lt;p&gt;include文件夹存放公有的头文件，可以提供给链接了本目标的其他目标使用，把本目标的API暴露给其他目标，一般安装类库后就直接把里面的东西都扔进类似&#x2F;usr&#x2F;include的路径下&lt;&#x2F;p&gt;
+&lt;p&gt;external文件夹存放项目所依赖的外部开源库，也有人喜欢命名为third_party&lt;&#x2F;p&gt;
+&lt;p&gt;需要注意一个问题是C++20提出的Modules，它允许我们使用代码来指定暴露给外部的API，这样的话也许根本就不需要区分公有跟私有头文件，并且头文件分开两个路径放也非常的难受，但是按照目前编译器对Modules的支持来看，还是一两年后再说吧&lt;br &#x2F;&gt;
+等Modules都能普及了说不定CMake早就凉透了本文也没用了哈哈没想到吧&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;dan-lei-ku-xiang-mu&quot;&gt;单类库项目&lt;&#x2F;h2&gt;
+&lt;p&gt;于是我们直接来看一个单类库项目的例子，单类库就是指项目只包含一个库目标，其他项目中的目标链接这个单独的目标就能访问该单类库项目提供的所有API&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;xiang-mu-de-mu-lu-jie-gou&quot;&gt;项目的目录结构&lt;&#x2F;h3&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;- example_library
+&lt;&#x2F;span&gt;&lt;span&gt;  - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;  - external
+&lt;&#x2F;span&gt;&lt;span&gt;    - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;  - include
+&lt;&#x2F;span&gt;&lt;span&gt;    - example_library
+&lt;&#x2F;span&gt;&lt;span&gt;      - public_example_library.h
+&lt;&#x2F;span&gt;&lt;span&gt;  - src
+&lt;&#x2F;span&gt;&lt;span&gt;    - private_example_library.h
+&lt;&#x2F;span&gt;&lt;span&gt;    - example_application.cpp
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;example-library-cmakelists-txt&quot;&gt;example_library&#x2F;CMakeLists.txt&lt;&#x2F;h3&gt;
+&lt;p&gt;稍微解释一下这段代码&lt;br &#x2F;&gt;
+添加external子目录，注意external子目录下的CMakeLists.txt可以直接为空文件，因为我们项目里没有外部库；添加一个库目标example_library，它的源文件只有example_library&#x2F;src&#x2F;example_library.cpp；把example_library&#x2F;include&#x2F;example_library中的头文件提供给外部目标使用；而example_library&#x2F;src为私有头文件目录，仅供目标example_library内部使用&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cmake&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cmake &quot;&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;cmake_minimum_required&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VERSION &lt;&#x2F;span&gt;&lt;span&gt;3.0.0)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;project&lt;&#x2F;span&gt;&lt;span&gt;(example_library)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;add_subdirectory&lt;&#x2F;span&gt;&lt;span&gt;(external)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;add_library&lt;&#x2F;span&gt;&lt;span&gt;(example_library src&#x2F;example_library.cpp)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;target_include_directories&lt;&#x2F;span&gt;&lt;span&gt;(example_library &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;PUBLIC &lt;&#x2F;span&gt;&lt;span&gt;include)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;target_include_directories&lt;&#x2F;span&gt;&lt;span&gt;(example_library &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;PRIVATE &lt;&#x2F;span&gt;&lt;span&gt;src)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;example-library-src-utils-h&quot;&gt;example_library&#x2F;src&#x2F;utils.h&lt;&#x2F;h3&gt;
+&lt;p&gt;提供一个内联方法用来输出一个字符串&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#ifndef&lt;&#x2F;span&gt;&lt;span&gt; UTILS_H
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#define &lt;&#x2F;span&gt;&lt;span&gt;UTILS_H
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;cstdio&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;inline void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;print_hello&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    std::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Hello, world!&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#endif  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; UTILS_H
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;example-library-include-example-library-example-library-h&quot;&gt;example_library&#x2F;include&#x2F;example_library&#x2F;example_library.h&lt;&#x2F;h3&gt;
+&lt;p&gt;给外部暴露一个print()全局函数的声明&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#ifndef&lt;&#x2F;span&gt;&lt;span&gt; EXAMPLE_LIBRARY_H
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#define &lt;&#x2F;span&gt;&lt;span&gt;EXAMPLE_LIBRARY_H
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#endif  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; EXAMPLE_LIBRARY_H
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;example-library-src-example-library-cpp&quot;&gt;example_library&#x2F;src&#x2F;example_library.cpp&lt;&#x2F;h3&gt;
+&lt;p&gt;定义刚刚声明的函数，并使用utils.h中提供的内联函数&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;example_library&#x2F;example_library.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;utils.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;print_hello&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;chan-shu&quot;&gt;阐述&lt;&#x2F;h3&gt;
+&lt;p&gt;这样对于其他目标而言，可以使用target_link_libraries链接example_library，然后在代码里添加一个#include &amp;lt;example_library&#x2F;example_library.h&amp;gt;，就能调用这个单类库项目提供的print方法了&lt;br &#x2F;&gt;
+然后utils.h只能example_library内部使用，对于其他目标来说是不可见的&lt;&#x2F;p&gt;
+&lt;p&gt;注意到一个问题是example_library&#x2F;include里面没有直接存放头文件，而是多套了一个example_library文件夹，这样设计看起来非常冗余，但是其实它的目的是避免头文件重名而造成冲突&lt;br &#x2F;&gt;
+另外的考量在于，安装项目的时候，example_library&#x2F;include目录下的东西应当被扔进系统安装路径的include文件夹里，这样设计会比较清晰&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;dan-ying-yong-xiang-mu&quot;&gt;单应用项目&lt;&#x2F;h2&gt;
+&lt;p&gt;单应用项目构建后只会生成一个可执行程序，用于构建一个应用程序&lt;&#x2F;p&gt;
+&lt;p&gt;相比于单类库项目，它不会被别的目标链接，所以不需要暴露头文件，因此不需要include文件夹&lt;&#x2F;p&gt;
+&lt;p&gt;目录结构如下，具体代码就不贴了&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;- example_application
+&lt;&#x2F;span&gt;&lt;span&gt;  - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;  - external
+&lt;&#x2F;span&gt;&lt;span&gt;    - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;  - src
+&lt;&#x2F;span&gt;&lt;span&gt;    - example_application.h
+&lt;&#x2F;span&gt;&lt;span&gt;    - example_application.cpp
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;dan-lei-ku-dan-ying-yong-xiang-mu&quot;&gt;单类库单应用项目&lt;&#x2F;h2&gt;
+&lt;p&gt;就是既包含一个类库，又包含一个可执行程序的项目&lt;&#x2F;p&gt;
+&lt;p&gt;目录结构如下，里面的源文件头文件因为太乱就省略了&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;- your_project_name
+&lt;&#x2F;span&gt;&lt;span&gt;  - app
+&lt;&#x2F;span&gt;&lt;span&gt;    - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;    - src
+&lt;&#x2F;span&gt;&lt;span&gt;  - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;  - external
+&lt;&#x2F;span&gt;&lt;span&gt;    - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;  - lib
+&lt;&#x2F;span&gt;&lt;span&gt;    - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;    - include
+&lt;&#x2F;span&gt;&lt;span&gt;      - your_library_name
+&lt;&#x2F;span&gt;&lt;span&gt;    - src
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;duo-lei-ku-dan-ying-yong-xiang-mu&quot;&gt;多类库单应用项目&lt;&#x2F;h2&gt;
+&lt;p&gt;比较复杂的项目，类库需要拆分成多个，所以所有的具体类库目录都扔进一个libs目录下保持项目的整洁&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;- your_project_name
+&lt;&#x2F;span&gt;&lt;span&gt;  - app
+&lt;&#x2F;span&gt;&lt;span&gt;    - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;    - src
+&lt;&#x2F;span&gt;&lt;span&gt;  - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;  - external
+&lt;&#x2F;span&gt;&lt;span&gt;    - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;  - libs
+&lt;&#x2F;span&gt;&lt;span&gt;    - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;    - library_a
+&lt;&#x2F;span&gt;&lt;span&gt;      - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;      - include
+&lt;&#x2F;span&gt;&lt;span&gt;        - library_a
+&lt;&#x2F;span&gt;&lt;span&gt;      - src
+&lt;&#x2F;span&gt;&lt;span&gt;    - library_b
+&lt;&#x2F;span&gt;&lt;span&gt;      - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;      - include
+&lt;&#x2F;span&gt;&lt;span&gt;        - library_b
+&lt;&#x2F;span&gt;&lt;span&gt;      - src
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;qi-ta-qing-kuang&quot;&gt;其他情况&lt;&#x2F;h2&gt;
+&lt;p&gt;如果是多应用的情况可以建一个apps目录，把各个具体的应用目录扔进去&lt;&#x2F;p&gt;
+&lt;p&gt;如果是多类库带多个使用例子的情况可以参考多应用的情况，把apps目录改成examples目录&lt;&#x2F;p&gt;
+&lt;p&gt;实际情况中可以做类似的修改，保证项目目录结构的整齐简洁就行了&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;guan-yu-tuo-feng-ming-ming-fa&quot;&gt;关于驼峰命名法&lt;&#x2F;h2&gt;
+&lt;p&gt;没错，很关键，虽然C++标准库用的是全小写的下划线命名法，C++标准委员会也推荐下划线，但是下划线随随便便一个变量就会长长一坨，不用驼峰这能忍吗，这不能忍&lt;&#x2F;p&gt;
+&lt;p&gt;如果使用驼峰，首先就是源文件头文件内的变量、函数和类都使用驼峰命名法&lt;&#x2F;p&gt;
+&lt;p&gt;然后是CMakeLists.txt中的目标名和项目名都应当使用驼峰命名&lt;&#x2F;p&gt;
+&lt;p&gt;最后到了目录结构，项目根目录、具体类库目录、具体应用目录、头文件和源文件都应当使用首字母大写的驼峰，其他目录仍然保持下划线命名法&lt;br &#x2F;&gt;
+因为include目录最好跟系统的include路径保持一致，并且兼容旧有项目，所以都是用下划线命名法；而头文件和源文件应当与类名保持一致，具体类库和具体应用与CMakeLists.txt中的目标名保持一致，项目根目录跟CMakeLists.txt中的项目名保持一致，所以统一使用驼峰命名法&lt;&#x2F;p&gt;
+&lt;p&gt;不过混用有一点丑，激进一点的可以直接全部换成驼峰&lt;&#x2F;p&gt;
+&lt;p&gt;比如多类库单应用项目的目录结构就可以长这样&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;- YourProjectName
+&lt;&#x2F;span&gt;&lt;span&gt;  - app
+&lt;&#x2F;span&gt;&lt;span&gt;    - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;    - src
+&lt;&#x2F;span&gt;&lt;span&gt;      - App.h
+&lt;&#x2F;span&gt;&lt;span&gt;      - App.cpp
+&lt;&#x2F;span&gt;&lt;span&gt;  - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;  - external
+&lt;&#x2F;span&gt;&lt;span&gt;    - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;  - libs
+&lt;&#x2F;span&gt;&lt;span&gt;    - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;    - LibraryA
+&lt;&#x2F;span&gt;&lt;span&gt;      - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;      - include
+&lt;&#x2F;span&gt;&lt;span&gt;        - LibraryA
+&lt;&#x2F;span&gt;&lt;span&gt;          - LibraryA.h
+&lt;&#x2F;span&gt;&lt;span&gt;      - src
+&lt;&#x2F;span&gt;&lt;span&gt;        - LibraryA.cpp
+&lt;&#x2F;span&gt;&lt;span&gt;    - LibraryB
+&lt;&#x2F;span&gt;&lt;span&gt;      - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;      - include
+&lt;&#x2F;span&gt;&lt;span&gt;        - LibraryB
+&lt;&#x2F;span&gt;&lt;span&gt;          - LibraryA.h
+&lt;&#x2F;span&gt;&lt;span&gt;      - src
+&lt;&#x2F;span&gt;&lt;span&gt;        - LibraryA.cpp
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+</content>
+	</entry>
+	<entry xml:lang="zh">
+		<title>CMake从零开始快速上手</title>
+		<published>2020-12-11T20:35:12+00:00</published>
+		<updated>2020-12-11T20:35:12+00:00</updated>
+		<link href="https://paakmau.github.io/cmakecong-ling-kai-shi-kuai-su-shang-shou/" type="text/html"/>
+		<id>https://paakmau.github.io/cmakecong-ling-kai-shi-kuai-su-shang-shou/</id>
+		<content type="html">&lt;p&gt;CMake是一个跨平台的构建、测试、打包工具，被广泛使用于C++开源项目中&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;本文将介绍CMake在C++项目中的通常用法&lt;&#x2F;p&gt;
+&lt;p&gt;本文的例子使用CMake常用的规范项目结构，因此可以直接当作C++项目的脚手架&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;huan-jing-pei-zhi&quot;&gt;环境配置&lt;&#x2F;h2&gt;
+&lt;h3 id=&quot;macos&quot;&gt;macOS&lt;&#x2F;h3&gt;
+&lt;p&gt;首先我们需要C++编译器和调试器，于是我们可以输入以下命令直接安装Xcode的命令行工具来使用它自带的Clang&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; xcode-select&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --install
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;然后使用brew安装CMake就行了&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; brew install cmake
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;windows&quot;&gt;Windows&lt;&#x2F;h3&gt;
+&lt;p&gt;推荐使用MSYS2直接安装集成到mingw-w64上的CMake和Clang，打开MSYS2 Shell输入以下命令，当然你最好要把放着CMake和Clang的bin文件夹扔到PATH环境变量里&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; pacman&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -S&lt;&#x2F;span&gt;&lt;span&gt; mingw-w64-x86_64-cmake
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; pacman&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -S&lt;&#x2F;span&gt;&lt;span&gt; mingw-w64-x86_64-clang
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;当然也可以直接到CMake官网下载安装包，再去装mingw-w64的编译器集成，甚至可以装个Visual Studio来使用微软提供的C++编译器，但是很麻烦&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;helllo-world&quot;&gt;Helllo World&lt;&#x2F;h2&gt;
+&lt;h3 id=&quot;xiang-mu-de-mu-lu-jie-gou&quot;&gt;项目的目录结构&lt;&#x2F;h3&gt;
+&lt;p&gt;创建一个文件夹命名为HelloWorld，在其中创建一个CMakeLists.txt文件，build和src这两个文件夹把Hello.cpp放src文件夹里，项目结构大概长这样&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;- HelloWorld
+&lt;&#x2F;span&gt;&lt;span&gt;  - build
+&lt;&#x2F;span&gt;&lt;span&gt;  - src
+&lt;&#x2F;span&gt;&lt;span&gt;    - Hello.cpp
+&lt;&#x2F;span&gt;&lt;span&gt;  - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;helloworld-cmakelists-txt&quot;&gt;HelloWorld&#x2F;CMakeLists.txt&lt;&#x2F;h3&gt;
+&lt;p&gt;这个是CMake项目的配置文件，用来描述项目中包含哪些目标，有什么源文件、头文件等等&lt;&#x2F;p&gt;
+&lt;p&gt;它会被CMake读取，用于配置HelloWorld项目&lt;br &#x2F;&gt;
+看下面它的代码，显然就是字面意义上的限定CMake最低版本的要求，然后项目名叫做HelloWorld，添加一个名为Hello的可执行目标，它包括了src文件夹里的Hello.cpp这个源文件&lt;br &#x2F;&gt;
+最后编译出来就是一个二进制可执行文件，并以src&#x2F;Hello.cpp里的main函数作为入口点&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cmake&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cmake &quot;&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;cmake_minimum_required&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VERSION &lt;&#x2F;span&gt;&lt;span&gt;3.0.0)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;project&lt;&#x2F;span&gt;&lt;span&gt;(HelloWorld)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;add_executable&lt;&#x2F;span&gt;&lt;span&gt;(Hello src&#x2F;Hello.cpp)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;helloworld-src-hello-cpp&quot;&gt;HelloWorld&#x2F;src&#x2F;Hello.cpp&lt;&#x2F;h3&gt;
+&lt;p&gt;这是即将被编译的源文件，包含main函数，输出一个字符串&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;iostream&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;char&lt;&#x2F;span&gt;&lt;span&gt;**) {
+&lt;&#x2F;span&gt;&lt;span&gt;    std::cout &amp;lt;&amp;lt; &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Hello, world!&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;xiang-mu-gou-jian&quot;&gt;项目构建&lt;&#x2F;h3&gt;
+&lt;p&gt;于是我们就可以开始编译了，CMake不会直接构建项目，它会生成构建所需的与平台有关的中间文件，这是CMake跨平台的实现方法，这样对于同一个项目，我们在不同的平台上都能生成对应的中间文件来进行构建&lt;br &#x2F;&gt;
+比如在Windows上可以生成Visual Studio项目文件，然后用VS打开它来编译；类UNIX上可以生成Makefile；此外也可以选择生成跨平台的build.ninja、macOS上的Xcode项目文件等等&lt;&#x2F;p&gt;
+&lt;p&gt;但是CMake生成的这些中间文件很混乱，因此习惯上我们会新建一个build文件夹来存放它们，也就是上面项目目录结构里的那个build文件夹&lt;br &#x2F;&gt;
+于是在终端中切到HelloWorld文件夹中，再切到build，使用生成器生成中间文件，依据操作系统可能需要选择不同的生成器&lt;&#x2F;p&gt;
+&lt;h4 id=&quot;linuxhe-macos&quot;&gt;Linux和macOS&lt;&#x2F;h4&gt;
+&lt;p&gt;类UNIX系统上默认会生成Makefile，于是使用cmake命令之后再用make命令就能编译出可执行文件，直接运行就可以了&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; cd build
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; cmake ..
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; make
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; .&#x2F;Hello
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h4 id=&quot;windows-1&quot;&gt;Windows&lt;&#x2F;h4&gt;
+&lt;p&gt;Windows上不知道默认会生成什么，CMake文档中没说，Windows也不会自带VS或者mingw32-make这样的东西，而且不同VS版本的项目还不怎么兼容，因此我们最好使用-G参数来手动指定，比如在PowerShell中输入下面的命令会在build目录下生成VS 2019项目&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS cd build
+&lt;&#x2F;span&gt;&lt;span&gt;PS &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;cmake.exe&lt;&#x2F;span&gt;&lt;span&gt; .. -G &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Visual Studio 16 2019&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;build目录下应该会有一个HelloWorld.sln，接下来就直接用VS 2019打开它，正常构建就行了&lt;&#x2F;p&gt;
+&lt;p&gt;你也可以安装一个mingw32-make，然后选择对应的生成器来生成中间文件，这样就能用类似make的方式来构建项目&lt;&#x2F;p&gt;
+&lt;p&gt;在MSYS2 Shell中安装mingw32-make&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; pacman&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -S&lt;&#x2F;span&gt;&lt;span&gt; mingw-w64-x86_64-make
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;PowerShell切到HelloWorld目录之后&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS cd build
+&lt;&#x2F;span&gt;&lt;span&gt;PS &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;cmake.exe&lt;&#x2F;span&gt;&lt;span&gt; .. -G &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;MinGW Makefiles&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;PS &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;mingw32-make.exe
+&lt;&#x2F;span&gt;&lt;span&gt;PS .\&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;Hello.exe
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;具体能生成什么可以输入下面的命令来查询CMake支持的所有生成器&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; cmake&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --help
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;ku-de-pei-zhi-yu-lian-jie&quot;&gt;库的配置与链接&lt;&#x2F;h2&gt;
+&lt;p&gt;刚刚我们构建了一个可执行目标Hello，但是我们可能需要引入外部的开源库或者项目本身的库，这时我们就需要把Hello跟这堆库链接起来，并且把库的头文件暴露给Hello&lt;&#x2F;p&gt;
+&lt;p&gt;假设有一个外部库HelloExternalLib，一般习惯把外部库单独放在一个文件夹里，于是我们创建一个external文件夹把它扔进去&lt;br &#x2F;&gt;
+项目结构长这样&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;- HelloWorld
+&lt;&#x2F;span&gt;&lt;span&gt;  - build
+&lt;&#x2F;span&gt;&lt;span&gt;  - external
+&lt;&#x2F;span&gt;&lt;span&gt;    - HelloExternalLib
+&lt;&#x2F;span&gt;&lt;span&gt;      - include
+&lt;&#x2F;span&gt;&lt;span&gt;        - HelloExternalLib
+&lt;&#x2F;span&gt;&lt;span&gt;          - HelloExternalLib.h
+&lt;&#x2F;span&gt;&lt;span&gt;      - src
+&lt;&#x2F;span&gt;&lt;span&gt;        - HelloExternalLib.cpp
+&lt;&#x2F;span&gt;&lt;span&gt;      - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;    - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;  - src
+&lt;&#x2F;span&gt;&lt;span&gt;    - Hello.cpp
+&lt;&#x2F;span&gt;&lt;span&gt;  - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;HelloWorld&#x2F;external&#x2F;HelloExternalLib&#x2F;include&#x2F;HelloExternalLib&#x2F;HelloExternalLib.h&lt;&#x2F;p&gt;
+&lt;p&gt;是这个库的一个头文件，随便声明一个方法好了&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#ifndef&lt;&#x2F;span&gt;&lt;span&gt; HELLO_EXTERNAL_LIB_H
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#define &lt;&#x2F;span&gt;&lt;span&gt;HELLO_EXTERNAL_LIB_H
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;sayHello&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#endif  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; HELLO_EXTERNAL_LIB_H
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;HelloWorld&#x2F;external&#x2F;HelloExternalLib&#x2F;src&#x2F;HelloExternalLib.cpp&lt;&#x2F;p&gt;
+&lt;p&gt;在这个文件中定义那个方法&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;HelloExternalLib&#x2F;HelloExternalLib.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;iostream&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;sayHello&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    std::cout &amp;lt;&amp;lt; &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Hello, world!&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;HelloWorld&#x2F;external&#x2F;HelloExternalLib&#x2F;CMakeLists.txt&lt;&#x2F;p&gt;
+&lt;p&gt;这个文件用于构建HelloExternalLib这个库本身，添加了HelloExternalLib的库目标，包括HelloExternalLib.cpp这个源文件&lt;br &#x2F;&gt;
+其中的target_include_directories用于指定库的头文件路径，PUBLIC代表如果库被链接这些头文件对外部是可见的，改成PRIVATE的话就是对外部不可见，只有库本身的源文件能够找到这些头文件，比如Hello目标链接了HelloExternalLib，include文件夹中的头文件都是对Hello可见的&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cmake&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cmake &quot;&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;cmake_minimum_required&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VERSION &lt;&#x2F;span&gt;&lt;span&gt;3.0.0)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;project&lt;&#x2F;span&gt;&lt;span&gt;(HelloExternalLib)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;add_library&lt;&#x2F;span&gt;&lt;span&gt;(HelloExternalLib src&#x2F;HelloExternalLib.cpp)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;target_include_directories&lt;&#x2F;span&gt;&lt;span&gt;(HelloExternalLib &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;PUBLIC &lt;&#x2F;span&gt;&lt;span&gt;include)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;HelloWorld&#x2F;external&#x2F;CMakeLists.txt&lt;&#x2F;p&gt;
+&lt;p&gt;这个文件仅仅是通过add_subdirectory把子文件夹添加到CMake项目中，也就是把HelloExternalLib这个文件夹加进来，这样CMake才会读取子文件夹中的CMakeLists.txt文件并进行相应的构建工作&lt;br &#x2F;&gt;
+注意子文件夹可以有多级目录嵌套，并且是递归进行的，当然需要在每一级目录下都编写CMakeList.txt然后加上add_subdirectory&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cmake&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cmake &quot;&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;add_subdirectory&lt;&#x2F;span&gt;&lt;span&gt;(HelloExternalLib)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;HelloWorld&#x2F;CMakeLists.txt&lt;&#x2F;p&gt;
+&lt;p&gt;这个文件就是刚刚用来配置HelloWorld项目的&lt;&#x2F;p&gt;
+&lt;p&gt;我们加一行add_subdirectory来让它添加external子目录&lt;&#x2F;p&gt;
+&lt;p&gt;并且使用target_link_libraries把Hello这个可执行目标跟HelloExternalLib这个库目标链接起来，并使用PRIVATE的链接方式&lt;br &#x2F;&gt;
+PRIVATE这种链接方式表示HelloExternalLib不会被暴露给链接了Hello的其他目标，如果使用PUBLIC链接方式，其他的目标链接Hello时也会自动链接HelloExternalLib，尽可能使用PRIVATE，这样可以避免很多潜在的问题&lt;br &#x2F;&gt;
+而对于可执行目标来说，它不会被其它的目标链接，所以可以全部使用PRIVATE&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cmake&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cmake &quot;&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;cmake_minimum_required&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VERSION &lt;&#x2F;span&gt;&lt;span&gt;3.0.0)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;project&lt;&#x2F;span&gt;&lt;span&gt;(HelloWorld)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;add_subdirectory&lt;&#x2F;span&gt;&lt;span&gt;(external)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;add_executable&lt;&#x2F;span&gt;&lt;span&gt;(Hello src&#x2F;Hello.cpp)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;target_link_libraries&lt;&#x2F;span&gt;&lt;span&gt;(Hello &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;PRIVATE &lt;&#x2F;span&gt;&lt;span&gt;HelloExternalLib)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;HelloWorld&#x2F;src&#x2F;Hello.cpp&lt;&#x2F;p&gt;
+&lt;p&gt;这时我们的源文件中就可以包含外部库的头文件并调用里面声明的方法了&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;HelloExternalLib&#x2F;HelloExternalLib.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;char&lt;&#x2F;span&gt;&lt;span&gt;**) {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sayHello&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;然后生成中间文件&lt;br &#x2F;&gt;
+macOS和Linux下可以这样，Windows下就根据上文添加-G参数并选择合适的生成器&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; cd build
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; cmake ..
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;最后使用make或者Windows下的其他工具构建就行了&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="zh">
+		<title>Mac下使用Makefile基于GLFW配置Dear ImGui</title>
+		<published>2020-03-31T23:47:45+00:00</published>
+		<updated>2020-03-31T23:47:45+00:00</updated>
+		<link href="https://paakmau.github.io/macxia-shi-yong-makefileji-yu-glfwpei-zhi-dear-imgui/" type="text/html"/>
+		<id>https://paakmau.github.io/macxia-shi-yong-makefileji-yu-glfwpei-zhi-dear-imgui/</id>
+		<content type="html">&lt;p&gt;用Xcode配置起来很简单，但是OpenGL.framework被弃用了，会爆不少警告（其实是因为我习惯了VSC改不过来）&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;于是尝试用Makefile搞一搞&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;an-zhuang-glewhe-glfw&quot;&gt;安装GLEW和GLFW&lt;&#x2F;h2&gt;
+&lt;p&gt;使用brew安装就行，它会把对应的库和头文放在在&#x2F;usr&#x2F;local&#x2F;lib和&#x2F;usr&#x2F;local&#x2F;include下&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; brew install glew
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; brew install glfw
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;huo-qu-dear-imguiyuan-ma&quot;&gt;获取Dear ImGui源码&lt;&#x2F;h2&gt;
+&lt;p&gt;我们可以直接把它的源码Clone下来&lt;&#x2F;p&gt;
+&lt;p&gt;仓库地址在这里&lt;br &#x2F;&gt;
+&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;ocornut&#x2F;imgui&quot;&gt;https:&#x2F;&#x2F;github.com&#x2F;ocornut&#x2F;imgui&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;然后其实看看examples里的例子抄抄就完事了（本文也是靠着它写的）&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;yin-ru-dear-imguiku&quot;&gt;引入Dear ImGui库&lt;&#x2F;h2&gt;
+&lt;p&gt;首先建一个libs&#x2F;imgui文件夹用于存放这个外部库&lt;&#x2F;p&gt;
+&lt;p&gt;然后把项目源码根目录下的源文件跟头文件都拷贝进去&lt;br &#x2F;&gt;
+还有examples下的imgui_impl_glfw.cpp、imgui_impl_glfw.h、imgui_impl_opengl3.cpp、imgui_impl_opengl3.h&lt;&#x2F;p&gt;
+&lt;p&gt;最后给个图&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;03&#x2F;image-1.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;makefile&quot;&gt;Makefile&lt;&#x2F;h2&gt;
+&lt;pre data-lang=&quot;makefile&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-makefile &quot;&gt;&lt;code class=&quot;language-makefile&quot; data-lang=&quot;makefile&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;EXE &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;imgui_test
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;SOURCES &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;main.cpp
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;SOURCES &lt;&#x2F;span&gt;&lt;span&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;imgui_impl_glfw.cpp imgui_impl_opengl3.cpp
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;SOURCES &lt;&#x2F;span&gt;&lt;span&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;imgui.cpp imgui_demo.cpp imgui_draw.cpp imgui_widgets.cpp
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;OBJS &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;addsuffix &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.o, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;basename &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;notdir &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;SOURCES&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;))))
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CXXFLAGS &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-Ilibs&#x2F;imgui&#x2F;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CXXFLAGS &lt;&#x2F;span&gt;&lt;span&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-g -Wall -Wformat
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CXXFLAGS &lt;&#x2F;span&gt;&lt;span&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-I&#x2F;usr&#x2F;local&#x2F;include
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CXXFLAGS &lt;&#x2F;span&gt;&lt;span&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-std=c++17
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;LIBS &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;LIBS &lt;&#x2F;span&gt;&lt;span&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-L&#x2F;usr&#x2F;local&#x2F;lib
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;LIBS &lt;&#x2F;span&gt;&lt;span&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-lGLEW
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;LIBS &lt;&#x2F;span&gt;&lt;span&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-lglfw
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;%&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;.o&lt;&#x2F;span&gt;&lt;span&gt;:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;%&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.cpp
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CXX&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;) $(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CXXFLAGS&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span&gt; -c -o &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$@ $&amp;lt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;%&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;.o&lt;&#x2F;span&gt;&lt;span&gt;:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;libs&#x2F;imgui&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;%&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.cpp
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CXX&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;) $(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CXXFLAGS&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span&gt; -c -o &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$@ $&amp;lt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;all&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;EXE&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;@echo Build complete
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;EXE&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;OBJS&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CXX&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span&gt; -o &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$@ $^ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CXXFLAGS&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;) $(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;LIBS&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;clean&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;rm -f &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;EXE&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;) $(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;OBJS&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;main-cpp&quot;&gt;main.cpp&lt;&#x2F;h2&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;imgui.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;imgui_impl_glfw.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;imgui_impl_opengl3.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;GL&#x2F;glew.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;GLFW&#x2F;glfw3.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;cstdio&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;static void
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;glfw_error_callback&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;error&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const char&lt;&#x2F;span&gt;&lt;span&gt;* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;description&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;fprintf&lt;&#x2F;span&gt;&lt;span&gt;(stderr, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Glfw Error &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%d&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%s&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, error, description);
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;char&lt;&#x2F;span&gt;&lt;span&gt;**)
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Setup window
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwSetErrorCallback&lt;&#x2F;span&gt;&lt;span&gt;(glfw_error_callback);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(!&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwInit&lt;&#x2F;span&gt;&lt;span&gt;())
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Decide GL+GLSL versions
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const char&lt;&#x2F;span&gt;&lt;span&gt;* glsl_version = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;#version 150&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwWindowHint&lt;&#x2F;span&gt;&lt;span&gt;(GLFW_CONTEXT_VERSION_MAJOR, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;3&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwWindowHint&lt;&#x2F;span&gt;&lt;span&gt;(GLFW_CONTEXT_VERSION_MINOR, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;2&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwWindowHint&lt;&#x2F;span&gt;&lt;span&gt;(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 3.2+ only
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwWindowHint&lt;&#x2F;span&gt;&lt;span&gt;(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Required on Mac
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Create window with graphics context
+&lt;&#x2F;span&gt;&lt;span&gt;    GLFWwindow* window = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwCreateWindow&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1280&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;720&lt;&#x2F;span&gt;&lt;span&gt;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Dear ImGui GLFW+OpenGL3 example&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(window == &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwMakeContextCurrent&lt;&#x2F;span&gt;&lt;span&gt;(window);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwSwapInterval&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;); &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Enable vsync
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Initialize OpenGL loader
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glewInit&lt;&#x2F;span&gt;&lt;span&gt;() != GLEW_OK) {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;fprintf&lt;&#x2F;span&gt;&lt;span&gt;(stderr, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Failed to initialize OpenGL loader!&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Setup Dear ImGui context
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;IMGUI_CHECKVERSION&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CreateContext&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    ImGuiIO&amp;amp; io = ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetIO&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void&lt;&#x2F;span&gt;&lt;span&gt;)io;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Setup Dear ImGui style
+&lt;&#x2F;span&gt;&lt;span&gt;    ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;StyleColorsDark&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Setup Platform&#x2F;Renderer bindings
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ImGui_ImplGlfw_InitForOpenGL&lt;&#x2F;span&gt;&lt;span&gt;(window, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;true&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ImGui_ImplOpenGL3_Init&lt;&#x2F;span&gt;&lt;span&gt;(glsl_version);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Our state
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;bool&lt;&#x2F;span&gt;&lt;span&gt; show_demo_window = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;true&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;bool&lt;&#x2F;span&gt;&lt;span&gt; show_another_window = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;false&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;    ImVec4 clear_color = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ImVec4&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0.45&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0.55&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0.60&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1.00&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Main loop
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;while &lt;&#x2F;span&gt;&lt;span&gt;(!&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwWindowShouldClose&lt;&#x2F;span&gt;&lt;span&gt;(window)) {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwPollEvents&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Start the Dear ImGui frame
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ImGui_ImplOpenGL3_NewFrame&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ImGui_ImplGlfw_NewFrame&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;        ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;NewFrame&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(show_demo_window)
+&lt;&#x2F;span&gt;&lt;span&gt;            ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ShowDemoWindow&lt;&#x2F;span&gt;&lt;span&gt;(&amp;amp;show_demo_window);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 2. Show a simple window that we create ourselves. We use a Begin&#x2F;End pair to created a named window.
+&lt;&#x2F;span&gt;&lt;span&gt;        {
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;static float&lt;&#x2F;span&gt;&lt;span&gt; f = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0.0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;static int&lt;&#x2F;span&gt;&lt;span&gt; counter = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;            ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Begin&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Hello, world!&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;); &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Create a window called &amp;quot;Hello, world!&amp;quot; and append into it.
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;            ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Text&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;This is some useful text.&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;); &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Display some text (you can use a format strings too)
+&lt;&#x2F;span&gt;&lt;span&gt;            ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Checkbox&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Demo Window&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &amp;amp;show_demo_window); &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Edit bools storing our window open&#x2F;close state
+&lt;&#x2F;span&gt;&lt;span&gt;            ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Checkbox&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Another Window&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &amp;amp;show_another_window);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;            ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;SliderFloat&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;float&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &amp;amp;f, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0.0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1.0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;); &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Edit 1 float using a slider from 0.0f to 1.0f
+&lt;&#x2F;span&gt;&lt;span&gt;            ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ColorEdit3&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;clear color&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;float&lt;&#x2F;span&gt;&lt;span&gt;*)&amp;amp;clear_color); &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Edit 3 floats representing a color
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Button&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Button&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Buttons return true when clicked (most widgets return true when edited&#x2F;activated)
+&lt;&#x2F;span&gt;&lt;span&gt;                counter++;
+&lt;&#x2F;span&gt;&lt;span&gt;            ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;SameLine&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;            ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Text&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;counter = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%d&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, counter);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;            ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Text&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Application average &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%.3f&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; ms&#x2F;frame (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%.1f&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; FPS)&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1000.0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f &lt;&#x2F;span&gt;&lt;span&gt;&#x2F; ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetIO&lt;&#x2F;span&gt;&lt;span&gt;().&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Framerate&lt;&#x2F;span&gt;&lt;span&gt;, ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetIO&lt;&#x2F;span&gt;&lt;span&gt;().&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Framerate&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;            ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;End&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;        }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 3. Show another simple window.
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(show_another_window) {
+&lt;&#x2F;span&gt;&lt;span&gt;            ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Begin&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Another Window&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &amp;amp;show_another_window); &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+&lt;&#x2F;span&gt;&lt;span&gt;            ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Text&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Hello from another window!&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Button&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Close Me&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;))
+&lt;&#x2F;span&gt;&lt;span&gt;                show_another_window = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;false&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;            ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;End&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;        }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Rendering
+&lt;&#x2F;span&gt;&lt;span&gt;        ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Render&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; display_w, display_h;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwGetFramebufferSize&lt;&#x2F;span&gt;&lt;span&gt;(window, &amp;amp;display_w, &amp;amp;display_h);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glViewport&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;, display_w, display_h);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glClearColor&lt;&#x2F;span&gt;&lt;span&gt;(clear_color.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;x&lt;&#x2F;span&gt;&lt;span&gt;, clear_color.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;y&lt;&#x2F;span&gt;&lt;span&gt;, clear_color.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;z&lt;&#x2F;span&gt;&lt;span&gt;, clear_color.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;w&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glClear&lt;&#x2F;span&gt;&lt;span&gt;(GL_COLOR_BUFFER_BIT);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ImGui_ImplOpenGL3_RenderDrawData&lt;&#x2F;span&gt;&lt;span&gt;(ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetDrawData&lt;&#x2F;span&gt;&lt;span&gt;());
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwSwapBuffers&lt;&#x2F;span&gt;&lt;span&gt;(window);
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Cleanup
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ImGui_ImplOpenGL3_Shutdown&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ImGui_ImplGlfw_Shutdown&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;DestroyContext&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwDestroyWindow&lt;&#x2F;span&gt;&lt;span&gt;(window);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwTerminate&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+</content>
+	</entry>
+	<entry xml:lang="zh">
+		<title>C++标准库 智能指针</title>
+		<published>2020-03-27T13:33:00+00:00</published>
+		<updated>2020-03-27T13:33:00+00:00</updated>
+		<link href="https://paakmau.github.io/cbiao-zhun-ku-zhi-neng-zhi-zhen/" type="text/html"/>
+		<id>https://paakmau.github.io/cbiao-zhun-ku-zhi-neng-zhi-zhen/</id>
+		<content type="html">&lt;p&gt;C++没有垃圾回收，因此new出来的对象都要自己管理&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;为了方便的管理内存，我们发现垃圾回收中引用计数的思路很简单就能在C++中实现，而其实标准库中就已经有这样的实现，也就是智能指针&lt;&#x2F;p&gt;
+&lt;p&gt;它们的头文件都是memory&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;shared-prt&quot;&gt;shared_prt&lt;&#x2F;h2&gt;
+&lt;p&gt;根据引用计数自动销毁对象，构造时引用数加一，析构时引用数减一，为零就销毁&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;Func&lt;&#x2F;span&gt;&lt;span&gt;(shared_ptr&amp;lt;string&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ptr&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%ld&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, ptr.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;use_count&lt;&#x2F;span&gt;&lt;span&gt;());
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;auto&lt;&#x2F;span&gt;&lt;span&gt; ptr2 = ptr;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%ld&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, ptr.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;use_count&lt;&#x2F;span&gt;&lt;span&gt;());
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;auto&lt;&#x2F;span&gt;&lt;span&gt; ptr = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;make_shared&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;string&amp;gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Hello shared ptr&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%ld&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, ptr.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;use_count&lt;&#x2F;span&gt;&lt;span&gt;());
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Func&lt;&#x2F;span&gt;&lt;span&gt;(ptr);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%ld&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, ptr.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;use_count&lt;&#x2F;span&gt;&lt;span&gt;());
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;weak-ptr&quot;&gt;weak_ptr&lt;&#x2F;h2&gt;
+&lt;p&gt;有时候我们希望获得一个使用shared_ptr管理的对象，但是又不希望影响原本shared_ptr的生命期，此时就可以使用weak_ptr&lt;&#x2F;p&gt;
+&lt;p&gt;它不会改变引用计数，可以查询是否被销毁，另外也可以调用lock方法来获取shared_ptr续命&lt;&#x2F;p&gt;
+&lt;p&gt;把上面的例子修改一下&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;Func&lt;&#x2F;span&gt;&lt;span&gt;(weak_ptr&amp;lt;string&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ptr&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%ld&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, ptr.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;use_count&lt;&#x2F;span&gt;&lt;span&gt;());
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;auto&lt;&#x2F;span&gt;&lt;span&gt; ptr2 = ptr.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;lock&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%ld&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, ptr.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;use_count&lt;&#x2F;span&gt;&lt;span&gt;());
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;auto&lt;&#x2F;span&gt;&lt;span&gt; ptr = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;make_shared&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;string&amp;gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Hello shared ptr&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%ld&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, ptr.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;use_count&lt;&#x2F;span&gt;&lt;span&gt;());
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Func&lt;&#x2F;span&gt;&lt;span&gt;(ptr);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%ld&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, ptr.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;use_count&lt;&#x2F;span&gt;&lt;span&gt;());
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;unique-ptr&quot;&gt;unique_ptr&lt;&#x2F;h2&gt;
+&lt;p&gt;可以理解为特殊的shared_ptr，它的引用数至多为一，拷贝构造函数也被禁用&lt;&#x2F;p&gt;
+&lt;p&gt;如果想要转移一个使用unique_ptr管理的对象，需要move&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;auto&lt;&#x2F;span&gt;&lt;span&gt; ptr = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;make_unique&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;string&amp;gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Hello shared ptr&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%s&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, ptr-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;c_str&lt;&#x2F;span&gt;&lt;span&gt;());
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;auto&lt;&#x2F;span&gt;&lt;span&gt; ptr2 = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;move&lt;&#x2F;span&gt;&lt;span&gt;(ptr);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%s&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, ptr2-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;c_str&lt;&#x2F;span&gt;&lt;span&gt;());
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+</content>
+	</entry>
+	<entry xml:lang="zh">
+		<title>C++标准库 多线程编程不完全指南</title>
+		<published>2019-12-26T14:06:17+00:00</published>
+		<updated>2019-12-26T14:06:17+00:00</updated>
+		<link href="https://paakmau.github.io/cbiao-zhun-ku-duo-xian-cheng-bian-cheng-bu-wan-quan-zhi-nan/" type="text/html"/>
+		<id>https://paakmau.github.io/cbiao-zhun-ku-duo-xian-cheng-bian-cheng-bu-wan-quan-zhi-nan/</id>
+		<content type="html">&lt;p&gt;某门课在讲管程，给的伪码十分丑陋看的我头痛，于是自己用C++写了一遍&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;本来是boost库的东西，然后在C++11被转入标准库了，从此C++标准库终于有多线程了&lt;&#x2F;p&gt;
+&lt;p&gt;本文涉及线程、互斥锁、条件变量、返回值、线程池&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;thread&quot;&gt;thread&lt;&#x2F;h2&gt;
+&lt;p&gt;线程&lt;br &#x2F;&gt;
+被创建之后就能直接自己独立运行了&lt;&#x2F;p&gt;
+&lt;p&gt;但需要注意的是线程的销毁&lt;br &#x2F;&gt;
+调用线程的detach方法使得子线程独立运行，子线程结束时他能自己销毁&lt;br &#x2F;&gt;
+调用join方法，主线程会被阻塞，直到子线程结束才继续执行，然后将子线程销毁&lt;br &#x2F;&gt;
+当然，不是父子线程也可以detach或者join（孤儿？）&lt;&#x2F;p&gt;
+&lt;p&gt;此外，当进程退出时所有的线程都会被强制销毁。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;chrono&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;cstdio&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;thread&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;using namespace&lt;&#x2F;span&gt;&lt;span&gt; std;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;ProcessA&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; i = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;; i &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;20&lt;&#x2F;span&gt;&lt;span&gt;; i++)
+&lt;&#x2F;span&gt;&lt;span&gt;        this_thread::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sleep_for&lt;&#x2F;span&gt;&lt;span&gt;(chrono::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;milliseconds&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;50&lt;&#x2F;span&gt;&lt;span&gt;)), &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;A&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;A线程结束&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;ProcessB&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; i = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;; i &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;10&lt;&#x2F;span&gt;&lt;span&gt;; i++)
+&lt;&#x2F;span&gt;&lt;span&gt;        this_thread::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sleep_for&lt;&#x2F;span&gt;&lt;span&gt;(chrono::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;milliseconds&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;50&lt;&#x2F;span&gt;&lt;span&gt;)), &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;B&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;B线程结束&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;ProcessPrt&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    thread &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;a&lt;&#x2F;span&gt;&lt;span&gt;(ProcessA);
+&lt;&#x2F;span&gt;&lt;span&gt;    a.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;detach&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    thread &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span&gt;(ProcessB);
+&lt;&#x2F;span&gt;&lt;span&gt;    b.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;join&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;父线程结束&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    thread &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;prt&lt;&#x2F;span&gt;&lt;span&gt;(ProcessPrt);
+&lt;&#x2F;span&gt;&lt;span&gt;    prt.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;detach&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;getchar&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;解释：&lt;br &#x2F;&gt;
+main中创建了prt线程，prt线程创建了A、B两个子线程，然后分离A线程，并等待B线程结束&lt;br &#x2F;&gt;
+运行后可以看到B线程结束后prt线程才结束，但线程A还在跑&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;mutex&quot;&gt;mutex&lt;&#x2F;h2&gt;
+&lt;p&gt;互斥锁&lt;br &#x2F;&gt;
+多个线程访问同一个资源时可以使用互斥锁，阻塞其他线程以保证一个一个访问，防止同时访问发生问题（当然也可以玩一些骚操作）&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;chrono&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;iostream&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;mutex&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;thread&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;using namespace&lt;&#x2F;span&gt;&lt;span&gt; std;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;mutex mtx;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;ProcessA&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; i = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;; i &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;10&lt;&#x2F;span&gt;&lt;span&gt;; i++) {
+&lt;&#x2F;span&gt;&lt;span&gt;        mtx.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;lock&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;        cout &amp;lt;&amp;lt; &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;A, time = &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &amp;lt;&amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;clock&lt;&#x2F;span&gt;&lt;span&gt;() &amp;lt;&amp;lt; endl;
+&lt;&#x2F;span&gt;&lt;span&gt;        mtx.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;unlock&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;ProcessB&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; i = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;; i &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;10&lt;&#x2F;span&gt;&lt;span&gt;; i++) {
+&lt;&#x2F;span&gt;&lt;span&gt;        mtx.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;lock&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;        cout &amp;lt;&amp;lt; &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;B, &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &amp;lt;&amp;lt; &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;time = &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &amp;lt;&amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;clock&lt;&#x2F;span&gt;&lt;span&gt;() &amp;lt;&amp;lt; endl;
+&lt;&#x2F;span&gt;&lt;span&gt;        mtx.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;unlock&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    thread &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;a&lt;&#x2F;span&gt;&lt;span&gt;(ProcessA);
+&lt;&#x2F;span&gt;&lt;span&gt;    thread &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span&gt;(ProcessB);
+&lt;&#x2F;span&gt;&lt;span&gt;    a.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;join&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    b.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;join&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;解释：&lt;br &#x2F;&gt;
+如果把mutex相关的东西注释掉，会发现输出奇奇怪怪，因为标准输出被两个线程来回抢。&lt;br &#x2F;&gt;
+使用mutex加锁后，得到正常的输出&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;lock-guard&quot;&gt;lock_guard&lt;&#x2F;h2&gt;
+&lt;p&gt;它在构造函数中对mutex进行lock，析构的时候unlock，很方便&lt;br &#x2F;&gt;
+因此可以把上面mutex的示例代码写成这样的形式&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;chrono&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;iostream&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;mutex&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;thread&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;using namespace&lt;&#x2F;span&gt;&lt;span&gt; std;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;mutex mtx;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;ProcessA&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; i = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;; i &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;10&lt;&#x2F;span&gt;&lt;span&gt;; i++) {
+&lt;&#x2F;span&gt;&lt;span&gt;        lock_guard&amp;lt;mutex&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;lock&lt;&#x2F;span&gt;&lt;span&gt;(mtx);
+&lt;&#x2F;span&gt;&lt;span&gt;        cout &amp;lt;&amp;lt; &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;A, time = &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &amp;lt;&amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;clock&lt;&#x2F;span&gt;&lt;span&gt;() &amp;lt;&amp;lt; endl;
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;ProcessB&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; i = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;; i &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;10&lt;&#x2F;span&gt;&lt;span&gt;; i++) {
+&lt;&#x2F;span&gt;&lt;span&gt;        lock_guard&amp;lt;mutex&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;lock&lt;&#x2F;span&gt;&lt;span&gt;(mtx);
+&lt;&#x2F;span&gt;&lt;span&gt;        cout &amp;lt;&amp;lt; &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;B, &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &amp;lt;&amp;lt; &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;time = &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &amp;lt;&amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;clock&lt;&#x2F;span&gt;&lt;span&gt;() &amp;lt;&amp;lt; endl;
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    thread &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;a&lt;&#x2F;span&gt;&lt;span&gt;(ProcessA);
+&lt;&#x2F;span&gt;&lt;span&gt;    thread &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span&gt;(ProcessB);
+&lt;&#x2F;span&gt;&lt;span&gt;    a.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;join&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    b.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;join&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;unique-lock&quot;&gt;unique_lock&lt;&#x2F;h2&gt;
+&lt;p&gt;它具有lock_guard的功能，但更灵活，当然开销也更大&lt;&#x2F;p&gt;
+&lt;p&gt;unique_lock可以在析构之前unlock，构造的时候可以不lock，也可以try_lock&lt;br &#x2F;&gt;
+具体操作可以查文档（看语法提示不就行了吗），比较蛇皮废话太多懒得写了&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;condition-variable&quot;&gt;condition_variable&lt;&#x2F;h2&gt;
+&lt;p&gt;条件变量&lt;br &#x2F;&gt;
+配合unique_lock使用，用于线程之间交互，比如通知共享变量被修改等&lt;&#x2F;p&gt;
+&lt;p&gt;一个线程在wait的时候会被阻塞，如果之后其他线程进行了notify操作，这个阻塞的线程会被唤醒&lt;&#x2F;p&gt;
+&lt;p&gt;下面示例代码控制两个线程交替输出&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;condition_variable&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;cstdio&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;cstdlib&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;cstring&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;iostream&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;mutex&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;thread&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;using namespace&lt;&#x2F;span&gt;&lt;span&gt; std;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;mutex mtx;
+&lt;&#x2F;span&gt;&lt;span&gt;condition_variable cv;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;bool&lt;&#x2F;span&gt;&lt;span&gt; flag;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;ProcessA&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; i = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;; i &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;10&lt;&#x2F;span&gt;&lt;span&gt;; i++) {
+&lt;&#x2F;span&gt;&lt;span&gt;        unique_lock&amp;lt;mutex&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;lck&lt;&#x2F;span&gt;&lt;span&gt;(mtx);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;while &lt;&#x2F;span&gt;&lt;span&gt;(!flag) cv.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;wait&lt;&#x2F;span&gt;&lt;span&gt;(lck);
+&lt;&#x2F;span&gt;&lt;span&gt;        flag = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;false&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;A&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;        cv.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;notify_one&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;ProcessB&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; i = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;; i &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;10&lt;&#x2F;span&gt;&lt;span&gt;; i++) {
+&lt;&#x2F;span&gt;&lt;span&gt;        unique_lock&amp;lt;mutex&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;lck&lt;&#x2F;span&gt;&lt;span&gt;(mtx);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;while &lt;&#x2F;span&gt;&lt;span&gt;(flag) cv.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;wait&lt;&#x2F;span&gt;&lt;span&gt;(lck);
+&lt;&#x2F;span&gt;&lt;span&gt;        flag = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;true&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;B&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;        cv.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;notify_one&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    thread &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;a&lt;&#x2F;span&gt;&lt;span&gt;(ProcessA);
+&lt;&#x2F;span&gt;&lt;span&gt;    thread &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span&gt;(ProcessB);
+&lt;&#x2F;span&gt;&lt;span&gt;    a.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;join&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    b.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;join&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;解释：&lt;br &#x2F;&gt;
+两个线程输出后更新标记为自己，当标记表明上一次输出还是自己时则调用wait阻塞自己，等另一个线程输出结束notify的时候才被唤醒&lt;&#x2F;p&gt;
+&lt;p&gt;然后这个交替输出也可以写成管程的形式&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;condition_variable&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;cstdio&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;cstdlib&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;cstring&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;iostream&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;mutex&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;thread&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;using namespace&lt;&#x2F;span&gt;&lt;span&gt; std;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct &lt;&#x2F;span&gt;&lt;span&gt;Moniter {
+&lt;&#x2F;span&gt;&lt;span&gt;    mutex mtx;
+&lt;&#x2F;span&gt;&lt;span&gt;    condition_variable cv;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;bool&lt;&#x2F;span&gt;&lt;span&gt; flag;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;A&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;        unique_lock&amp;lt;mutex&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;lck&lt;&#x2F;span&gt;&lt;span&gt;(mtx);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;while &lt;&#x2F;span&gt;&lt;span&gt;(!flag) cv.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;wait&lt;&#x2F;span&gt;&lt;span&gt;(lck);
+&lt;&#x2F;span&gt;&lt;span&gt;        flag = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;false&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;A&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;        cv.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;notify_one&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;B&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;        unique_lock&amp;lt;mutex&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;lck&lt;&#x2F;span&gt;&lt;span&gt;(mtx);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;while &lt;&#x2F;span&gt;&lt;span&gt;(flag) cv.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;wait&lt;&#x2F;span&gt;&lt;span&gt;(lck);
+&lt;&#x2F;span&gt;&lt;span&gt;        flag = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;true&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;B&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;        cv.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;notify_one&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;} m;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;ProcessA&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; i = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;; i &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;10&lt;&#x2F;span&gt;&lt;span&gt;; i++) m.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;A&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;ProcessB&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; i = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;; i &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;10&lt;&#x2F;span&gt;&lt;span&gt;; i++) m.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;B&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    thread &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;a&lt;&#x2F;span&gt;&lt;span&gt;(ProcessA);
+&lt;&#x2F;span&gt;&lt;span&gt;    thread &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span&gt;(ProcessB);
+&lt;&#x2F;span&gt;&lt;span&gt;    a.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;join&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    b.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;join&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;但是需要注意一个严重的问题，等待条件变量的线程可能会因为某些原因极小概率地被唤醒，而条件并没有得到满足，这就是传说中的虚假唤醒。据说可能来源于操作系统的玄学操作，也可能是多核处理器环境下notify_one的时候低概率导致多个wait被依次唤醒，因此在上面的例子中在wait的时候需要使用while反复检查条件是否满足。不过最常见的情况应该是notify_all的时候会导致所有的wait都被依次唤醒，每个wait在被唤醒后并不知道条件是否仍然满足，所以还需要再次检查条件。当然我们的例子中处于wait状态的线程每次只会有一个，因此其实不需要担心，但是考虑到前面提到的操作系统的玄学操作以及避免潜在的误用情况，还是使用了while来反复检查条件&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;future&quot;&gt;future&lt;&#x2F;h2&gt;
+&lt;p&gt;可以理解为存放数据的容器，它的数据在未来某一时间被写入。没有数据的时候如果调用get方法试图获取数据，会被阻塞，直到数据被写入。&lt;&#x2F;p&gt;
+&lt;p&gt;因此可以用于线程之间传递数据，也可以简单的当作线程的返回值&lt;&#x2F;p&gt;
+&lt;p&gt;要配合promise使用，下面展示使用future实现线程返回值&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;chrono&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;cstdio&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;future&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;thread&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;using namespace&lt;&#x2F;span&gt;&lt;span&gt; std;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;ProcessA&lt;&#x2F;span&gt;&lt;span&gt;(promise&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;p&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; i = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;; i &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;10&lt;&#x2F;span&gt;&lt;span&gt;; i++) {
+&lt;&#x2F;span&gt;&lt;span&gt;        this_thread::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sleep_for&lt;&#x2F;span&gt;&lt;span&gt;(chrono::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;milliseconds&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;100&lt;&#x2F;span&gt;&lt;span&gt;));
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;A&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;    p-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;set_value&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;clock&lt;&#x2F;span&gt;&lt;span&gt;());
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    promise&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt; p;
+&lt;&#x2F;span&gt;&lt;span&gt;    future&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt; f = p.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;get_future&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    thread &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;a&lt;&#x2F;span&gt;&lt;span&gt;(ProcessA, &amp;amp;p);
+&lt;&#x2F;span&gt;&lt;span&gt;    a.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;detach&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Thread A return, time = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%d&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, f.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;get&lt;&#x2F;span&gt;&lt;span&gt;());
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;getchar&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;解释：&lt;br &#x2F;&gt;
+线程A不断输出，结束时返回当前的时间。&lt;br &#x2F;&gt;
+而主线程因为要获取f的值，一直被阻塞直到线程A写入数据&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;xian-cheng-chi&quot;&gt;线程池&lt;&#x2F;h2&gt;
+&lt;p&gt;线程不断开辟销毁会降低效率，可以预先开辟一定量的线程，然后将任务分配给它们执行，实现线程的循环使用&lt;&#x2F;p&gt;
+&lt;p&gt;下面简单实现一下&lt;br &#x2F;&gt;
+维护一个Task队列，由Worker线程负责执行其中的Task&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;chrono&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;cstdio&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;mutex&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;queue&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;thread&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;vector&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;using namespace&lt;&#x2F;span&gt;&lt;span&gt; std;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;ThreadPool &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;private&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;:
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;typedef&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; function&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;()&amp;gt; Task;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; threadCnt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;bool&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; isRunning;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    vector&amp;lt;thread&amp;gt; workers;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    queue&amp;lt;Task&amp;gt; tasks;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    mutex mtx;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    condition_variable cv;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;ProcessWorker&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;() {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;while &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(isRunning) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            Task task;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;                unique_lock&amp;lt;mutex&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;lock&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(mtx);
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(tasks.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;empty&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;()) cv.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;wait&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(lock);
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span&gt;!&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;tasks.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;empty&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;()) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;                    task &lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; tasks.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;front&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;();
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;                    tasks.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;pop&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;();
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;                }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(task) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;task&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;();
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;:
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;explicit &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;ThreadPool&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cnt&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) : &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;threadCnt&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(cnt), &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;isRunning&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {}
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;~ThreadPool&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;() {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(isRunning) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Stop&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;();
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;Start&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;() {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        isRunning &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; i &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;; i &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; threadCnt; i&lt;&#x2F;span&gt;&lt;span&gt;++&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            workers.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;emplace_back&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;thread&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;ThreadPool::ProcessWorker, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;this&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;));
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;Push&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; Task &lt;&#x2F;span&gt;&lt;span&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;task&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(isRunning) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            lock_guard&amp;lt;mutex&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;lock&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(mtx);
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            tasks.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;push&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(task);
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            cv.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;notify_one&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;();
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;Stop&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;() {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            lock_guard&amp;lt;mutex&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;lock&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(mtx);
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            isRunning &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;false&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            cv.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;notify_all&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;();
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;auto &lt;&#x2F;span&gt;&lt;span&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;thd &lt;&#x2F;span&gt;&lt;span&gt;:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; workers) thd.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;join&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;();
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;ProcessA&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;A start&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; i = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;; i &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;5&lt;&#x2F;span&gt;&lt;span&gt;; i++)
+&lt;&#x2F;span&gt;&lt;span&gt;        this_thread::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sleep_for&lt;&#x2F;span&gt;&lt;span&gt;(chrono::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;milliseconds&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;300&lt;&#x2F;span&gt;&lt;span&gt;)), &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;A&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;A end&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;ProcessB&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;B start&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; i = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;; i &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;5&lt;&#x2F;span&gt;&lt;span&gt;; i++)
+&lt;&#x2F;span&gt;&lt;span&gt;        this_thread::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sleep_for&lt;&#x2F;span&gt;&lt;span&gt;(chrono::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;milliseconds&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;100&lt;&#x2F;span&gt;&lt;span&gt;)), &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;B&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;B end&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;ProcessC&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;C start&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; i = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;; i &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;5&lt;&#x2F;span&gt;&lt;span&gt;; i++)
+&lt;&#x2F;span&gt;&lt;span&gt;        this_thread::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sleep_for&lt;&#x2F;span&gt;&lt;span&gt;(chrono::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;milliseconds&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;150&lt;&#x2F;span&gt;&lt;span&gt;)), &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;C&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;C end&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;ProcessD&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;D start&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; i = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;; i &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;5&lt;&#x2F;span&gt;&lt;span&gt;; i++)
+&lt;&#x2F;span&gt;&lt;span&gt;        this_thread::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sleep_for&lt;&#x2F;span&gt;&lt;span&gt;(chrono::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;milliseconds&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;250&lt;&#x2F;span&gt;&lt;span&gt;)), &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;D&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;D end&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;ProcessE&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;E start&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; i = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;; i &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;5&lt;&#x2F;span&gt;&lt;span&gt;; i++)
+&lt;&#x2F;span&gt;&lt;span&gt;        this_thread::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sleep_for&lt;&#x2F;span&gt;&lt;span&gt;(chrono::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;milliseconds&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;200&lt;&#x2F;span&gt;&lt;span&gt;)), &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;E&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;E end&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    ThreadPool &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;tp&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;2&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;    tp.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Start&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    tp.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Push&lt;&#x2F;span&gt;&lt;span&gt;(ProcessA);
+&lt;&#x2F;span&gt;&lt;span&gt;    tp.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Push&lt;&#x2F;span&gt;&lt;span&gt;(ProcessB);
+&lt;&#x2F;span&gt;&lt;span&gt;    tp.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Push&lt;&#x2F;span&gt;&lt;span&gt;(ProcessC);
+&lt;&#x2F;span&gt;&lt;span&gt;    tp.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Push&lt;&#x2F;span&gt;&lt;span&gt;(ProcessD);
+&lt;&#x2F;span&gt;&lt;span&gt;    tp.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Push&lt;&#x2F;span&gt;&lt;span&gt;(ProcessE);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;getchar&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    tp.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Stop&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;解释：&lt;br &#x2F;&gt;
+Push方法可向队列中添加Task&lt;br &#x2F;&gt;
+每个Worker线程从队列中获取Task并执行，结束后再次获取Task执行并如此不断循环&lt;&#x2F;p&gt;
+&lt;p&gt;注意&lt;br &#x2F;&gt;
+队列要互斥访问，从队列中取Task使用了条件变量&lt;br &#x2F;&gt;
+然后线程池析构或停止时要notify_all使Worker线程从wait中唤醒并正常退出，还有join&lt;&#x2F;p&gt;
+</content>
+	</entry>
+</feed>

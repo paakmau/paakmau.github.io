@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>泊谋</title>
+
+      
+
+      
+          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+    
+        
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io">
+                                <span itemprop="name">主页
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
+                                <span itemprop="name">分类
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
+                                <span itemprop="name">标签
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
+                                <span itemprop="name">GitHub
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">「luogu 1880」石子合并</h1>
+        <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>3 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2019-12-18
+</span>
+    </header>
+    <div itemprop="articleBody">
+      <p>退役了退役了，刷点水题准备面试</p>
+<span id="continue-reading"></span><h2 id="ti-mu-miao-shu">题目描述</h2>
+<p>在一个圆形操场的四周摆放 N 堆石子，现要将石子有次序地合并成一堆。规定每次只能选相邻的2堆合并成新的一堆，并将新的一堆的石子数，记为该次合并的得分。</p>
+<p>试设计出一个算法,计算出将 N 堆石子合并成 1 堆的最小得分和最大得分。</p>
+<h2 id="shu-ru-ge-shi">输入格式</h2>
+<p>数据的第 1 行是正整数 N，表示有N堆石子。<br />
+第 2 行有 N 个整数，第 i 个整数 ai​ 表示第 i 堆石子的个数。</p>
+<h2 id="shu-chu-ge-shi">输出格式</h2>
+<p>输出共 2 行，第 1 行为最小得分，第 2 行为最大得分。</p>
+<h2 id="shu-ru-yang-li">输入样例</h2>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>4
+</span><span>4 5 9 4
+</span></code></pre>
+<h2 id="shu-chu-yang-li">输出样例</h2>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>43
+</span><span>54
+</span></code></pre>
+<h2 id="hint">Hint</h2>
+<p>1&lt;=N&lt;=100，0&lt;=ai&lt;=20</p>
+<h2 id="ti-jie">题解</h2>
+<p>把环复制一遍变成链做dp就行了</p>
+<p>F(i, j)表示合并[i, j]的最大得分<br />
+F(i, j) = max { F(i, k) + F(k+1, j) + Sum(i, j), i&lt;=k&lt;j }<br />
+最小得分同理</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">cstdio</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">algorithm</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">climits</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">cstring</span><span>&gt;
+</span><span>
+</span><span style="color:#b48ead;">using namespace</span><span> std;
+</span><span>
+</span><span style="color:#b48ead;">const int</span><span> MAXN = </span><span style="color:#d08770;">205</span><span>;
+</span><span>
+</span><span style="color:#b48ead;">int</span><span> N;
+</span><span style="color:#b48ead;">long long</span><span> A[MAXN];
+</span><span style="color:#b48ead;">long long</span><span> F[MAXN][MAXN];
+</span><span style="color:#b48ead;">long long</span><span> G[MAXN][MAXN];
+</span><span style="color:#b48ead;">long long</span><span> S[MAXN];
+</span><span>
+</span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">main</span><span>() {
+</span><span>    </span><span style="color:#96b5b4;">memset </span><span>(G, </span><span style="color:#d08770;">0x0f</span><span>, sizeof(G));
+</span><span>    </span><span style="color:#96b5b4;">scanf</span><span>(&quot;</span><span style="color:#d08770;">%d</span><span>&quot;, &amp;N);
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">int</span><span> i = </span><span style="color:#d08770;">1</span><span>; i &lt;= N; i++)
+</span><span>        </span><span style="color:#96b5b4;">scanf</span><span>(&quot;</span><span style="color:#d08770;">%lld</span><span>&quot;, A + i), A[i+N] = A[i], G[i][i] = G[i+N][i+N] = </span><span style="color:#d08770;">0</span><span>;
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">int</span><span> i = </span><span style="color:#d08770;">1</span><span>; i &lt;= N * </span><span style="color:#d08770;">2</span><span>; i++)
+</span><span>        S[i] = S[i - </span><span style="color:#d08770;">1</span><span>] + A[i];
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">int</span><span> l = </span><span style="color:#d08770;">2</span><span>; l &lt;= N; l++)
+</span><span>        </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">int</span><span> i = </span><span style="color:#d08770;">1</span><span>; i+l-</span><span style="color:#d08770;">1 </span><span>&lt;= </span><span style="color:#d08770;">2</span><span>*N; i++)
+</span><span>            </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">int</span><span> j = </span><span style="color:#d08770;">1</span><span>; j &lt; l; j++)  {
+</span><span>                F[i][i+l-</span><span style="color:#d08770;">1</span><span>] = </span><span style="color:#bf616a;">max</span><span>(F[i][i+l-</span><span style="color:#d08770;">1</span><span>], F[i][i+j-</span><span style="color:#d08770;">1</span><span>] + F[i+j][i+l-</span><span style="color:#d08770;">1</span><span>] + S[i+l-</span><span style="color:#d08770;">1</span><span>] - S[i-</span><span style="color:#d08770;">1</span><span>]);
+</span><span>                G[i][i+l-</span><span style="color:#d08770;">1</span><span>] = </span><span style="color:#bf616a;">min</span><span>(G[i][i+l-</span><span style="color:#d08770;">1</span><span>], G[i][i+j-</span><span style="color:#d08770;">1</span><span>] + G[i+j][i+l-</span><span style="color:#d08770;">1</span><span>] + S[i+l-</span><span style="color:#d08770;">1</span><span>] - S[i-</span><span style="color:#d08770;">1</span><span>]);
+</span><span>            }
+</span><span>    </span><span style="color:#b48ead;">long long</span><span> ansMn = INT_MAX;
+</span><span>    </span><span style="color:#b48ead;">long long</span><span> ansMx = INT_MIN;
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">int</span><span> i=</span><span style="color:#d08770;">1</span><span>; i&lt;=N; i++) {
+</span><span>        ansMx = </span><span style="color:#bf616a;">max </span><span>(ansMx, F[i][i+N-</span><span style="color:#d08770;">1</span><span>]);
+</span><span>        ansMn = </span><span style="color:#bf616a;">min </span><span>(ansMn, G[i][i+N-</span><span style="color:#d08770;">1</span><span>]);
+</span><span>    }
+</span><span>    </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#d08770;">%lld</span><span style="color:#96b5b4;">\n</span><span style="color:#d08770;">%lld</span><span>&quot;, ansMn, ansMx);
+</span><span>    </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">0</span><span>;
+</span><span>}
+</span></code></pre>
+
+    </div>
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                    Published by 何泊谋
+                
+                
+                    
+                    in <a href="https://paakmau.github.io/categories/suan-fa/">算法</a>
+                
+                
+                    and
+                    tagged
+                    
+                        <a href="https://paakmau.github.io/tags/dong-tai-gui-hua/">动态规划</a>
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+    </body>
+
+</html>

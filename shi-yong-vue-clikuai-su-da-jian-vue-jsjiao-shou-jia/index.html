@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>泊谋</title>
+
+      
+
+      
+          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+    
+        
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io">
+                                <span itemprop="name">主页
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
+                                <span itemprop="name">分类
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
+                                <span itemprop="name">标签
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
+                                <span itemprop="name">GitHub
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">使用Vue CLI快速搭建Vue.js脚手架</h1>
+        <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>4 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2019-12-27
+</span>
+    </header>
+    <div itemprop="articleBody">
+      <p>本文基于</p>
+<span id="continue-reading"></span>
+<p>Vue CLI 4.1.2<br />
+Node.js v13.5.0</p>
+<h2 id="jian-dan-jie-shao">简单介绍</h2>
+<p>在Vue框架中，我们可以通过数据驱动视图，实现数据与视图的分离<br />
+从而将关注点集中在逻辑上，让框架自动替我们完成麻烦的数据绑定</p>
+<p>同时它也是一个容易上手的渐进式框架</p>
+<h2 id="chuang-jian-vue-jsxiang-mu">创建Vue.js项目</h2>
+<p>用npx命令运行Vue CLI<br />
+它能提供一些选项帮助我们建立脚手架项目</p>
+<pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> npx @vue/cli create hello-world
+</span></code></pre>
+<p>这里npx会先下载再运行Vue CLI，不会污染全局依赖也不会在当前目录留下任何东西，十分干净</p>
+<p>本文选择的配置如下</p>
+<p><img src="https://hebomou.top/wp-content/uploads/2020/01/image-1024x221.png" alt="" /></p>
+<p>Please pick a preset<br />
+我们选择Manually select features以手动选择需要的特性<br />
+当然也可以使用自己定义的预设</p>
+<p>Check the features needed for your project<br />
+本文选了几个常用的<br />
+Babel：能够把ES6版本的代码转换为向后兼容的JavaScript语法<br />
+Router：官方提供的路由管理器，用于实现单页应用<br />
+Vuex：官方提供的状态管理器，用于解决组件之间传递数据，共享数据的问题<br />
+CSS Pre-processors：CSS预处理器，可以为CSS添加一些编程特性，方便CSS的编写，最后发布的时候再重新编译为浏览器可识别的CSS代码<br />
+Linter / Formatter：用于语法和格式检查<br />
+Unit Testing：用于单元测试</p>
+<p>Use history mode for router<br />
+历史模式，这能把URL中的#去掉。不管它，开就完事了</p>
+<p>Pick a CSS pre-processor<br />
+CSS预处理器，使用Less。哪个都行，与本文无关</p>
+<p>Pick a linter / formatter config<br />
+看个人喜好，然后选择保存时检查</p>
+<p>Pick a unit testing solution<br />
+单元测试我们选Jest</p>
+<p>Where do you prefer placing config<br />
+插件配置我喜欢整合起来，统一放在package.json里</p>
+<p>Save this as a preset<br />
+不需要保存为预设</p>
+<p>Pick the package manger<br />
+我用的npm</p>
+<p>然后它会把项目生成在当前目录下的hello-world文件夹中</p>
+<h2 id="yun-xing">运行</h2>
+<p>进入项目文件夹并在终端中输入</p>
+<pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> npm run serve
+</span></code></pre>
+<p>得到这样的输出</p>
+<p><img src="https://hebomou.top/wp-content/uploads/2020/01/image-2.png" alt="" /></p>
+<p>然后在浏览器中打开就行了</p>
+<h2 id="jian-dan-de-xiang-mu-jie-shao">简单的项目介绍</h2>
+<p>这个项目大概长这样</p>
+<p><img src="https://hebomou.top/wp-content/uploads/2020/01/image-1-351x1024.png" alt="" /></p>
+<p>assets<br />
+放些图片什么的</p>
+<p>components<br />
+存放可复用的组件</p>
+<p>router<br />
+在这里为单页应用配置路由</p>
+<p>store<br />
+Vuex相关，用于全局的状态管理</p>
+<p>views<br />
+存放网站的所有页面</p>
+<p>tests<br />
+单元测试</p>
+<p>main.js<br />
+这里初始化Vue.js，可以加载全局插件、全局组件</p>
+<p>package.json<br />
+用于配置Node.js项目。然后因为我们在CLI中的配置，所以ESLint、Jest这些东西的配置也在里面</p>
+
+    </div>
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                    Published by 何泊谋
+                
+                
+                    
+                    in <a href="https://paakmau.github.io/categories/node-js/">Node.js</a>
+                
+                
+                    and
+                    tagged
+                    
+                        <a href="https://paakmau.github.io/tags/vue-js/">Vue.js</a>
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+    </body>
+
+</html>

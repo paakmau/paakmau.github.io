@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>泊谋</title>
+
+      
+
+      
+          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+    
+        
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io">
+                                <span itemprop="name">主页
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
+                                <span itemprop="name">分类
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
+                                <span itemprop="name">标签
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
+                                <span itemprop="name">GitHub
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Unity Physics学习笔记「五」 核心组件详解</h1>
+        <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>4 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2020-02-08
+</span>
+    </header>
+    <div itemprop="articleBody">
+      <p>在编辑器为GameObject挂载Physics Body和Physics Shape这两个Authoring脚本会为转化出的Entity添加很多个组件</p>
+<span id="continue-reading"></span>
+<p>这些组件直接影响物理引擎中的运动、碰撞等计算，也能够被我们写的System获取或修改</p>
+<p>接下来本文依照官方手册对他们进行介绍</p>
+<h2 id="physicscollider">PhysicsCollider</h2>
+<p>储存的是指针，在物体运动导致的碰撞或者碰撞查询时会用到</p>
+<p>除了碰撞体的形状大小之外，它还包括摩擦系数与恢复系数等材质信息，Is Trigger与Raises Collision Events，MassProperties，当然还有Collision Filter</p>
+<p>另外，如果被设为空指针，引擎依然会模拟它的Physics Body，但它将不会触发任何碰撞。可以特殊用途，比如把空指针的碰撞体用关节连起来以模拟蒙皮</p>
+<h2 id="physicsvelocity">PhysicsVelocity</h2>
+<p>包括线速度和角速度</p>
+<p>每一帧，引擎会根据重力以及来自其他碰撞体或关节的力计算新的速度，然后根据速度计算新的Transform</p>
+<p>而我们也可以使用代码修改这个组件，覆盖掉引擎计算的速度。可以实现匀速运动或施加冲量等效果</p>
+<h2 id="physicsmass">PhysicsMass</h2>
+<p>跟编辑器中的质量分布对应</p>
+<p>包括重心，惯性张量等</p>
+<p>值得注意的是，部分属性会以逆元的形式存储，这可以加速内部物理计算。另外可以通过将部分属性值设为0以表示无穷大</p>
+<p>而且可以不需要对它手工赋值，因为碰撞体的ICollider接口有一个MassProperties属性，可以根据它进行缩放近似地实现想要的效果</p>
+<h2 id="physicsgravityfactor">PhysicsGravityFactor</h2>
+<p>它规定了重力系数</p>
+<p>跟编辑器中一样</p>
+<h2 id="physicsdamping">PhysicsDamping</h2>
+<p>包括线性阻尼和角度阻尼</p>
+<p>跟编辑器中一样</p>
+<h2 id="physicsstep">PhysicsStep</h2>
+<p>是一个全局的组件，只能有一个</p>
+<p>可以用于设置重力的方向大小，SolverIterationCount等</p>
+<p>SolverIterationCount，求解迭代次数。如果关节震荡或行为怪异，可以通过提高该值以改善，当然这会降低性能</p>
+<h2 id="physicsjoint">PhysicsJoint</h2>
+<p>这个组件是关节，属性包括关节连接的两个Entity，关节类型与参数，以及这两个Entity是否会发生碰撞</p>
+<p>然后与PhysicsCollider类似，关节的类型与参数以指针形式存储，可能因为内部有Constraint的动态数组</p>
+<p>并且Unity提供了许多类型的关节，以及用于创建它们的静态函数。手册上说后续还会添加其他类型</p>
+<p>至于目前有哪些类型可以查阅官方手册<br />
+<a href="https://docs.unity3d.com/Packages/com.unity.physics@0.2/manual/core_components.html#joints">链接在这里</a></p>
+
+    </div>
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                    Published by 何泊谋
+                
+                
+                    
+                    in <a href="https://paakmau.github.io/categories/unity/">Unity</a>
+                
+                
+                    and
+                    tagged
+                    
+                        <a href="https://paakmau.github.io/tags/unity-ecs/">Unity ECS</a>
+                        
+                            
+                                
+                                    and
+                                
+                            
+                        
+                    
+                        <a href="https://paakmau.github.io/tags/unity-physics/">Unity Physics</a>
+                        
+                            
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+    </body>
+
+</html>

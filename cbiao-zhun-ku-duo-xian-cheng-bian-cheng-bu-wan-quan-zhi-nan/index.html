@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>泊谋</title>
+
+      
+
+      
+          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+    
+        
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io">
+                                <span itemprop="name">主页
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
+                                <span itemprop="name">分类
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
+                                <span itemprop="name">标签
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
+                                <span itemprop="name">GitHub
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">C++标准库 多线程编程不完全指南</h1>
+        <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>10 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2019-12-26
+</span>
+    </header>
+    <div itemprop="articleBody">
+      <p>某门课在讲管程，给的伪码十分丑陋看的我头痛，于是自己用C++写了一遍</p>
+<span id="continue-reading"></span>
+<p>本来是boost库的东西，然后在C++11被转入标准库了，从此C++标准库终于有多线程了</p>
+<p>本文涉及线程、互斥锁、条件变量、返回值、线程池</p>
+<h2 id="thread">thread</h2>
+<p>线程<br />
+被创建之后就能直接自己独立运行了</p>
+<p>但需要注意的是线程的销毁<br />
+调用线程的detach方法使得子线程独立运行，子线程结束时他能自己销毁<br />
+调用join方法，主线程会被阻塞，直到子线程结束才继续执行，然后将子线程销毁<br />
+当然，不是父子线程也可以detach或者join（孤儿？）</p>
+<p>此外，当进程退出时所有的线程都会被强制销毁。</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">chrono</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">cstdio</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">thread</span><span>&gt;
+</span><span style="color:#b48ead;">using namespace</span><span> std;
+</span><span>
+</span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">ProcessA</span><span>() {
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">int</span><span> i = </span><span style="color:#d08770;">0</span><span>; i &lt; </span><span style="color:#d08770;">20</span><span>; i++)
+</span><span>        this_thread::</span><span style="color:#bf616a;">sleep_for</span><span>(chrono::</span><span style="color:#bf616a;">milliseconds</span><span>(</span><span style="color:#d08770;">50</span><span>)), </span><span style="color:#96b5b4;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">A</span><span>&quot;);
+</span><span>    </span><span style="color:#96b5b4;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">A线程结束</span><span>&quot;);
+</span><span>}
+</span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">ProcessB</span><span>() {
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">int</span><span> i = </span><span style="color:#d08770;">0</span><span>; i &lt; </span><span style="color:#d08770;">10</span><span>; i++)
+</span><span>        this_thread::</span><span style="color:#bf616a;">sleep_for</span><span>(chrono::</span><span style="color:#bf616a;">milliseconds</span><span>(</span><span style="color:#d08770;">50</span><span>)), </span><span style="color:#96b5b4;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">B</span><span>&quot;);
+</span><span>    </span><span style="color:#96b5b4;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">B线程结束</span><span>&quot;);
+</span><span>}
+</span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">ProcessPrt</span><span>() {
+</span><span>    thread </span><span style="color:#bf616a;">a</span><span>(ProcessA);
+</span><span>    a.</span><span style="color:#bf616a;">detach</span><span>();
+</span><span>    thread </span><span style="color:#bf616a;">b</span><span>(ProcessB);
+</span><span>    b.</span><span style="color:#bf616a;">join</span><span>();
+</span><span>    </span><span style="color:#96b5b4;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">父线程结束</span><span>&quot;);
+</span><span>}
+</span><span>
+</span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">main</span><span>() {
+</span><span>    thread </span><span style="color:#bf616a;">prt</span><span>(ProcessPrt);
+</span><span>    prt.</span><span style="color:#bf616a;">detach</span><span>();
+</span><span>    </span><span style="color:#96b5b4;">getchar</span><span>();
+</span><span>    </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">0</span><span>;
+</span><span>}
+</span></code></pre>
+<p>解释：<br />
+main中创建了prt线程，prt线程创建了A、B两个子线程，然后分离A线程，并等待B线程结束<br />
+运行后可以看到B线程结束后prt线程才结束，但线程A还在跑</p>
+<h2 id="mutex">mutex</h2>
+<p>互斥锁<br />
+多个线程访问同一个资源时可以使用互斥锁，阻塞其他线程以保证一个一个访问，防止同时访问发生问题（当然也可以玩一些骚操作）</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">chrono</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">iostream</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">mutex</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">thread</span><span>&gt;
+</span><span style="color:#b48ead;">using namespace</span><span> std;
+</span><span>
+</span><span>mutex mtx;
+</span><span>
+</span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">ProcessA</span><span>() {
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">int</span><span> i = </span><span style="color:#d08770;">0</span><span>; i &lt; </span><span style="color:#d08770;">10</span><span>; i++) {
+</span><span>        mtx.</span><span style="color:#bf616a;">lock</span><span>();
+</span><span>        cout &lt;&lt; &quot;</span><span style="color:#a3be8c;">A, time = </span><span>&quot; &lt;&lt; </span><span style="color:#96b5b4;">clock</span><span>() &lt;&lt; endl;
+</span><span>        mtx.</span><span style="color:#bf616a;">unlock</span><span>();
+</span><span>    }
+</span><span>}
+</span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">ProcessB</span><span>() {
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">int</span><span> i = </span><span style="color:#d08770;">0</span><span>; i &lt; </span><span style="color:#d08770;">10</span><span>; i++) {
+</span><span>        mtx.</span><span style="color:#bf616a;">lock</span><span>();
+</span><span>        cout &lt;&lt; &quot;</span><span style="color:#a3be8c;">B, </span><span>&quot; &lt;&lt; &quot;</span><span style="color:#a3be8c;">time = </span><span>&quot; &lt;&lt; </span><span style="color:#96b5b4;">clock</span><span>() &lt;&lt; endl;
+</span><span>        mtx.</span><span style="color:#bf616a;">unlock</span><span>();
+</span><span>    }
+</span><span>}
+</span><span>
+</span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">main</span><span>() {
+</span><span>    thread </span><span style="color:#bf616a;">a</span><span>(ProcessA);
+</span><span>    thread </span><span style="color:#bf616a;">b</span><span>(ProcessB);
+</span><span>    a.</span><span style="color:#bf616a;">join</span><span>();
+</span><span>    b.</span><span style="color:#bf616a;">join</span><span>();
+</span><span>    </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">0</span><span>;
+</span><span>}
+</span></code></pre>
+<p>解释：<br />
+如果把mutex相关的东西注释掉，会发现输出奇奇怪怪，因为标准输出被两个线程来回抢。<br />
+使用mutex加锁后，得到正常的输出</p>
+<h2 id="lock-guard">lock_guard</h2>
+<p>它在构造函数中对mutex进行lock，析构的时候unlock，很方便<br />
+因此可以把上面mutex的示例代码写成这样的形式</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">chrono</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">iostream</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">mutex</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">thread</span><span>&gt;
+</span><span style="color:#b48ead;">using namespace</span><span> std;
+</span><span>
+</span><span>mutex mtx;
+</span><span>
+</span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">ProcessA</span><span>() {
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">int</span><span> i = </span><span style="color:#d08770;">0</span><span>; i &lt; </span><span style="color:#d08770;">10</span><span>; i++) {
+</span><span>        lock_guard&lt;mutex&gt; </span><span style="color:#bf616a;">lock</span><span>(mtx);
+</span><span>        cout &lt;&lt; &quot;</span><span style="color:#a3be8c;">A, time = </span><span>&quot; &lt;&lt; </span><span style="color:#96b5b4;">clock</span><span>() &lt;&lt; endl;
+</span><span>    }
+</span><span>}
+</span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">ProcessB</span><span>() {
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">int</span><span> i = </span><span style="color:#d08770;">0</span><span>; i &lt; </span><span style="color:#d08770;">10</span><span>; i++) {
+</span><span>        lock_guard&lt;mutex&gt; </span><span style="color:#bf616a;">lock</span><span>(mtx);
+</span><span>        cout &lt;&lt; &quot;</span><span style="color:#a3be8c;">B, </span><span>&quot; &lt;&lt; &quot;</span><span style="color:#a3be8c;">time = </span><span>&quot; &lt;&lt; </span><span style="color:#96b5b4;">clock</span><span>() &lt;&lt; endl;
+</span><span>    }
+</span><span>}
+</span><span>
+</span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">main</span><span>() {
+</span><span>    thread </span><span style="color:#bf616a;">a</span><span>(ProcessA);
+</span><span>    thread </span><span style="color:#bf616a;">b</span><span>(ProcessB);
+</span><span>    a.</span><span style="color:#bf616a;">join</span><span>();
+</span><span>    b.</span><span style="color:#bf616a;">join</span><span>();
+</span><span>    </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">0</span><span>;
+</span><span>}
+</span></code></pre>
+<h2 id="unique-lock">unique_lock</h2>
+<p>它具有lock_guard的功能，但更灵活，当然开销也更大</p>
+<p>unique_lock可以在析构之前unlock，构造的时候可以不lock，也可以try_lock<br />
+具体操作可以查文档（看语法提示不就行了吗），比较蛇皮废话太多懒得写了</p>
+<h2 id="condition-variable">condition_variable</h2>
+<p>条件变量<br />
+配合unique_lock使用，用于线程之间交互，比如通知共享变量被修改等</p>
+<p>一个线程在wait的时候会被阻塞，如果之后其他线程进行了notify操作，这个阻塞的线程会被唤醒</p>
+<p>下面示例代码控制两个线程交替输出</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">condition_variable</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">cstdio</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">cstdlib</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">cstring</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">iostream</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">mutex</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">thread</span><span>&gt;
+</span><span style="color:#b48ead;">using namespace</span><span> std;
+</span><span>
+</span><span>mutex mtx;
+</span><span>condition_variable cv;
+</span><span style="color:#b48ead;">bool</span><span> flag;
+</span><span>
+</span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">ProcessA</span><span>() {
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">int</span><span> i = </span><span style="color:#d08770;">0</span><span>; i &lt; </span><span style="color:#d08770;">10</span><span>; i++) {
+</span><span>        unique_lock&lt;mutex&gt; </span><span style="color:#bf616a;">lck</span><span>(mtx);
+</span><span>        </span><span style="color:#b48ead;">while </span><span>(!flag) cv.</span><span style="color:#bf616a;">wait</span><span>(lck);
+</span><span>        flag = </span><span style="color:#d08770;">false</span><span>;
+</span><span>        </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">A</span><span style="color:#96b5b4;">\n</span><span>&quot;);
+</span><span>        cv.</span><span style="color:#bf616a;">notify_one</span><span>();
+</span><span>    }
+</span><span>}
+</span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">ProcessB</span><span>() {
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">int</span><span> i = </span><span style="color:#d08770;">0</span><span>; i &lt; </span><span style="color:#d08770;">10</span><span>; i++) {
+</span><span>        unique_lock&lt;mutex&gt; </span><span style="color:#bf616a;">lck</span><span>(mtx);
+</span><span>        </span><span style="color:#b48ead;">while </span><span>(flag) cv.</span><span style="color:#bf616a;">wait</span><span>(lck);
+</span><span>        flag = </span><span style="color:#d08770;">true</span><span>;
+</span><span>        </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">B</span><span style="color:#96b5b4;">\n</span><span>&quot;);
+</span><span>        cv.</span><span style="color:#bf616a;">notify_one</span><span>();
+</span><span>    }
+</span><span>}
+</span><span>
+</span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">main</span><span>() {
+</span><span>    thread </span><span style="color:#bf616a;">a</span><span>(ProcessA);
+</span><span>    thread </span><span style="color:#bf616a;">b</span><span>(ProcessB);
+</span><span>    a.</span><span style="color:#bf616a;">join</span><span>();
+</span><span>    b.</span><span style="color:#bf616a;">join</span><span>();
+</span><span>    </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">0</span><span>;
+</span><span>}
+</span></code></pre>
+<p>解释：<br />
+两个线程输出后更新标记为自己，当标记表明上一次输出还是自己时则调用wait阻塞自己，等另一个线程输出结束notify的时候才被唤醒</p>
+<p>然后这个交替输出也可以写成管程的形式</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">condition_variable</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">cstdio</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">cstdlib</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">cstring</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">iostream</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">mutex</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">thread</span><span>&gt;
+</span><span style="color:#b48ead;">using namespace</span><span> std;
+</span><span>
+</span><span style="color:#b48ead;">struct </span><span>Moniter {
+</span><span>    mutex mtx;
+</span><span>    condition_variable cv;
+</span><span>    </span><span style="color:#b48ead;">bool</span><span> flag;
+</span><span>    </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">A</span><span>() {
+</span><span>        unique_lock&lt;mutex&gt; </span><span style="color:#bf616a;">lck</span><span>(mtx);
+</span><span>        </span><span style="color:#b48ead;">while </span><span>(!flag) cv.</span><span style="color:#bf616a;">wait</span><span>(lck);
+</span><span>        flag = </span><span style="color:#d08770;">false</span><span>;
+</span><span>        </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">A</span><span style="color:#96b5b4;">\n</span><span>&quot;);
+</span><span>        cv.</span><span style="color:#bf616a;">notify_one</span><span>();
+</span><span>    }
+</span><span>    </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">B</span><span>() {
+</span><span>        unique_lock&lt;mutex&gt; </span><span style="color:#bf616a;">lck</span><span>(mtx);
+</span><span>        </span><span style="color:#b48ead;">while </span><span>(flag) cv.</span><span style="color:#bf616a;">wait</span><span>(lck);
+</span><span>        flag = </span><span style="color:#d08770;">true</span><span>;
+</span><span>        </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">B</span><span style="color:#96b5b4;">\n</span><span>&quot;);
+</span><span>        cv.</span><span style="color:#bf616a;">notify_one</span><span>();
+</span><span>    }
+</span><span>} m;
+</span><span>
+</span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">ProcessA</span><span>() {
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">int</span><span> i = </span><span style="color:#d08770;">0</span><span>; i &lt; </span><span style="color:#d08770;">10</span><span>; i++) m.</span><span style="color:#bf616a;">A</span><span>();
+</span><span>}
+</span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">ProcessB</span><span>() {
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">int</span><span> i = </span><span style="color:#d08770;">0</span><span>; i &lt; </span><span style="color:#d08770;">10</span><span>; i++) m.</span><span style="color:#bf616a;">B</span><span>();
+</span><span>}
+</span><span>
+</span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">main</span><span>() {
+</span><span>    thread </span><span style="color:#bf616a;">a</span><span>(ProcessA);
+</span><span>    thread </span><span style="color:#bf616a;">b</span><span>(ProcessB);
+</span><span>    a.</span><span style="color:#bf616a;">join</span><span>();
+</span><span>    b.</span><span style="color:#bf616a;">join</span><span>();
+</span><span>    </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">0</span><span>;
+</span><span>}
+</span></code></pre>
+<p>但是需要注意一个严重的问题，等待条件变量的线程可能会因为某些原因极小概率地被唤醒，而条件并没有得到满足，这就是传说中的虚假唤醒。据说可能来源于操作系统的玄学操作，也可能是多核处理器环境下notify_one的时候低概率导致多个wait被依次唤醒，因此在上面的例子中在wait的时候需要使用while反复检查条件是否满足。不过最常见的情况应该是notify_all的时候会导致所有的wait都被依次唤醒，每个wait在被唤醒后并不知道条件是否仍然满足，所以还需要再次检查条件。当然我们的例子中处于wait状态的线程每次只会有一个，因此其实不需要担心，但是考虑到前面提到的操作系统的玄学操作以及避免潜在的误用情况，还是使用了while来反复检查条件</p>
+<h2 id="future">future</h2>
+<p>可以理解为存放数据的容器，它的数据在未来某一时间被写入。没有数据的时候如果调用get方法试图获取数据，会被阻塞，直到数据被写入。</p>
+<p>因此可以用于线程之间传递数据，也可以简单的当作线程的返回值</p>
+<p>要配合promise使用，下面展示使用future实现线程返回值</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">chrono</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">cstdio</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">future</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">thread</span><span>&gt;
+</span><span>
+</span><span style="color:#b48ead;">using namespace</span><span> std;
+</span><span>
+</span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">ProcessA</span><span>(promise&lt;</span><span style="color:#b48ead;">int</span><span>&gt;* </span><span style="color:#bf616a;">p</span><span>) {
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">int</span><span> i = </span><span style="color:#d08770;">0</span><span>; i &lt; </span><span style="color:#d08770;">10</span><span>; i++) {
+</span><span>        this_thread::</span><span style="color:#bf616a;">sleep_for</span><span>(chrono::</span><span style="color:#bf616a;">milliseconds</span><span>(</span><span style="color:#d08770;">100</span><span>));
+</span><span>        </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">A</span><span style="color:#96b5b4;">\n</span><span>&quot;);
+</span><span>    }
+</span><span>    p-&gt;</span><span style="color:#bf616a;">set_value</span><span>(</span><span style="color:#96b5b4;">clock</span><span>());
+</span><span>}
+</span><span>
+</span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">main</span><span>() {
+</span><span>    promise&lt;</span><span style="color:#b48ead;">int</span><span>&gt; p;
+</span><span>    future&lt;</span><span style="color:#b48ead;">int</span><span>&gt; f = p.</span><span style="color:#bf616a;">get_future</span><span>();
+</span><span>    thread </span><span style="color:#bf616a;">a</span><span>(ProcessA, &amp;p);
+</span><span>    a.</span><span style="color:#bf616a;">detach</span><span>();
+</span><span>    </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">Thread A return, time = </span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span>&quot;, f.</span><span style="color:#bf616a;">get</span><span>());
+</span><span>    </span><span style="color:#96b5b4;">getchar</span><span>();
+</span><span>    </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">0</span><span>;
+</span><span>}
+</span></code></pre>
+<p>解释：<br />
+线程A不断输出，结束时返回当前的时间。<br />
+而主线程因为要获取f的值，一直被阻塞直到线程A写入数据</p>
+<h2 id="xian-cheng-chi">线程池</h2>
+<p>线程不断开辟销毁会降低效率，可以预先开辟一定量的线程，然后将任务分配给它们执行，实现线程的循环使用</p>
+<p>下面简单实现一下<br />
+维护一个Task队列，由Worker线程负责执行其中的Task</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">chrono</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">cstdio</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">mutex</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">queue</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">thread</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">vector</span><span>&gt;
+</span><span style="color:#b48ead;">using namespace</span><span> std;
+</span><span>
+</span><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">ThreadPool </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">   </span><span style="color:#b48ead;">private</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">typedef</span><span style="color:#eff1f5;"> function&lt;</span><span style="color:#b48ead;">void</span><span style="color:#eff1f5;">()&gt; Task;
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">int</span><span style="color:#eff1f5;"> threadCnt;
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">bool</span><span style="color:#eff1f5;"> isRunning;
+</span><span style="color:#eff1f5;">    vector&lt;thread&gt; workers;
+</span><span style="color:#eff1f5;">    queue&lt;Task&gt; tasks;
+</span><span style="color:#eff1f5;">    mutex mtx;
+</span><span style="color:#eff1f5;">    condition_variable cv;
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">ProcessWorker</span><span style="color:#eff1f5;">() {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">while </span><span style="color:#eff1f5;">(isRunning) {
+</span><span style="color:#eff1f5;">            Task task;
+</span><span style="color:#eff1f5;">            {
+</span><span style="color:#eff1f5;">                unique_lock&lt;mutex&gt; </span><span style="color:#bf616a;">lock</span><span style="color:#eff1f5;">(mtx);
+</span><span style="color:#eff1f5;">                </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(tasks.</span><span style="color:#bf616a;">empty</span><span style="color:#eff1f5;">()) cv.</span><span style="color:#bf616a;">wait</span><span style="color:#eff1f5;">(lock);
+</span><span style="color:#eff1f5;">                </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span>!</span><span style="color:#eff1f5;">tasks.</span><span style="color:#bf616a;">empty</span><span style="color:#eff1f5;">()) {
+</span><span style="color:#eff1f5;">                    task </span><span>=</span><span style="color:#eff1f5;"> tasks.</span><span style="color:#bf616a;">front</span><span style="color:#eff1f5;">();
+</span><span style="color:#eff1f5;">                    tasks.</span><span style="color:#bf616a;">pop</span><span style="color:#eff1f5;">();
+</span><span style="color:#eff1f5;">                }
+</span><span style="color:#eff1f5;">            }
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(task) </span><span style="color:#bf616a;">task</span><span style="color:#eff1f5;">();
+</span><span style="color:#eff1f5;">        }
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">   </span><span style="color:#b48ead;">public</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">explicit </span><span style="color:#8fa1b3;">ThreadPool</span><span style="color:#eff1f5;">(</span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">cnt</span><span style="color:#eff1f5;">) : </span><span style="color:#bf616a;">threadCnt</span><span style="color:#eff1f5;">(cnt), </span><span style="color:#bf616a;">isRunning</span><span style="color:#eff1f5;">(</span><span style="color:#d08770;">0</span><span style="color:#eff1f5;">) {}
+</span><span style="color:#eff1f5;">    </span><span style="color:#8fa1b3;">~ThreadPool</span><span style="color:#eff1f5;">() {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(isRunning) </span><span style="color:#bf616a;">Stop</span><span style="color:#eff1f5;">();
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">Start</span><span style="color:#eff1f5;">() {
+</span><span style="color:#eff1f5;">        isRunning </span><span>= </span><span style="color:#d08770;">1</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">for </span><span style="color:#eff1f5;">(</span><span style="color:#b48ead;">int</span><span style="color:#eff1f5;"> i </span><span>= </span><span style="color:#d08770;">0</span><span style="color:#eff1f5;">; i </span><span>&lt;</span><span style="color:#eff1f5;"> threadCnt; i</span><span>++</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">            workers.</span><span style="color:#bf616a;">emplace_back</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">thread</span><span style="color:#eff1f5;">(</span><span>&amp;</span><span style="color:#eff1f5;">ThreadPool::ProcessWorker, </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">));
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">Push</span><span style="color:#eff1f5;">(</span><span style="color:#b48ead;">const</span><span style="color:#eff1f5;"> Task </span><span>&amp;</span><span style="color:#bf616a;">task</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(isRunning) {
+</span><span style="color:#eff1f5;">            lock_guard&lt;mutex&gt; </span><span style="color:#bf616a;">lock</span><span style="color:#eff1f5;">(mtx);
+</span><span style="color:#eff1f5;">            tasks.</span><span style="color:#bf616a;">push</span><span style="color:#eff1f5;">(task);
+</span><span style="color:#eff1f5;">            cv.</span><span style="color:#bf616a;">notify_one</span><span style="color:#eff1f5;">();
+</span><span style="color:#eff1f5;">        }
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">Stop</span><span style="color:#eff1f5;">() {
+</span><span style="color:#eff1f5;">        {
+</span><span style="color:#eff1f5;">            lock_guard&lt;mutex&gt; </span><span style="color:#bf616a;">lock</span><span style="color:#eff1f5;">(mtx);
+</span><span style="color:#eff1f5;">            isRunning </span><span>= </span><span style="color:#d08770;">false</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">            cv.</span><span style="color:#bf616a;">notify_all</span><span style="color:#eff1f5;">();
+</span><span style="color:#eff1f5;">        }
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">for </span><span style="color:#eff1f5;">(</span><span style="color:#b48ead;">auto </span><span>&amp;</span><span style="color:#eff1f5;">thd </span><span>:</span><span style="color:#eff1f5;"> workers) thd.</span><span style="color:#bf616a;">join</span><span style="color:#eff1f5;">();
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">}</span><span>;
+</span><span>
+</span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">ProcessA</span><span>() {
+</span><span>    </span><span style="color:#96b5b4;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">A start</span><span>&quot;);
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">int</span><span> i = </span><span style="color:#d08770;">0</span><span>; i &lt; </span><span style="color:#d08770;">5</span><span>; i++)
+</span><span>        this_thread::</span><span style="color:#bf616a;">sleep_for</span><span>(chrono::</span><span style="color:#bf616a;">milliseconds</span><span>(</span><span style="color:#d08770;">300</span><span>)), </span><span style="color:#96b5b4;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">A</span><span>&quot;);
+</span><span>    </span><span style="color:#96b5b4;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">A end</span><span>&quot;);
+</span><span>}
+</span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">ProcessB</span><span>() {
+</span><span>    </span><span style="color:#96b5b4;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">B start</span><span>&quot;);
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">int</span><span> i = </span><span style="color:#d08770;">0</span><span>; i &lt; </span><span style="color:#d08770;">5</span><span>; i++)
+</span><span>        this_thread::</span><span style="color:#bf616a;">sleep_for</span><span>(chrono::</span><span style="color:#bf616a;">milliseconds</span><span>(</span><span style="color:#d08770;">100</span><span>)), </span><span style="color:#96b5b4;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">B</span><span>&quot;);
+</span><span>    </span><span style="color:#96b5b4;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">B end</span><span>&quot;);
+</span><span>}
+</span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">ProcessC</span><span>() {
+</span><span>    </span><span style="color:#96b5b4;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">C start</span><span>&quot;);
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">int</span><span> i = </span><span style="color:#d08770;">0</span><span>; i &lt; </span><span style="color:#d08770;">5</span><span>; i++)
+</span><span>        this_thread::</span><span style="color:#bf616a;">sleep_for</span><span>(chrono::</span><span style="color:#bf616a;">milliseconds</span><span>(</span><span style="color:#d08770;">150</span><span>)), </span><span style="color:#96b5b4;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">C</span><span>&quot;);
+</span><span>    </span><span style="color:#96b5b4;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">C end</span><span>&quot;);
+</span><span>}
+</span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">ProcessD</span><span>() {
+</span><span>    </span><span style="color:#96b5b4;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">D start</span><span>&quot;);
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">int</span><span> i = </span><span style="color:#d08770;">0</span><span>; i &lt; </span><span style="color:#d08770;">5</span><span>; i++)
+</span><span>        this_thread::</span><span style="color:#bf616a;">sleep_for</span><span>(chrono::</span><span style="color:#bf616a;">milliseconds</span><span>(</span><span style="color:#d08770;">250</span><span>)), </span><span style="color:#96b5b4;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">D</span><span>&quot;);
+</span><span>    </span><span style="color:#96b5b4;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">D end</span><span>&quot;);
+</span><span>}
+</span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">ProcessE</span><span>() {
+</span><span>    </span><span style="color:#96b5b4;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">E start</span><span>&quot;);
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">int</span><span> i = </span><span style="color:#d08770;">0</span><span>; i &lt; </span><span style="color:#d08770;">5</span><span>; i++)
+</span><span>        this_thread::</span><span style="color:#bf616a;">sleep_for</span><span>(chrono::</span><span style="color:#bf616a;">milliseconds</span><span>(</span><span style="color:#d08770;">200</span><span>)), </span><span style="color:#96b5b4;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">E</span><span>&quot;);
+</span><span>    </span><span style="color:#96b5b4;">puts</span><span>(&quot;</span><span style="color:#a3be8c;">E end</span><span>&quot;);
+</span><span>}
+</span><span>
+</span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">main</span><span>() {
+</span><span>    ThreadPool </span><span style="color:#bf616a;">tp</span><span>(</span><span style="color:#d08770;">2</span><span>);
+</span><span>    tp.</span><span style="color:#bf616a;">Start</span><span>();
+</span><span>    tp.</span><span style="color:#bf616a;">Push</span><span>(ProcessA);
+</span><span>    tp.</span><span style="color:#bf616a;">Push</span><span>(ProcessB);
+</span><span>    tp.</span><span style="color:#bf616a;">Push</span><span>(ProcessC);
+</span><span>    tp.</span><span style="color:#bf616a;">Push</span><span>(ProcessD);
+</span><span>    tp.</span><span style="color:#bf616a;">Push</span><span>(ProcessE);
+</span><span>
+</span><span>    </span><span style="color:#96b5b4;">getchar</span><span>();
+</span><span>    tp.</span><span style="color:#bf616a;">Stop</span><span>();
+</span><span>    </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">0</span><span>;
+</span><span>}
+</span></code></pre>
+<p>解释：<br />
+Push方法可向队列中添加Task<br />
+每个Worker线程从队列中获取Task并执行，结束后再次获取Task执行并如此不断循环</p>
+<p>注意<br />
+队列要互斥访问，从队列中取Task使用了条件变量<br />
+然后线程池析构或停止时要notify_all使Worker线程从wait中唤醒并正常退出，还有join</p>
+
+    </div>
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                    Published by 何泊谋
+                
+                
+                    
+                    in <a href="https://paakmau.github.io/categories/c/">C++</a>
+                
+                
+                    and
+                    tagged
+                    
+                        <a href="https://paakmau.github.io/tags/c/">C++</a>
+                        
+                            
+                                
+                                    and
+                                
+                            
+                        
+                    
+                        <a href="https://paakmau.github.io/tags/c-stl/">C++ STL</a>
+                        
+                            
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+    </body>
+
+</html>

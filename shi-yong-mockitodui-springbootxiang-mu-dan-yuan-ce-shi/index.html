@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>泊谋</title>
+
+      
+
+      
+          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+    
+        
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io">
+                                <span itemprop="name">主页
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
+                                <span itemprop="name">分类
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
+                                <span itemprop="name">标签
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
+                                <span itemprop="name">GitHub
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">使用Mockito对SpringBoot项目单元测试</h1>
+        <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>2 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2020-03-30
+</span>
+    </header>
+    <div itemprop="articleBody">
+      <p>使用Mockito可以用来给模块打桩，实现单元测试</p>
+<span id="continue-reading"></span><h2 id="zai-pom-xmlli-yin-ru-yi-lai">在pom.xml里引入依赖</h2>
+<pre data-lang="xml" style="background-color:#2b303b;color:#c0c5ce;" class="language-xml "><code class="language-xml" data-lang="xml"><span>&lt;</span><span style="color:#bf616a;">dependency</span><span>&gt;
+</span><span>    &lt;</span><span style="color:#bf616a;">groupId</span><span>&gt;org.springframework.boot&lt;/</span><span style="color:#bf616a;">groupId</span><span>&gt;
+</span><span>    &lt;</span><span style="color:#bf616a;">artifactId</span><span>&gt;spring-boot-starter-test&lt;/</span><span style="color:#bf616a;">artifactId</span><span>&gt;
+</span><span>    &lt;</span><span style="color:#bf616a;">scope</span><span>&gt;test&lt;/</span><span style="color:#bf616a;">scope</span><span>&gt;
+</span><span>    &lt;</span><span style="color:#bf616a;">exclusions</span><span>&gt;
+</span><span>        &lt;</span><span style="color:#bf616a;">exclusion</span><span>&gt;
+</span><span>            &lt;</span><span style="color:#bf616a;">groupId</span><span>&gt;org.junit.vintage&lt;/</span><span style="color:#bf616a;">groupId</span><span>&gt;
+</span><span>            &lt;</span><span style="color:#bf616a;">artifactId</span><span>&gt;junit-vintage-engine&lt;/</span><span style="color:#bf616a;">artifactId</span><span>&gt;
+</span><span>        &lt;/</span><span style="color:#bf616a;">exclusion</span><span>&gt;
+</span><span>    &lt;/</span><span style="color:#bf616a;">exclusions</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">dependency</span><span>&gt;
+</span></code></pre>
+<h2 id="zhun-bei-dai-ce-mo-kuai">准备待测模块</h2>
+<pre data-lang="java" style="background-color:#2b303b;color:#c0c5ce;" class="language-java "><code class="language-java" data-lang="java"><span>@</span><span style="color:#bf616a;">Service
+</span><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">BookService </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">    @</span><span style="color:#bf616a;">Autowired
+</span><span style="color:#eff1f5;">    </span><span style="color:#ebcb8b;">BookRepo </span><span style="color:#eff1f5;">repo;
+</span><span style="color:#eff1f5;">    
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">public </span><span style="color:#ebcb8b;">Long </span><span style="color:#8fa1b3;">addBook</span><span style="color:#eff1f5;">(</span><span style="color:#ebcb8b;">String </span><span style="color:#bf616a;">name</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#ebcb8b;">Book</span><span style="color:#eff1f5;"> po </span><span>=</span><span style="color:#eff1f5;"> repo.</span><span style="color:#bf616a;">save</span><span style="color:#eff1f5;">(</span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">Book</span><span style="color:#eff1f5;">(</span><span style="color:#d08770;">null</span><span style="color:#eff1f5;">, name));
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">return</span><span style="color:#eff1f5;"> po.</span><span style="color:#bf616a;">getId</span><span style="color:#eff1f5;">();
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">}
+</span></code></pre>
+<p>其中Book实体大概长这样</p>
+<pre data-lang="java" style="background-color:#2b303b;color:#c0c5ce;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">Book </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">    </span><span style="color:#ebcb8b;">Long </span><span style="color:#eff1f5;">id;
+</span><span style="color:#eff1f5;">    </span><span style="color:#ebcb8b;">String </span><span style="color:#eff1f5;">name;
+</span><span style="color:#eff1f5;">}
+</span></code></pre>
+<h2 id="da-zhuang-bing-ce-shi">打桩并测试</h2>
+<p>其中MockBean表示把Spring注入的Bean改为注入由Mockito生成的桩</p>
+<p>然后对save方法打桩，对于一个输入设置对应的输出<br />
+并断言该方法会被调用及调用时传入的参数</p>
+<pre data-lang="java" style="background-color:#2b303b;color:#c0c5ce;" class="language-java "><code class="language-java" data-lang="java"><span>@</span><span style="color:#bf616a;">SpringBootTest
+</span><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">BookServiceTests </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    @</span><span style="color:#bf616a;">MockBean
+</span><span style="color:#eff1f5;">    </span><span style="color:#ebcb8b;">BookRepo </span><span style="color:#eff1f5;">repo;
+</span><span style="color:#eff1f5;">    @</span><span style="color:#bf616a;">Autowired
+</span><span style="color:#eff1f5;">    </span><span style="color:#ebcb8b;">BookService </span><span style="color:#eff1f5;">service;
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">    @</span><span style="color:#bf616a;">Test
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">test</span><span style="color:#eff1f5;">() {
+</span><span style="color:#eff1f5;">        </span><span style="color:#ebcb8b;">Book</span><span style="color:#eff1f5;"> bookToSave </span><span>= </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">Book</span><span style="color:#eff1f5;">(</span><span style="color:#d08770;">null</span><span style="color:#eff1f5;">, </span><span>&quot;</span><span style="color:#a3be8c;">Hello</span><span>&quot;</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">        </span><span style="color:#ebcb8b;">Mockito</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">when</span><span style="color:#eff1f5;">(repo.</span><span style="color:#bf616a;">save</span><span style="color:#eff1f5;">(bookToSave)).</span><span style="color:#bf616a;">thenReturn</span><span style="color:#eff1f5;">(</span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">Book</span><span style="color:#eff1f5;">(</span><span style="color:#d08770;">12</span><span style="color:#b48ead;">L</span><span style="color:#eff1f5;">, </span><span>&quot;</span><span style="color:#a3be8c;">Hello</span><span>&quot;</span><span style="color:#eff1f5;">));
+</span><span style="color:#eff1f5;">        </span><span style="color:#ebcb8b;">Long</span><span style="color:#eff1f5;"> res </span><span>=</span><span style="color:#eff1f5;"> service.</span><span style="color:#bf616a;">addBook</span><span style="color:#eff1f5;">(</span><span>&quot;</span><span style="color:#a3be8c;">Hello</span><span>&quot;</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">        </span><span style="color:#ebcb8b;">Mockito</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">verify</span><span style="color:#eff1f5;">(repo).</span><span style="color:#bf616a;">save</span><span style="color:#eff1f5;">(bookToSave);
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">assertEquals</span><span style="color:#eff1f5;">(</span><span style="color:#d08770;">12</span><span style="color:#b48ead;">L</span><span style="color:#eff1f5;">, res);
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">}
+</span></code></pre>
+
+    </div>
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                    Published by 何泊谋
+                
+                
+                    
+                    in <a href="https://paakmau.github.io/categories/spring-boot/">Spring Boot</a>
+                
+                
+                    and
+                    tagged
+                    
+                        <a href="https://paakmau.github.io/tags/mockito/">Mockito</a>
+                        
+                            
+                                
+                                    and
+                                
+                            
+                        
+                    
+                        <a href="https://paakmau.github.io/tags/spring-boot/">Spring Boot</a>
+                        
+                            
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+    </body>
+
+</html>

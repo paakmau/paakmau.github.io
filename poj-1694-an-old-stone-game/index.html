@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>泊谋</title>
+
+      
+
+      
+          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+    
+        
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io">
+                                <span itemprop="name">主页
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
+                                <span itemprop="name">分类
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
+                                <span itemprop="name">标签
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
+                                <span itemprop="name">GitHub
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">「poj 1694」An Old Stone Game</h1>
+        <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>3 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2019-12-19
+</span>
+    </header>
+    <div itemprop="articleBody">
+      <h2 id="ti-mu-miao-shu">题目描述</h2>
+<span id="continue-reading"></span>
+<p>There is an old stone game, played on an arbitrary general tree T. The goal is to put one stone on the root of T observing the following rules:</p>
+<ol>
+<li>At the beginning of the game, the player picks K stones and puts them all in one bucket.</li>
+<li>At each step of the game, the player can pick one stone from the bucket and put it on any empty leaf.</li>
+<li>When all of the r immediate children of a node p each has one stone, the player may remove all of these r stones, and put one of the stones on p. The other r - 1 stones are put back into the bucket, and can be used in the later steps of the game.</li>
+</ol>
+<p>The player wins the game if by following the above rules, he succeeds to put one stone on the root of the tree.<br />
+You are to write a program to determine the least number of stones to be picked at the beginning of the game (K), so that the player can win the game on the given input tree.</p>
+<h2 id="shu-ru-ge-shi">输入格式</h2>
+<p>The input describes several trees. The first line of this file is M, the number of trees (1 &lt;= M &lt;= 10). Description of these M trees comes next in the file. Each tree has N &lt; 200 nodes, labeled 1, 2, ... N, and each node can have any possible number of children. Root has label 1. Description of each tree starts with N in a separate line. The following N lines describe the children of all nodes in order of their labels. Each line starts with a number p (1 &lt;= p &lt;= N, the label of one of the nodes), r the number of the immediate children of p, and then the labels of these r children.</p>
+<h2 id="shu-chu-ge-shi">输出格式</h2>
+<p>One line for each input tree showing the minimum number of stones to be picked in step 1 above, in order to win the game on that input tree.</p>
+<h2 id="shu-ru-yang-li">输入样例</h2>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>2
+</span><span>7
+</span><span>1 2 2 3
+</span><span>2 2 5 4
+</span><span>3 2 6 7
+</span><span>4 0
+</span><span>5 0
+</span><span>6 0
+</span><span>7 0
+</span><span>12
+</span><span>1 3 2 3 4
+</span><span>2 0
+</span><span>3 2 5 6
+</span><span>4 3 7 8 9
+</span><span>5 3 10 11 12
+</span><span>6 0
+</span><span>7 0
+</span><span>8 0
+</span><span>9 0
+</span><span>10 0
+</span><span>11 0
+</span><span>12 0
+</span></code></pre>
+<h2 id="shu-chu-yang-li">输出样例</h2>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>3
+</span><span>4
+</span></code></pre>
+<h2 id="ti-jie">题解</h2>
+<p>树形DP<br />
+F(p)表示p节点最少需要的石子数</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">cstdio</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">cstring</span><span>&gt;
+</span><span style="color:#b48ead;">using namespace</span><span> std;
+</span><span style="color:#b48ead;">const int</span><span> MAXN = </span><span style="color:#d08770;">205</span><span>;
+</span><span style="color:#b48ead;">int</span><span> T, N;
+</span><span style="color:#b48ead;">int</span><span> Head[MAXN];
+</span><span style="color:#b48ead;">int</span><span> A[MAXN];
+</span><span style="color:#b48ead;">int</span><span> To[MAXN], Next[MAXN], EL;
+</span><span style="color:#b48ead;">inline void </span><span style="color:#8fa1b3;">AddEdge</span><span>(</span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">p</span><span>, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">to</span><span>) {
+</span><span>    To[++EL] = to;
+</span><span>    Next[EL] = Head[p];
+</span><span>    Head[p] = EL;
+</span><span>}
+</span><span style="color:#b48ead;">int</span><span> F[MAXN];
+</span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">DP</span><span>(</span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">p</span><span>) {
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(!A[p]) { F[p] = </span><span style="color:#d08770;">1</span><span>; </span><span style="color:#b48ead;">return</span><span>; }
+</span><span>    </span><span style="color:#b48ead;">int</span><span> a[MAXN];
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">int</span><span> i = Head[p], j = </span><span style="color:#d08770;">1</span><span>; i; i = Next[i], j++) {
+</span><span>        </span><span style="color:#bf616a;">DP</span><span>(To[i]);
+</span><span>        a[j] = F[To[i]];
+</span><span>    }
+</span><span>    </span><span style="color:#bf616a;">sort</span><span>(a + </span><span style="color:#d08770;">1</span><span>, a + A[p] + </span><span style="color:#d08770;">1</span><span>);
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">int</span><span> i = </span><span style="color:#d08770;">2</span><span>; i &lt;= A[p]; i++)
+</span><span>        a[i] = </span><span style="color:#bf616a;">max </span><span>(a[i], a[i - </span><span style="color:#d08770;">1</span><span>] + </span><span style="color:#d08770;">1</span><span>);
+</span><span>    F[p] = a[A[p]];
+</span><span>}
+</span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">main</span><span>() {
+</span><span>    </span><span style="color:#96b5b4;">scanf</span><span>(&quot;</span><span style="color:#d08770;">%d</span><span>&quot;, &amp;T);
+</span><span>    </span><span style="color:#b48ead;">while </span><span>(T--) {
+</span><span>        </span><span style="color:#96b5b4;">scanf</span><span>(&quot;</span><span style="color:#d08770;">%d</span><span>&quot;, &amp;N);
+</span><span>        </span><span style="color:#96b5b4;">memset</span><span>(Head, </span><span style="color:#d08770;">0</span><span>, sizeof(Head));
+</span><span>        EL = </span><span style="color:#d08770;">0</span><span>;
+</span><span>        </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">int</span><span> i = </span><span style="color:#d08770;">1</span><span>; i &lt;= N; i++) {
+</span><span>            </span><span style="color:#b48ead;">int</span><span> p, n;
+</span><span>            </span><span style="color:#96b5b4;">scanf</span><span>(&quot;</span><span style="color:#d08770;">%d%d</span><span>&quot;, &amp;p, &amp;n);
+</span><span>            A[p] = n;
+</span><span>            </span><span style="color:#b48ead;">while </span><span>(n--) {
+</span><span>                </span><span style="color:#b48ead;">int</span><span> to;
+</span><span>                </span><span style="color:#96b5b4;">scanf</span><span>(&quot;</span><span style="color:#d08770;">%d</span><span>&quot;, &amp;to);
+</span><span>                </span><span style="color:#bf616a;">AddEdge</span><span>(p, to);
+</span><span>            }
+</span><span>        }
+</span><span>        </span><span style="color:#96b5b4;">memset</span><span>(F, </span><span style="color:#d08770;">0x0f</span><span>, sizeof(F));
+</span><span>        </span><span style="color:#bf616a;">DP</span><span>(</span><span style="color:#d08770;">1</span><span>);
+</span><span>        </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span>&quot;, F[</span><span style="color:#d08770;">1</span><span>]);
+</span><span>    }
+</span><span>    </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">0</span><span>;
+</span><span>}
+</span></code></pre>
+
+    </div>
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                    Published by 何泊谋
+                
+                
+                    
+                    in <a href="https://paakmau.github.io/categories/suan-fa/">算法</a>
+                
+                
+                    and
+                    tagged
+                    
+                        <a href="https://paakmau.github.io/tags/dong-tai-gui-hua/">动态规划</a>
+                        
+                            
+                                
+                                    and
+                                
+                            
+                        
+                    
+                        <a href="https://paakmau.github.io/tags/shu-xing-dp/">树形DP</a>
+                        
+                            
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+    </body>
+
+</html>

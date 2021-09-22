@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>泊谋</title>
+
+      
+
+      
+          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+    
+        
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io">
+                                <span itemprop="name">主页
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
+                                <span itemprop="name">分类
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
+                                <span itemprop="name">标签
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
+                                <span itemprop="name">GitHub
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Lock-free数据结构设计</h1>
+        <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>6 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2020-04-06
+</span>
+    </header>
+    <div itemprop="articleBody">
+      <h2 id="jian-jie">简介</h2>
+<span id="continue-reading"></span>
+<p>根据名字我们知道它的内部没有使用锁，可以通过原语和一些蛇皮操作来实现</p>
+<h2 id="wu-suo-yu-wu-deng-dai">无锁与无等待</h2>
+<p>需要注意的一个问题是无锁并不一定意味着访问一个资源的时候不需要等待<br />
+大多数情况下，无锁数据结构看起来像使用了一个自旋锁，但可以避免产生死锁</p>
+<p>不需要等待的数据结构称为无等待数据结构（废话）<br />
+无等待数据结构首先是一个无锁数据结构，然后就是访问资源时候不会有冲突，也不需要等待，通常需要很精巧的设计，比较难以实现</p>
+<h2 id="casyuan-yu">CAS原语</h2>
+<p>Compare and swap，比较并交换的原语<br />
+描述起来比较绕，我们直接看看怎么用</p>
+<p>如果希望修改某个变量，我们首先对它进行备份，然后这个备份上进行修改<br />
+最后把原变量用备份的指针替换掉</p>
+<p>在最后一步的时候如果检测到这个变量已经被其他线程修改了，那就要重新对新的变量执行上述的修改，然后再检测修改尝试替换，不断重复</p>
+<p>这个检测并替换的步骤就是用CAS原语来实现的</p>
+<p>另外，如果多个线程同时访问同一个资源，就可能因为资源被修改而陷入重新修改资源再CAS的循环。这种情况被称为活锁，也就是上文中所说的「等待」<br />
+只要线程赶在其他线程修改资源之前，完成了修改，并且成功CAS，他就解开了活锁<br />
+活锁的解开是随机的，看起来一个线程永远陷入活锁是可能的，但是一般来说线程之间竞争不会这么激烈（如果会的话那可以考虑重写了）</p>
+<h2 id="wu-suo-de-you-xu-shu-zu">无锁的有序数组</h2>
+<p>有序数组在查找的时候使用二分，复杂度O(log(n))；在修改的时候需要移动数组中元素的位置，复杂度O(n)<br />
+其实不是那么常用，在高频访问，低频修改的情况下会比较好</p>
+<p>不过它实现无锁非常简单，因此作为例子</p>
+<p>读的时候随便读，写的时候先把原数组拷贝一份，然后修改那份拷贝，最后用原语把那份拷贝数组的指针存回去就完事了<br />
+需要注意的是数组内存的销毁问题，使用智能指针就能立刻解决这个问题</p>
+<p>然后贴一下代码</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">template </span><span>&lt;</span><span style="color:#b48ead;">typename</span><span> K, </span><span style="color:#b48ead;">typename</span><span> V&gt;
+</span><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">LockFreeOrderedArray </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">   </span><span style="color:#b48ead;">private</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">    shared_ptr&lt;vector&lt;pair&lt;K, shared_ptr&lt;V&gt;&gt;&gt;&gt; array;
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">   </span><span style="color:#b48ead;">public</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">    </span><span style="color:#8fa1b3;">LockFreeOrderedArray</span><span style="color:#eff1f5;">()
+</span><span style="color:#eff1f5;">        : </span><span style="color:#bf616a;">array</span><span style="color:#eff1f5;">(make_shared</span><span>&lt;</span><span style="color:#eff1f5;">vector&lt;pair&lt;K, shared_ptr&lt;V&gt;&gt;&gt;</span><span>&gt;</span><span style="color:#eff1f5;">()) {}
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">Put</span><span style="color:#eff1f5;">(K </span><span style="color:#bf616a;">key</span><span style="color:#eff1f5;">, shared_ptr&lt;V&gt; </span><span style="color:#bf616a;">value</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">auto</span><span style="color:#eff1f5;"> oriArray </span><span>= </span><span style="color:#bf616a;">atomic_load</span><span style="color:#eff1f5;">(</span><span>&amp;</span><span style="color:#eff1f5;">array);
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">auto</span><span style="color:#eff1f5;"> newArray </span><span>=
+</span><span style="color:#eff1f5;">            make_shared</span><span>&lt;</span><span style="color:#eff1f5;">vector&lt;pair&lt;K, shared_ptr&lt;V&gt;&gt;&gt;</span><span>&gt;</span><span style="color:#eff1f5;">(oriArray-&gt;</span><span style="color:#bf616a;">size</span><span style="color:#eff1f5;">() </span><span>+ </span><span style="color:#d08770;">1</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">do </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">            </span><span style="color:#65737e;">// 不允许键值重复
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">Get</span><span style="color:#eff1f5;">(key)) </span><span style="color:#b48ead;">return</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">            </span><span style="color:#65737e;">// 构建新的数组
+</span><span style="color:#eff1f5;">            newArray-&gt;</span><span style="color:#bf616a;">clear</span><span style="color:#eff1f5;">();
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">auto</span><span style="color:#eff1f5;"> it </span><span>=</span><span style="color:#eff1f5;"> oriArray-&gt;</span><span style="color:#bf616a;">begin</span><span style="color:#eff1f5;">();
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">for </span><span style="color:#eff1f5;">(; it </span><span>!=</span><span style="color:#eff1f5;"> oriArray-&gt;</span><span style="color:#bf616a;">end</span><span style="color:#eff1f5;">() </span><span>&amp;&amp;</span><span style="color:#eff1f5;"> it-&gt;</span><span style="color:#bf616a;">first </span><span>&lt;</span><span style="color:#eff1f5;"> key; it</span><span>++</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">                newArray-&gt;</span><span style="color:#bf616a;">push_back</span><span style="color:#eff1f5;">(</span><span>*</span><span style="color:#eff1f5;">it);
+</span><span style="color:#eff1f5;">            newArray-&gt;</span><span style="color:#bf616a;">push_back</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">make_pair</span><span style="color:#eff1f5;">(key, value));
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">for </span><span style="color:#eff1f5;">(; it </span><span>!=</span><span style="color:#eff1f5;"> oriArray-&gt;</span><span style="color:#bf616a;">end</span><span style="color:#eff1f5;">(); it</span><span>++</span><span style="color:#eff1f5;">) newArray-&gt;</span><span style="color:#bf616a;">push_back</span><span style="color:#eff1f5;">(</span><span>*</span><span style="color:#eff1f5;">it);
+</span><span style="color:#eff1f5;">        } </span><span style="color:#b48ead;">while </span><span style="color:#eff1f5;">(</span><span>!</span><span style="color:#bf616a;">atomic_compare_exchange_weak</span><span style="color:#eff1f5;">(</span><span>&amp;</span><span style="color:#eff1f5;">array, </span><span>&amp;</span><span style="color:#eff1f5;">oriArray, newArray));
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    shared_ptr&lt;V&gt; </span><span style="color:#8fa1b3;">Get</span><span style="color:#eff1f5;">(K </span><span style="color:#bf616a;">key</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">auto</span><span style="color:#eff1f5;"> oriArray </span><span>= </span><span style="color:#bf616a;">atomic_load</span><span style="color:#eff1f5;">(</span><span>&amp;</span><span style="color:#eff1f5;">array);
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">auto</span><span style="color:#eff1f5;"> res </span><span>= </span><span style="color:#bf616a;">lower_bound</span><span style="color:#eff1f5;">(
+</span><span style="color:#eff1f5;">            oriArray-&gt;</span><span style="color:#bf616a;">begin</span><span style="color:#eff1f5;">(), oriArray-&gt;</span><span style="color:#bf616a;">end</span><span style="color:#eff1f5;">(), </span><span style="color:#bf616a;">make_pair</span><span style="color:#eff1f5;">(key, </span><span style="color:#bf616a;">shared_ptr</span><span style="color:#eff1f5;">&lt;V&gt;()),
+</span><span style="color:#eff1f5;">            [](</span><span style="color:#b48ead;">auto</span><span style="color:#eff1f5;"> a, </span><span style="color:#b48ead;">auto</span><span style="color:#eff1f5;"> b) { </span><span style="color:#b48ead;">return</span><span style="color:#eff1f5;"> a.</span><span style="color:#bf616a;">first </span><span>&lt;</span><span style="color:#eff1f5;"> b.</span><span style="color:#bf616a;">first</span><span style="color:#eff1f5;">; });
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(res </span><span>==</span><span style="color:#eff1f5;"> oriArray-&gt;</span><span style="color:#bf616a;">end</span><span style="color:#eff1f5;">()  res-&gt;</span><span style="color:#bf616a;">first </span><span>!=</span><span style="color:#eff1f5;"> key)
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">shared_ptr</span><span style="color:#eff1f5;">&lt;V&gt;();
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">return</span><span style="color:#eff1f5;"> res-&gt;</span><span style="color:#bf616a;">second</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">}</span><span>;
+</span></code></pre>
+<h2 id="wu-suo-de-zhan">无锁的栈</h2>
+<p>我们可以用邻接链表来实现</p>
+<p>读的时候xjb读<br />
+写的时候生成一个新的head，然后用CAS不停的尝试把当前的head替换掉，同时注意保证新的head指向当前的head</p>
+<p>下面是代码</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">template </span><span>&lt;</span><span style="color:#b48ead;">typename</span><span> T&gt;
+</span><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">LockFreeStack </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">struct </span><span style="color:#eff1f5;">Node {
+</span><span style="color:#eff1f5;">        shared_ptr&lt;T&gt; content;
+</span><span style="color:#eff1f5;">        shared_ptr&lt;Node&gt; next;
+</span><span style="color:#eff1f5;">        </span><span style="color:#8fa1b3;">Node</span><span style="color:#eff1f5;">(shared_ptr&lt;T&gt; </span><span style="color:#bf616a;">content</span><span style="color:#eff1f5;">, shared_ptr&lt;Node&gt; </span><span style="color:#bf616a;">next</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">            : </span><span style="color:#bf616a;">content</span><span style="color:#eff1f5;">(content), </span><span style="color:#bf616a;">next</span><span style="color:#eff1f5;">(next) {}
+</span><span style="color:#eff1f5;">    };
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">   </span><span style="color:#b48ead;">private</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">    shared_ptr&lt;Node&gt; head;
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">   </span><span style="color:#b48ead;">public</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">Push</span><span style="color:#eff1f5;">(shared_ptr&lt;T&gt; </span><span style="color:#bf616a;">value</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">auto</span><span style="color:#eff1f5;"> newHead </span><span>= </span><span style="color:#bf616a;">make_shared</span><span style="color:#eff1f5;">&lt;Node&gt;(value, </span><span style="color:#bf616a;">atomic_load</span><span style="color:#eff1f5;">(</span><span>&amp;</span><span style="color:#eff1f5;">head));
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">while </span><span style="color:#eff1f5;">(</span><span>!</span><span style="color:#bf616a;">atomic_compare_exchange_weak</span><span style="color:#eff1f5;">(</span><span>&amp;</span><span style="color:#eff1f5;">head, </span><span>&amp;</span><span style="color:#eff1f5;">newHead-&gt;</span><span style="color:#bf616a;">next</span><span style="color:#eff1f5;">, newHead))
+</span><span style="color:#eff1f5;">            ;
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    shared_ptr&lt;T&gt; </span><span style="color:#8fa1b3;">Pop</span><span style="color:#eff1f5;">() {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">auto</span><span style="color:#eff1f5;"> oriHead </span><span>= </span><span style="color:#bf616a;">atomic_load</span><span style="color:#eff1f5;">(</span><span>&amp;</span><span style="color:#eff1f5;">head);
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">while </span><span style="color:#eff1f5;">(oriHead </span><span>&amp;&amp;
+</span><span style="color:#eff1f5;">               </span><span>!</span><span style="color:#bf616a;">atomic_compare_exchange_weak</span><span style="color:#eff1f5;">(</span><span>&amp;</span><span style="color:#eff1f5;">head, </span><span>&amp;</span><span style="color:#eff1f5;">oriHead, oriHead-&gt;</span><span style="color:#bf616a;">next</span><span style="color:#eff1f5;">))
+</span><span style="color:#eff1f5;">            ;
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">return</span><span style="color:#eff1f5;"> oriHead </span><span>?</span><span style="color:#eff1f5;"> oriHead-&gt;</span><span style="color:#bf616a;">content </span><span>: </span><span style="color:#bf616a;">shared_ptr</span><span style="color:#eff1f5;">&lt;T&gt;();
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    shared_ptr&lt;T&gt; </span><span style="color:#8fa1b3;">Top</span><span style="color:#eff1f5;">() {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">auto</span><span style="color:#eff1f5;"> top </span><span>= </span><span style="color:#bf616a;">atomic_load</span><span style="color:#eff1f5;">(</span><span>&amp;</span><span style="color:#eff1f5;">head);
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">return</span><span style="color:#eff1f5;"> top </span><span>?</span><span style="color:#eff1f5;"> top-&gt;</span><span style="color:#bf616a;">content </span><span>: </span><span style="color:#bf616a;">shared_ptr</span><span style="color:#eff1f5;">&lt;T&gt;();
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">}</span><span>;
+</span></code></pre>
+<h2 id="yi-xie-xu-yao-zhu-yi-de-di-fang">一些需要注意的地方</h2>
+<p>上面代码中操作shared_ptr的原语内部可能不是无锁的<br />
+因为shared_ptr的内部存了两个指针，而目前在硬件层面上对两个指针进行CAS操作还不太能实现（据说TSX指令集支持但是效率不高）</p>
+<p>另外操作shared_ptr的atomic模版方法在C++20中已经弃用，以后应当用atomic模板类（然而国内普及C++20可能要等到2200年）</p>
+
+    </div>
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                    Published by 何泊谋
+                
+                
+                    
+                    in <a href="https://paakmau.github.io/categories/bing-fa/">并发</a>
+                
+                
+                    and
+                    tagged
+                    
+                        <a href="https://paakmau.github.io/tags/c/">C++</a>
+                        
+                            
+                                
+                                    ,
+                                
+                            
+                        
+                    
+                        <a href="https://paakmau.github.io/tags/c-stl/">C++ STL</a>
+                        
+                            
+                                
+                                    and
+                                
+                            
+                        
+                    
+                        <a href="https://paakmau.github.io/tags/bing-fa/">并发</a>
+                        
+                            
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+    </body>
+
+</html>

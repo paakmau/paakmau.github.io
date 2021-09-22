@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>泊谋</title>
+
+      
+
+      
+          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+    
+        
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io">
+                                <span itemprop="name">主页
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
+                                <span itemprop="name">分类
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
+                                <span itemprop="name">标签
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
+                                <span itemprop="name">GitHub
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Vuex完全学习笔记</h1>
+        <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>6 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2020-01-20
+</span>
+    </header>
+    <div itemprop="articleBody">
+      <p>官网说，Vuex是为Vue.js应用开发的状态管理模式。个人理解就是管理全局变量的单例，支持响应式，存储状态或数据</p>
+<span id="continue-reading"></span>
+<p>可以用来处理多个页面数据共享，父子组件信息交互等麻烦的问题</p>
+<p>本文基于用Vue CLI创建的脚手架，包括State、Mutation、Action、Getter</p>
+<h2 id="yin-ru-vuex">引入Vuex</h2>
+<p>在使用Vue CLI创建项目的时候引入Vuex就行</p>
+<p>如果没有，需要安装vuex依赖，修改main.js，还可以新建一个目录用于存放Vuex相关的代码，初学避免踩坑不建议这么整</p>
+<h2 id="jiao-shou-jia-zhong-de-xiang-guan-wen-jian">脚手架中的相关文件</h2>
+<p>介绍一下脚手架中与Vuex相关的部分</p>
+<p>src/store/index.js<br />
+用于配置Vuex的全局单例，贴一下代码</p>
+<pre data-lang="js" style="background-color:#2b303b;color:#c0c5ce;" class="language-js "><code class="language-js" data-lang="js"><span style="color:#b48ead;">import </span><span style="color:#bf616a;">Vue </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">vue</span><span>&quot;;
+</span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">Vuex </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">vuex</span><span>&quot;;
+</span><span>
+</span><span style="color:#bf616a;">Vue</span><span>.</span><span style="color:#8fa1b3;">use</span><span>(</span><span style="color:#bf616a;">Vuex</span><span>);
+</span><span>
+</span><span style="color:#b48ead;">export default </span><span>new Vuex.Store({
+</span><span>  state: {},
+</span><span>  mutations: {},
+</span><span>  actions: {},
+</span><span>  modules: {}
+</span><span>});
+</span></code></pre>
+<p>src/main.js<br />
+它import了src/store，并在Vue对象实例化时传入，没什么好说的，这里随便贴一个</p>
+<pre data-lang="js" style="background-color:#2b303b;color:#c0c5ce;" class="language-js "><code class="language-js" data-lang="js"><span style="color:#b48ead;">import </span><span style="color:#bf616a;">Vue </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">vue</span><span>&quot;;
+</span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">App </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">./App.vue</span><span>&quot;;
+</span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">store </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">./store</span><span>&quot;;
+</span><span>
+</span><span style="color:#bf616a;">Vue</span><span>.</span><span style="color:#bf616a;">config</span><span>.</span><span style="color:#bf616a;">productionTip </span><span>= </span><span style="color:#d08770;">false</span><span>;
+</span><span>
+</span><span>new Vue({
+</span><span>  </span><span style="color:#bf616a;">store</span><span>,
+</span><span>  </span><span style="color:#8fa1b3;">render</span><span>: </span><span style="color:#bf616a;">h </span><span style="color:#b48ead;">=&gt; </span><span style="color:#8fa1b3;">h</span><span>(</span><span style="color:#bf616a;">App</span><span>)
+</span><span>}).</span><span style="color:#8fa1b3;">$mount</span><span>(&quot;</span><span style="color:#a3be8c;">#app</span><span>&quot;);
+</span></code></pre>
+<h2 id="stateyu-mutation">State与Mutation</h2>
+<p>简单说State就是全局变量，而且它发生变化时，其他与之关联的DOM也会更新</p>
+<p>然后Mutation是用于修改State的方法，并且他能提供回滚等功能<br />
+官方不允许直接修改State，虽然直接修改也能触发相应DOM的更新</p>
+<p>然后我们尝试使用State在父子组件之间共享状态</p>
+<p>首先在src/store/index.js中添加一个showChr状态以及用于修改这个状态的Mutation，代码如下</p>
+<pre data-lang="js" style="background-color:#2b303b;color:#c0c5ce;" class="language-js "><code class="language-js" data-lang="js"><span style="color:#b48ead;">import </span><span style="color:#bf616a;">Vue </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">vue</span><span>&quot;;
+</span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">Vuex </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">vuex</span><span>&quot;;
+</span><span>
+</span><span style="color:#bf616a;">Vue</span><span>.</span><span style="color:#8fa1b3;">use</span><span>(</span><span style="color:#bf616a;">Vuex</span><span>);
+</span><span>
+</span><span style="color:#b48ead;">export default </span><span>new Vuex.Store({
+</span><span>  state: {
+</span><span>    showChr: </span><span style="color:#d08770;">false
+</span><span>  },
+</span><span>  mutations: {
+</span><span>    </span><span style="color:#8fa1b3;">changeShowChr</span><span>(</span><span style="color:#bf616a;">state</span><span>, </span><span style="color:#bf616a;">v</span><span>) {
+</span><span>      </span><span style="color:#bf616a;">state</span><span>.</span><span style="color:#bf616a;">showChr </span><span>= </span><span style="color:#bf616a;">v
+</span><span>    }
+</span><span>  }
+</span><span>});
+</span></code></pre>
+<p>然后子组件Chr.vue的代码如下</p>
+<pre data-lang="html" style="background-color:#2b303b;color:#c0c5ce;" class="language-html "><code class="language-html" data-lang="html"><span>&lt;</span><span style="color:#bf616a;">template</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">div </span><span style="color:#d08770;">v-show</span><span>=&quot;</span><span style="color:#a3be8c;">$store.state.showChr</span><span>&quot;&gt;
+</span><span>    &lt;</span><span style="color:#bf616a;">h1</span><span>&gt;这里是Chr&lt;/</span><span style="color:#bf616a;">h1</span><span>&gt;
+</span><span>    &lt;</span><span style="color:#bf616a;">button </span><span style="color:#d08770;">@click</span><span>=&quot;</span><span style="color:#a3be8c;">$store.commit(&#39;changeShowChr&#39;, false)</span><span>&quot;&gt;隐藏&lt;/</span><span style="color:#bf616a;">button</span><span>&gt;
+</span><span>  &lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">template</span><span>&gt;
+</span><span>
+</span><span>&lt;</span><span style="color:#bf616a;">script</span><span>&gt;
+</span><span style="color:#b48ead;">export default </span><span>{};
+</span><span>&lt;/</span><span style="color:#bf616a;">script</span><span>&gt;
+</span></code></pre>
+<p>最后父组件Prt.vue的代码如下</p>
+<pre data-lang="html" style="background-color:#2b303b;color:#c0c5ce;" class="language-html "><code class="language-html" data-lang="html"><span>&lt;</span><span style="color:#bf616a;">template</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">div</span><span>&gt;
+</span><span>      &lt;</span><span style="color:#bf616a;">button </span><span style="color:#d08770;">@click</span><span>=&quot;</span><span style="color:#a3be8c;">$store.commit(&#39;changeShowChr&#39;, true)</span><span>&quot;&gt;显示&lt;/</span><span style="color:#bf616a;">button</span><span>&gt;
+</span><span>      &lt;</span><span style="color:#bf616a;">chr</span><span>&gt;&lt;/</span><span style="color:#bf616a;">chr</span><span>&gt;
+</span><span>  &lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">template</span><span>&gt;
+</span><span>
+</span><span>&lt;</span><span style="color:#bf616a;">script</span><span>&gt;
+</span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">chr </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">../components/Chr.vue</span><span>&quot;;
+</span><span style="color:#b48ead;">export default </span><span>{
+</span><span>  components: {
+</span><span>    chr: </span><span style="color:#bf616a;">chr
+</span><span>  }
+</span><span>};
+</span><span>&lt;/</span><span style="color:#bf616a;">script</span><span>&gt;
+</span></code></pre>
+<p>这样，子组件的显示与showChr关联，且父子组件都能修改它的值</p>
+<p>注意：<br />
+Mutation中不能包含异步操作<br />
+并且它也需要遵守Vue的响应规则，可以提前在store中初始化所有的属性或者使用Vue.set添加新的属性</p>
+<p>另外再次强调：<br />
+虽然直接修改State也是响应式的，但官方明确说明必须使用Mutation</p>
+<h2 id="action">Action</h2>
+<p>上面提到Mutation不能包含异步操作，如果需要异步，那么可以使用Action</p>
+<p>在Action中，可以使用State与Getter只读地访问状态，也可以提交Mutation修改状态，在其中能自由进行异步操作</p>
+<p>调用Action时使用$store.dispatch方法</p>
+<p>上面的例子可修改成这样</p>
+<p>在src/store/index.js中添加Action，这个Action中做了异步操作后提交Mutation</p>
+<pre data-lang="js" style="background-color:#2b303b;color:#c0c5ce;" class="language-js "><code class="language-js" data-lang="js"><span style="color:#b48ead;">import </span><span style="color:#bf616a;">Vue </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">vue</span><span>&quot;;
+</span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">Vuex </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">vuex</span><span>&quot;;
+</span><span>
+</span><span style="color:#bf616a;">Vue</span><span>.</span><span style="color:#8fa1b3;">use</span><span>(</span><span style="color:#bf616a;">Vuex</span><span>);
+</span><span>
+</span><span style="color:#b48ead;">export default </span><span>new Vuex.Store({
+</span><span>  state: {
+</span><span>    showChr: </span><span style="color:#d08770;">false
+</span><span>  },
+</span><span>  mutations: {
+</span><span>    </span><span style="color:#8fa1b3;">changeShowChr</span><span>(</span><span style="color:#bf616a;">state</span><span>, </span><span style="color:#bf616a;">v</span><span>) {
+</span><span>      </span><span style="color:#bf616a;">state</span><span>.</span><span style="color:#bf616a;">showChr </span><span>= </span><span style="color:#bf616a;">v
+</span><span>    }
+</span><span>  },
+</span><span>  actions: {
+</span><span>    </span><span style="color:#8fa1b3;">changeShowChr</span><span>(</span><span style="color:#bf616a;">context</span><span>, </span><span style="color:#bf616a;">v</span><span>) {
+</span><span>      </span><span style="color:#96b5b4;">setTimeout</span><span>(() </span><span style="color:#b48ead;">=&gt; </span><span>{ </span><span style="color:#bf616a;">context</span><span>.</span><span style="color:#8fa1b3;">commit</span><span>(&#39;</span><span style="color:#a3be8c;">changeShowChr</span><span>&#39;, </span><span style="color:#bf616a;">v</span><span>) }, </span><span style="color:#d08770;">1000</span><span>)
+</span><span>    }
+</span><span>  }
+</span><span>});
+</span></code></pre>
+<p>父组件不变，修改子组件如下</p>
+<pre data-lang="html" style="background-color:#2b303b;color:#c0c5ce;" class="language-html "><code class="language-html" data-lang="html"><span>&lt;</span><span style="color:#bf616a;">template</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">div </span><span style="color:#d08770;">v-show</span><span>=&quot;</span><span style="color:#a3be8c;">$store.state.showChr</span><span>&quot;&gt;
+</span><span>    &lt;</span><span style="color:#bf616a;">h1</span><span>&gt;这里是Chr&lt;/</span><span style="color:#bf616a;">h1</span><span>&gt;
+</span><span>    &lt;</span><span style="color:#bf616a;">button </span><span style="color:#d08770;">@click</span><span>=&quot;</span><span style="color:#a3be8c;">$store.dispatch(&#39;changeShowChr&#39;, false)</span><span>&quot;&gt;隐藏&lt;/</span><span style="color:#bf616a;">button</span><span>&gt;
+</span><span>    &lt;</span><span style="color:#bf616a;">p</span><span>&gt;{{$store.getters.listAPositiveCnt}}&lt;/</span><span style="color:#bf616a;">p</span><span>&gt;
+</span><span>  &lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">template</span><span>&gt;
+</span><span>
+</span><span>&lt;</span><span style="color:#bf616a;">script</span><span>&gt;
+</span><span style="color:#b48ead;">export default </span><span>{};
+</span><span>&lt;/</span><span style="color:#bf616a;">script</span><span>&gt;
+</span></code></pre>
+<p>最后观察到点击隐藏，间隔一秒后子组件消失</p>
+<h2 id="module">Module</h2>
+<p>把所有组件的状态或数据全部存储在$store.state中会很混乱且不好维护，可以把状态分割成多个模块（Module），每个模块都拥有自己的State，Getter，Mutation，Action，也可以嵌套子模块<br />
+比较简单，下面是示例</p>
+<pre data-lang="js" style="background-color:#2b303b;color:#c0c5ce;" class="language-js "><code class="language-js" data-lang="js"><span style="color:#b48ead;">import </span><span style="color:#bf616a;">Vue </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">vue</span><span>&quot;;
+</span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">Vuex </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">vuex</span><span>&quot;;
+</span><span>
+</span><span style="color:#bf616a;">Vue</span><span>.</span><span style="color:#8fa1b3;">use</span><span>(</span><span style="color:#bf616a;">Vuex</span><span>);
+</span><span>
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">moduleA </span><span>= {
+</span><span>  state: {
+</span><span>    msg: &#39;</span><span style="color:#a3be8c;">This is a</span><span>&#39;
+</span><span>  },
+</span><span>  mutations: {},
+</span><span>  actions: {},
+</span><span>  getters: {}
+</span><span>}
+</span><span>
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">moduleB </span><span>= {
+</span><span>  state: {
+</span><span>    tmp: &#39;</span><span style="color:#a3be8c;"> This is b</span><span>&#39;
+</span><span>  },
+</span><span>  mutations: {},
+</span><span>  actions: {}
+</span><span>}
+</span><span>
+</span><span style="color:#b48ead;">export default </span><span>new Vuex.Store({
+</span><span>  modules: {
+</span><span>    a: </span><span style="color:#bf616a;">moduleA</span><span>,
+</span><span>    b: </span><span style="color:#bf616a;">moduleB
+</span><span>  }
+</span><span>})
+</span><span>
+</span><span style="color:#bf616a;">store</span><span>.</span><span style="color:#bf616a;">state</span><span>.</span><span style="color:#bf616a;">a </span><span style="color:#65737e;">// -&gt; moduleA 的状态
+</span><span style="color:#bf616a;">store</span><span>.</span><span style="color:#bf616a;">state</span><span>.</span><span style="color:#bf616a;">b </span><span style="color:#65737e;">// -&gt; moduleB 的状态
+</span></code></pre>
+<h2 id="getter">Getter</h2>
+<p>有时候，我们可以从store的state中派生出一些状态，例如对列表进行过滤然后计数。这种情况下我们可以在store中定义getter，下面贴一个简单的例子</p>
+<pre data-lang="js" style="background-color:#2b303b;color:#c0c5ce;" class="language-js "><code class="language-js" data-lang="js"><span style="color:#b48ead;">import </span><span style="color:#bf616a;">Vue </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">vue</span><span>&quot;;
+</span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">Vuex </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">vuex</span><span>&quot;;
+</span><span>
+</span><span style="color:#bf616a;">Vue</span><span>.</span><span style="color:#8fa1b3;">use</span><span>(</span><span style="color:#bf616a;">Vuex</span><span>);
+</span><span>
+</span><span style="color:#b48ead;">export default </span><span>new Vuex.Store({
+</span><span>  state: {
+</span><span>    listA: \[-</span><span style="color:#d08770;">1</span><span>, </span><span style="color:#d08770;">2</span><span>, -</span><span style="color:#d08770;">2</span><span>, </span><span style="color:#d08770;">1</span><span>, </span><span style="color:#d08770;">0</span><span>, </span><span style="color:#d08770;">5</span><span>\]
+</span><span>  },
+</span><span>  getters: {
+</span><span>    </span><span style="color:#8fa1b3;">listAPositiveCnt</span><span>: </span><span style="color:#bf616a;">state </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>      </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">state</span><span>.</span><span style="color:#bf616a;">listA</span><span>.</span><span style="color:#8fa1b3;">filter</span><span>(</span><span style="color:#bf616a;">n </span><span style="color:#b48ead;">=&gt; </span><span style="color:#bf616a;">n </span><span>&gt; </span><span style="color:#d08770;">0</span><span>).length
+</span><span>    }
+</span><span>  }
+</span><span>});
+</span></code></pre>
+
+    </div>
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                    Published by 何泊谋
+                
+                
+                    
+                    in <a href="https://paakmau.github.io/categories/node-js/">Node.js</a>
+                
+                
+                    and
+                    tagged
+                    
+                        <a href="https://paakmau.github.io/tags/vue-js/">Vue.js</a>
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+    </body>
+
+</html>

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>泊谋</title>
+
+      
+
+      
+          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+    
+        
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io">
+                                <span itemprop="name">主页
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
+                                <span itemprop="name">分类
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
+                                <span itemprop="name">标签
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
+                                <span itemprop="name">GitHub
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">UE4材质结点生成HLSL代码 源码浅析</h1>
+        <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>8 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2020-05-11
+</span>
+    </header>
+    <div itemprop="articleBody">
+      <p>使用UE4的材质编辑器的时候我们可以为材质的颜色、粗糙度、金属度等连接一个常量或者纹理结点，如果要实现复杂效果可能还会用到混合结点，最后就可能看到一个完整的材质其实是由一堆结点和它们之间的连线组成</p>
+<span id="continue-reading"></span>
+<p>然后每一个结点可以理解为一段HLSL代码，然后结点之间的连线则是变量的传递</p>
+<p>比如说我们有一个材质长这样</p>
+<p><img src="https://hebomou.top/wp-content/uploads/2020/05/image-1024x763.png" alt="" /></p>
+<p>然后我们查看生成的HLSL代码，发现里面有这几行，基本上跟上图的材质结点对应</p>
+<p>如果要查看HLSL代码，依次点击<br />
+窗口-&gt;着色器代码-&gt;HLSL代码</p>
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#65737e;">// Now the rest of the inputs
+</span><span>MaterialFloat3 Local0 = </span><span style="color:#bf616a;">lerp</span><span>(</span><span style="color:#bf616a;">MaterialFloat3</span><span>(</span><span style="color:#d08770;">0.00000000</span><span>,</span><span style="color:#d08770;">0.00000000</span><span>,</span><span style="color:#d08770;">0.00000000</span><span>),Material.</span><span style="color:#bf616a;">VectorExpressions</span><span>[</span><span style="color:#d08770;">1</span><span>].</span><span style="color:#bf616a;">rgb</span><span>,</span><span style="color:#bf616a;">MaterialFloat</span><span>(Material.</span><span style="color:#bf616a;">ScalarExpressions</span><span>[</span><span style="color:#d08770;">0</span><span>].</span><span style="color:#bf616a;">x</span><span>));
+</span><span>MaterialFloat4 Local1 = </span><span style="color:#bf616a;">ProcessMaterialColorTextureLookup</span><span>(</span><span style="color:#bf616a;">Texture2DSampleBias</span><span>(Material.</span><span style="color:#bf616a;">Texture2D_0</span><span>, Material.</span><span style="color:#bf616a;">Texture2D_0Sampler</span><span>,Parameters.</span><span style="color:#bf616a;">TexCoords</span><span>[</span><span style="color:#d08770;">0</span><span>].</span><span style="color:#bf616a;">xy</span><span>,View.</span><span style="color:#bf616a;">MaterialTextureMipBias</span><span>));
+</span><span>MaterialFloat3 Local2 = (</span><span style="color:#d08770;">1.00000000 </span><span>- Local1.</span><span style="color:#bf616a;">rgb</span><span>);
+</span><span>MaterialFloat4 Local3 = </span><span style="color:#bf616a;">ProcessMaterialColorTextureLookup</span><span>(</span><span style="color:#bf616a;">Texture2DSampleBias</span><span>(Material.</span><span style="color:#bf616a;">Texture2D_1</span><span>, Material.</span><span style="color:#bf616a;">Texture2D_1Sampler</span><span>,Parameters.</span><span style="color:#bf616a;">TexCoords</span><span>[</span><span style="color:#d08770;">0</span><span>].</span><span style="color:#bf616a;">xy</span><span>,View.</span><span style="color:#bf616a;">MaterialTextureMipBias</span><span>));
+</span><span>MaterialFloat3 Local4 = (Local2 + Local3.</span><span style="color:#bf616a;">r</span><span>);
+</span><span>MaterialFloat3 Local5 = (</span><span style="color:#d08770;">1.00000000 </span><span>- Local4);
+</span></code></pre>
+<p>我们容易发现，要把材质结点翻译成HLSL代码，可以从左边出发拓扑排序，也可以从右边的材质结果结点出发递归往左（显然递归比拓排好写）<br />
+然后UE4是用递归的</p>
+<p>接下来我们结合源码看一下UE4是怎么实现的</p>
+<h2 id="bian-yi-guo-cheng">编译过程</h2>
+<p>我们从FMaterial的一个成员函数开始</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#65737e;">/**
+</span><span style="color:#65737e;">* Compiles this material for Platform, storing the result in OutShaderMap if the compile was synchronous
+</span><span style="color:#65737e;">*/
+</span><span style="color:#b48ead;">bool </span><span style="color:#8fa1b3;">BeginCompileShaderMap</span><span>(
+</span><span style="color:#b48ead;">const</span><span> FMaterialShaderMapId&amp; </span><span style="color:#bf616a;">ShaderMapId</span><span>,
+</span><span style="color:#b48ead;">const</span><span> FStaticParameterSet &amp;</span><span style="color:#bf616a;">StaticParameterSet</span><span>,
+</span><span>EShaderPlatform </span><span style="color:#bf616a;">Platform</span><span>, 
+</span><span>TRefCountPtr&lt;</span><span style="color:#b48ead;">class</span><span> FMaterialShaderMap&gt;&amp; </span><span style="color:#bf616a;">OutShaderMap</span><span>, 
+</span><span style="color:#b48ead;">const</span><span> ITargetPlatform* </span><span style="color:#bf616a;">TargetPlatform </span><span>= </span><span style="color:#d08770;">nullptr</span><span>);
+</span></code></pre>
+<p>这个函数会把材质的编译结果放到OutShaderMap里<br />
+并且每个材质ShaderMapId都是唯一的</p>
+<p>它会先创建一个FMaterialShaderMap对象<br />
+接下来创建FHLSLMaterialTranslator对象并用它生成着色器的HLSL代码<br />
+最后调用FMaterialShaderMap的Compile方法编译这段代码并保存结果</p>
+<p>节选关键代码如下</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#65737e;">// ...
+</span><span>
+</span><span>TRefCountPtr&lt;FMaterialShaderMap&gt; NewShaderMap = </span><span style="color:#b48ead;">new </span><span style="color:#bf616a;">FMaterialShaderMap</span><span>();
+</span><span>
+</span><span style="color:#65737e;">// ...
+</span><span>
+</span><span style="color:#65737e;">// 生成着色器代码
+</span><span>FMaterialCompilationOutput NewCompilationOutput;
+</span><span>FHLSLMaterialTranslator </span><span style="color:#8fa1b3;">MaterialTranslator</span><span>(</span><span style="color:#bf616a;">this</span><span>, </span><span style="color:#bf616a;">NewCompilationOutput</span><span>, </span><span style="color:#bf616a;">StaticParameterSet</span><span>, </span><span style="color:#bf616a;">Platform</span><span>,</span><span style="color:#bf616a;">GetQualityLevel</span><span>(), ShaderMapId.</span><span style="color:#bf616a;">FeatureLevel</span><span>, </span><span style="color:#bf616a;">TargetPlatform</span><span>);
+</span><span>bSuccess = MaterialTranslator.</span><span style="color:#bf616a;">Translate</span><span>();
+</span><span>
+</span><span style="color:#65737e;">// ...
+</span><span>
+</span><span style="color:#65737e;">// 为材质编译着色器
+</span><span>NewShaderMap-&gt;</span><span style="color:#bf616a;">Compile</span><span>(</span><span style="color:#bf616a;">this</span><span>, ShaderMapId, MaterialEnvironment, NewCompilationOutput, Platform, bSynchronousCompile);
+</span></code></pre>
+<p>接下来，我们着重看FHLSLMaterialTranslator的Translate方法，在里面会发现一个很显眼的东西，没错这个就是材质结果结点的各个输入插槽</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#65737e;">// Rest of properties
+</span><span>Chunk[MP_EmissiveColor]= Material-&gt;</span><span style="color:#bf616a;">CompilePropertyAndSetMaterialProperty</span><span>(MP_EmissiveColor,</span><span style="color:#bf616a;">this</span><span>);
+</span><span>Chunk[MP_DiffuseColor]= Material-&gt;</span><span style="color:#bf616a;">CompilePropertyAndSetMaterialProperty</span><span>(MP_DiffuseColor,</span><span style="color:#bf616a;">this</span><span>);
+</span><span>Chunk[MP_SpecularColor]= Material-&gt;</span><span style="color:#bf616a;">CompilePropertyAndSetMaterialProperty</span><span>(MP_SpecularColor,</span><span style="color:#bf616a;">this</span><span>);
+</span><span>Chunk[MP_BaseColor]= Material-&gt;</span><span style="color:#bf616a;">CompilePropertyAndSetMaterialProperty</span><span>(MP_BaseColor,</span><span style="color:#bf616a;">this</span><span>);
+</span><span>Chunk[MP_Metallic]= Material-&gt;</span><span style="color:#bf616a;">CompilePropertyAndSetMaterialProperty</span><span>(MP_Metallic,</span><span style="color:#bf616a;">this</span><span>);
+</span><span>Chunk[MP_Specular]= Material-&gt;</span><span style="color:#bf616a;">CompilePropertyAndSetMaterialProperty</span><span>(MP_Specular,</span><span style="color:#bf616a;">this</span><span>);
+</span><span>Chunk[MP_Roughness]= Material-&gt;</span><span style="color:#bf616a;">CompilePropertyAndSetMaterialProperty</span><span>(MP_Roughness,</span><span style="color:#bf616a;">this</span><span>);
+</span><span>Chunk[MP_Opacity]= Material-&gt;</span><span style="color:#bf616a;">CompilePropertyAndSetMaterialProperty</span><span>(MP_Opacity,</span><span style="color:#bf616a;">this</span><span>);
+</span><span>Chunk[MP_OpacityMask]= Material-&gt;</span><span style="color:#bf616a;">CompilePropertyAndSetMaterialProperty</span><span>(MP_OpacityMask,</span><span style="color:#bf616a;">this</span><span>);
+</span><span>Chunk[MP_WorldPositionOffset]= Material-&gt;</span><span style="color:#bf616a;">CompilePropertyAndSetMaterialProperty</span><span>(MP_WorldPositionOffset,</span><span style="color:#bf616a;">this</span><span>);
+</span><span>Chunk[MP_WorldDisplacement]= Material-&gt;</span><span style="color:#bf616a;">CompilePropertyAndSetMaterialProperty</span><span>(MP_WorldDisplacement,</span><span style="color:#bf616a;">this</span><span>);
+</span><span>Chunk[MP_TessellationMultiplier]= Material-&gt;</span><span style="color:#bf616a;">CompilePropertyAndSetMaterialProperty</span><span>(MP_TessellationMultiplier,</span><span style="color:#bf616a;">this</span><span>);
+</span></code></pre>
+<p>于是我们去看FMaterialResource的CompilePropertyAndSetMaterialProperty方法</p>
+<p>注意一下FMaterialResource是FMaterial接口的一个实现，它里面会存一个UMaterial实例或者UMaterialInstance实例，这两种实例都是继承自UMaterialInterface接口</p>
+<p>这个方法里面有一个switch，对于不同类型的输入插槽（或者说EMaterialProperty），它有不同的处理，不过基本都是调用UMaterialInterface的CompileProperty方法，代码太乱就不贴了</p>
+<p>我们直接去看UMaterialInterface的CompileProperty方法，它调用了CompilePropertyEx方法，这个方法是个虚函数，发现UMaterial和UMaterialInterface都有自己的实现，但是UMaterialInterface是基于UMaterial的因此我们直接看UMaterial的CompilePropertyEx方法就行</p>
+<p>发现里面又是一个switch</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>int32 UMaterial::</span><span style="color:#8fa1b3;">CompilePropertyEx</span><span>( FMaterialCompiler* </span><span style="color:#bf616a;">Compiler</span><span>, </span><span style="color:#b48ead;">const</span><span> FGuid&amp; </span><span style="color:#bf616a;">AttributeID </span><span>)
+</span><span>{
+</span><span>    </span><span style="color:#b48ead;">const</span><span> EMaterialProperty Property = FMaterialAttributeDefinitionMap::</span><span style="color:#bf616a;">GetProperty</span><span>(AttributeID);
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">if</span><span>( bUseMaterialAttributes &amp;&amp; MP_DiffuseColor != Property &amp;&amp; MP_SpecularColor != Property )
+</span><span>    {
+</span><span>        </span><span style="color:#b48ead;">return</span><span> MaterialAttributes.</span><span style="color:#bf616a;">CompileWithDefault</span><span>(Compiler, AttributeID);
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">switch </span><span>(Property)
+</span><span>    {
+</span><span>        </span><span style="color:#b48ead;">case</span><span> MP_Opacity:</span><span style="color:#b48ead;">return</span><span> Opacity.</span><span style="color:#bf616a;">CompileWithDefault</span><span>(Compiler, Property);
+</span><span>        </span><span style="color:#b48ead;">case</span><span> MP_OpacityMask:</span><span style="color:#b48ead;">return</span><span> OpacityMask.</span><span style="color:#bf616a;">CompileWithDefault</span><span>(Compiler, Property);
+</span><span>        </span><span style="color:#b48ead;">case</span><span> MP_Metallic:</span><span style="color:#b48ead;">return</span><span> Metallic.</span><span style="color:#bf616a;">CompileWithDefault</span><span>(Compiler, Property);
+</span><span>        </span><span style="color:#b48ead;">case</span><span> MP_Specular:</span><span style="color:#b48ead;">return</span><span> Specular.</span><span style="color:#bf616a;">CompileWithDefault</span><span>(Compiler, Property);
+</span><span>        </span><span style="color:#b48ead;">case</span><span> MP_Roughness:</span><span style="color:#b48ead;">return</span><span> Roughness.</span><span style="color:#bf616a;">CompileWithDefault</span><span>(Compiler, Property);
+</span><span>        </span><span style="color:#b48ead;">case</span><span> MP_TessellationMultiplier:</span><span style="color:#b48ead;">return</span><span> TessellationMultiplier.</span><span style="color:#bf616a;">CompileWithDefault</span><span>(Compiler, Property);
+</span><span>        </span><span style="color:#b48ead;">case</span><span> MP_CustomData0:</span><span style="color:#b48ead;">return</span><span> ClearCoat.</span><span style="color:#bf616a;">CompileWithDefault</span><span>(Compiler, Property);
+</span><span>        </span><span style="color:#b48ead;">case</span><span> MP_CustomData1:</span><span style="color:#b48ead;">return</span><span> ClearCoatRoughness.</span><span style="color:#bf616a;">CompileWithDefault</span><span>(Compiler, Property);
+</span><span>        </span><span style="color:#b48ead;">case</span><span> MP_AmbientOcclusion:</span><span style="color:#b48ead;">return</span><span> AmbientOcclusion.</span><span style="color:#bf616a;">CompileWithDefault</span><span>(Compiler, Property);
+</span><span>        </span><span style="color:#b48ead;">case</span><span> MP_Refraction:</span><span style="color:#b48ead;">return</span><span> Refraction.</span><span style="color:#bf616a;">CompileWithDefault</span><span>(Compiler, Property);
+</span><span>        </span><span style="color:#b48ead;">case</span><span> MP_EmissiveColor:</span><span style="color:#b48ead;">return</span><span> EmissiveColor.</span><span style="color:#bf616a;">CompileWithDefault</span><span>(Compiler, Property);
+</span><span>        </span><span style="color:#b48ead;">case</span><span> MP_BaseColor:</span><span style="color:#b48ead;">return</span><span> BaseColor.</span><span style="color:#bf616a;">CompileWithDefault</span><span>(Compiler, Property);
+</span><span>        </span><span style="color:#b48ead;">case</span><span> MP_SubsurfaceColor:</span><span style="color:#b48ead;">return</span><span> SubsurfaceColor.</span><span style="color:#bf616a;">CompileWithDefault</span><span>(Compiler, Property);
+</span><span>        </span><span style="color:#b48ead;">case</span><span> MP_Normal:</span><span style="color:#b48ead;">return</span><span> Normal.</span><span style="color:#bf616a;">CompileWithDefault</span><span>(Compiler, Property);
+</span><span>        </span><span style="color:#b48ead;">case</span><span> MP_WorldPositionOffset:</span><span style="color:#b48ead;">return</span><span> WorldPositionOffset.</span><span style="color:#bf616a;">CompileWithDefault</span><span>(Compiler, Property);
+</span><span>        </span><span style="color:#b48ead;">case</span><span> MP_WorldDisplacement:</span><span style="color:#b48ead;">return</span><span> WorldDisplacement.</span><span style="color:#bf616a;">CompileWithDefault</span><span>(Compiler, Property);
+</span><span>        </span><span style="color:#b48ead;">case</span><span> MP_PixelDepthOffset:</span><span style="color:#b48ead;">return</span><span> PixelDepthOffset.</span><span style="color:#bf616a;">CompileWithDefault</span><span>(Compiler, Property);
+</span><span>        </span><span style="color:#b48ead;">case</span><span> MP_ShadingModel:</span><span style="color:#b48ead;">return</span><span> ShadingModelFromMaterialExpression.</span><span style="color:#bf616a;">CompileWithDefault</span><span>(Compiler, Property);
+</span><span>
+</span><span>        </span><span style="color:#b48ead;">default</span><span>:
+</span><span>            </span><span style="color:#b48ead;">if </span><span>(Property &gt;= MP_CustomizedUVs0 &amp;&amp; Property &lt;= MP_CustomizedUVs7)
+</span><span>            {
+</span><span>                </span><span style="color:#b48ead;">const</span><span> int32 TextureCoordinateIndex = Property - MP_CustomizedUVs0;
+</span><span>
+</span><span>                </span><span style="color:#b48ead;">if </span><span>(CustomizedUVs[TextureCoordinateIndex].</span><span style="color:#bf616a;">Expression </span><span>&amp;&amp; TextureCoordinateIndex &lt; NumCustomizedUVs)
+</span><span>                {
+</span><span>                    </span><span style="color:#b48ead;">return</span><span> CustomizedUVs[TextureCoordinateIndex].</span><span style="color:#bf616a;">CompileWithDefault</span><span>(Compiler, Property);
+</span><span>                }
+</span><span>                </span><span style="color:#b48ead;">else
+</span><span>                {
+</span><span>                    </span><span style="color:#65737e;">// The user did not customize this UV, pass through the vertex texture coordinates
+</span><span>                    </span><span style="color:#b48ead;">return</span><span> Compiler-&gt;</span><span style="color:#bf616a;">TextureCoordinate</span><span>(TextureCoordinateIndex, </span><span style="color:#d08770;">false</span><span>, </span><span style="color:#d08770;">false</span><span>);
+</span><span>                }
+</span><span>            }
+</span><span>
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#bf616a;">check</span><span>(</span><span style="color:#d08770;">0</span><span>);
+</span><span>    </span><span style="color:#b48ead;">return</span><span> INDEX_NONE;
+</span><span>}
+</span></code></pre>
+<p>于是我们随便看一个插槽的CompileWithDefault方法，比如说BaseColor，BaseColor变量是一个FColorMaterialInput类型的插槽</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>int32 FColorMaterialInput::</span><span style="color:#8fa1b3;">CompileWithDefault</span><span>(</span><span style="color:#b48ead;">class</span><span> FMaterialCompiler* </span><span style="color:#bf616a;">Compiler</span><span>, EMaterialProperty </span><span style="color:#bf616a;">Property</span><span>)
+</span><span>{
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(UseConstant)
+</span><span>    {
+</span><span>        FLinearColor </span><span style="color:#bf616a;">LinearColor</span><span>(Constant);
+</span><span>        </span><span style="color:#b48ead;">return</span><span> Compiler-&gt;</span><span style="color:#bf616a;">Constant3</span><span>(LinearColor.</span><span style="color:#bf616a;">R</span><span>, LinearColor.</span><span style="color:#bf616a;">G</span><span>, LinearColor.</span><span style="color:#bf616a;">B</span><span>);
+</span><span>    }
+</span><span>    </span><span style="color:#b48ead;">else if </span><span>(Expression)
+</span><span>    {
+</span><span>        int32 ResultIndex = FExpressionInput::</span><span style="color:#bf616a;">Compile</span><span>(Compiler);
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(ResultIndex != INDEX_NONE)
+</span><span>        {
+</span><span>            </span><span style="color:#b48ead;">return</span><span> ResultIndex;
+</span><span>        }
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">return</span><span> Compiler-&gt;</span><span style="color:#bf616a;">ForceCast</span><span>(FMaterialAttributeDefinitionMap::</span><span style="color:#bf616a;">CompileDefaultExpression</span><span>(Compiler, Property), MCT_Float3);
+</span><span>}
+</span></code></pre>
+<p>发现有常量和表达式两种情况，常量就是一个常量的颜色结点，表达式就是使用了混合结点或者纹理结点等等复杂的结点</p>
+<p>对于表达式我们看到它调用了基类FExpressionInput的Compile方法</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>int32 FExpressionInput::</span><span style="color:#8fa1b3;">Compile</span><span>(</span><span style="color:#b48ead;">class</span><span> FMaterialCompiler* </span><span style="color:#bf616a;">Compiler</span><span>)
+</span><span>{
+</span><span>    </span><span style="color:#b48ead;">if</span><span>(Expression)
+</span><span>    {
+</span><span>        Expression-&gt;</span><span style="color:#bf616a;">ValidateState</span><span>();
+</span><span>
+</span><span>        int32 ExpressionResult = Compiler-&gt;</span><span style="color:#bf616a;">CallExpression</span><span>(</span><span style="color:#bf616a;">FMaterialExpressionKey</span><span>(Expression, OutputIndex, Compiler-&gt;</span><span style="color:#bf616a;">GetMaterialAttribute</span><span>(), Compiler-&gt;</span><span style="color:#bf616a;">IsCurrentlyCompilingForPreviousFrame</span><span>()),Compiler);
+</span><span>
+</span><span>        </span><span style="color:#b48ead;">if</span><span>(Mask &amp;&amp; ExpressionResult != INDEX_NONE)
+</span><span>        {
+</span><span>            </span><span style="color:#b48ead;">return</span><span> Compiler-&gt;</span><span style="color:#bf616a;">ComponentMask</span><span>(
+</span><span>                ExpressionResult,
+</span><span>                !!MaskR,!!MaskG,!!MaskB,!!MaskA
+</span><span>            );
+</span><span>        }
+</span><span>        </span><span style="color:#b48ead;">else
+</span><span>        {
+</span><span>            </span><span style="color:#b48ead;">return</span><span> ExpressionResult;
+</span><span>        }
+</span><span>    }
+</span><span>    </span><span style="color:#b48ead;">else
+</span><span>        </span><span style="color:#b48ead;">return</span><span> INDEX_NONE;
+</span><span>}
+</span></code></pre>
+<p>又调用了FMaterialCompiler的CallExpression方法，而且把表达式传过去了</p>
+<p>在CallExpression方法里，它会调用表达式ExpressionKey.Expression的Compile方法</p>
+<p>然后我们可以看到Expression是一个UMaterialExpression接口的实例，它有多种实现</p>
+<p>稍微看一下加法表达式的Compile实现</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>int32 UMaterialExpressionAdd::</span><span style="color:#8fa1b3;">Compile</span><span>(</span><span style="color:#b48ead;">class</span><span> FMaterialCompiler* </span><span style="color:#bf616a;">Compiler</span><span>, int32 </span><span style="color:#bf616a;">OutputIndex</span><span>)
+</span><span>{
+</span><span>    </span><span style="color:#65737e;">// if the input is hooked up, use it, otherwise use the internal constant
+</span><span>    int32 Arg1 = A.</span><span style="color:#bf616a;">GetTracedInput</span><span>().</span><span style="color:#bf616a;">Expression </span><span>? A.</span><span style="color:#bf616a;">Compile</span><span>(Compiler) : Compiler-&gt;</span><span style="color:#bf616a;">Constant</span><span>(ConstA);
+</span><span>    </span><span style="color:#65737e;">// if the input is hooked up, use it, otherwise use the internal constant
+</span><span>    int32 Arg2 = B.</span><span style="color:#bf616a;">GetTracedInput</span><span>().</span><span style="color:#bf616a;">Expression </span><span>? B.</span><span style="color:#bf616a;">Compile</span><span>(Compiler) : Compiler-&gt;</span><span style="color:#bf616a;">Constant</span><span>(ConstB);
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">return</span><span> Compiler-&gt;</span><span style="color:#bf616a;">Add</span><span>(Arg1, Arg2);
+</span><span>}
+</span></code></pre>
+<p>可以看到递归是在这里实现的，然后最后一行Complier的Add方法是由FHLSLMaterialTranslator提供的<br />
+返回值是这个表达式的唯一索引值，可以通过索引找到表达式</p>
+<p>生成HLSL代码的逻辑就在FHLSLMaterialTranslator的Add方法里，我们也可以看一下</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">virtual</span><span> int32 </span><span style="color:#8fa1b3;">Add</span><span>(int32 </span><span style="color:#bf616a;">A</span><span>,int32 </span><span style="color:#bf616a;">B</span><span>) </span><span style="color:#b48ead;">override
+</span><span>{
+</span><span>    </span><span style="color:#b48ead;">if</span><span>(A == INDEX_NONE  B == INDEX_NONE)
+</span><span>    {
+</span><span>        </span><span style="color:#b48ead;">return</span><span> INDEX_NONE;
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">const</span><span> uint64 Hash = </span><span style="color:#bf616a;">CityHash128to64</span><span>({ </span><span style="color:#bf616a;">GetParameterHash</span><span>(A), </span><span style="color:#bf616a;">GetParameterHash</span><span>(B) });
+</span><span>    </span><span style="color:#b48ead;">if</span><span>(</span><span style="color:#bf616a;">GetParameterUniformExpression</span><span>(A) &amp;&amp; </span><span style="color:#bf616a;">GetParameterUniformExpression</span><span>(B))
+</span><span>    {
+</span><span>        </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">AddUniformExpressionWithHash</span><span>(Hash, </span><span style="color:#b48ead;">new </span><span style="color:#bf616a;">FMaterialUniformExpressionFoldedMath</span><span>(</span><span style="color:#bf616a;">GetParameterUniformExpression</span><span>(A),</span><span style="color:#bf616a;">GetParameterUniformExpression</span><span>(B),FMO_Add),</span><span style="color:#bf616a;">GetArithmeticResultType</span><span>(A,B),</span><span style="color:#bf616a;">TEXT</span><span>(&quot;</span><span style="color:#a3be8c;">(</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;"> + </span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">)</span><span>&quot;),*</span><span style="color:#bf616a;">GetParameterCode</span><span>(A),*</span><span style="color:#bf616a;">GetParameterCode</span><span>(B));
+</span><span>    }
+</span><span>    </span><span style="color:#b48ead;">else
+</span><span>    {
+</span><span>        </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">AddCodeChunkWithHash</span><span>(Hash, </span><span style="color:#bf616a;">GetArithmeticResultType</span><span>(A,B),</span><span style="color:#bf616a;">TEXT</span><span>(&quot;</span><span style="color:#a3be8c;">(</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;"> + </span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">)</span><span>&quot;),*</span><span style="color:#bf616a;">GetParameterCode</span><span>(A),*</span><span style="color:#bf616a;">GetParameterCode</span><span>(B));
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<h2 id="lei-de-guan-xi-zheng-li">类的关系整理</h2>
+<p>最后我整理了一下上面提到的各个类之间的关系，总的来说还是比较清晰的</p>
+<p>FMaterial和FMaterialResource是逻辑上的材质类，一个FMaterialResource对象可以管理一个UMaterial实例或UMaterialInstance实例，UMaterial上挂着不同类型的FExpressionInput插槽，这些FExpressionInput实现类又包含UMaterialExpression表达式，表达式会层层嵌套形成一张有向无环图<br />
+最后FMaterialCompiler的实现类FHLSLMaterialTranslator主要用于生成HLSL代码</p>
+
+    </div>
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                    Published by 何泊谋
+                
+                
+                    
+                    in <a href="https://paakmau.github.io/categories/ue4/">UE4</a>
+                
+                
+                    and
+                    tagged
+                    
+                        <a href="https://paakmau.github.io/tags/xuan-ran/">渲染</a>
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+    </body>
+
+</html>

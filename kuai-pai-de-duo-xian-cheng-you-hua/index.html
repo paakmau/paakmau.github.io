@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>泊谋</title>
+
+      
+
+      
+          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+    
+        
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io">
+                                <span itemprop="name">主页
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
+                                <span itemprop="name">分类
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
+                                <span itemprop="name">标签
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
+                                <span itemprop="name">GitHub
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">快排的多线程优化</h1>
+        <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>3 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2020-04-21
+</span>
+    </header>
+    <div itemprop="articleBody">
+      <p>讲真我从高中到现在就没有手写过一次快排（是sort不够好吗）</p>
+<span id="continue-reading"></span>
+<p>然后最近看书的时候看到划分数据块并行优化的思路，发现快排和堆排都能多线程优化</p>
+<p>于是写一个试试</p>
+<h2 id="si-lu">思路</h2>
+<p>注意到快排在每次迭代后原数组都会被分成没有交集的两块，那么他们就可以并行；堆排也同理</p>
+<h2 id="zhu-yi">注意</h2>
+<p>有一个问题是不能每次迭代都新开线程（我CPU就四个核心线程多也没用）<br />
+那就开一个线程池，把迭代后产生的排序任务放到队列里，有一点类似我们递归爆栈时会用到的手写栈</p>
+<p>还有一个问题是，在区间长度比较小的时候，由于多线程的调度成本，直接在本线程内递归的性能反而更好</p>
+<h2 id="xian-cheng-chi">线程池</h2>
+<p>其实比较常见，随便写一个就行</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">ThreadPool </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">   </span><span style="color:#b48ead;">private</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">typedef</span><span style="color:#eff1f5;"> function&lt;</span><span style="color:#b48ead;">void</span><span style="color:#eff1f5;">()&gt; Task;
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">int</span><span style="color:#eff1f5;"> threadCnt;
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">bool</span><span style="color:#eff1f5;"> isRunning;
+</span><span style="color:#eff1f5;">    vector&lt;thread&gt; workers;
+</span><span style="color:#eff1f5;">    queue&lt;Task&gt; tasks;
+</span><span style="color:#eff1f5;">    mutex mtx;
+</span><span style="color:#eff1f5;">    condition_variable cv;
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">ProcessWorker</span><span style="color:#eff1f5;">() {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">while </span><span style="color:#eff1f5;">(isRunning) {
+</span><span style="color:#eff1f5;">            Task task;
+</span><span style="color:#eff1f5;">            {
+</span><span style="color:#eff1f5;">                unique_lock&lt;mutex&gt; </span><span style="color:#bf616a;">lock</span><span style="color:#eff1f5;">(mtx);
+</span><span style="color:#eff1f5;">                </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(tasks.</span><span style="color:#bf616a;">empty</span><span style="color:#eff1f5;">()) cv.</span><span style="color:#bf616a;">wait</span><span style="color:#eff1f5;">(lock);
+</span><span style="color:#eff1f5;">                </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span>!</span><span style="color:#eff1f5;">tasks.</span><span style="color:#bf616a;">empty</span><span style="color:#eff1f5;">()) {
+</span><span style="color:#eff1f5;">                    task </span><span>=</span><span style="color:#eff1f5;"> tasks.</span><span style="color:#bf616a;">front</span><span style="color:#eff1f5;">();
+</span><span style="color:#eff1f5;">                    tasks.</span><span style="color:#bf616a;">pop</span><span style="color:#eff1f5;">();
+</span><span style="color:#eff1f5;">                }
+</span><span style="color:#eff1f5;">            }
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(task) </span><span style="color:#bf616a;">task</span><span style="color:#eff1f5;">();
+</span><span style="color:#eff1f5;">        }
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">   </span><span style="color:#b48ead;">public</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">explicit </span><span style="color:#8fa1b3;">ThreadPool</span><span style="color:#eff1f5;">(</span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">cnt</span><span style="color:#eff1f5;">) : </span><span style="color:#bf616a;">threadCnt</span><span style="color:#eff1f5;">(cnt), </span><span style="color:#bf616a;">isRunning</span><span style="color:#eff1f5;">(</span><span style="color:#d08770;">0</span><span style="color:#eff1f5;">) {}
+</span><span style="color:#eff1f5;">    </span><span style="color:#8fa1b3;">~ThreadPool</span><span style="color:#eff1f5;">() {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(isRunning) </span><span style="color:#bf616a;">Stop</span><span style="color:#eff1f5;">();
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">Start</span><span style="color:#eff1f5;">() {
+</span><span style="color:#eff1f5;">        isRunning </span><span>= </span><span style="color:#d08770;">1</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">for </span><span style="color:#eff1f5;">(</span><span style="color:#b48ead;">int</span><span style="color:#eff1f5;"> i </span><span>= </span><span style="color:#d08770;">0</span><span style="color:#eff1f5;">; i </span><span>&lt;</span><span style="color:#eff1f5;"> threadCnt; i</span><span>++</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">            workers.</span><span style="color:#bf616a;">emplace_back</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">thread</span><span style="color:#eff1f5;">(</span><span>&amp;</span><span style="color:#eff1f5;">ThreadPool::ProcessWorker, </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">));
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">Push</span><span style="color:#eff1f5;">(</span><span style="color:#b48ead;">const</span><span style="color:#eff1f5;"> Task </span><span>&amp;</span><span style="color:#bf616a;">task</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(isRunning) {
+</span><span style="color:#eff1f5;">            lock_guard&lt;mutex&gt; </span><span style="color:#bf616a;">lock</span><span style="color:#eff1f5;">(mtx);
+</span><span style="color:#eff1f5;">            tasks.</span><span style="color:#bf616a;">push</span><span style="color:#eff1f5;">(task);
+</span><span style="color:#eff1f5;">            cv.</span><span style="color:#bf616a;">notify_one</span><span style="color:#eff1f5;">();
+</span><span style="color:#eff1f5;">        }
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">Stop</span><span style="color:#eff1f5;">() {
+</span><span style="color:#eff1f5;">        {
+</span><span style="color:#eff1f5;">            lock_guard&lt;mutex&gt; </span><span style="color:#bf616a;">lock</span><span style="color:#eff1f5;">(mtx);
+</span><span style="color:#eff1f5;">            isRunning </span><span>= </span><span style="color:#d08770;">false</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">            cv.</span><span style="color:#bf616a;">notify_all</span><span style="color:#eff1f5;">();
+</span><span style="color:#eff1f5;">        }
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">for </span><span style="color:#eff1f5;">(</span><span style="color:#b48ead;">auto </span><span>&amp;</span><span style="color:#eff1f5;">thd </span><span>:</span><span style="color:#eff1f5;"> workers) thd.</span><span style="color:#bf616a;">join</span><span style="color:#eff1f5;">();
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">}</span><span>;
+</span></code></pre>
+<h2 id="he-xin-dai-ma">核心代码</h2>
+<p>每一个SortFunc对象都是快排中的一次迭代，给他传一个区间就行</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">struct </span><span>SortFunc {
+</span><span>    ThreadPool &amp;pool;
+</span><span>    vector&lt;</span><span style="color:#b48ead;">int</span><span>&gt; &amp;arr;
+</span><span>    </span><span style="color:#b48ead;">int</span><span> l, r;
+</span><span>
+</span><span>    </span><span style="color:#8fa1b3;">SortFunc</span><span>(ThreadPool &amp;</span><span style="color:#bf616a;">pool</span><span>, vector&lt;</span><span style="color:#b48ead;">int</span><span>&gt; &amp;</span><span style="color:#bf616a;">arr</span><span>, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">l</span><span>, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">r</span><span>) : </span><span style="color:#bf616a;">pool</span><span>(pool), </span><span style="color:#bf616a;">arr</span><span>(arr), </span><span style="color:#bf616a;">l</span><span>(l), </span><span style="color:#bf616a;">r</span><span>(r) {}
+</span><span>    </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">operator()</span><span>() {
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(l &gt;= r) </span><span style="color:#b48ead;">return</span><span>;
+</span><span>        </span><span style="color:#b48ead;">int</span><span> v = arr[l];
+</span><span>        </span><span style="color:#b48ead;">int</span><span> ll = l;
+</span><span>        </span><span style="color:#b48ead;">int</span><span> rr = r;
+</span><span>        </span><span style="color:#b48ead;">while </span><span>(l &lt; r) {
+</span><span>            </span><span style="color:#b48ead;">while </span><span>(l &lt;= rr &amp;&amp; arr[l] &lt; v) l++;
+</span><span>            </span><span style="color:#b48ead;">while </span><span>(r &gt;= ll &amp;&amp; arr[r] &gt; v) r--;
+</span><span>            </span><span style="color:#b48ead;">if </span><span>(l &lt;= r)
+</span><span>                </span><span style="color:#bf616a;">swap</span><span>(arr[l], arr[r]), l++, r--;
+</span><span>        }
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(r - ll + </span><span style="color:#d08770;">1 </span><span>&gt; </span><span style="color:#d08770;">64</span><span>)
+</span><span>            pool.</span><span style="color:#bf616a;">Push</span><span>(</span><span style="color:#bf616a;">SortFunc</span><span>(pool, arr, ll, r));
+</span><span>        </span><span style="color:#b48ead;">else
+</span><span>            </span><span style="color:#bf616a;">SortFunc</span><span>(pool, arr, ll, r)();
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(rr - l + </span><span style="color:#d08770;">1 </span><span>&gt; </span><span style="color:#d08770;">64</span><span>)
+</span><span>            pool.</span><span style="color:#bf616a;">Push</span><span>(</span><span style="color:#bf616a;">SortFunc</span><span>(pool, arr, l, rr));
+</span><span>        </span><span style="color:#b48ead;">else
+</span><span>            </span><span style="color:#bf616a;">SortFunc</span><span>(pool, arr, l, rr)();
+</span><span>    }
+</span><span>};
+</span><span>
+</span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">main</span><span>() {
+</span><span>    vector&lt;</span><span style="color:#b48ead;">int</span><span>&gt; originArr;
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">int</span><span> i = </span><span style="color:#d08770;">0</span><span>; i &lt; </span><span style="color:#d08770;">1000000</span><span>; i++)
+</span><span>        originArr.</span><span style="color:#bf616a;">push_back</span><span>(</span><span style="color:#96b5b4;">rand</span><span>() % </span><span style="color:#d08770;">2000</span><span>);
+</span><span>    ThreadPool </span><span style="color:#bf616a;">pool</span><span>(</span><span style="color:#d08770;">4</span><span>);
+</span><span>    pool.</span><span style="color:#bf616a;">Start</span><span>();
+</span><span>    pool.</span><span style="color:#bf616a;">Push</span><span>(</span><span style="color:#bf616a;">SortFunc</span><span>(pool, originArr, </span><span style="color:#d08770;">0</span><span>, originArr.</span><span style="color:#bf616a;">size</span><span>() - </span><span style="color:#d08770;">1</span><span>));
+</span><span>    </span><span style="color:#96b5b4;">getchar</span><span>();
+</span><span>    </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">0</span><span>;
+</span><span>}
+</span></code></pre>
+
+    </div>
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                    Published by 何泊谋
+                
+                
+                    
+                    in <a href="https://paakmau.github.io/categories/suan-fa/">算法</a>
+                
+                
+                    and
+                    tagged
+                    
+                        <a href="https://paakmau.github.io/tags/c/">C++</a>
+                        
+                            
+                                
+                                    ,
+                                
+                            
+                        
+                    
+                        <a href="https://paakmau.github.io/tags/c-stl/">C++ STL</a>
+                        
+                            
+                                
+                                    ,
+                                
+                            
+                        
+                    
+                        <a href="https://paakmau.github.io/tags/er-fen/">二分</a>
+                        
+                            
+                                
+                                    and
+                                
+                            
+                        
+                    
+                        <a href="https://paakmau.github.io/tags/bing-fa/">并发</a>
+                        
+                            
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+    </body>
+
+</html>

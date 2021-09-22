@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>泊谋</title>
+
+      
+
+      
+          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+    
+        
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io">
+                                <span itemprop="name">主页
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
+                                <span itemprop="name">分类
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
+                                <span itemprop="name">标签
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
+                                <span itemprop="name">GitHub
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">VS Code写一切 Java单文件</h1>
+        <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>2 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2019-12-11
+</span>
+    </header>
+    <div itemprop="articleBody">
+      <p>VSC可以直接编译调试单个Java源文件（虽然没什么用）</p>
+<span id="continue-reading"></span><h2 id="javahuan-jing-pei-zhi">Java环境配置</h2>
+<p>与VSC无关，但提一下mac的配置</p>
+<p>macOS下用brew装OpenJDK</p>
+<pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> brew install openjdk
+</span></code></pre>
+<p>然后根据提示创建符号链接以便系统找到JDK</p>
+<pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> sudo ln</span><span style="color:#bf616a;"> -sfn</span><span> /usr/local/opt/openjdk/libexec/openjdk.jdk \
+</span><span>   /Library/Java/JavaVirtualMachines/openjdk.jdk
+</span></code></pre>
+<h2 id="xu-yao-an-zhuang-de-vs-codecha-jian">需要安装的VS Code插件</h2>
+<ul>
+<li>Java Extension Pack</li>
+</ul>
+<h2 id="gong-zuo-qu-pei-zhi">工作区配置</h2>
+<p>打开一个空文件夹，在其中创建一个文件Hello.java，编辑内容如下</p>
+<pre data-lang="java" style="background-color:#2b303b;color:#c0c5ce;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">Hello </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">public static void </span><span style="color:#8fa1b3;">main</span><span style="color:#eff1f5;">(</span><span style="color:#ebcb8b;">String</span><span style="color:#b48ead;">[] </span><span style="color:#bf616a;">args</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#ebcb8b;">System</span><span style="color:#eff1f5;">.out.</span><span style="color:#bf616a;">print</span><span style="color:#eff1f5;">(</span><span>&quot;</span><span style="color:#a3be8c;">Hello World</span><span>&quot;</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">}
+</span></code></pre>
+<p>按F5直接运行，VSC自动生成launch.json，有时候会失败，可以重试几遍<br />
+内容大概如下</p>
+<pre data-lang="json" style="background-color:#2b303b;color:#c0c5ce;" class="language-json "><code class="language-json" data-lang="json"><span>{
+</span><span>    </span><span style="color:#65737e;">// Use IntelliSense to learn about possible attributes.
+</span><span>    </span><span style="color:#65737e;">// Hover to view descriptions of existing attributes.
+</span><span>    </span><span style="color:#65737e;">// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+</span><span>    &quot;</span><span style="color:#a3be8c;">version</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">0.2.0</span><span>&quot;,
+</span><span>    &quot;</span><span style="color:#a3be8c;">configurations</span><span>&quot;: [
+</span><span>        {
+</span><span>            &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">java</span><span>&quot;,
+</span><span>            &quot;</span><span style="color:#a3be8c;">name</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">Debug (Launch) - Current File</span><span>&quot;,
+</span><span>            &quot;</span><span style="color:#a3be8c;">request</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">launch</span><span>&quot;,
+</span><span>            &quot;</span><span style="color:#a3be8c;">mainClass</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">${file}</span><span>&quot;
+</span><span>        },
+</span><span>        {
+</span><span>            &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">java</span><span>&quot;,
+</span><span>            &quot;</span><span style="color:#a3be8c;">name</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">Debug (Launch)-Hello&lt;java_single_file_9fc652ff&gt;</span><span>&quot;,
+</span><span>            &quot;</span><span style="color:#a3be8c;">request</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">launch</span><span>&quot;,
+</span><span>            &quot;</span><span style="color:#a3be8c;">mainClass</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">Hello</span><span>&quot;,
+</span><span>            &quot;</span><span style="color:#a3be8c;">projectName</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">java_single_file_9fc652ff</span><span>&quot;
+</span><span>        }
+</span><span>    ]
+</span><span>}
+</span></code></pre>
+<p>解释：它配置了两个launch，一个是以当前打开的Java源文件作为主类调试，一个是以Hello.java作为主类进行调试</p>
+<p>切回Hello.java按F5，得到如下输出</p>
+<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191221-004354@2x.png" alt="" /></p>
+
+    </div>
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                    Published by 何泊谋
+                
+                
+                    
+                    in <a href="https://paakmau.github.io/categories/vs-code/">VS Code</a>
+                
+                
+                    and
+                    tagged
+                    
+                        <a href="https://paakmau.github.io/tags/java/">Java</a>
+                        
+                            
+                                
+                                    and
+                                
+                            
+                        
+                    
+                        <a href="https://paakmau.github.io/tags/vs-code/">VS Code</a>
+                        
+                            
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+    </body>
+
+</html>

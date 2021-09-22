@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh">
+	<title>泊谋 - OpenGL</title>
+	<subtitle>随便写写，开心就行。</subtitle>
+	<link href="https://paakmau.github.io/tags/opengl/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://paakmau.github.io"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2020-03-31T23:47:45+00:00</updated>
+	<id>https://paakmau.github.io/tags/opengl/atom.xml</id>
+	<entry xml:lang="zh">
+		<title>Mac下使用Makefile基于GLFW配置Dear ImGui</title>
+		<published>2020-03-31T23:47:45+00:00</published>
+		<updated>2020-03-31T23:47:45+00:00</updated>
+		<link href="https://paakmau.github.io/macxia-shi-yong-makefileji-yu-glfwpei-zhi-dear-imgui/" type="text/html"/>
+		<id>https://paakmau.github.io/macxia-shi-yong-makefileji-yu-glfwpei-zhi-dear-imgui/</id>
+		<content type="html">&lt;p&gt;用Xcode配置起来很简单，但是OpenGL.framework被弃用了，会爆不少警告（其实是因为我习惯了VSC改不过来）&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;于是尝试用Makefile搞一搞&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;an-zhuang-glewhe-glfw&quot;&gt;安装GLEW和GLFW&lt;&#x2F;h2&gt;
+&lt;p&gt;使用brew安装就行，它会把对应的库和头文放在在&#x2F;usr&#x2F;local&#x2F;lib和&#x2F;usr&#x2F;local&#x2F;include下&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; brew install glew
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; brew install glfw
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;huo-qu-dear-imguiyuan-ma&quot;&gt;获取Dear ImGui源码&lt;&#x2F;h2&gt;
+&lt;p&gt;我们可以直接把它的源码Clone下来&lt;&#x2F;p&gt;
+&lt;p&gt;仓库地址在这里&lt;br &#x2F;&gt;
+&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;ocornut&#x2F;imgui&quot;&gt;https:&#x2F;&#x2F;github.com&#x2F;ocornut&#x2F;imgui&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;然后其实看看examples里的例子抄抄就完事了（本文也是靠着它写的）&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;yin-ru-dear-imguiku&quot;&gt;引入Dear ImGui库&lt;&#x2F;h2&gt;
+&lt;p&gt;首先建一个libs&#x2F;imgui文件夹用于存放这个外部库&lt;&#x2F;p&gt;
+&lt;p&gt;然后把项目源码根目录下的源文件跟头文件都拷贝进去&lt;br &#x2F;&gt;
+还有examples下的imgui_impl_glfw.cpp、imgui_impl_glfw.h、imgui_impl_opengl3.cpp、imgui_impl_opengl3.h&lt;&#x2F;p&gt;
+&lt;p&gt;最后给个图&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;03&#x2F;image-1.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;makefile&quot;&gt;Makefile&lt;&#x2F;h2&gt;
+&lt;pre data-lang=&quot;makefile&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-makefile &quot;&gt;&lt;code class=&quot;language-makefile&quot; data-lang=&quot;makefile&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;EXE &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;imgui_test
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;SOURCES &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;main.cpp
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;SOURCES &lt;&#x2F;span&gt;&lt;span&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;imgui_impl_glfw.cpp imgui_impl_opengl3.cpp
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;SOURCES &lt;&#x2F;span&gt;&lt;span&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;imgui.cpp imgui_demo.cpp imgui_draw.cpp imgui_widgets.cpp
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;OBJS &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;addsuffix &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.o, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;basename &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;notdir &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;SOURCES&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;))))
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CXXFLAGS &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-Ilibs&#x2F;imgui&#x2F;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CXXFLAGS &lt;&#x2F;span&gt;&lt;span&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-g -Wall -Wformat
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CXXFLAGS &lt;&#x2F;span&gt;&lt;span&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-I&#x2F;usr&#x2F;local&#x2F;include
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CXXFLAGS &lt;&#x2F;span&gt;&lt;span&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-std=c++17
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;LIBS &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;LIBS &lt;&#x2F;span&gt;&lt;span&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-L&#x2F;usr&#x2F;local&#x2F;lib
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;LIBS &lt;&#x2F;span&gt;&lt;span&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-lGLEW
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;LIBS &lt;&#x2F;span&gt;&lt;span&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-lglfw
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;%&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;.o&lt;&#x2F;span&gt;&lt;span&gt;:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;%&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.cpp
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CXX&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;) $(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CXXFLAGS&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span&gt; -c -o &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$@ $&amp;lt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;%&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;.o&lt;&#x2F;span&gt;&lt;span&gt;:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;libs&#x2F;imgui&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;%&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.cpp
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CXX&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;) $(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CXXFLAGS&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span&gt; -c -o &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$@ $&amp;lt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;all&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;EXE&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;@echo Build complete
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;EXE&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;OBJS&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CXX&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span&gt; -o &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$@ $^ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CXXFLAGS&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;) $(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;LIBS&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;clean&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;rm -f &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;EXE&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;) $(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;OBJS&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;main-cpp&quot;&gt;main.cpp&lt;&#x2F;h2&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;imgui.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;imgui_impl_glfw.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;imgui_impl_opengl3.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;GL&#x2F;glew.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;GLFW&#x2F;glfw3.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;cstdio&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;static void
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;glfw_error_callback&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;error&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const char&lt;&#x2F;span&gt;&lt;span&gt;* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;description&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;fprintf&lt;&#x2F;span&gt;&lt;span&gt;(stderr, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Glfw Error &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%d&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%s&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, error, description);
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;char&lt;&#x2F;span&gt;&lt;span&gt;**)
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Setup window
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwSetErrorCallback&lt;&#x2F;span&gt;&lt;span&gt;(glfw_error_callback);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(!&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwInit&lt;&#x2F;span&gt;&lt;span&gt;())
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Decide GL+GLSL versions
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const char&lt;&#x2F;span&gt;&lt;span&gt;* glsl_version = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;#version 150&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwWindowHint&lt;&#x2F;span&gt;&lt;span&gt;(GLFW_CONTEXT_VERSION_MAJOR, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;3&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwWindowHint&lt;&#x2F;span&gt;&lt;span&gt;(GLFW_CONTEXT_VERSION_MINOR, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;2&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwWindowHint&lt;&#x2F;span&gt;&lt;span&gt;(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 3.2+ only
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwWindowHint&lt;&#x2F;span&gt;&lt;span&gt;(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Required on Mac
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Create window with graphics context
+&lt;&#x2F;span&gt;&lt;span&gt;    GLFWwindow* window = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwCreateWindow&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1280&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;720&lt;&#x2F;span&gt;&lt;span&gt;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Dear ImGui GLFW+OpenGL3 example&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(window == &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwMakeContextCurrent&lt;&#x2F;span&gt;&lt;span&gt;(window);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwSwapInterval&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;); &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Enable vsync
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Initialize OpenGL loader
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glewInit&lt;&#x2F;span&gt;&lt;span&gt;() != GLEW_OK) {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;fprintf&lt;&#x2F;span&gt;&lt;span&gt;(stderr, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Failed to initialize OpenGL loader!&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Setup Dear ImGui context
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;IMGUI_CHECKVERSION&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CreateContext&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    ImGuiIO&amp;amp; io = ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetIO&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void&lt;&#x2F;span&gt;&lt;span&gt;)io;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Setup Dear ImGui style
+&lt;&#x2F;span&gt;&lt;span&gt;    ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;StyleColorsDark&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Setup Platform&#x2F;Renderer bindings
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ImGui_ImplGlfw_InitForOpenGL&lt;&#x2F;span&gt;&lt;span&gt;(window, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;true&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ImGui_ImplOpenGL3_Init&lt;&#x2F;span&gt;&lt;span&gt;(glsl_version);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Our state
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;bool&lt;&#x2F;span&gt;&lt;span&gt; show_demo_window = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;true&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;bool&lt;&#x2F;span&gt;&lt;span&gt; show_another_window = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;false&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;    ImVec4 clear_color = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ImVec4&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0.45&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0.55&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0.60&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1.00&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Main loop
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;while &lt;&#x2F;span&gt;&lt;span&gt;(!&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwWindowShouldClose&lt;&#x2F;span&gt;&lt;span&gt;(window)) {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwPollEvents&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Start the Dear ImGui frame
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ImGui_ImplOpenGL3_NewFrame&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ImGui_ImplGlfw_NewFrame&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;        ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;NewFrame&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(show_demo_window)
+&lt;&#x2F;span&gt;&lt;span&gt;            ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ShowDemoWindow&lt;&#x2F;span&gt;&lt;span&gt;(&amp;amp;show_demo_window);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 2. Show a simple window that we create ourselves. We use a Begin&#x2F;End pair to created a named window.
+&lt;&#x2F;span&gt;&lt;span&gt;        {
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;static float&lt;&#x2F;span&gt;&lt;span&gt; f = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0.0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;static int&lt;&#x2F;span&gt;&lt;span&gt; counter = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;            ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Begin&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Hello, world!&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;); &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Create a window called &amp;quot;Hello, world!&amp;quot; and append into it.
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;            ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Text&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;This is some useful text.&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;); &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Display some text (you can use a format strings too)
+&lt;&#x2F;span&gt;&lt;span&gt;            ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Checkbox&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Demo Window&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &amp;amp;show_demo_window); &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Edit bools storing our window open&#x2F;close state
+&lt;&#x2F;span&gt;&lt;span&gt;            ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Checkbox&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Another Window&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &amp;amp;show_another_window);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;            ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;SliderFloat&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;float&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &amp;amp;f, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0.0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1.0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;); &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Edit 1 float using a slider from 0.0f to 1.0f
+&lt;&#x2F;span&gt;&lt;span&gt;            ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ColorEdit3&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;clear color&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;float&lt;&#x2F;span&gt;&lt;span&gt;*)&amp;amp;clear_color); &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Edit 3 floats representing a color
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Button&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Button&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Buttons return true when clicked (most widgets return true when edited&#x2F;activated)
+&lt;&#x2F;span&gt;&lt;span&gt;                counter++;
+&lt;&#x2F;span&gt;&lt;span&gt;            ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;SameLine&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;            ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Text&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;counter = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%d&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, counter);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;            ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Text&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Application average &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%.3f&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; ms&#x2F;frame (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%.1f&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; FPS)&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1000.0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f &lt;&#x2F;span&gt;&lt;span&gt;&#x2F; ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetIO&lt;&#x2F;span&gt;&lt;span&gt;().&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Framerate&lt;&#x2F;span&gt;&lt;span&gt;, ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetIO&lt;&#x2F;span&gt;&lt;span&gt;().&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Framerate&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;            ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;End&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;        }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 3. Show another simple window.
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(show_another_window) {
+&lt;&#x2F;span&gt;&lt;span&gt;            ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Begin&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Another Window&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &amp;amp;show_another_window); &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+&lt;&#x2F;span&gt;&lt;span&gt;            ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Text&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Hello from another window!&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Button&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Close Me&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;))
+&lt;&#x2F;span&gt;&lt;span&gt;                show_another_window = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;false&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;            ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;End&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;        }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Rendering
+&lt;&#x2F;span&gt;&lt;span&gt;        ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Render&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; display_w, display_h;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwGetFramebufferSize&lt;&#x2F;span&gt;&lt;span&gt;(window, &amp;amp;display_w, &amp;amp;display_h);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glViewport&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;, display_w, display_h);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glClearColor&lt;&#x2F;span&gt;&lt;span&gt;(clear_color.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;x&lt;&#x2F;span&gt;&lt;span&gt;, clear_color.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;y&lt;&#x2F;span&gt;&lt;span&gt;, clear_color.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;z&lt;&#x2F;span&gt;&lt;span&gt;, clear_color.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;w&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glClear&lt;&#x2F;span&gt;&lt;span&gt;(GL_COLOR_BUFFER_BIT);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ImGui_ImplOpenGL3_RenderDrawData&lt;&#x2F;span&gt;&lt;span&gt;(ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetDrawData&lt;&#x2F;span&gt;&lt;span&gt;());
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwSwapBuffers&lt;&#x2F;span&gt;&lt;span&gt;(window);
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Cleanup
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ImGui_ImplOpenGL3_Shutdown&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ImGui_ImplGlfw_Shutdown&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    ImGui::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;DestroyContext&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwDestroyWindow&lt;&#x2F;span&gt;&lt;span&gt;(window);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwTerminate&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+</content>
+	</entry>
+</feed>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh">
+	<title>泊谋 - Python</title>
+	<subtitle>随便写写，开心就行。</subtitle>
+	<link href="https://paakmau.github.io/tags/python/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://paakmau.github.io"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2019-12-12T01:35:40+00:00</updated>
+	<id>https://paakmau.github.io/tags/python/atom.xml</id>
+	<entry xml:lang="zh">
+		<title>VS Code写一切 Jupyter Notebook</title>
+		<published>2019-12-12T01:35:40+00:00</published>
+		<updated>2019-12-12T01:35:40+00:00</updated>
+		<link href="https://paakmau.github.io/vs-codexie-yi-qie-jupyter-notebook/" type="text/html"/>
+		<id>https://paakmau.github.io/vs-codexie-yi-qie-jupyter-notebook/</id>
+		<content type="html">&lt;p&gt;因为院里不少课程要机器学习，于是Notebook用的挺频繁的。当时用VSC写还行吧，就是快捷键有点问题，语法提示不太行，现在似乎好多了&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;jupyterhuan-jing-pei-zhi&quot;&gt;Jupyter环境配置&lt;&#x2F;h2&gt;
+&lt;p&gt;安装Python与Jupyter&lt;br &#x2F;&gt;
+Mac下用brew安装即可&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; brew install python jupyter
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;xu-yao-an-zhuang-de-vsccha-jian&quot;&gt;需要安装的VSC插件&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Python&lt;&#x2F;li&gt;
+&lt;li&gt;VS Code Jupyter Notebook Previewer&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;notebookchuang-jian-yu-yun-xing&quot;&gt;Notebook创建与运行&lt;&#x2F;h2&gt;
+&lt;p&gt;打开一个空文件夹，cmd+shift+p呼出命令面板&lt;br &#x2F;&gt;
+输入python create进行搜索，选择Python: Create New Blank Jupyter Notebook&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191222-011543@2x-1024x199.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;在当前目录保存为hello.ipynb&lt;br &#x2F;&gt;
+然后编辑内容如下并按ctrl+enter运行（为什么不是cmd+enter）&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191222-013041@2x.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;操作跟web版的差不多但是Mac下快捷键很蛋疼就这样吧&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="zh">
+		<title>VS Code写一切 Python</title>
+		<published>2019-12-11T19:48:37+00:00</published>
+		<updated>2019-12-11T19:48:37+00:00</updated>
+		<link href="https://paakmau.github.io/vs-codexie-yi-qie-python/" type="text/html"/>
+		<id>https://paakmau.github.io/vs-codexie-yi-qie-python/</id>
+		<content type="html">&lt;p&gt;VSC写Python也挺方便的，不过功能没那么多&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;pythonhuan-jing-pei-zhi&quot;&gt;Python环境配置&lt;&#x2F;h2&gt;
+&lt;p&gt;xjb装就行了&lt;br &#x2F;&gt;
+macOS Catalina自带的Python3不建议用，brew install python3&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;xu-yao-an-zhuang-de-vsccha-jian&quot;&gt;需要安装的VSC插件&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Python&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;gong-zuo-qu-pei-zhi&quot;&gt;工作区配置&lt;&#x2F;h2&gt;
+&lt;p&gt;打开一个空文件夹，在其中新建并编辑一个文件hello.py，如下&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;py&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-py &quot;&gt;&lt;code class=&quot;language-py&quot; data-lang=&quot;py&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Hello World&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;按F5运行，配置选Python&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-194755@2x.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;另外，可以根据提示装一下语法提示器&lt;&#x2F;p&gt;
+</content>
+	</entry>
+</feed>

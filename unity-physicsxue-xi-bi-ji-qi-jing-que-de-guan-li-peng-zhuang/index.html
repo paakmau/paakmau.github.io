@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>泊谋</title>
+
+      
+
+      
+          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+    
+        
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io">
+                                <span itemprop="name">主页
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
+                                <span itemprop="name">分类
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
+                                <span itemprop="name">标签
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
+                                <span itemprop="name">GitHub
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Unity Physics学习笔记「七」 精确的碰撞管理</h1>
+        <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>4 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2020-03-15
+</span>
+    </header>
+    <div itemprop="articleBody">
+      <p>官方手册里有提到，但是没有具体描述。本文主要基于官方示例代码与实践</p>
+<span id="continue-reading"></span><h2 id="yu-dao-de-wen-ti">遇到的问题</h2>
+<p>前文和手册中都有介绍过CollisionFilter，但是这个东西是跟Collider绑在一起扔进Blob里的。而Blob是一种类似引用的东西，因此由同一个带有Collider的Prefab实例化出的Entity，他们的CollisionFilter也是相同的。如果想要改变，必须要为每个实例化的Entity单独创建一个Collider的Blob资源来让他们的CollisionFilter不同。这就非常蛋疼</p>
+<h2 id="jian-dan-gao-xiao-dan-shi-bu-zheng-chang-ye-bu-yi-ding-gao-xiao-de-jie-jue-fang-an">简单高效但是不正常也不一定高效的解决方案</h2>
+<p>最简单的一种思路，为每一个实例化的Entity单独创建一个Collider的Blob资源</p>
+<p>例如网格碰撞体，可以把Prefab上碰撞体中存着点和面的NativeArray的引用偷出来，重新定个CollisionFilter就行了，因为点和面都是共用的，所以内存上其实不亏</p>
+<p>而且使用CollisionFilter的效率很高，因此在碰撞处理时的性能上也不亏</p>
+<p>不过在一开始创建新的Blob的时候就很麻烦而且时间开销较大；并且如果涉及到Entity的销毁，可能要把相应的Blob资源一起销毁；为了降低Blob创建销毁的时间开销，就要开个Blob资源的内存池（ECS里开内存池是有毒吧？）。最终实现起来会变得很蛇皮，我个人认为作为一个正常的人类不应该做这样的事情。</p>
+<h2 id="zheng-chang-de-jie-jue-fang-an">正常的解决方案</h2>
+<p>根据手册的指示，使用IBodyPairsJob<br />
+具体来说，我们写一个Struct实现IBodyPairsJob接口，并把它注入到StepPhysicsWorld中，把需要屏蔽的碰撞Disable掉。这样就能对碰撞为所欲为了</p>
+<p>下面是个简单的代码，他禁用了所有拥有NonUniformScale组件的碰撞体的碰撞</p>
+<pre data-lang="cs" style="background-color:#2b303b;color:#c0c5ce;" class="language-cs "><code class="language-cs" data-lang="cs"><span>[</span><span style="color:#bf616a;">UpdateBefore</span><span> (</span><span style="color:#bf616a;">typeof</span><span> (</span><span style="color:#bf616a;">StepPhysicsWorld</span><span>))]
+</span><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">DisableCollisionSystem </span><span style="color:#eff1f5;">: </span><span style="color:#a3be8c;">SystemBase </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">struct </span><span style="color:#eff1f5;">DisableCollisionJob : </span><span style="color:#a3be8c;">IBodyPairsJob </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">public </span><span style="color:#eff1f5;">ComponentDataFromEntity&lt;NonUniformScale&gt; </span><span style="color:#bf616a;">nonUniformScaleFromEntity</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">public void </span><span style="color:#8fa1b3;">Execute </span><span style="color:#eff1f5;">(</span><span style="color:#b48ead;">ref </span><span style="color:#eff1f5;">ModifiableBodyPair </span><span style="color:#bf616a;">pair</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">nonUniformScaleFromEntity</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Exists </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">pair</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Entities</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">EntityA</span><span style="color:#eff1f5;">)  </span><span style="color:#bf616a;">nonUniformScaleFromEntity</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Exists </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">pair</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Entities</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">EntityB</span><span style="color:#eff1f5;">))
+</span><span style="color:#eff1f5;">                </span><span style="color:#bf616a;">pair</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Disable </span><span style="color:#eff1f5;">();
+</span><span style="color:#eff1f5;">        }
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    BuildPhysicsWorld </span><span style="color:#bf616a;">m_buildPhysicsWorld</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    StepPhysicsWorld </span><span style="color:#bf616a;">m_stepPhysicsWorld</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">protected override void </span><span style="color:#8fa1b3;">OnCreate </span><span style="color:#eff1f5;">() {
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">m_buildPhysicsWorld </span><span>= </span><span style="color:#bf616a;">World</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">GetOrCreateSystem</span><span style="color:#eff1f5;">&lt;BuildPhysicsWorld&gt; ();
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">m_stepPhysicsWorld </span><span>= </span><span style="color:#bf616a;">World</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">GetOrCreateSystem</span><span style="color:#eff1f5;">&lt;StepPhysicsWorld&gt; ();
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">protected override void </span><span style="color:#8fa1b3;">OnUpdate </span><span style="color:#eff1f5;">() {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">m_stepPhysicsWorld</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Simulation</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Type </span><span>== </span><span style="color:#bf616a;">SimulationType</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">NoPhysics</span><span style="color:#eff1f5;">) </span><span style="color:#b48ead;">return</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">        SimulationCallbacks.Callback </span><span style="color:#bf616a;">callback </span><span>= </span><span style="color:#eff1f5;">(ref ISimulation </span><span style="color:#bf616a;">simulation</span><span style="color:#eff1f5;">, ref PhysicsWorld </span><span style="color:#bf616a;">world</span><span style="color:#eff1f5;">, JobHandle </span><span style="color:#bf616a;">inDeps</span><span style="color:#eff1f5;">) </span><span style="color:#b48ead;">=&gt; </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">return </span><span>new </span><span style="color:#eff1f5;">DisableCollisionJob { </span><span style="color:#bf616a;">nonUniformScaleFromEntity </span><span>= </span><span style="color:#bf616a;">GetComponentDataFromEntity</span><span style="color:#eff1f5;">&lt;NonUniformScale&gt; () }.</span><span style="color:#bf616a;">Schedule </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">simulation</span><span style="color:#eff1f5;">, </span><span style="color:#b48ead;">ref </span><span style="color:#bf616a;">world</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">inDeps</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">        };
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">m_stepPhysicsWorld</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">EnqueueCallback </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">SimulationCallbacks</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Phase</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">PostCreateDispatchPairs</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">callback</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">}
+</span></code></pre>
+<p>但是需要注意几个点</p>
+<ol>
+<li>使用CollisionFilter来实现的话，碰撞处理过程中的性能要注入IBodyPairsJob好；但是使用IBodyPairsJob不需要考虑上述CollisionFilter的诸多问题，也避免了销毁与创建的开销；</li>
+<li>上面的代码使用了lambda，却没有用Burst优化，因此会产生GC，可以暂时用蛇皮方法自己搞搞；但Unity Physic之后的版本应该会自己解决这个问题，不用我们操心</li>
+</ol>
+
+    </div>
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                    Published by 何泊谋
+                
+                
+                    
+                    in <a href="https://paakmau.github.io/categories/unity/">Unity</a>
+                
+                
+                    and
+                    tagged
+                    
+                        <a href="https://paakmau.github.io/tags/unity-ecs/">Unity ECS</a>
+                        
+                            
+                                
+                                    and
+                                
+                            
+                        
+                    
+                        <a href="https://paakmau.github.io/tags/unity-physics/">Unity Physics</a>
+                        
+                            
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+    </body>
+
+</html>

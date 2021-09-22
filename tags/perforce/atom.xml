@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh">
+	<title>泊谋 - Perforce</title>
+	<subtitle>随便写写，开心就行。</subtitle>
+	<link href="https://paakmau.github.io/tags/perforce/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://paakmau.github.io"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2020-07-11T20:38:43+00:00</updated>
+	<id>https://paakmau.github.io/tags/perforce/atom.xml</id>
+	<entry xml:lang="zh">
+		<title>Win10下Perforce命令行快速上手</title>
+		<published>2020-07-11T20:38:43+00:00</published>
+		<updated>2020-07-11T20:38:43+00:00</updated>
+		<link href="https://paakmau.github.io/win10xia-perforceming-ling-xing-kuai-su-shang-shou/" type="text/html"/>
+		<id>https://paakmau.github.io/win10xia-perforceming-ling-xing-kuai-su-shang-shou/</id>
+		<content type="html">&lt;p&gt;相对于Git和SVN，Perforce在管理二进制文件上更方便&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;本文参考了官网教程&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;www.perforce.com&#x2F;manuals&#x2F;p4guide&#x2F;Content&#x2F;P4Guide&#x2F;tutorial.readmefirst.html&quot;&gt;https:&#x2F;&#x2F;www.perforce.com&#x2F;manuals&#x2F;p4guide&#x2F;Content&#x2F;P4Guide&#x2F;tutorial.readmefirst.html&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;gityong-hu-kan-zhe-li&quot;&gt;Git用户看这里&lt;&#x2F;h2&gt;
+&lt;p&gt;Stream Depot大概可以理解为一个Git项目，然后Stream就是Git里的分支&lt;&#x2F;p&gt;
+&lt;p&gt;其中Stream必须要依赖于Stream Depot存在&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;an-zhuang&quot;&gt;安装&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;www.perforce.com&#x2F;downloads&quot;&gt;https:&#x2F;&#x2F;www.perforce.com&#x2F;downloads&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;把服务端和命令行客户端都装上就行了，也可以整图形化界面&lt;&#x2F;p&gt;
+&lt;p&gt;Windows下安装包会自动配置环境变量；并且服务端装完后会自动启动，如果没有的话就用p4d命令启动服务端&lt;&#x2F;p&gt;
+&lt;p&gt;我们可以在PowerShell里输入下面的命令测试一下服务端是否正常&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 info
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;chuang-jian-stream-depot&quot;&gt;创建Stream Depot&lt;&#x2F;h2&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 depot -t stream TestDepot
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;解释一下，这行命令创建了一个名为TestDepot的Stream Depot，-t stream用于指定这个Depot的类型&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;chuang-jian-stream&quot;&gt;创建Stream&lt;&#x2F;h2&gt;
+&lt;p&gt;Git中我们通常会开master和dev分支&lt;&#x2F;p&gt;
+&lt;p&gt;在Perforce里我们也可以做同样的操作，使用下面两行命令创建main和dev两个Stream&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 stream -t mainline &#x2F;&#x2F;TestDepot&#x2F;main
+&lt;&#x2F;span&gt;&lt;span&gt;PS p4 stream -t development -P &#x2F;&#x2F;TestDepot&#x2F;main &#x2F;&#x2F;TestDepot&#x2F;dev
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;解释一下，-t参数用于指定Stream的类型，-P参数用于指定父Stream；上面的例子里main这个Stream是dev的父Stream&lt;&#x2F;p&gt;
+&lt;p&gt;需要注意mainline类型的Stream不能有父Stream&lt;&#x2F;p&gt;
+&lt;p&gt;我们可以使用下面的命令来查看所有的Stream&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 streams
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;chuang-jian-workspace&quot;&gt;创建Workspace&lt;&#x2F;h2&gt;
+&lt;p&gt;之前Stream相关的操作都是作用在服务端上的&lt;&#x2F;p&gt;
+&lt;p&gt;这里我们在本地创建Workspace&lt;&#x2F;p&gt;
+&lt;p&gt;首先设置环境变量P4CLIENT，这个是PowerShell的写法&lt;br &#x2F;&gt;
+配环境变量这种操作其实我是觉得挺离谱的&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS $&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;env:P4CLIENT&lt;&#x2F;span&gt;&lt;span&gt;=&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;hello_client&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;然后cd到一个空的文件夹，输入以下命令&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 client -S &#x2F;&#x2F;TestDepot&#x2F;main
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;这样这个文件夹就跟main这个Stream绑定起来了&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;tian-jia-wen-jian&quot;&gt;添加文件&lt;&#x2F;h2&gt;
+&lt;p&gt;在这个文件夹里新建一个文件test_file.txt&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 add .\test_file.txt
+&lt;&#x2F;span&gt;&lt;span&gt;PS p4 submit -d &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Add a test file&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;xiu-gai-wen-jian&quot;&gt;修改文件&lt;&#x2F;h2&gt;
+&lt;p&gt;Workspace里已有的文件通常都是只读的，我们使用下面这行命令修改test_file.txt的读写权限&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 edit .\test_file.txt
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;然后用编辑器改一下里面的内容&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 submit -d &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Modify a test file&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;shan-chu-wen-jian&quot;&gt;删除文件&lt;&#x2F;h2&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 delete .\test_file.txt
+&lt;&#x2F;span&gt;&lt;span&gt;PS p4 submit -d &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Delete a test file&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;需要注意这个只是从服务端把该文件删除，Workspace里这个文件依然存在&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;yu-fu-wu-duan-tong-bu&quot;&gt;与服务端同步&lt;&#x2F;h2&gt;
+&lt;p&gt;如果其他人对Stream进行了修改并提交到了服务端，我们可以把这些修改同步到本地的Workspace里&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 sync
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;qie-huan-stream&quot;&gt;切换Stream&lt;&#x2F;h2&gt;
+&lt;p&gt;我们可以使用下面这个命令查看所有的Stream&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;switch &lt;&#x2F;span&gt;&lt;span&gt;-l
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;然后我们切换到dev&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;switch &lt;&#x2F;span&gt;&lt;span&gt;-r dev
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;he-bing-stream&quot;&gt;合并Stream&lt;&#x2F;h2&gt;
+&lt;p&gt;merge命令只能以父Stream为源，子Stream为目标&lt;&#x2F;p&gt;
+&lt;p&gt;首先switch到子Stream，然后执行下面的命令，会自动从父Stream上合并过来&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 merge
+&lt;&#x2F;span&gt;&lt;span&gt;PS p4 resolve
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;后面的resolve命令是解决两个Stream的冲突，不同于Git的自动合并，手动合并非常原始，建议使用图形化界面或者编辑器插件&lt;&#x2F;p&gt;
+&lt;p&gt;resolve完了之后记得submit&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 submit -d &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Merge&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+</content>
+	</entry>
+</feed>

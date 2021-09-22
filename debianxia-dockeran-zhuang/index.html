@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>泊谋</title>
+
+      
+
+      
+          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+    
+        
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io">
+                                <span itemprop="name">主页
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
+                                <span itemprop="name">分类
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
+                                <span itemprop="name">标签
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
+                                <span itemprop="name">GitHub
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Docker简明介绍与安装</h1>
+        <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>5 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2019-12-11
+</span>
+    </header>
+    <div itemprop="articleBody">
+      <h2 id="jian-jie">简介</h2>
+<span id="continue-reading"></span>
+<p>根据官方文档，Docker是一个以容器形式构建、分享、运行应用的平台。</p>
+<p>民间说法，Docker是一个虚拟机，只要制作了应用的虚拟机镜像，就能在几乎任何平台上一键部署我们的应用。而且这个虚拟机的性能非常好。</p>
+<p>举个部署后端的例子说明Docker部署流程</p>
+<p>首先制作一个镜像，这个镜像的内容是一个配置了JRE然后还存放着我们写的Spring Boot后端的Ubuntu<br />
+然后把镜像交给Docker，Docker就能根据镜像生成容器并运行它。<br />
+这样我们的后端就部署成功了。</p>
+<h2 id="rong-qi">容器</h2>
+<p>是一个虚拟环境。这个环境可以是带了JRE和Java后端的Ubuntu，也可以只是一个JRE与Java后端，甚至可以自己从零开始编写。</p>
+<p>总之就是容器中运行着我们的应用。</p>
+<h2 id="jing-xiang">镜像</h2>
+<p>可以理解为容器的模板，可以用一个镜像生成很多个一模一样的容器。</p>
+<p>一个镜像可以作为另一个镜像的基础。比如我们可以基于“Ubuntu”镜像制作一个“带JRE的Ubuntu”镜像。</p>
+<p>而Docker提供了许多的基础镜像，比如包括Ubuntu在内的各种Linux发行版、DotNet、MySQL等等。我们可以基于这些镜像快速的构建我们的应用镜像。</p>
+<h2 id="docker-compose">Docker Compose</h2>
+<p>在项目部署的时候，我们可能会用到多个容器，逐个配置就会很麻烦。可以使用Docker Compose同时配置管理多个容器</p>
+<h2 id="dockeran-zhuang">Docker安装</h2>
+<p>这里以Debian 10为例</p>
+<p>使用apt安装，首先根据处理器架构添加合适的apt仓库，然后直接apt install即可。</p>
+<p>官网链接在这里<br />
+<a href="https://docs.docker.com/install/linux/docker-ce/debian/">https://docs.docker.com/install/linux/docker-ce/debian/</a></p>
+<p>注意：如果已有旧版的Docker，请移步上述官网教程按步骤卸载</p>
+<p>首先安装依赖</p>
+<pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> sudo apt update
+</span><span style="color:#bf616a;">$</span><span> sudo apt install apt-transport-https ca-certificates
+</span><span style="color:#bf616a;">$</span><span> sudo apt install curl gnupg2 software-properties-common
+</span></code></pre>
+<p>然后添加Docker提供的GPGKey</p>
+<pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> curl</span><span style="color:#bf616a;"> -fsSL</span><span> https://download.docker.com/linux/debian/gpg  sudo apt-key add -
+</span></code></pre>
+<p>接下来根据服务器的CPU架构，添加Docker的apt仓库</p>
+<p>x86_64 / amd64</p>
+<pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> sudo add-apt-repository \
+</span><span>   &quot;</span><span style="color:#a3be8c;">deb [arch=amd64] https://download.docker.com/linux/debian </span><span style="color:#96b5b4;">\
+</span><span style="color:#a3be8c;">   </span><span>$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">lsb_release -cs</span><span style="color:#a3be8c;">) </span><span style="color:#96b5b4;">\
+</span><span style="color:#a3be8c;">   stable</span><span>&quot;
+</span></code></pre>
+<p>armhf</p>
+<pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> sudo add-apt-repository \
+</span><span>   &quot;</span><span style="color:#a3be8c;">deb [arch=armhf] https://download.docker.com/linux/debian </span><span style="color:#96b5b4;">\
+</span><span style="color:#a3be8c;">   </span><span>$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">lsb_release -cs</span><span style="color:#a3be8c;">) </span><span style="color:#96b5b4;">\
+</span><span style="color:#a3be8c;">   stable</span><span>&quot;
+</span></code></pre>
+<p>arm64</p>
+<pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> sudo add-apt-repository \
+</span><span>   &quot;</span><span style="color:#a3be8c;">deb [arch=arm64] https://download.docker.com/linux/debian </span><span style="color:#96b5b4;">\
+</span><span style="color:#a3be8c;">   </span><span>$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">lsb_release -cs</span><span style="color:#a3be8c;">) </span><span style="color:#96b5b4;">\
+</span><span style="color:#a3be8c;">   stable</span><span>&quot;
+</span></code></pre>
+<p>接下来更新apt</p>
+<pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> sudo apt update
+</span></code></pre>
+<p>安装Docker</p>
+<pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> sudo apt install docker-ce docker-ce-cli containerd.io
+</span></code></pre>
+<p>尝试HelloWorld<br />
+观察到类似以下输出的东西就安装成功了</p>
+<pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> sudo docker run hello-world
+</span><span style="color:#bf616a;">Unable</span><span> to find image &#39;</span><span style="color:#a3be8c;">hello-world:latest</span><span>&#39; locally
+</span><span style="color:#bf616a;">latest:</span><span> Pulling from library/hello-world
+</span><span style="color:#bf616a;">1b930d010525:</span><span> Pull complete 
+</span><span style="color:#bf616a;">Digest:</span><span> sha256:4fe721ccc2e8dc7362278a29dc660d833570ec2682f4e4194f4ee23e415e1064
+</span><span style="color:#bf616a;">Status:</span><span> Downloaded newer image for hello-world:latest
+</span><span>
+</span><span style="color:#bf616a;">Hello</span><span> from Docker!
+</span><span style="color:#bf616a;">This</span><span> message shows that your installation appears to be working correctly.
+</span><span>
+</span><span style="color:#bf616a;">To</span><span> generate this message, Docker took the following steps:
+</span><span> </span><span style="color:#bf616a;">1.</span><span> The Docker client contacted the Docker daemon.
+</span><span> </span><span style="color:#bf616a;">2.</span><span> The Docker daemon pulled the &quot;</span><span style="color:#a3be8c;">hello-world</span><span>&quot; image from the Docker Hub.
+</span><span>    (</span><span style="color:#bf616a;">amd64</span><span>)
+</span><span> </span><span style="color:#bf616a;">3.</span><span> The Docker daemon created a new container from that image which runs the
+</span><span>    </span><span style="color:#bf616a;">executable</span><span> that produces the output you are currently reading.
+</span><span> </span><span style="color:#bf616a;">4.</span><span> The Docker daemon streamed that output to the Docker client, which sent it
+</span><span>    </span><span style="color:#bf616a;">to</span><span> your terminal.
+</span><span>
+</span><span style="color:#bf616a;">To</span><span> try something more ambitious, you can run an Ubuntu container with:
+</span><span> </span><span style="color:#bf616a;">$</span><span> docker run</span><span style="color:#bf616a;"> -it</span><span> ubuntu bash
+</span><span>
+</span><span style="color:#bf616a;">Share</span><span> images, automate workflows, and more with a free Docker ID:
+</span><span> </span><span style="color:#bf616a;">https://hub.docker.com/
+</span><span>
+</span><span style="color:#bf616a;">For</span><span> more examples and ideas, visit:
+</span><span> </span><span style="color:#bf616a;">https://docs.docker.com/get-started/
+</span></code></pre>
+<h2 id="shi-yong-snapan-zhuang-docker">使用Snap安装Docker</h2>
+<p>喜闻乐见，在沙箱中运行沙箱</p>
+<pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> sudo snap install docker
+</span></code></pre>
+<h2 id="docker-composean-zhuang">Docker Compose安装</h2>
+<p>官网在这里<br />
+<a href="https://docs.docker.com/compose/install/#alternative-install-options">https://docs.docker.com/compose/install/#alternative-install-options</a></p>
+<p>普通方式<br />
+直接curl下载预编译的可执行文件然后改个权限就好了</p>
+<pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> sudo curl</span><span style="color:#bf616a;"> -L </span><span>&quot;</span><span style="color:#a3be8c;">https://github.com/docker/compose/releases/download/1.25.0/docker-compose-</span><span>$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">uname -s</span><span style="color:#a3be8c;">)-</span><span>$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">uname -m</span><span style="color:#a3be8c;">)</span><span>&quot;</span><span style="color:#bf616a;"> -o</span><span> /usr/local/bin/docker-compose
+</span><span style="color:#bf616a;">$</span><span> sudo chmod +x /usr/local/bin/docker-compose
+</span></code></pre>
+<p>然后发现Compose也能在容器中运行，Docker官方提供了脚本封装。因此还可以执行下面的命令安装（多此一举）</p>
+<pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> sudo curl</span><span style="color:#bf616a;"> -L --fail</span><span> https://github.com/docker/compose/releases/download/1.25.0/run.sh</span><span style="color:#bf616a;"> -o</span><span> /usr/local/bin/docker-compose
+</span><span style="color:#bf616a;">$</span><span> sudo chmod +x /usr/local/bin/docker-compose
+</span></code></pre>
+
+    </div>
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                    Published by 何泊谋
+                
+                
+                    
+                    in <a href="https://paakmau.github.io/categories/docker/">Docker</a>
+                
+                
+                    and
+                    tagged
+                    
+                        <a href="https://paakmau.github.io/tags/docker/">Docker</a>
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+    </body>
+
+</html>

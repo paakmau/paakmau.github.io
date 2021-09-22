@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>泊谋</title>
+
+      
+
+      
+          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+    
+        
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io">
+                                <span itemprop="name">主页
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
+                                <span itemprop="name">分类
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
+                                <span itemprop="name">标签
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
+                                <span itemprop="name">GitHub
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Vulkan画三角形「三」 创建窗体表面</h1>
+        <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>3 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2020-09-05
+</span>
+    </header>
+    <div itemprop="articleBody">
+      <p>Vulkan是一个跨平台的API，它不能够直接与不同平台的窗体系统进行交互。为了在Vulkan与窗体系统之间建立连接来把渲染结果展示到屏幕上，我们需要使用一些WSI扩展。本文将会介绍VK_KHR_surface扩展。它暴露一个VkSurfaceKHR对象，这个对象代表一个我们可以把图像渲染上去的抽象表面</p>
+<span id="continue-reading"></span>
+<p>这个VK_KHR_surface是一个实例等级的扩展，并且我们其实在上一篇文章中就已经启用了它，因为它已经被包含在前文所用到的glfwGetRequiredInstanceExtensions所返回的列表中。这个列表同时还包含一些其他的WSI扩展，不过我们可以先不管这些</p>
+<p>另外需要注意的是，窗体表面其实并不一定需要创建，因为你可能只是要离屏渲染而不用把结果显示到屏幕上</p>
+<h2 id="chuang-jian-chuang-ti-biao-mian">创建窗体表面</h2>
+<p>首先跟上一篇文章一样，我们先添加一个私有成员变量用于保存创建好的窗体表面</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkSurfaceKHR surface;
+</span></code></pre>
+<p>然后添加一个createSurface成员函数，并在initVulkan中调用它</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">initVulkan</span><span>() {
+</span><span>    </span><span style="color:#bf616a;">createInstance</span><span>();
+</span><span>    </span><span style="color:#bf616a;">createSurface</span><span>();
+</span><span>}
+</span></code></pre>
+<p>然后是这个成员函数的定义</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">createSurface</span><span>() {
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">glfwCreateWindowSurface</span><span>(instance, window, </span><span style="color:#d08770;">nullptr</span><span>, &amp;surface) != VK_SUCCESS)
+</span><span>        </span><span style="color:#b48ead;">throw </span><span>std::</span><span style="color:#bf616a;">runtime_error</span><span>(&quot;</span><span style="color:#a3be8c;">failed to create window surface!</span><span>&quot;);
+</span><span>}
+</span></code></pre>
+<p>可以看到非常简单，而且是调了GLFW的API来实现的，说明GLFW对Vulkan有一定的支持。需要注意的是vulkan/vulkan.h这个头文件一定要写在GLFW/glfw3.h之前，因为GLFW会根据Vulkan的宏进行条件编译，头文件顺序不对的话将会无法使用glfwCreateWindowSurface这个函数</p>
+<h2 id="xiao-hui-chuang-ti-biao-mian">销毁窗体表面</h2>
+<p>最后我们要在cleanup中销毁掉窗体表面</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">cleanup</span><span>() {
+</span><span>    </span><span style="color:#bf616a;">vkDestroySurfaceKHR</span><span>(instance, surface, </span><span style="color:#d08770;">nullptr</span><span>);
+</span><span>    </span><span style="color:#bf616a;">vkDestroyInstance</span><span>(instance, </span><span style="color:#d08770;">nullptr</span><span>);
+</span><span>
+</span><span>    </span><span style="color:#bf616a;">glfwDestroyWindow</span><span>(window);
+</span><span>    </span><span style="color:#bf616a;">glfwTerminate</span><span>();
+</span><span>}
+</span></code></pre>
+<p>当然销毁表面需要写在销毁实例之前</p>
+
+    </div>
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                    Published by 何泊谋
+                
+                
+                    
+                    in <a href="https://paakmau.github.io/categories/vulkan/">Vulkan</a>
+                
+                
+                    and
+                    tagged
+                    
+                        <a href="https://paakmau.github.io/tags/glfw/">GLFW</a>
+                        
+                            
+                                
+                                    and
+                                
+                            
+                        
+                    
+                        <a href="https://paakmau.github.io/tags/vulkan/">Vulkan</a>
+                        
+                            
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+    </body>
+
+</html>

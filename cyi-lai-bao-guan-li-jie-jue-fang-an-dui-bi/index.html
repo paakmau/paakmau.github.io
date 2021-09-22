@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>泊谋</title>
+
+      
+
+      
+          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+    
+        
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io">
+                                <span itemprop="name">主页
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
+                                <span itemprop="name">分类
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
+                                <span itemprop="name">标签
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
+                                <span itemprop="name">GitHub
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">C++依赖包管理解决方案对比</h1>
+        <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>14 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2020-12-12
+</span>
+    </header>
+    <div itemprop="articleBody">
+      <p>刚刚有个朋友问我加老师发生甚么事了，我说两个年轻人，一个C#，一个Java</p>
+<span id="continue-reading"></span>
+<p>他们说，哎，我在加包依赖的时候冲突了，加老师你能不能教教我CMake功法，帮助治疗一下，我的依赖包，我说可以<br />
+我说你们在构建工具里练死劲不好用，他不服气，我说小朋友，你用两行的dependency，折我一行的find_package，他折不动，他说你这没用我说我这有用，这用了系统包管理，是化劲，传统编程是讲化劲的四两拨千斤，两百多斤的pip install再import，都折不动我这一行依赖系统包管理器的find_package<br />
+啊，他非和我试手，我说可以，啪就站起来了，很快啊！然后上来就是一个import，一个using，我全都防出去了，防出去了啊，防出去以后自然是传统编程以点到为止我用#include加宏手放键盘上没有用CMake构建，我笑一下准备关掉VS Code，由于这时间，按照传统编程点到为止他已经输了，如果这一构建下去，编译完立刻链接就直接把他的Runtime打骨折了，他也承认我先导入的依赖库，啊，我关掉VS Code的时候不构建了，他突然袭击连续导了几个包来编译，我大意了啊，没有闪，当时就流眼泪了，我说小伙子你不讲武德你懂不懂，他说加老师对不起，对不起，我不懂规矩<br />
+他说他的库是乱导的，他可不是乱导的啊，构建工具与包依赖集成、中央仓库、依赖包多版本管理、命令行工具，训练有素，后来他说他在甲骨文和微软练过三四年，啊，看来是有备而来！这两个年轻人不讲武德！来骗！来偷袭！我69岁的老同志，这好吗，这不好，我劝，这两位年轻人耗子尾汁，好好反思，以后不要再犯，这样的聪明，小聪明啊</p>
+<p>许多高级语言都有方便的包管理器，比如Java的Maven和Gradle、.NET的NuGet、node.js的npm、Rust的Cargo，它们具备多版本管理功能，可以控制项目依赖特定版本的包</p>
+<p>但是一般来说C++项目通常使用CMake来构建，CMake具备一定的包管理功能，但是会比较弱鸡，可以配合其他软件来使用，也可以直接抛弃CMake这个又陈旧又臃肿的构建工具，使用其他更先进的集成了包管理器的构建工具</p>
+<p>接下来介绍几种解决方案</p>
+<h2 id="pei-he-xi-tong-bao-guan-li-qi-shi-yong-find-package">配合系统包管理器使用find_package</h2>
+<p>find_package是CMake的一个指令，重度依赖apt、pacman、brew这类能把包装到系统里的包管理器，而且不能控制依赖包的版本</p>
+<p>对于有brew而且还是类UNIX的macOS来说还好，对于没有自带包管理器就而且算有也不知道包要装到哪里去的Windows来说，使用find_package是一件非常折磨的事情</p>
+<p>非常易用<br />
+不支持多版本包管理<br />
+只能导入支持CMake的用系统包管理器安装的包</p>
+<h2 id="externalproject">ExternalProject</h2>
+<p>ExternalProject是CMake自带的功能，可以下载外部库的源代码，然后通过写脚本进行配置、构建和安装，虽然这使得项目可以依赖于特定版本的外部库，但是过程非常繁琐，不同外部库的配置还是不一样的，复杂的程度几乎就相当于自己往包管理器的仓库提交代码，不过好处还是有的，外部库不会占用项目的空间，并且一定程度上可以比较轻松地更新外部库</p>
+<p>非常麻烦<br />
+支持多版本包管理<br />
+可以导入所有项目</p>
+<h2 id="zhi-jie-ba-wai-bu-ku-yuan-ma-reng-jin-xiang-mu-li">直接把外部库源码扔进项目里</h2>
+<p>其实也是最常见的解决方法，把外部库源码都扔进external文件夹里，手动管理外部库的编译和链接，优点是不需要使用其他乱七八糟的东西，还可以去掉外部库里没用的东西，缺点是编译时间长，如果要更新外部库就要重新下载源码然后再一通爆改</p>
+<p>非常原始，比较麻烦<br />
+支持多版本包管理<br />
+可以导入所有项目</p>
+<h2 id="ba-wai-bu-ku-reng-xiang-mu-li-zai-yong-find-package">把外部库扔项目里再用find_package</h2>
+<p>把依赖包的源码扔进项目中后再使用依赖包提供的类似FindGLFW.cmake这样的脚本来find_package，当然这也非常折磨，而且要求依赖库有写好的这种脚本，不然就要自己写</p>
+<p>有一点麻烦<br />
+支持多版本包管理<br />
+只能导入支持find_package的项目，或者自己写</p>
+<h2 id="gitde-submodules">Git的Submodules</h2>
+<p>使用Git的子模块功能把依赖包的Git仓库加到项目里，可以不用占用项目的空间，但是这要求外部库必须使用Git进行版本管理<br />
+然后构建的时候跟直接扔项目里的外部库源码没什么区别</p>
+<p>比较麻烦<br />
+支持多版本包管理<br />
+只能导入用Git的项目</p>
+<h2 id="vcpkg">vcpkg</h2>
+<p>微软写的，需要安装，没有构建功能，可以配合CMake，有一点类似apt、pacman这些东西，但是不支持版本控制，开发的初衷应该就是要解决Windows上没有系统包管理器的问题，不过它支持的包的数量非常多，而且版本管理功能受到重视且正在被添加，估计很快就能用了</p>
+<p>有趣的是，安装多个vcpkg可以使得不同vcpkg持有不同版本的依赖包，这样对于每个项目都安装一个vcpkg就能实现版本管理，这是一种非常蛇皮而且折磨的解决方法，但是竟然被写到了微软的官方文档里</p>
+<p>还算易用<br />
+对于包依赖的多版本管理有非常脑瘫的支持，截止到发文，它还在试图实现多版本管理<br />
+支持的依赖包较多</p>
+<h2 id="conan">Conan</h2>
+<p>跟vcpkg差不多，也是依赖CMake，但是好一点，因为具有版本管理功能，但是支持的包的数量少一点</p>
+<p>还算易用<br />
+支持多版本管理<br />
+支持的依赖包较少</p>
+<h2 id="hunter">Hunter</h2>
+<p>看起来像是正统的CMake上包管理解决方法，它不需要安装，直接在CMakeLists.txt里添加代码就可以了</p>
+<p>非常易用<br />
+没有包的版本管理<br />
+支持的包也比较少</p>
+<h2 id="xmake">xmake</h2>
+<p>国人大佬写的，不依赖CMake，能够独立构建项目，使用内嵌的Lua来配置项目，具有依赖包多版本管理功能；在VS Code、IDEA等IDE上有插件支持；安装方便，Homebrew和AUR的仓库里都有；开源社区目前正在活跃</p>
+<p>牛逼的是可以导vcpkg和conan的包，这使得还在发展初期的xmake已经具备了应用于实际项目的能力</p>
+<p>不过有一些小问题<br />
+虽然作者表示了反对态度，但是issue和pull request里还是出现了大量中文，可能会影响老外参与贡献的程度；且目前原生支持的包还比较少；目前xmake的API变化还比较剧烈；使用Lua语法配置项目可能会导致配置比较冗长，而且xmake传参用的是字符串不好做语法检查</p>
+<p>比较易用<br />
+比较高雅<br />
+多种IDE插件支持<br />
+支持多版本包管理<br />
+支持的包非常多，但是原生包很少<br />
+发展初期，前景未知</p>
+<h2 id="build2">build2</h2>
+<p>似乎是唯一正统的全新的C++构建工具，未来之星，明日之子，人类最后的希望<br />
+项目组里的人都是神仙级大佬；文档也写的非常牛逼；支持包多版本管理；但是使用独立的语法学习成本高；似乎作者比较刚且还要规定统一的项目规范；同样在开发初期</p>
+<p>需要注意，C++开源项目的结构通常都乱七八糟，而build2对于依赖包的项目结构有明确的非强制性但强烈建议的要求，大量遗留的开源项目可能难以修改项目结构就导致不便于加入build2的包仓库中，并且这有一点强制施加个人观点的意味在里面也就是篡改信仰最关键是它生成的项目结构是真的有够丑，需要较长时间磨合或者说妥协，可能正是因为这样，现在支持的包非常非常少，增速也非常缓慢<br />
+但其实统一C++的项目结构是一件喜闻乐见的事情，而且build2默认生成的项目结构其实非常符合C++20 Modules，另外有个好消息是它虽然限制很多但是允许驼峰虽然可能它是不乐意的</p>
+<p>比较易用<br />
+非常非常高雅<br />
+支持多版本包管理<br />
+支持的包太少了<br />
+还在发展初期，前景未知</p>
+<h2 id="spack">Spack</h2>
+<p>集成了多版本包管理的独立构建工具，似乎是为了超算设计的；依赖Python；支持macOS，Linux，但是不支持Windows，没想到吧；包也挺多，还支持把用C/C++/Fortran写的类库链接到用Python/R写的应用上；社区目前非常非常活跃<br />
+Windows的支持似乎受到了重视，现在有个好心人在试图添加MinGW，估计快了，吧</p>
+<p>不过</p>
+<p>比较易用<br />
+比较高雅<br />
+支持多版本包管理<br />
+支持的包很多<br />
+暂不支持Windows</p>
+<h2 id="ge-ren-jian-yi">个人建议</h2>
+<p>目前新的构建工具还没有能够广泛使用，所以CMake估计还能坚挺很长时间</p>
+<p>所以使用Git的Submodules或者直接把源码扔项目里再配合CMake是比较稳妥的方法，这个解决方案可以很好的保持包的版本依赖，并且可以在未来很长一段时间内不用改动</p>
+<p>不嫌麻烦的可以用Conan</p>
+<p>vcpkg也跟Conan一样麻烦，如果多版本包管理的feature加好了那就比Conan好一点吧</p>
+<p>激进一点可以试试XMake和Spack<br />
+反正XMake可以偷vcpkg和Conan的包来用，如果想用原生包还能自己提pull request，作者都会很快回复，而且有中文文档上手非常简单<br />
+Spack的话，如果主力开发环境不在Windows的话也可以先试试，因为原生包真的非常多，Windows的支持估计也快了</p>
+<p>build2暂时还不建议用，因为支持的包太少了，而且包的增加也很缓慢<br />
+如果要自己提交包的话，虽然非常麻烦，但最好还是遵守build2对包的项目结构的建议性要求</p>
+
+    </div>
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                    Published by 何泊谋
+                
+                
+                    
+                    in <a href="https://paakmau.github.io/categories/c/">C++</a>
+                
+                
+                    and
+                    tagged
+                    
+                        <a href="https://paakmau.github.io/tags/c/">C++</a>
+                        
+                            
+                                
+                                    and
+                                
+                            
+                        
+                    
+                        <a href="https://paakmau.github.io/tags/cmake/">CMake</a>
+                        
+                            
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+    </body>
+
+</html>

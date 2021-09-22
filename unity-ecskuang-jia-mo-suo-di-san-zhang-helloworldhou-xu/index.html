@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>泊谋</title>
+
+      
+
+      
+          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+    
+        
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io">
+                                <span itemprop="name">主页
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
+                                <span itemprop="name">分类
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
+                                <span itemprop="name">标签
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
+                                <span itemprop="name">GitHub
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Unity ECS框架摸索 第三章 HelloWorld后续</h1>
+        <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>3 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2020-02-01
+</span>
+    </header>
+    <div itemprop="articleBody">
+      <p>上一章介绍了ECS并行处理的实现，接下来就这个HelloWorld进行深入的研究。</p>
+<span id="continue-reading"></span><h2 id="tian-jia-componentde-ji-qiao">添加Component的技巧</h2>
+<p>第二章中为Entity添加Component的方式是直接在GameObject上挂载脚本，但是Unity编辑器目前并非为ECS设计，如果为每一个Component都挂载一个脚本会很麻烦，所以考虑使用代码添加组件。</p>
+<p>我们编写如下脚本，把它挂载在Cube上，它就能为Cube生成的Entity添加RotationSpeed组件。<br />
+RotatingCubeAuthoring.cs</p>
+<pre data-lang="cs" style="background-color:#2b303b;color:#c0c5ce;" class="language-cs "><code class="language-cs" data-lang="cs"><span>[</span><span style="color:#bf616a;">RequiresEntityConversion</span><span>]
+</span><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">RotatingCubeAuthoring </span><span style="color:#eff1f5;">: </span><span style="color:#a3be8c;">MonoBehaviour</span><span style="color:#eff1f5;">, </span><span style="color:#a3be8c;">IConvertGameObjectToEntity </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">public float </span><span style="color:#bf616a;">DegreePerSecond </span><span>= </span><span style="color:#d08770;">180</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">public void </span><span style="color:#8fa1b3;">Convert </span><span style="color:#eff1f5;">(Entity </span><span style="color:#bf616a;">entity</span><span style="color:#eff1f5;">, EntityManager </span><span style="color:#bf616a;">dstManager</span><span style="color:#eff1f5;">, GameObjectConversionSystem </span><span style="color:#bf616a;">conversionSystem</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">rotationSpeedCmpt </span><span>= new </span><span style="color:#eff1f5;">RotationSpeed { </span><span style="color:#bf616a;">RadiansPerSecond </span><span>= </span><span style="color:#bf616a;">math</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">radians </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">DegreePerSecond</span><span style="color:#eff1f5;">) };
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">dstManager</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">AddComponentData </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">entity</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">rotationSpeedCmpt</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">}
+</span></code></pre>
+<p>解释：IConvertGameObjectToEntity接口的Convert方法会在GameObject转换的过程中被调用，可以在其中直接用EntityManager为Entity添加任意Component，并能对其赋值，更加灵活。<br />
+在该段代码中我们就把直观的Degree转换成了Radian。</p>
+<p>再把之前的RotationSpeed组件修改一下<br />
+RotationSpeed.cs</p>
+<pre data-lang="cs" style="background-color:#2b303b;color:#c0c5ce;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#65737e;">// 修改前
+</span><span>[</span><span style="color:#bf616a;">GenerateAuthoringComponent</span><span>]
+</span><span style="color:#b48ead;">public struct </span><span>RotationSpeed : </span><span style="color:#a3be8c;">IComponentData
+</span><span>{
+</span><span>    </span><span style="color:#b48ead;">public float </span><span style="color:#bf616a;">RadiansPerSecond</span><span>;
+</span><span>}
+</span><span>
+</span><span style="color:#65737e;">// 修改后
+</span><span>[</span><span style="color:#bf616a;">Serializable</span><span>]
+</span><span style="color:#b48ead;">public struct </span><span>RotationSpeed : </span><span style="color:#a3be8c;">IComponentData
+</span><span>{
+</span><span>    </span><span style="color:#b48ead;">public float </span><span style="color:#bf616a;">RadiansPerSecond</span><span>;
+</span><span>}
+</span></code></pre>
+<p>解释：原本的GenerateAuthoringComponent特性被改成了Serializable。GenerateAuthoringComponent的作用是允许ECS的组件直接挂载在GameObject上，但是使用代码添加组件时不需要这个特性，因此只需要Serializable即可。</p>
+<p>在编辑器中修改Cube的RotatingCubeAuthoring的旋转速度为每秒180度，如下</p>
+<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191210-160141@2x.png" alt="" /></p>
+<h2 id="ijobforeach">IJobForEach</h2>
+<p>上一章中，我们使用Lambda对Entity进行了遍历，写法很简洁。但是这样的写法会产生GC，为了更好的性能，可以使用IJobForEach接口进行遍历。</p>
+<p>修改RotationSpeedSystem为如下代码</p>
+<pre data-lang="cs" style="background-color:#2b303b;color:#c0c5ce;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#65737e;">// 修改后
+</span><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">RotateSpeedSystem </span><span style="color:#eff1f5;">: </span><span style="color:#a3be8c;">JobComponentSystem </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    [</span><span style="color:#bf616a;">BurstCompile</span><span style="color:#eff1f5;">]
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">struct </span><span style="color:#eff1f5;">RotationJob : </span><span style="color:#a3be8c;">IJobForEach</span><span style="color:#eff1f5;">&lt;Rotation, RotationSpeed&gt; {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">public float </span><span style="color:#bf616a;">DeltaTime</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">public void </span><span style="color:#8fa1b3;">Execute </span><span style="color:#eff1f5;">(</span><span style="color:#b48ead;">ref </span><span style="color:#eff1f5;">Rotation </span><span style="color:#bf616a;">rotation</span><span style="color:#eff1f5;">, [</span><span style="color:#bf616a;">ReadOnly</span><span style="color:#eff1f5;">] </span><span style="color:#b48ead;">ref </span><span style="color:#eff1f5;">RotationSpeed </span><span style="color:#bf616a;">rotationSpeed</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">            </span><span style="color:#bf616a;">rotation </span><span>= new </span><span style="color:#eff1f5;">Rotation {
+</span><span style="color:#eff1f5;">                </span><span style="color:#bf616a;">Value </span><span>= </span><span style="color:#bf616a;">math</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">mul </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">math</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">normalize </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">rotation</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Value</span><span style="color:#eff1f5;">), </span><span style="color:#bf616a;">quaternion</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">AxisAngle </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">math</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">up </span><span style="color:#eff1f5;">(), </span><span style="color:#bf616a;">rotationSpeed</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">RadiansPerSecond </span><span>* </span><span style="color:#bf616a;">DeltaTime</span><span style="color:#eff1f5;">))
+</span><span style="color:#eff1f5;">            };
+</span><span style="color:#eff1f5;">        }
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">protected override </span><span style="color:#eff1f5;">JobHandle </span><span style="color:#8fa1b3;">OnUpdate </span><span style="color:#eff1f5;">(JobHandle </span><span style="color:#bf616a;">inputDeps</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">return </span><span>new </span><span style="color:#eff1f5;">RotationJob { </span><span style="color:#bf616a;">DeltaTime </span><span>= </span><span style="color:#bf616a;">Time</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">DeltaTime </span><span style="color:#eff1f5;">}.</span><span style="color:#bf616a;">Schedule </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">inputDeps</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">}
+</span></code></pre>
+<p>解释：原本使用Lambda对Job进行规划。修改后使用一个结构体实现IJobForEach接口。在其中规定了Entity的筛选条件为拥有Rotation和RotationSpeed组件，并实现Execute方法规划Job。有效避免了GC。</p>
+
+    </div>
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                    Published by 何泊谋
+                
+                
+                    
+                    in <a href="https://paakmau.github.io/categories/unity/">Unity</a>
+                
+                
+                    and
+                    tagged
+                    
+                        <a href="https://paakmau.github.io/tags/unity-ecs/">Unity ECS</a>
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+    </body>
+
+</html>

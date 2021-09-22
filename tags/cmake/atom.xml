@@ -1,0 +1,619 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh">
+	<title>泊谋 - CMake</title>
+	<subtitle>随便写写，开心就行。</subtitle>
+	<link href="https://paakmau.github.io/tags/cmake/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://paakmau.github.io"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2020-12-12T02:39:41+00:00</updated>
+	<id>https://paakmau.github.io/tags/cmake/atom.xml</id>
+	<entry xml:lang="zh">
+		<title>C++依赖包管理解决方案对比</title>
+		<published>2020-12-12T02:39:41+00:00</published>
+		<updated>2020-12-12T02:39:41+00:00</updated>
+		<link href="https://paakmau.github.io/cyi-lai-bao-guan-li-jie-jue-fang-an-dui-bi/" type="text/html"/>
+		<id>https://paakmau.github.io/cyi-lai-bao-guan-li-jie-jue-fang-an-dui-bi/</id>
+		<content type="html">&lt;p&gt;刚刚有个朋友问我加老师发生甚么事了，我说两个年轻人，一个C#，一个Java&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;他们说，哎，我在加包依赖的时候冲突了，加老师你能不能教教我CMake功法，帮助治疗一下，我的依赖包，我说可以&lt;br &#x2F;&gt;
+我说你们在构建工具里练死劲不好用，他不服气，我说小朋友，你用两行的dependency，折我一行的find_package，他折不动，他说你这没用我说我这有用，这用了系统包管理，是化劲，传统编程是讲化劲的四两拨千斤，两百多斤的pip install再import，都折不动我这一行依赖系统包管理器的find_package&lt;br &#x2F;&gt;
+啊，他非和我试手，我说可以，啪就站起来了，很快啊！然后上来就是一个import，一个using，我全都防出去了，防出去了啊，防出去以后自然是传统编程以点到为止我用#include加宏手放键盘上没有用CMake构建，我笑一下准备关掉VS Code，由于这时间，按照传统编程点到为止他已经输了，如果这一构建下去，编译完立刻链接就直接把他的Runtime打骨折了，他也承认我先导入的依赖库，啊，我关掉VS Code的时候不构建了，他突然袭击连续导了几个包来编译，我大意了啊，没有闪，当时就流眼泪了，我说小伙子你不讲武德你懂不懂，他说加老师对不起，对不起，我不懂规矩&lt;br &#x2F;&gt;
+他说他的库是乱导的，他可不是乱导的啊，构建工具与包依赖集成、中央仓库、依赖包多版本管理、命令行工具，训练有素，后来他说他在甲骨文和微软练过三四年，啊，看来是有备而来！这两个年轻人不讲武德！来骗！来偷袭！我69岁的老同志，这好吗，这不好，我劝，这两位年轻人耗子尾汁，好好反思，以后不要再犯，这样的聪明，小聪明啊&lt;&#x2F;p&gt;
+&lt;p&gt;许多高级语言都有方便的包管理器，比如Java的Maven和Gradle、.NET的NuGet、node.js的npm、Rust的Cargo，它们具备多版本管理功能，可以控制项目依赖特定版本的包&lt;&#x2F;p&gt;
+&lt;p&gt;但是一般来说C++项目通常使用CMake来构建，CMake具备一定的包管理功能，但是会比较弱鸡，可以配合其他软件来使用，也可以直接抛弃CMake这个又陈旧又臃肿的构建工具，使用其他更先进的集成了包管理器的构建工具&lt;&#x2F;p&gt;
+&lt;p&gt;接下来介绍几种解决方案&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;pei-he-xi-tong-bao-guan-li-qi-shi-yong-find-package&quot;&gt;配合系统包管理器使用find_package&lt;&#x2F;h2&gt;
+&lt;p&gt;find_package是CMake的一个指令，重度依赖apt、pacman、brew这类能把包装到系统里的包管理器，而且不能控制依赖包的版本&lt;&#x2F;p&gt;
+&lt;p&gt;对于有brew而且还是类UNIX的macOS来说还好，对于没有自带包管理器就而且算有也不知道包要装到哪里去的Windows来说，使用find_package是一件非常折磨的事情&lt;&#x2F;p&gt;
+&lt;p&gt;非常易用&lt;br &#x2F;&gt;
+不支持多版本包管理&lt;br &#x2F;&gt;
+只能导入支持CMake的用系统包管理器安装的包&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;externalproject&quot;&gt;ExternalProject&lt;&#x2F;h2&gt;
+&lt;p&gt;ExternalProject是CMake自带的功能，可以下载外部库的源代码，然后通过写脚本进行配置、构建和安装，虽然这使得项目可以依赖于特定版本的外部库，但是过程非常繁琐，不同外部库的配置还是不一样的，复杂的程度几乎就相当于自己往包管理器的仓库提交代码，不过好处还是有的，外部库不会占用项目的空间，并且一定程度上可以比较轻松地更新外部库&lt;&#x2F;p&gt;
+&lt;p&gt;非常麻烦&lt;br &#x2F;&gt;
+支持多版本包管理&lt;br &#x2F;&gt;
+可以导入所有项目&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;zhi-jie-ba-wai-bu-ku-yuan-ma-reng-jin-xiang-mu-li&quot;&gt;直接把外部库源码扔进项目里&lt;&#x2F;h2&gt;
+&lt;p&gt;其实也是最常见的解决方法，把外部库源码都扔进external文件夹里，手动管理外部库的编译和链接，优点是不需要使用其他乱七八糟的东西，还可以去掉外部库里没用的东西，缺点是编译时间长，如果要更新外部库就要重新下载源码然后再一通爆改&lt;&#x2F;p&gt;
+&lt;p&gt;非常原始，比较麻烦&lt;br &#x2F;&gt;
+支持多版本包管理&lt;br &#x2F;&gt;
+可以导入所有项目&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;ba-wai-bu-ku-reng-xiang-mu-li-zai-yong-find-package&quot;&gt;把外部库扔项目里再用find_package&lt;&#x2F;h2&gt;
+&lt;p&gt;把依赖包的源码扔进项目中后再使用依赖包提供的类似FindGLFW.cmake这样的脚本来find_package，当然这也非常折磨，而且要求依赖库有写好的这种脚本，不然就要自己写&lt;&#x2F;p&gt;
+&lt;p&gt;有一点麻烦&lt;br &#x2F;&gt;
+支持多版本包管理&lt;br &#x2F;&gt;
+只能导入支持find_package的项目，或者自己写&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;gitde-submodules&quot;&gt;Git的Submodules&lt;&#x2F;h2&gt;
+&lt;p&gt;使用Git的子模块功能把依赖包的Git仓库加到项目里，可以不用占用项目的空间，但是这要求外部库必须使用Git进行版本管理&lt;br &#x2F;&gt;
+然后构建的时候跟直接扔项目里的外部库源码没什么区别&lt;&#x2F;p&gt;
+&lt;p&gt;比较麻烦&lt;br &#x2F;&gt;
+支持多版本包管理&lt;br &#x2F;&gt;
+只能导入用Git的项目&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;vcpkg&quot;&gt;vcpkg&lt;&#x2F;h2&gt;
+&lt;p&gt;微软写的，需要安装，没有构建功能，可以配合CMake，有一点类似apt、pacman这些东西，但是不支持版本控制，开发的初衷应该就是要解决Windows上没有系统包管理器的问题，不过它支持的包的数量非常多，而且版本管理功能受到重视且正在被添加，估计很快就能用了&lt;&#x2F;p&gt;
+&lt;p&gt;有趣的是，安装多个vcpkg可以使得不同vcpkg持有不同版本的依赖包，这样对于每个项目都安装一个vcpkg就能实现版本管理，这是一种非常蛇皮而且折磨的解决方法，但是竟然被写到了微软的官方文档里&lt;&#x2F;p&gt;
+&lt;p&gt;还算易用&lt;br &#x2F;&gt;
+对于包依赖的多版本管理有非常脑瘫的支持，截止到发文，它还在试图实现多版本管理&lt;br &#x2F;&gt;
+支持的依赖包较多&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;conan&quot;&gt;Conan&lt;&#x2F;h2&gt;
+&lt;p&gt;跟vcpkg差不多，也是依赖CMake，但是好一点，因为具有版本管理功能，但是支持的包的数量少一点&lt;&#x2F;p&gt;
+&lt;p&gt;还算易用&lt;br &#x2F;&gt;
+支持多版本管理&lt;br &#x2F;&gt;
+支持的依赖包较少&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;hunter&quot;&gt;Hunter&lt;&#x2F;h2&gt;
+&lt;p&gt;看起来像是正统的CMake上包管理解决方法，它不需要安装，直接在CMakeLists.txt里添加代码就可以了&lt;&#x2F;p&gt;
+&lt;p&gt;非常易用&lt;br &#x2F;&gt;
+没有包的版本管理&lt;br &#x2F;&gt;
+支持的包也比较少&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;xmake&quot;&gt;xmake&lt;&#x2F;h2&gt;
+&lt;p&gt;国人大佬写的，不依赖CMake，能够独立构建项目，使用内嵌的Lua来配置项目，具有依赖包多版本管理功能；在VS Code、IDEA等IDE上有插件支持；安装方便，Homebrew和AUR的仓库里都有；开源社区目前正在活跃&lt;&#x2F;p&gt;
+&lt;p&gt;牛逼的是可以导vcpkg和conan的包，这使得还在发展初期的xmake已经具备了应用于实际项目的能力&lt;&#x2F;p&gt;
+&lt;p&gt;不过有一些小问题&lt;br &#x2F;&gt;
+虽然作者表示了反对态度，但是issue和pull request里还是出现了大量中文，可能会影响老外参与贡献的程度；且目前原生支持的包还比较少；目前xmake的API变化还比较剧烈；使用Lua语法配置项目可能会导致配置比较冗长，而且xmake传参用的是字符串不好做语法检查&lt;&#x2F;p&gt;
+&lt;p&gt;比较易用&lt;br &#x2F;&gt;
+比较高雅&lt;br &#x2F;&gt;
+多种IDE插件支持&lt;br &#x2F;&gt;
+支持多版本包管理&lt;br &#x2F;&gt;
+支持的包非常多，但是原生包很少&lt;br &#x2F;&gt;
+发展初期，前景未知&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;build2&quot;&gt;build2&lt;&#x2F;h2&gt;
+&lt;p&gt;似乎是唯一正统的全新的C++构建工具，未来之星，明日之子，人类最后的希望&lt;br &#x2F;&gt;
+项目组里的人都是神仙级大佬；文档也写的非常牛逼；支持包多版本管理；但是使用独立的语法学习成本高；似乎作者比较刚且还要规定统一的项目规范；同样在开发初期&lt;&#x2F;p&gt;
+&lt;p&gt;需要注意，C++开源项目的结构通常都乱七八糟，而build2对于依赖包的项目结构有明确的非强制性但强烈建议的要求，大量遗留的开源项目可能难以修改项目结构就导致不便于加入build2的包仓库中，并且这有一点强制施加个人观点的意味在里面也就是篡改信仰最关键是它生成的项目结构是真的有够丑，需要较长时间磨合或者说妥协，可能正是因为这样，现在支持的包非常非常少，增速也非常缓慢&lt;br &#x2F;&gt;
+但其实统一C++的项目结构是一件喜闻乐见的事情，而且build2默认生成的项目结构其实非常符合C++20 Modules，另外有个好消息是它虽然限制很多但是允许驼峰虽然可能它是不乐意的&lt;&#x2F;p&gt;
+&lt;p&gt;比较易用&lt;br &#x2F;&gt;
+非常非常高雅&lt;br &#x2F;&gt;
+支持多版本包管理&lt;br &#x2F;&gt;
+支持的包太少了&lt;br &#x2F;&gt;
+还在发展初期，前景未知&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;spack&quot;&gt;Spack&lt;&#x2F;h2&gt;
+&lt;p&gt;集成了多版本包管理的独立构建工具，似乎是为了超算设计的；依赖Python；支持macOS，Linux，但是不支持Windows，没想到吧；包也挺多，还支持把用C&#x2F;C++&#x2F;Fortran写的类库链接到用Python&#x2F;R写的应用上；社区目前非常非常活跃&lt;br &#x2F;&gt;
+Windows的支持似乎受到了重视，现在有个好心人在试图添加MinGW，估计快了，吧&lt;&#x2F;p&gt;
+&lt;p&gt;不过&lt;&#x2F;p&gt;
+&lt;p&gt;比较易用&lt;br &#x2F;&gt;
+比较高雅&lt;br &#x2F;&gt;
+支持多版本包管理&lt;br &#x2F;&gt;
+支持的包很多&lt;br &#x2F;&gt;
+暂不支持Windows&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;ge-ren-jian-yi&quot;&gt;个人建议&lt;&#x2F;h2&gt;
+&lt;p&gt;目前新的构建工具还没有能够广泛使用，所以CMake估计还能坚挺很长时间&lt;&#x2F;p&gt;
+&lt;p&gt;所以使用Git的Submodules或者直接把源码扔项目里再配合CMake是比较稳妥的方法，这个解决方案可以很好的保持包的版本依赖，并且可以在未来很长一段时间内不用改动&lt;&#x2F;p&gt;
+&lt;p&gt;不嫌麻烦的可以用Conan&lt;&#x2F;p&gt;
+&lt;p&gt;vcpkg也跟Conan一样麻烦，如果多版本包管理的feature加好了那就比Conan好一点吧&lt;&#x2F;p&gt;
+&lt;p&gt;激进一点可以试试XMake和Spack&lt;br &#x2F;&gt;
+反正XMake可以偷vcpkg和Conan的包来用，如果想用原生包还能自己提pull request，作者都会很快回复，而且有中文文档上手非常简单&lt;br &#x2F;&gt;
+Spack的话，如果主力开发环境不在Windows的话也可以先试试，因为原生包真的非常多，Windows的支持估计也快了&lt;&#x2F;p&gt;
+&lt;p&gt;build2暂时还不建议用，因为支持的包太少了，而且包的增加也很缓慢&lt;br &#x2F;&gt;
+如果要自己提交包的话，虽然非常麻烦，但最好还是遵守build2对包的项目结构的建议性要求&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="zh">
+		<title>CMake项目结构的设计</title>
+		<published>2020-12-12T01:12:24+00:00</published>
+		<updated>2020-12-12T01:12:24+00:00</updated>
+		<link href="https://paakmau.github.io/cmakexiang-mu-jie-gou-de-she-ji/" type="text/html"/>
+		<id>https://paakmau.github.io/cmakexiang-mu-jie-gou-de-she-ji/</id>
+		<content type="html">&lt;p&gt;CMake是一种比较灵活的构建工具，正因如此导致很多CMake项目的结构混乱不堪，甚至包括国外某知名大厂的高star项目，本文将介绍一种目前广泛使用的比较合理的CMake项目结构&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;一般来说，项目中会有src文件夹、include文件夹和external文件夹&lt;&#x2F;p&gt;
+&lt;p&gt;src文件夹中存放项目源文件和私有的头文件，私有的头文件是指仅供目标内部使用的头文件，其他目标不应当有权访问这些头文件，出于简洁考虑，就跟源文件堆在一起好了&lt;&#x2F;p&gt;
+&lt;p&gt;include文件夹存放公有的头文件，可以提供给链接了本目标的其他目标使用，把本目标的API暴露给其他目标，一般安装类库后就直接把里面的东西都扔进类似&#x2F;usr&#x2F;include的路径下&lt;&#x2F;p&gt;
+&lt;p&gt;external文件夹存放项目所依赖的外部开源库，也有人喜欢命名为third_party&lt;&#x2F;p&gt;
+&lt;p&gt;需要注意一个问题是C++20提出的Modules，它允许我们使用代码来指定暴露给外部的API，这样的话也许根本就不需要区分公有跟私有头文件，并且头文件分开两个路径放也非常的难受，但是按照目前编译器对Modules的支持来看，还是一两年后再说吧&lt;br &#x2F;&gt;
+等Modules都能普及了说不定CMake早就凉透了本文也没用了哈哈没想到吧&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;dan-lei-ku-xiang-mu&quot;&gt;单类库项目&lt;&#x2F;h2&gt;
+&lt;p&gt;于是我们直接来看一个单类库项目的例子，单类库就是指项目只包含一个库目标，其他项目中的目标链接这个单独的目标就能访问该单类库项目提供的所有API&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;xiang-mu-de-mu-lu-jie-gou&quot;&gt;项目的目录结构&lt;&#x2F;h3&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;- example_library
+&lt;&#x2F;span&gt;&lt;span&gt;  - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;  - external
+&lt;&#x2F;span&gt;&lt;span&gt;    - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;  - include
+&lt;&#x2F;span&gt;&lt;span&gt;    - example_library
+&lt;&#x2F;span&gt;&lt;span&gt;      - public_example_library.h
+&lt;&#x2F;span&gt;&lt;span&gt;  - src
+&lt;&#x2F;span&gt;&lt;span&gt;    - private_example_library.h
+&lt;&#x2F;span&gt;&lt;span&gt;    - example_application.cpp
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;example-library-cmakelists-txt&quot;&gt;example_library&#x2F;CMakeLists.txt&lt;&#x2F;h3&gt;
+&lt;p&gt;稍微解释一下这段代码&lt;br &#x2F;&gt;
+添加external子目录，注意external子目录下的CMakeLists.txt可以直接为空文件，因为我们项目里没有外部库；添加一个库目标example_library，它的源文件只有example_library&#x2F;src&#x2F;example_library.cpp；把example_library&#x2F;include&#x2F;example_library中的头文件提供给外部目标使用；而example_library&#x2F;src为私有头文件目录，仅供目标example_library内部使用&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cmake&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cmake &quot;&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;cmake_minimum_required&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VERSION &lt;&#x2F;span&gt;&lt;span&gt;3.0.0)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;project&lt;&#x2F;span&gt;&lt;span&gt;(example_library)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;add_subdirectory&lt;&#x2F;span&gt;&lt;span&gt;(external)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;add_library&lt;&#x2F;span&gt;&lt;span&gt;(example_library src&#x2F;example_library.cpp)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;target_include_directories&lt;&#x2F;span&gt;&lt;span&gt;(example_library &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;PUBLIC &lt;&#x2F;span&gt;&lt;span&gt;include)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;target_include_directories&lt;&#x2F;span&gt;&lt;span&gt;(example_library &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;PRIVATE &lt;&#x2F;span&gt;&lt;span&gt;src)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;example-library-src-utils-h&quot;&gt;example_library&#x2F;src&#x2F;utils.h&lt;&#x2F;h3&gt;
+&lt;p&gt;提供一个内联方法用来输出一个字符串&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#ifndef&lt;&#x2F;span&gt;&lt;span&gt; UTILS_H
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#define &lt;&#x2F;span&gt;&lt;span&gt;UTILS_H
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;cstdio&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;inline void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;print_hello&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    std::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Hello, world!&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#endif  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; UTILS_H
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;example-library-include-example-library-example-library-h&quot;&gt;example_library&#x2F;include&#x2F;example_library&#x2F;example_library.h&lt;&#x2F;h3&gt;
+&lt;p&gt;给外部暴露一个print()全局函数的声明&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#ifndef&lt;&#x2F;span&gt;&lt;span&gt; EXAMPLE_LIBRARY_H
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#define &lt;&#x2F;span&gt;&lt;span&gt;EXAMPLE_LIBRARY_H
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#endif  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; EXAMPLE_LIBRARY_H
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;example-library-src-example-library-cpp&quot;&gt;example_library&#x2F;src&#x2F;example_library.cpp&lt;&#x2F;h3&gt;
+&lt;p&gt;定义刚刚声明的函数，并使用utils.h中提供的内联函数&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;example_library&#x2F;example_library.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;utils.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;print_hello&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;chan-shu&quot;&gt;阐述&lt;&#x2F;h3&gt;
+&lt;p&gt;这样对于其他目标而言，可以使用target_link_libraries链接example_library，然后在代码里添加一个#include &amp;lt;example_library&#x2F;example_library.h&amp;gt;，就能调用这个单类库项目提供的print方法了&lt;br &#x2F;&gt;
+然后utils.h只能example_library内部使用，对于其他目标来说是不可见的&lt;&#x2F;p&gt;
+&lt;p&gt;注意到一个问题是example_library&#x2F;include里面没有直接存放头文件，而是多套了一个example_library文件夹，这样设计看起来非常冗余，但是其实它的目的是避免头文件重名而造成冲突&lt;br &#x2F;&gt;
+另外的考量在于，安装项目的时候，example_library&#x2F;include目录下的东西应当被扔进系统安装路径的include文件夹里，这样设计会比较清晰&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;dan-ying-yong-xiang-mu&quot;&gt;单应用项目&lt;&#x2F;h2&gt;
+&lt;p&gt;单应用项目构建后只会生成一个可执行程序，用于构建一个应用程序&lt;&#x2F;p&gt;
+&lt;p&gt;相比于单类库项目，它不会被别的目标链接，所以不需要暴露头文件，因此不需要include文件夹&lt;&#x2F;p&gt;
+&lt;p&gt;目录结构如下，具体代码就不贴了&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;- example_application
+&lt;&#x2F;span&gt;&lt;span&gt;  - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;  - external
+&lt;&#x2F;span&gt;&lt;span&gt;    - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;  - src
+&lt;&#x2F;span&gt;&lt;span&gt;    - example_application.h
+&lt;&#x2F;span&gt;&lt;span&gt;    - example_application.cpp
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;dan-lei-ku-dan-ying-yong-xiang-mu&quot;&gt;单类库单应用项目&lt;&#x2F;h2&gt;
+&lt;p&gt;就是既包含一个类库，又包含一个可执行程序的项目&lt;&#x2F;p&gt;
+&lt;p&gt;目录结构如下，里面的源文件头文件因为太乱就省略了&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;- your_project_name
+&lt;&#x2F;span&gt;&lt;span&gt;  - app
+&lt;&#x2F;span&gt;&lt;span&gt;    - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;    - src
+&lt;&#x2F;span&gt;&lt;span&gt;  - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;  - external
+&lt;&#x2F;span&gt;&lt;span&gt;    - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;  - lib
+&lt;&#x2F;span&gt;&lt;span&gt;    - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;    - include
+&lt;&#x2F;span&gt;&lt;span&gt;      - your_library_name
+&lt;&#x2F;span&gt;&lt;span&gt;    - src
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;duo-lei-ku-dan-ying-yong-xiang-mu&quot;&gt;多类库单应用项目&lt;&#x2F;h2&gt;
+&lt;p&gt;比较复杂的项目，类库需要拆分成多个，所以所有的具体类库目录都扔进一个libs目录下保持项目的整洁&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;- your_project_name
+&lt;&#x2F;span&gt;&lt;span&gt;  - app
+&lt;&#x2F;span&gt;&lt;span&gt;    - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;    - src
+&lt;&#x2F;span&gt;&lt;span&gt;  - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;  - external
+&lt;&#x2F;span&gt;&lt;span&gt;    - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;  - libs
+&lt;&#x2F;span&gt;&lt;span&gt;    - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;    - library_a
+&lt;&#x2F;span&gt;&lt;span&gt;      - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;      - include
+&lt;&#x2F;span&gt;&lt;span&gt;        - library_a
+&lt;&#x2F;span&gt;&lt;span&gt;      - src
+&lt;&#x2F;span&gt;&lt;span&gt;    - library_b
+&lt;&#x2F;span&gt;&lt;span&gt;      - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;      - include
+&lt;&#x2F;span&gt;&lt;span&gt;        - library_b
+&lt;&#x2F;span&gt;&lt;span&gt;      - src
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;qi-ta-qing-kuang&quot;&gt;其他情况&lt;&#x2F;h2&gt;
+&lt;p&gt;如果是多应用的情况可以建一个apps目录，把各个具体的应用目录扔进去&lt;&#x2F;p&gt;
+&lt;p&gt;如果是多类库带多个使用例子的情况可以参考多应用的情况，把apps目录改成examples目录&lt;&#x2F;p&gt;
+&lt;p&gt;实际情况中可以做类似的修改，保证项目目录结构的整齐简洁就行了&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;guan-yu-tuo-feng-ming-ming-fa&quot;&gt;关于驼峰命名法&lt;&#x2F;h2&gt;
+&lt;p&gt;没错，很关键，虽然C++标准库用的是全小写的下划线命名法，C++标准委员会也推荐下划线，但是下划线随随便便一个变量就会长长一坨，不用驼峰这能忍吗，这不能忍&lt;&#x2F;p&gt;
+&lt;p&gt;如果使用驼峰，首先就是源文件头文件内的变量、函数和类都使用驼峰命名法&lt;&#x2F;p&gt;
+&lt;p&gt;然后是CMakeLists.txt中的目标名和项目名都应当使用驼峰命名&lt;&#x2F;p&gt;
+&lt;p&gt;最后到了目录结构，项目根目录、具体类库目录、具体应用目录、头文件和源文件都应当使用首字母大写的驼峰，其他目录仍然保持下划线命名法&lt;br &#x2F;&gt;
+因为include目录最好跟系统的include路径保持一致，并且兼容旧有项目，所以都是用下划线命名法；而头文件和源文件应当与类名保持一致，具体类库和具体应用与CMakeLists.txt中的目标名保持一致，项目根目录跟CMakeLists.txt中的项目名保持一致，所以统一使用驼峰命名法&lt;&#x2F;p&gt;
+&lt;p&gt;不过混用有一点丑，激进一点的可以直接全部换成驼峰&lt;&#x2F;p&gt;
+&lt;p&gt;比如多类库单应用项目的目录结构就可以长这样&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;- YourProjectName
+&lt;&#x2F;span&gt;&lt;span&gt;  - app
+&lt;&#x2F;span&gt;&lt;span&gt;    - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;    - src
+&lt;&#x2F;span&gt;&lt;span&gt;      - App.h
+&lt;&#x2F;span&gt;&lt;span&gt;      - App.cpp
+&lt;&#x2F;span&gt;&lt;span&gt;  - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;  - external
+&lt;&#x2F;span&gt;&lt;span&gt;    - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;  - libs
+&lt;&#x2F;span&gt;&lt;span&gt;    - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;    - LibraryA
+&lt;&#x2F;span&gt;&lt;span&gt;      - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;      - include
+&lt;&#x2F;span&gt;&lt;span&gt;        - LibraryA
+&lt;&#x2F;span&gt;&lt;span&gt;          - LibraryA.h
+&lt;&#x2F;span&gt;&lt;span&gt;      - src
+&lt;&#x2F;span&gt;&lt;span&gt;        - LibraryA.cpp
+&lt;&#x2F;span&gt;&lt;span&gt;    - LibraryB
+&lt;&#x2F;span&gt;&lt;span&gt;      - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;      - include
+&lt;&#x2F;span&gt;&lt;span&gt;        - LibraryB
+&lt;&#x2F;span&gt;&lt;span&gt;          - LibraryA.h
+&lt;&#x2F;span&gt;&lt;span&gt;      - src
+&lt;&#x2F;span&gt;&lt;span&gt;        - LibraryA.cpp
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+</content>
+	</entry>
+	<entry xml:lang="zh">
+		<title>VS Code写一切 CMake</title>
+		<published>2020-12-11T21:41:47+00:00</published>
+		<updated>2020-12-11T21:41:47+00:00</updated>
+		<link href="https://paakmau.github.io/vs-codexie-yi-qie-cmake/" type="text/html"/>
+		<id>https://paakmau.github.io/vs-codexie-yi-qie-cmake/</id>
+		<content type="html">&lt;h2 id=&quot;huan-jing-pei-zhi&quot;&gt;环境配置&lt;&#x2F;h2&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;安装C++编译器、C++调试器和CMake，并确保它们在PATH中&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;macos&quot;&gt;macOS&lt;&#x2F;h3&gt;
+&lt;p&gt;安装Xcode命令行工具使用它的Clang，然后用brew安装CMake&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; xcode-select&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --install
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; brew install cmake
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;然后通过查看它们的版本信息测试是否安装成功&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; clang&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --version
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; cmake&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --version
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;windows&quot;&gt;Windows&lt;&#x2F;h3&gt;
+&lt;p&gt;使用MSYS2安装mingw-w64集成的Clang和CMake，并把它们所在的目录添加的环境变量，如果你使用的是64位Windows且使用默认路径安装了MSYS2，那么这个目录应该是C:\msys64\mingw32\bin&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; pacman&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -S&lt;&#x2F;span&gt;&lt;span&gt; mingw-w64-x86_64-clang
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; pacman&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -S&lt;&#x2F;span&gt;&lt;span&gt; mingw-w64-x86_64_cmake
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;然后打开PowerShell验证是否安装成功，如果环境变量没有生效需要重启&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;clang.exe &lt;&#x2F;span&gt;&lt;span&gt;--version
+&lt;&#x2F;span&gt;&lt;span&gt;PS &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;cmake.exe &lt;&#x2F;span&gt;&lt;span&gt;--version
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;xu-yao-an-zhuang-de-vs-codecha-jian&quot;&gt;需要安装的VS Code插件&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;C&#x2F;C++插件&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;CMake插件用于CMakeLists.txt的语法高亮&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;CMake Tools插件用于CMake项目的构建、安装、调试等&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;cmakexiang-mu-chuang-jian&quot;&gt;CMake项目创建&lt;&#x2F;h2&gt;
+&lt;p&gt;创建一个文件夹HelloWorld，用VS Code打开&lt;&#x2F;p&gt;
+&lt;p&gt;在macOS下键入Cmd + Shift + P，或者在Windows下键入Ctrl + Shift + P，呼出命令面板&lt;&#x2F;p&gt;
+&lt;p&gt;搜索CMake: Quick Start命令，找到后回车&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;12&#x2F;cmake_quick_start.jpg&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;输入项目名为HelloWorld&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;12&#x2F;cmake_project_name.jpg&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;然后选择Executable创建可执行文件&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;12&#x2F;cmake_target.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;然后就会看到CMake Tools插件在目录下生成了main.cpp和CMakeLists.txt，打开可以看到它的代码就是输出一个字符串&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;diao-shi-yun-xing&quot;&gt;调试运行&lt;&#x2F;h2&gt;
+&lt;p&gt;按下Ctrl + F5就行了&lt;&#x2F;p&gt;
+&lt;p&gt;比较折磨的是，CMake Tools插件一开始就没有集成到launch.json和tasks.json，所以需要使用它自己定的快捷键来构建和调试，但是最近已经有人提了issue并且受到了重视所以应该也快了吧&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="zh">
+		<title>CMake从零开始快速上手</title>
+		<published>2020-12-11T20:35:12+00:00</published>
+		<updated>2020-12-11T20:35:12+00:00</updated>
+		<link href="https://paakmau.github.io/cmakecong-ling-kai-shi-kuai-su-shang-shou/" type="text/html"/>
+		<id>https://paakmau.github.io/cmakecong-ling-kai-shi-kuai-su-shang-shou/</id>
+		<content type="html">&lt;p&gt;CMake是一个跨平台的构建、测试、打包工具，被广泛使用于C++开源项目中&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;本文将介绍CMake在C++项目中的通常用法&lt;&#x2F;p&gt;
+&lt;p&gt;本文的例子使用CMake常用的规范项目结构，因此可以直接当作C++项目的脚手架&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;huan-jing-pei-zhi&quot;&gt;环境配置&lt;&#x2F;h2&gt;
+&lt;h3 id=&quot;macos&quot;&gt;macOS&lt;&#x2F;h3&gt;
+&lt;p&gt;首先我们需要C++编译器和调试器，于是我们可以输入以下命令直接安装Xcode的命令行工具来使用它自带的Clang&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; xcode-select&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --install
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;然后使用brew安装CMake就行了&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; brew install cmake
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;windows&quot;&gt;Windows&lt;&#x2F;h3&gt;
+&lt;p&gt;推荐使用MSYS2直接安装集成到mingw-w64上的CMake和Clang，打开MSYS2 Shell输入以下命令，当然你最好要把放着CMake和Clang的bin文件夹扔到PATH环境变量里&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; pacman&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -S&lt;&#x2F;span&gt;&lt;span&gt; mingw-w64-x86_64-cmake
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; pacman&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -S&lt;&#x2F;span&gt;&lt;span&gt; mingw-w64-x86_64-clang
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;当然也可以直接到CMake官网下载安装包，再去装mingw-w64的编译器集成，甚至可以装个Visual Studio来使用微软提供的C++编译器，但是很麻烦&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;helllo-world&quot;&gt;Helllo World&lt;&#x2F;h2&gt;
+&lt;h3 id=&quot;xiang-mu-de-mu-lu-jie-gou&quot;&gt;项目的目录结构&lt;&#x2F;h3&gt;
+&lt;p&gt;创建一个文件夹命名为HelloWorld，在其中创建一个CMakeLists.txt文件，build和src这两个文件夹把Hello.cpp放src文件夹里，项目结构大概长这样&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;- HelloWorld
+&lt;&#x2F;span&gt;&lt;span&gt;  - build
+&lt;&#x2F;span&gt;&lt;span&gt;  - src
+&lt;&#x2F;span&gt;&lt;span&gt;    - Hello.cpp
+&lt;&#x2F;span&gt;&lt;span&gt;  - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;helloworld-cmakelists-txt&quot;&gt;HelloWorld&#x2F;CMakeLists.txt&lt;&#x2F;h3&gt;
+&lt;p&gt;这个是CMake项目的配置文件，用来描述项目中包含哪些目标，有什么源文件、头文件等等&lt;&#x2F;p&gt;
+&lt;p&gt;它会被CMake读取，用于配置HelloWorld项目&lt;br &#x2F;&gt;
+看下面它的代码，显然就是字面意义上的限定CMake最低版本的要求，然后项目名叫做HelloWorld，添加一个名为Hello的可执行目标，它包括了src文件夹里的Hello.cpp这个源文件&lt;br &#x2F;&gt;
+最后编译出来就是一个二进制可执行文件，并以src&#x2F;Hello.cpp里的main函数作为入口点&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cmake&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cmake &quot;&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;cmake_minimum_required&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VERSION &lt;&#x2F;span&gt;&lt;span&gt;3.0.0)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;project&lt;&#x2F;span&gt;&lt;span&gt;(HelloWorld)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;add_executable&lt;&#x2F;span&gt;&lt;span&gt;(Hello src&#x2F;Hello.cpp)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;helloworld-src-hello-cpp&quot;&gt;HelloWorld&#x2F;src&#x2F;Hello.cpp&lt;&#x2F;h3&gt;
+&lt;p&gt;这是即将被编译的源文件，包含main函数，输出一个字符串&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;iostream&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;char&lt;&#x2F;span&gt;&lt;span&gt;**) {
+&lt;&#x2F;span&gt;&lt;span&gt;    std::cout &amp;lt;&amp;lt; &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Hello, world!&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;xiang-mu-gou-jian&quot;&gt;项目构建&lt;&#x2F;h3&gt;
+&lt;p&gt;于是我们就可以开始编译了，CMake不会直接构建项目，它会生成构建所需的与平台有关的中间文件，这是CMake跨平台的实现方法，这样对于同一个项目，我们在不同的平台上都能生成对应的中间文件来进行构建&lt;br &#x2F;&gt;
+比如在Windows上可以生成Visual Studio项目文件，然后用VS打开它来编译；类UNIX上可以生成Makefile；此外也可以选择生成跨平台的build.ninja、macOS上的Xcode项目文件等等&lt;&#x2F;p&gt;
+&lt;p&gt;但是CMake生成的这些中间文件很混乱，因此习惯上我们会新建一个build文件夹来存放它们，也就是上面项目目录结构里的那个build文件夹&lt;br &#x2F;&gt;
+于是在终端中切到HelloWorld文件夹中，再切到build，使用生成器生成中间文件，依据操作系统可能需要选择不同的生成器&lt;&#x2F;p&gt;
+&lt;h4 id=&quot;linuxhe-macos&quot;&gt;Linux和macOS&lt;&#x2F;h4&gt;
+&lt;p&gt;类UNIX系统上默认会生成Makefile，于是使用cmake命令之后再用make命令就能编译出可执行文件，直接运行就可以了&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; cd build
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; cmake ..
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; make
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; .&#x2F;Hello
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h4 id=&quot;windows-1&quot;&gt;Windows&lt;&#x2F;h4&gt;
+&lt;p&gt;Windows上不知道默认会生成什么，CMake文档中没说，Windows也不会自带VS或者mingw32-make这样的东西，而且不同VS版本的项目还不怎么兼容，因此我们最好使用-G参数来手动指定，比如在PowerShell中输入下面的命令会在build目录下生成VS 2019项目&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS cd build
+&lt;&#x2F;span&gt;&lt;span&gt;PS &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;cmake.exe&lt;&#x2F;span&gt;&lt;span&gt; .. -G &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Visual Studio 16 2019&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;build目录下应该会有一个HelloWorld.sln，接下来就直接用VS 2019打开它，正常构建就行了&lt;&#x2F;p&gt;
+&lt;p&gt;你也可以安装一个mingw32-make，然后选择对应的生成器来生成中间文件，这样就能用类似make的方式来构建项目&lt;&#x2F;p&gt;
+&lt;p&gt;在MSYS2 Shell中安装mingw32-make&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; pacman&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -S&lt;&#x2F;span&gt;&lt;span&gt; mingw-w64-x86_64-make
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;PowerShell切到HelloWorld目录之后&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS cd build
+&lt;&#x2F;span&gt;&lt;span&gt;PS &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;cmake.exe&lt;&#x2F;span&gt;&lt;span&gt; .. -G &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;MinGW Makefiles&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;PS &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;mingw32-make.exe
+&lt;&#x2F;span&gt;&lt;span&gt;PS .\&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;Hello.exe
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;具体能生成什么可以输入下面的命令来查询CMake支持的所有生成器&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; cmake&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --help
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;ku-de-pei-zhi-yu-lian-jie&quot;&gt;库的配置与链接&lt;&#x2F;h2&gt;
+&lt;p&gt;刚刚我们构建了一个可执行目标Hello，但是我们可能需要引入外部的开源库或者项目本身的库，这时我们就需要把Hello跟这堆库链接起来，并且把库的头文件暴露给Hello&lt;&#x2F;p&gt;
+&lt;p&gt;假设有一个外部库HelloExternalLib，一般习惯把外部库单独放在一个文件夹里，于是我们创建一个external文件夹把它扔进去&lt;br &#x2F;&gt;
+项目结构长这样&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;- HelloWorld
+&lt;&#x2F;span&gt;&lt;span&gt;  - build
+&lt;&#x2F;span&gt;&lt;span&gt;  - external
+&lt;&#x2F;span&gt;&lt;span&gt;    - HelloExternalLib
+&lt;&#x2F;span&gt;&lt;span&gt;      - include
+&lt;&#x2F;span&gt;&lt;span&gt;        - HelloExternalLib
+&lt;&#x2F;span&gt;&lt;span&gt;          - HelloExternalLib.h
+&lt;&#x2F;span&gt;&lt;span&gt;      - src
+&lt;&#x2F;span&gt;&lt;span&gt;        - HelloExternalLib.cpp
+&lt;&#x2F;span&gt;&lt;span&gt;      - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;    - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;span&gt;  - src
+&lt;&#x2F;span&gt;&lt;span&gt;    - Hello.cpp
+&lt;&#x2F;span&gt;&lt;span&gt;  - CMakeLists.txt
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;HelloWorld&#x2F;external&#x2F;HelloExternalLib&#x2F;include&#x2F;HelloExternalLib&#x2F;HelloExternalLib.h&lt;&#x2F;p&gt;
+&lt;p&gt;是这个库的一个头文件，随便声明一个方法好了&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#ifndef&lt;&#x2F;span&gt;&lt;span&gt; HELLO_EXTERNAL_LIB_H
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#define &lt;&#x2F;span&gt;&lt;span&gt;HELLO_EXTERNAL_LIB_H
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;sayHello&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#endif  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; HELLO_EXTERNAL_LIB_H
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;HelloWorld&#x2F;external&#x2F;HelloExternalLib&#x2F;src&#x2F;HelloExternalLib.cpp&lt;&#x2F;p&gt;
+&lt;p&gt;在这个文件中定义那个方法&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;HelloExternalLib&#x2F;HelloExternalLib.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;iostream&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;sayHello&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    std::cout &amp;lt;&amp;lt; &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Hello, world!&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;HelloWorld&#x2F;external&#x2F;HelloExternalLib&#x2F;CMakeLists.txt&lt;&#x2F;p&gt;
+&lt;p&gt;这个文件用于构建HelloExternalLib这个库本身，添加了HelloExternalLib的库目标，包括HelloExternalLib.cpp这个源文件&lt;br &#x2F;&gt;
+其中的target_include_directories用于指定库的头文件路径，PUBLIC代表如果库被链接这些头文件对外部是可见的，改成PRIVATE的话就是对外部不可见，只有库本身的源文件能够找到这些头文件，比如Hello目标链接了HelloExternalLib，include文件夹中的头文件都是对Hello可见的&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cmake&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cmake &quot;&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;cmake_minimum_required&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VERSION &lt;&#x2F;span&gt;&lt;span&gt;3.0.0)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;project&lt;&#x2F;span&gt;&lt;span&gt;(HelloExternalLib)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;add_library&lt;&#x2F;span&gt;&lt;span&gt;(HelloExternalLib src&#x2F;HelloExternalLib.cpp)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;target_include_directories&lt;&#x2F;span&gt;&lt;span&gt;(HelloExternalLib &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;PUBLIC &lt;&#x2F;span&gt;&lt;span&gt;include)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;HelloWorld&#x2F;external&#x2F;CMakeLists.txt&lt;&#x2F;p&gt;
+&lt;p&gt;这个文件仅仅是通过add_subdirectory把子文件夹添加到CMake项目中，也就是把HelloExternalLib这个文件夹加进来，这样CMake才会读取子文件夹中的CMakeLists.txt文件并进行相应的构建工作&lt;br &#x2F;&gt;
+注意子文件夹可以有多级目录嵌套，并且是递归进行的，当然需要在每一级目录下都编写CMakeList.txt然后加上add_subdirectory&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cmake&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cmake &quot;&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;add_subdirectory&lt;&#x2F;span&gt;&lt;span&gt;(HelloExternalLib)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;HelloWorld&#x2F;CMakeLists.txt&lt;&#x2F;p&gt;
+&lt;p&gt;这个文件就是刚刚用来配置HelloWorld项目的&lt;&#x2F;p&gt;
+&lt;p&gt;我们加一行add_subdirectory来让它添加external子目录&lt;&#x2F;p&gt;
+&lt;p&gt;并且使用target_link_libraries把Hello这个可执行目标跟HelloExternalLib这个库目标链接起来，并使用PRIVATE的链接方式&lt;br &#x2F;&gt;
+PRIVATE这种链接方式表示HelloExternalLib不会被暴露给链接了Hello的其他目标，如果使用PUBLIC链接方式，其他的目标链接Hello时也会自动链接HelloExternalLib，尽可能使用PRIVATE，这样可以避免很多潜在的问题&lt;br &#x2F;&gt;
+而对于可执行目标来说，它不会被其它的目标链接，所以可以全部使用PRIVATE&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cmake&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cmake &quot;&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;cmake_minimum_required&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VERSION &lt;&#x2F;span&gt;&lt;span&gt;3.0.0)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;project&lt;&#x2F;span&gt;&lt;span&gt;(HelloWorld)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;add_subdirectory&lt;&#x2F;span&gt;&lt;span&gt;(external)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;add_executable&lt;&#x2F;span&gt;&lt;span&gt;(Hello src&#x2F;Hello.cpp)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;target_link_libraries&lt;&#x2F;span&gt;&lt;span&gt;(Hello &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;PRIVATE &lt;&#x2F;span&gt;&lt;span&gt;HelloExternalLib)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;HelloWorld&#x2F;src&#x2F;Hello.cpp&lt;&#x2F;p&gt;
+&lt;p&gt;这时我们的源文件中就可以包含外部库的头文件并调用里面声明的方法了&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;HelloExternalLib&#x2F;HelloExternalLib.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;char&lt;&#x2F;span&gt;&lt;span&gt;**) {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sayHello&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;然后生成中间文件&lt;br &#x2F;&gt;
+macOS和Linux下可以这样，Windows下就根据上文添加-G参数并选择合适的生成器&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; cd build
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; cmake ..
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;最后使用make或者Windows下的其他工具构建就行了&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="zh">
+		<title>Vulkan画三角形「一」 概要与环境配置</title>
+		<published>2020-09-03T20:23:56+00:00</published>
+		<updated>2020-09-03T20:23:56+00:00</updated>
+		<link href="https://paakmau.github.io/vulkanhua-san-jiao-xing-yi-gai-yao-yu-huan-jing-pei-zhi/" type="text/html"/>
+		<id>https://paakmau.github.io/vulkanhua-san-jiao-xing-yi-gai-yao-yu-huan-jing-pei-zhi/</id>
+		<content type="html">&lt;p&gt;Vulkan是一个跨平台的图形与计算API，本系列文章将使用Vulkan绘制一个三角形，旨在为上手Vulkan提供帮助&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;使用CMake管理项目&lt;br &#x2F;&gt;
+使用VS Code编辑代码&lt;br &#x2F;&gt;
+使用GLFW管理窗体&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;09&#x2F;image-1.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;本系列文章主要是下面这个教程的翻译，但是做了一些修改&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;vulkan-tutorial.com&#x2F;&quot;&gt;https:&#x2F;&#x2F;vulkan-&lt;&#x2F;a&gt;&lt;a href=&quot;https:&#x2F;&#x2F;vulkan-tutorial.com&#x2F;&quot;&gt;tutorial&lt;&#x2F;a&gt;&lt;a href=&quot;https:&#x2F;&#x2F;vulkan-tutorial.com&#x2F;&quot;&gt;.com&#x2F;&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;an-zhuang-vulkan&quot;&gt;安装Vulkan&lt;&#x2F;h2&gt;
+&lt;p&gt;前往官网下载安装包直接安装&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;vulkan.lunarg.com&#x2F;&quot;&gt;https:&#x2F;&#x2F;vulkan.lunarg.com&#x2F;&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;an-zhuang-glfw&quot;&gt;安装GLFW&lt;&#x2F;h2&gt;
+&lt;p&gt;Vulkan只是一个图形API，无法管理窗体。为了方便，我们引入跨平台的GLFW库&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;macos&quot;&gt;macOS&lt;&#x2F;h3&gt;
+&lt;p&gt;可以用brew安装&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; brew install glfw
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;windows&quot;&gt;Windows&lt;&#x2F;h3&gt;
+&lt;p&gt;稍微麻烦一点，可以用MinGW-w64编译GLFW的源码并安装，最后添加环境变量&lt;&#x2F;p&gt;
+&lt;p&gt;先去官网下载源码&lt;br &#x2F;&gt;
+&lt;a href=&quot;https:&#x2F;&#x2F;www.glfw.org&#x2F;&quot;&gt;https:&#x2F;&#x2F;www.glfw.org&#x2F;&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;然后以管理员身份运行PowerShell，cd到GLFW源码项目文件夹下，输入以下命令&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS mkdir build
+&lt;&#x2F;span&gt;&lt;span&gt;PS cd build
+&lt;&#x2F;span&gt;&lt;span&gt;PS cmake -G &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;MinGW Makefiles&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; ..
+&lt;&#x2F;span&gt;&lt;span&gt;PS mingw32-make install
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;这样GLFW默认会被安装在C:&#x2F;Program Files (x86)&#x2F;GLFW文件夹中，如果想装在别的地方可以修改CMAKE_INSTALL_PREFIX环境变量，当然也可以直接下载预编译的二进制文件，但是可能它不会提供配置GLFW所需的CMake模块&lt;&#x2F;p&gt;
+&lt;p&gt;最后需要添加一个glfw3_DIR环境变量，指向存放配置GLFW的CMake模块的路径，值是C:\Program Files (x86)\GLFW\lib\cmake\glfw3，如果你使用了不同的安装路径，请做相应修改，这样后续find_package才能找到glfw3的头文件和依赖库&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;an-zhuang-cmake&quot;&gt;安装CMake&lt;&#x2F;h2&gt;
+&lt;p&gt;考虑到跨平台，我们用CMake配合VS Code会很方便&lt;&#x2F;p&gt;
+&lt;p&gt;mac下同样可以用brew安装&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; brew install cmake
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Windows下使用官网安装包安装就行了&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;an-zhuang-vs-codecha-jian&quot;&gt;安装VS Code插件&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;C&#x2F;C++&lt;&#x2F;li&gt;
+&lt;li&gt;CMake&lt;&#x2F;li&gt;
+&lt;li&gt;CMake Tools&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;chuang-jian-cmakexiang-mu&quot;&gt;创建CMake项目&lt;&#x2F;h2&gt;
+&lt;p&gt;直接新建一个文件夹，用VS Code打开它&lt;&#x2F;p&gt;
+&lt;p&gt;在其中创建CMakeList.txt文件，内容如下&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cmake&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cmake &quot;&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;cmake_minimum_required&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VERSION &lt;&#x2F;span&gt;&lt;span&gt;3.0.0)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;project&lt;&#x2F;span&gt;&lt;span&gt;(VulkanTest &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VERSION &lt;&#x2F;span&gt;&lt;span&gt;0.1.0)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;set&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CMAKE_CXX_STANDARD &lt;&#x2F;span&gt;&lt;span&gt;17)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;add_executable&lt;&#x2F;span&gt;&lt;span&gt;(VulkanTest main.cpp)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;find_package&lt;&#x2F;span&gt;&lt;span&gt;(glfw3 3.3 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;REQUIRED&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;target_link_libraries&lt;&#x2F;span&gt;&lt;span&gt;(VulkanTest glfw)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;find_package&lt;&#x2F;span&gt;&lt;span&gt;(Vulkan &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;REQUIRED&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;target_include_directories&lt;&#x2F;span&gt;&lt;span&gt;(VulkanTest &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;PRIVATE &lt;&#x2F;span&gt;&lt;span&gt;${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Vulkan_INCLUDE_DIRS&lt;&#x2F;span&gt;&lt;span&gt;})
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;target_link_libraries&lt;&#x2F;span&gt;&lt;span&gt;(VulkanTest ${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Vulkan_LIBRARIES&lt;&#x2F;span&gt;&lt;span&gt;})
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;简单说就是这个项目只有main.cpp一个文件，然后寻找Vulkan和glfw3这两个库，并链接到我们的项目中&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;yong-glfwchuang-jian-chuang-ti&quot;&gt;用GLFW创建窗体&lt;&#x2F;h2&gt;
+&lt;p&gt;接下来我们创建main.cpp文件&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;GLFW&#x2F;glfw3.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span&gt;uint32_t WIDTH = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;800&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span&gt;uint32_t HEIGHT = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;600&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;VulkanHelloWorld &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;:
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;Run&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;() {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;initWindow&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;();
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;initVulkan&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;();
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;mainLoop&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;();
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cleanup&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;();
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;private&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;:
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;initWindow&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;() {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwInit&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;();
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwWindowHint&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(GLFW_CLIENT_API, GLFW_NO_API);
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwWindowHint&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(GLFW_RESIZABLE, GLFW_FALSE);
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        window &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwCreateWindow&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(WIDTH, HEIGHT, &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;VulkanHelloWorld&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;nullptr&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;nullptr&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;);
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;initVulkan&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;() {}
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;mainLoop&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;() {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;while &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span&gt;!&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwWindowShouldClose&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(window)) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwPollEvents&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;();
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;cleanup&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;() {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwDestroyWindow&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(window);
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwTerminate&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;();
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;private&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;:
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    GLFWwindow &lt;&#x2F;span&gt;&lt;span&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;window;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    VulkanHelloWorld helloWorld;
+&lt;&#x2F;span&gt;&lt;span&gt;    helloWorld.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Run&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;这段代码主要是用GLFW处理窗体创建、主循环、窗体销毁等事情&lt;br &#x2F;&gt;
+因为GLFW不是本系列的主要内容，因此只是简单解释一下&lt;&#x2F;p&gt;
+&lt;p&gt;glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);&lt;br &#x2F;&gt;
+GLFW原本设计就是要为OpenGL创建上下文，而这里我们只用它管理窗体，因此使用这行代码防止他为OpenGL创建上下文&lt;&#x2F;p&gt;
+&lt;p&gt;glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);&lt;br &#x2F;&gt;
+处理可变大小窗体很麻烦，因此我们直接禁用它&lt;&#x2F;p&gt;
+&lt;p&gt;在VS Code中键入cmd + shift + p呼出命令面板，在其中输入CMake: Debug选项并回车调试项目，就能看到它创建了一个空窗体&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;09&#x2F;image-2.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;在接下来的文章中我们会不断填充这段代码，最终在屏幕中渲染出一个三角形&lt;&#x2F;p&gt;
+</content>
+	</entry>
+</feed>

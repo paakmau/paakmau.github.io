@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>泊谋</title>
+
+      
+
+      
+          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+    
+        
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io">
+                                <span itemprop="name">主页
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
+                                <span itemprop="name">分类
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
+                                <span itemprop="name">标签
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
+                                <span itemprop="name">GitHub
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Unity ECS框架摸索 第四章 Chunk</h1>
+        <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>4 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2020-02-03
+</span>
+    </header>
+    <div itemprop="articleBody">
+      <h2 id="unityzhong-componentde-chunkshi-cun-chu">Unity中Component的Chunk式存储</h2>
+<span id="continue-reading"></span>
+<p>首先，一组Component是一个Archetype。多个Entity如果由相同的Component构成，那么他们属于同一个Archetype。</p>
+<p>Unity会把属于同种Archetype的Entity归成同一类，同一类实体的组件会被集中存储。首先他们被划分为若干个Chunk，一个Chunk内部的同种组件会存储在连续的内存中；然后同类的Chunk之间可能用链表或指针数组相连，从而能够遍历这个Archetype所有实体的所有组件。如下图所示。</p>
+<p><img src="https://hebomou.top/wp-content/uploads/2019/12/ArchetypeChunkDiagram.jpg" alt="" /></p>
+<p>同种颜色的方块为同种组件，Chunk中的每列方块都是一个实体</p>
+<h2 id="zhen-dui-chunkde-bian-li">针对Chunk的遍历</h2>
+<p>在前文中，我们使用的IJobForEach就是对符合筛选条件的所有Archetype中所有Chunk中的所有Entity进行遍历，它遍历的元素是Entity。</p>
+<p>但是Unity提供了一种在Chunk层面上遍历的方法，即遍历符合条件的所有Chunk。</p>
+<p>将第二章中的RotateSpeedSystem修改为如下代码，依然能正常运行</p>
+<pre data-lang="cs" style="background-color:#2b303b;color:#c0c5ce;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">RotateSpeedSystem </span><span style="color:#eff1f5;">: </span><span style="color:#a3be8c;">JobComponentSystem </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    EntityQuery </span><span style="color:#bf616a;">m_Group</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">protected override void </span><span style="color:#8fa1b3;">OnCreate </span><span style="color:#eff1f5;">() {
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">m_Group </span><span>= </span><span style="color:#bf616a;">GetEntityQuery </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">ComponentType</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">ReadWrite</span><span style="color:#eff1f5;">&lt;Rotation&gt; (), </span><span style="color:#bf616a;">ComponentType</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">ReadOnly</span><span style="color:#eff1f5;">&lt;RotationSpeed&gt; ());
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    [</span><span style="color:#bf616a;">BurstCompile</span><span style="color:#eff1f5;">]
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">struct </span><span style="color:#eff1f5;">RotationJob : </span><span style="color:#a3be8c;">IJobChunk </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">public float </span><span style="color:#bf616a;">DeltaTime</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">public </span><span style="color:#eff1f5;">ArchetypeChunkComponentType&lt;Rotation&gt; </span><span style="color:#bf616a;">RotationType</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">        [</span><span style="color:#bf616a;">ReadOnly</span><span style="color:#eff1f5;">] </span><span style="color:#b48ead;">public </span><span style="color:#eff1f5;">ArchetypeChunkComponentType&lt;RotationSpeed&gt; </span><span style="color:#bf616a;">RotationSpeedType</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">public void </span><span style="color:#8fa1b3;">Execute </span><span style="color:#eff1f5;">(ArchetypeChunk </span><span style="color:#bf616a;">chunk</span><span style="color:#eff1f5;">, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">chunkIndex</span><span style="color:#eff1f5;">, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">firstEntityIndex</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">chunkRotations </span><span>= </span><span style="color:#bf616a;">chunk</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">GetNativeArray </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">RotationType</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">chunkRotationSpeeds </span><span>= </span><span style="color:#bf616a;">chunk</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">GetNativeArray </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">RotationSpeedType</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">for </span><span style="color:#eff1f5;">(</span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">i </span><span>= </span><span style="color:#d08770;">0</span><span style="color:#eff1f5;">; </span><span style="color:#bf616a;">i </span><span>&lt; </span><span style="color:#bf616a;">chunk</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Count</span><span style="color:#eff1f5;">; </span><span style="color:#bf616a;">i</span><span>++</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">                </span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">rotation </span><span>= </span><span style="color:#bf616a;">chunkRotations</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">i</span><span style="color:#eff1f5;">];
+</span><span style="color:#eff1f5;">                </span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">rotationSpeed </span><span>= </span><span style="color:#bf616a;">chunkRotationSpeeds</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">i</span><span style="color:#eff1f5;">];
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">                </span><span style="color:#bf616a;">chunkRotations</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">i</span><span style="color:#eff1f5;">] </span><span>= new </span><span style="color:#eff1f5;">Rotation {
+</span><span style="color:#eff1f5;">                    </span><span style="color:#bf616a;">Value </span><span>= </span><span style="color:#bf616a;">math</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">mul </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">math</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">normalize </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">rotation</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Value</span><span style="color:#eff1f5;">), </span><span style="color:#bf616a;">quaternion</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">AxisAngle </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">math</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">up </span><span style="color:#eff1f5;">(), </span><span style="color:#bf616a;">rotationSpeed</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">RadiansPerSecond </span><span>* </span><span style="color:#bf616a;">DeltaTime</span><span style="color:#eff1f5;">))
+</span><span style="color:#eff1f5;">                };
+</span><span style="color:#eff1f5;">            }
+</span><span style="color:#eff1f5;">        }
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">protected override </span><span style="color:#eff1f5;">JobHandle </span><span style="color:#8fa1b3;">OnUpdate </span><span style="color:#eff1f5;">(JobHandle </span><span style="color:#bf616a;">inputDeps</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">rotationType </span><span>= </span><span style="color:#bf616a;">GetArchetypeChunkComponentType</span><span style="color:#eff1f5;">&lt;Rotation&gt; ();
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">rotationSpeedType </span><span>= </span><span style="color:#bf616a;">GetArchetypeChunkComponentType</span><span style="color:#eff1f5;">&lt;RotationSpeed&gt; (</span><span style="color:#d08770;">true</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">job </span><span>= new </span><span style="color:#eff1f5;">RotationJob {
+</span><span style="color:#eff1f5;">            </span><span style="color:#bf616a;">DeltaTime </span><span>= </span><span style="color:#bf616a;">Time</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">DeltaTime</span><span style="color:#eff1f5;">,
+</span><span style="color:#eff1f5;">            </span><span style="color:#bf616a;">RotationType </span><span>= </span><span style="color:#bf616a;">rotationType</span><span style="color:#eff1f5;">,
+</span><span style="color:#eff1f5;">            </span><span style="color:#bf616a;">RotationSpeedType </span><span>= </span><span style="color:#bf616a;">rotationSpeedType
+</span><span style="color:#eff1f5;">        };
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">job</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Schedule </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">m_Group</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">inputDeps</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">}
+</span></code></pre>
+<p>解释：<br />
+m_Group用于存储筛选Chunk的条件。在OnCreate中赋值为对Rotation可读可写，对RotationSpeed只读。在Job Schedule的时候被传入。<br />
+RotationJob是用于规划Job的struct，Execute中传入的chunk变量就是当前遍历到的Chunk，根据RotationType和RotationSpeedType就能从chunk中拿到对应类型的原生数组，直接用for循环即可遍历该Chunk中的所有Entity的所有Component。</p>
+<p>这样的遍历方式相对于IJobForEach更加灵活，它对Component的筛选跟访问是独立开的，也就是它筛选出的Component跟实际访问的Component可以不一样，更加灵活。<br />
+比如说使用「或」条件筛选出的组件实际可能有多种情况，可以在内部判断是哪一种情况并灵活处理<br />
+此外它还可以跟ChunkComponentData配合使用，可以提高性能（愚蠢的常数优化）</p>
+<h2 id="chunkcomponentdatajie-shao">ChunkComponentData介绍</h2>
+<p>它是一种奇怪的Component，Unity规定这类Component由同一个Chunk中每个Entity共享。<br />
+举个例子，如果一个Archetype中包含一个ChunkComponentData类型的组件，那么它的每个Chunk就会有一个该组件。同一个Chunk中，Entity共享同一个该组件。不同Chunk的该组件是不同的实例，它们的值也可以不相同。</p>
+<p>如果修改一个Entity上的该类组件，它所在Chunk中其他Entity的同类组件的值也会一并修改。</p>
+<p>感觉这种组件应该可以用于在同种Archetype中细分小类型，或者用于共享公共数据。对它进行写访问的时候应该需要结合IJobChunk使用。</p>
+
+    </div>
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                    Published by 何泊谋
+                
+                
+                    
+                    in <a href="https://paakmau.github.io/categories/unity/">Unity</a>
+                
+                
+                    and
+                    tagged
+                    
+                        <a href="https://paakmau.github.io/tags/unity-ecs/">Unity ECS</a>
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+    </body>
+
+</html>

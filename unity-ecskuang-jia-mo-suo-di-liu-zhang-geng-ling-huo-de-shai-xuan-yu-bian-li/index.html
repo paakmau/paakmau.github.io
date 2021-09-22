@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>泊谋</title>
+
+      
+
+      
+          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+    
+        
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io">
+                                <span itemprop="name">主页
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
+                                <span itemprop="name">分类
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
+                                <span itemprop="name">标签
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
+                                <span itemprop="name">GitHub
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Unity ECS框架摸索 第六章 更灵活的筛选与遍历</h1>
+        <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>4 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2020-02-04
+</span>
+    </header>
+    <div itemprop="articleBody">
+      <p>前文中我们用IJobForEach或者JobComponentSystem.Entities.ForEach都只能筛选并遍历具有特定Component的Entity，但其实有更灵活且同样高效的方式</p>
+<span id="continue-reading"></span><h2 id="entityquery">EntityQuery</h2>
+<p>Unity提供了EntityQuery用于精确筛选Entity，并且文档中提到IJobForEach与JobComponentSystem.Entities.ForEach的内部实现其实都是EntityQuery</p>
+<h3 id="getentityquery">GetEntityQuery</h3>
+<p>最简单的，我们可以筛选具有指定组件的实体，并规定这些组件的读写权限</p>
+<p>例如下面的代码选出了全部的同时拥有Translation与MoveSpeed组件的Entity，并且规定Translation可读可写，MoveSpeed只读</p>
+<pre data-lang="cs" style="background-color:#2b303b;color:#c0c5ce;" class="language-cs "><code class="language-cs" data-lang="cs"><span>EntityQuery </span><span style="color:#bf616a;">m_Query </span><span>= </span><span style="color:#bf616a;">GetEntityQuery</span><span>(typeof(Translation), </span><span style="color:#bf616a;">ComponentType</span><span>.</span><span style="color:#bf616a;">ReadOnly</span><span>&lt;MoveSpeed&gt;());
+</span></code></pre>
+<h3 id="entityquerydesc">EntityQueryDesc</h3>
+<p>对于更复杂的筛选，我们使用EntityQueryDesc来创建EntityQuery，一个EntityQueryDesc对象具有三个属性，它们的类型都是ComponentType数组</p>
+<ul>
+<li>All：数组中所有的类型必须出现在Entity中，且可以在其中规定读写权限</li>
+<li>Any：数组中至少一个类型会出现在Entity中</li>
+<li>None：数组中任意类型都不会出现在Entity中</li>
+</ul>
+<p>下面举个例子，筛选同时具有Translation、MoveSpeed，不具有RotationSpeed，至少具有Wing或magic中的一个的所有Entity</p>
+<pre data-lang="cs" style="background-color:#2b303b;color:#c0c5ce;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#b48ead;">var </span><span style="color:#bf616a;">query </span><span>= new EntityQueryDesc
+</span><span>{
+</span><span>    </span><span style="color:#bf616a;">All </span><span>= new ComponentType[] { </span><span style="color:#bf616a;">ComponentType</span><span>.</span><span style="color:#bf616a;">ReadOnly</span><span>&lt;MoveSpeed&gt;(), typeof(Translation) },
+</span><span>    </span><span style="color:#bf616a;">None </span><span>= new ComponentType[] { typeof(RotationSpeed) },
+</span><span>    </span><span style="color:#bf616a;">Any </span><span>= new ComponentType[] { typeof(Magic), typeof(Wing) }
+</span><span>};
+</span><span>EntityQuery </span><span style="color:#bf616a;">m_Group </span><span>= </span><span style="color:#bf616a;">GetEntityQuery</span><span>(</span><span style="color:#bf616a;">query</span><span>);
+</span></code></pre>
+<h3 id="lian-he-shai-xuan">联合筛选</h3>
+<p>我们可以在调用GetEntityQuery函数时传入EntityQueryDesc数组，数组中的筛选条件是「或」的关系，下面是例子</p>
+<pre data-lang="cs" style="background-color:#2b303b;color:#c0c5ce;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#b48ead;">var </span><span style="color:#bf616a;">query1 </span><span>= new EntityQueryDesc
+</span><span>{
+</span><span>    </span><span style="color:#bf616a;">All </span><span>= new ComponentType[] { </span><span style="color:#bf616a;">ComponentType</span><span>.</span><span style="color:#bf616a;">ReadOnly</span><span>&lt;MoveSpeed&gt;(), typeof(Translation), typeof(Wing) },
+</span><span>    </span><span style="color:#bf616a;">None </span><span>= new ComponentType[] { typeof(RotationSpeed) }
+</span><span>};
+</span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">query2 </span><span>= new EntityQueryDesc
+</span><span>{
+</span><span>    </span><span style="color:#bf616a;">All </span><span>= new ComponentType[] { </span><span style="color:#bf616a;">ComponentType</span><span>.</span><span style="color:#bf616a;">ReadOnly</span><span>&lt;MoveSpeed&gt;(), typeof(Translation), typeof(Magic) }
+</span><span>};
+</span><span style="color:#bf616a;">m_Group </span><span>= </span><span style="color:#bf616a;">GetEntityQuery</span><span>(new EntityQueryDesc[] { </span><span style="color:#bf616a;">query1</span><span>, </span><span style="color:#bf616a;">query2 </span><span>});
+</span></code></pre>
+<h3 id="shared-componentguo-lu">Shared Component过滤</h3>
+<p>可以对筛选出的Entity拥有的指定Shared Component进行过滤，保证过滤出的Entity拥有的指定Shared Component均为特定值</p>
+<p>例如下面代码用一个Shared Component作为分组标记，过滤出GroupId为5的所有Entity</p>
+<pre data-lang="cs" style="background-color:#2b303b;color:#c0c5ce;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#b48ead;">public struct </span><span>SharedGroup : </span><span style="color:#a3be8c;">ISharedComponentData </span><span>{
+</span><span>    </span><span style="color:#b48ead;">public int </span><span style="color:#bf616a;">GroupId</span><span>;
+</span><span>}
+</span><span>
+</span><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">FlySystem </span><span style="color:#eff1f5;">: </span><span style="color:#a3be8c;">JobComponentSystem
+</span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    [</span><span style="color:#bf616a;">BurstCompile</span><span style="color:#eff1f5;">]
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">struct </span><span style="color:#eff1f5;">FlyJob : </span><span style="color:#a3be8c;">IJobForEach</span><span style="color:#eff1f5;">&lt;MoveSpeed, Translation&gt;
+</span><span style="color:#eff1f5;">    {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">public void </span><span style="color:#8fa1b3;">Execute</span><span style="color:#eff1f5;">([</span><span style="color:#bf616a;">ReadOnly</span><span style="color:#eff1f5;">]</span><span style="color:#b48ead;">ref </span><span style="color:#eff1f5;">MoveSpeed </span><span style="color:#bf616a;">moveSpeed</span><span style="color:#eff1f5;">, </span><span style="color:#b48ead;">ref </span><span style="color:#eff1f5;">Translation </span><span style="color:#bf616a;">translation</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">        {
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">v </span><span>= </span><span style="color:#bf616a;">translation</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Value</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">            </span><span style="color:#bf616a;">v</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">y </span><span>+= </span><span style="color:#bf616a;">moveSpeed</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">MetrePerSecond</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">            </span><span style="color:#bf616a;">translation </span><span>= new </span><span style="color:#eff1f5;">Translation { </span><span style="color:#bf616a;">Value </span><span>= </span><span style="color:#bf616a;">v </span><span style="color:#eff1f5;">};
+</span><span style="color:#eff1f5;">        }
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    EntityQuery </span><span style="color:#bf616a;">m_Group</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">protected override void </span><span style="color:#8fa1b3;">OnCreate</span><span style="color:#eff1f5;">()
+</span><span style="color:#eff1f5;">    {
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">m_Group </span><span>= </span><span style="color:#bf616a;">GetEntityQuery</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">ComponentType</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">ReadOnly</span><span style="color:#eff1f5;">&lt;SharedGroup&gt;(), </span><span style="color:#bf616a;">ComponentType</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">ReadOnly</span><span style="color:#eff1f5;">&lt;MoveSpeed&gt;(), </span><span>typeof</span><span style="color:#eff1f5;">(Translation));
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">m_Group</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">AddSharedComponentFilter</span><span style="color:#eff1f5;">(</span><span>new </span><span style="color:#eff1f5;">SharedGroup());
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">protected override </span><span style="color:#eff1f5;">JobHandle </span><span style="color:#8fa1b3;">OnUpdate</span><span style="color:#eff1f5;">(JobHandle </span><span style="color:#bf616a;">inputDeps</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">    {
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">m_Group</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">SetSharedComponentFilter</span><span style="color:#eff1f5;">(</span><span>new </span><span style="color:#eff1f5;">SharedGroup { </span><span style="color:#bf616a;">GroupId </span><span>= </span><span style="color:#d08770;">4 </span><span style="color:#eff1f5;">});
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">return </span><span>new </span><span style="color:#eff1f5;">FlyJob().</span><span style="color:#bf616a;">Schedule</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">m_Group</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">inputDeps</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">}
+</span></code></pre>
+<p>解释：<br />
+当前版本官方手册中这个地方的代码有误，上面代码中把AddSharedComponentFilter放在OnCreate，SetSharedComponentFilter放在OnUpdate的用法是我瞎猜的。当前版本的官方手册用的是之前版本的，根本不是这两个函数<br />
+另外我碰巧发现，就算没有Add，直接Set它也会自动Add</p>
+<h3 id="ban-ben-xiu-gai-guo-lu">版本修改过滤</h3>
+<p>过滤出指定组件被修改过的</p>
+<p>同样也有Add和Set两个版本，官方手册同样不靠谱</p>
+<p>然后下面的代码用于过滤出Translation组件经过修改的实体<br />
+当然是我瞎猜的也没有试（反正API还会改）</p>
+<pre data-lang="cs" style="background-color:#2b303b;color:#c0c5ce;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#bf616a;">m_Group</span><span>.</span><span style="color:#bf616a;">AddChangedVersionFilter</span><span>(typeof(Translation));
+</span></code></pre>
+<h2 id="shou-dong-bian-li">手动遍历</h2>
+<p>这种方式可以遍历所有的Entity，可以灵活访问任意Entity的任意Component，但显然效率低下，官方手册说蛇皮操作推荐用这个</p>
+<p>手册说用IJobParallelFor，懒得写了（反正API也会改）（看着语法提示干就完了，奥利给）</p>
+
+    </div>
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                    Published by 何泊谋
+                
+                
+                    
+                    in <a href="https://paakmau.github.io/categories/unity/">Unity</a>
+                
+                
+                    and
+                    tagged
+                    
+                        <a href="https://paakmau.github.io/tags/unity-ecs/">Unity ECS</a>
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+    </body>
+
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>泊谋</title>
+
+      
+
+      
+          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+    
+        
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io">
+                                <span itemprop="name">主页
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
+                                <span itemprop="name">分类
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
+                                <span itemprop="name">标签
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
+                                <span itemprop="name">GitHub
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">UE4材质编辑器中材质结点的数据结构 源码浅析</h1>
+        <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>5 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2020-05-15
+</span>
+    </header>
+    <div itemprop="articleBody">
+      <p>UE4的材质编辑器中我们可以创建材质结点然后给它们连线来创建材质</p>
+<span id="continue-reading"></span>
+<p>本文将根据源码解析材质结点在内存中的数据结构</p>
+<h2 id="uedgraph">UEdGraph</h2>
+<p>先简单提一下UEdGraph</p>
+<p>它用来管理一张可视化的有向图，而且其实蓝图就是用这个东西来做的<br />
+一个UEdGraph对象会包括图中所有的UEdGraphNode也就是结点<br />
+一个结点包括位置等基础信息，然后它还有一个UEdGraphPin的指针数组<br />
+一个UEdGraphPin其实就是一个插槽，用一个字节表示是输入插槽还是输出插槽，然后持有它所属的UEdGraphNode指针，还有一个UEdGraphNode指针数组保存这个插槽连接到的结点</p>
+<h2 id="umaterialgraph">UMaterialGraph</h2>
+<p>它派生自UEdGraph，保存一个材质在编辑器中的所有结点形成的有向图。虽然它主要用于管理由材质结点组成的可视化的有向图，但它也持有UMaterial指针用来获取材质输入插槽等信息<br />
+然后用户在编辑器中对材质的修改都会作用到这个对象上</p>
+<p>它有一个UMaterialGraphNode_Root类型的成员变量RootNode，这个RootNode其实就是编辑器中的材质结果结点，通过这个结点向前递归我们可以找到这个材质结果结点连接的所有结点，不过其实它的基类UEdGraph本身就具有这样的功能</p>
+<h2 id="umaterialgraphnode-base">UMaterialGraphNode_Base</h2>
+<p>根据名字我们知道它是材质结点的基类，派生自UEdGraphNode</p>
+<p>比如前面提到的UMaterialGraphNode_Root就是它的一个派生类；此外它的派生类还有UMaterialGraphNode，这个派生类用于管理材质结果结点之外的其他结点</p>
+<p>这两个派生类之间的主要区别在于获取插槽等结点数据的方式不同</p>
+<p>UMaterialGraphNode_Root获取插槽数据是通过UEdGraphNode的GetGraph方法获取所属的UEdGraph指针，然后类型转换到UMaterialGraph指针，再通过UMaterialGraph的MaterialInputs得到材质结果结点上的各个输入</p>
+<p>下面贴一下它的CreateInputPins的实现</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">void </span><span>UMaterialGraphNode_Root::</span><span style="color:#8fa1b3;">CreateInputPins</span><span>()
+</span><span>{
+</span><span>    UMaterialGraph* MaterialGraph = </span><span style="color:#bf616a;">CastChecked</span><span>&lt;UMaterialGraph&gt;(</span><span style="color:#bf616a;">GetGraph</span><span>());
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">const</span><span> FMaterialInputInfo&amp; MaterialInput : MaterialGraph-&gt;</span><span style="color:#bf616a;">MaterialInputs</span><span>)
+</span><span>    {
+</span><span>        UEdGraphPin* InputPin = </span><span style="color:#bf616a;">CreatePin</span><span>(EGPD_Input, UMaterialGraphSchema::PC_MaterialInput, *FString::</span><span style="color:#bf616a;">Printf</span><span>(</span><span style="color:#bf616a;">TEXT</span><span>(&quot;</span><span style="color:#d08770;">%d</span><span>&quot;), (int32)MaterialInput.</span><span style="color:#bf616a;">GetProperty</span><span>()), *MaterialInput.</span><span style="color:#bf616a;">GetName</span><span>().</span><span style="color:#bf616a;">ToString</span><span>());
+</span><span>    }
+</span><span>
+</span><span>}
+</span></code></pre>
+<p>然后UMaterialGraphNode管理的是其他结点，其实也就是表达式结点，它持有一个UMaterialExpression指针，于是通过这个指针直接就能拿到结点表达式的输入输出的类型和名称</p>
+<p>UMaterialExpression<br />
+结点表达式</p>
+<p>因为不同类型的结点会具有不同的输入输出和功能，所以一个结点就是一个具有若干输入和输出表达式</p>
+<p>但是UMaterialExpression只是一个接口，因为不同表达式的输入输出不同，因此具体的表达式都会派生自UMaterialExpression，比如UMaterialExpressionAdd就是具体的加法表达式</p>
+<p>这里简单贴一下它的CreateInputPins的实现</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">void </span><span>UMaterialGraphNode::</span><span style="color:#8fa1b3;">CreateInputPins</span><span>()
+</span><span>{
+</span><span>    </span><span style="color:#b48ead;">const</span><span> TArray&lt;FExpressionInput*&gt; ExpressionInputs = MaterialExpression-&gt;</span><span style="color:#bf616a;">GetInputs</span><span>();
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(int32 Index = </span><span style="color:#d08770;">0</span><span>; Index &lt; ExpressionInputs.</span><span style="color:#bf616a;">Num</span><span>() ; ++Index)
+</span><span>    {
+</span><span>        FExpressionInput* Input = ExpressionInputs[Index];
+</span><span>        FName InputName = MaterialExpression-&gt;</span><span style="color:#bf616a;">GetInputName</span><span>(Index);
+</span><span>
+</span><span>        InputName = </span><span style="color:#bf616a;">GetShortenPinName</span><span>(InputName);
+</span><span>
+</span><span>        </span><span style="color:#b48ead;">const</span><span> FName PinCategory = MaterialExpression-&gt;</span><span style="color:#bf616a;">IsInputConnectionRequired</span><span>(Index) ? UMaterialGraphSchema::PC_Required : UMaterialGraphSchema::PC_Optional;
+</span><span>
+</span><span>        UEdGraphPin* NewPin = </span><span style="color:#bf616a;">CreatePin</span><span>(EGPD_Input, PinCategory, InputName);
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(NewPin-&gt;</span><span style="color:#bf616a;">PinName</span><span>.</span><span style="color:#bf616a;">IsNone</span><span>())
+</span><span>        {
+</span><span>            </span><span style="color:#65737e;">// Makes sure pin has a name for lookup purposes but user will never see it
+</span><span>            NewPin-&gt;</span><span style="color:#bf616a;">PinName </span><span>= </span><span style="color:#bf616a;">CreateUniquePinName</span><span>(</span><span style="color:#bf616a;">TEXT</span><span>(&quot;</span><span style="color:#a3be8c;">Input</span><span>&quot;));
+</span><span>            NewPin-&gt;</span><span style="color:#bf616a;">PinFriendlyName </span><span>= SpaceText;
+</span><span>        }
+</span><span>    }
+</span><span>}
+</span></code></pre>
+
+    </div>
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                    Published by 何泊谋
+                
+                
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+    </body>
+
+</html>

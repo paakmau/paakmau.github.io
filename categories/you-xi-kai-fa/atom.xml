@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh">
+	<title>泊谋 - 游戏开发</title>
+	<subtitle>随便写写，开心就行。</subtitle>
+	<link href="https://paakmau.github.io/categories/you-xi-kai-fa/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://paakmau.github.io"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2020-07-11T20:38:43+00:00</updated>
+	<id>https://paakmau.github.io/categories/you-xi-kai-fa/atom.xml</id>
+	<entry xml:lang="zh">
+		<title>Win10下Perforce命令行快速上手</title>
+		<published>2020-07-11T20:38:43+00:00</published>
+		<updated>2020-07-11T20:38:43+00:00</updated>
+		<link href="https://paakmau.github.io/win10xia-perforceming-ling-xing-kuai-su-shang-shou/" type="text/html"/>
+		<id>https://paakmau.github.io/win10xia-perforceming-ling-xing-kuai-su-shang-shou/</id>
+		<content type="html">&lt;p&gt;相对于Git和SVN，Perforce在管理二进制文件上更方便&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;本文参考了官网教程&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;www.perforce.com&#x2F;manuals&#x2F;p4guide&#x2F;Content&#x2F;P4Guide&#x2F;tutorial.readmefirst.html&quot;&gt;https:&#x2F;&#x2F;www.perforce.com&#x2F;manuals&#x2F;p4guide&#x2F;Content&#x2F;P4Guide&#x2F;tutorial.readmefirst.html&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;gityong-hu-kan-zhe-li&quot;&gt;Git用户看这里&lt;&#x2F;h2&gt;
+&lt;p&gt;Stream Depot大概可以理解为一个Git项目，然后Stream就是Git里的分支&lt;&#x2F;p&gt;
+&lt;p&gt;其中Stream必须要依赖于Stream Depot存在&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;an-zhuang&quot;&gt;安装&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;www.perforce.com&#x2F;downloads&quot;&gt;https:&#x2F;&#x2F;www.perforce.com&#x2F;downloads&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;把服务端和命令行客户端都装上就行了，也可以整图形化界面&lt;&#x2F;p&gt;
+&lt;p&gt;Windows下安装包会自动配置环境变量；并且服务端装完后会自动启动，如果没有的话就用p4d命令启动服务端&lt;&#x2F;p&gt;
+&lt;p&gt;我们可以在PowerShell里输入下面的命令测试一下服务端是否正常&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 info
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;chuang-jian-stream-depot&quot;&gt;创建Stream Depot&lt;&#x2F;h2&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 depot -t stream TestDepot
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;解释一下，这行命令创建了一个名为TestDepot的Stream Depot，-t stream用于指定这个Depot的类型&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;chuang-jian-stream&quot;&gt;创建Stream&lt;&#x2F;h2&gt;
+&lt;p&gt;Git中我们通常会开master和dev分支&lt;&#x2F;p&gt;
+&lt;p&gt;在Perforce里我们也可以做同样的操作，使用下面两行命令创建main和dev两个Stream&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 stream -t mainline &#x2F;&#x2F;TestDepot&#x2F;main
+&lt;&#x2F;span&gt;&lt;span&gt;PS p4 stream -t development -P &#x2F;&#x2F;TestDepot&#x2F;main &#x2F;&#x2F;TestDepot&#x2F;dev
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;解释一下，-t参数用于指定Stream的类型，-P参数用于指定父Stream；上面的例子里main这个Stream是dev的父Stream&lt;&#x2F;p&gt;
+&lt;p&gt;需要注意mainline类型的Stream不能有父Stream&lt;&#x2F;p&gt;
+&lt;p&gt;我们可以使用下面的命令来查看所有的Stream&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 streams
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;chuang-jian-workspace&quot;&gt;创建Workspace&lt;&#x2F;h2&gt;
+&lt;p&gt;之前Stream相关的操作都是作用在服务端上的&lt;&#x2F;p&gt;
+&lt;p&gt;这里我们在本地创建Workspace&lt;&#x2F;p&gt;
+&lt;p&gt;首先设置环境变量P4CLIENT，这个是PowerShell的写法&lt;br &#x2F;&gt;
+配环境变量这种操作其实我是觉得挺离谱的&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS $&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;env:P4CLIENT&lt;&#x2F;span&gt;&lt;span&gt;=&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;hello_client&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;然后cd到一个空的文件夹，输入以下命令&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 client -S &#x2F;&#x2F;TestDepot&#x2F;main
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;这样这个文件夹就跟main这个Stream绑定起来了&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;tian-jia-wen-jian&quot;&gt;添加文件&lt;&#x2F;h2&gt;
+&lt;p&gt;在这个文件夹里新建一个文件test_file.txt&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 add .\test_file.txt
+&lt;&#x2F;span&gt;&lt;span&gt;PS p4 submit -d &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Add a test file&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;xiu-gai-wen-jian&quot;&gt;修改文件&lt;&#x2F;h2&gt;
+&lt;p&gt;Workspace里已有的文件通常都是只读的，我们使用下面这行命令修改test_file.txt的读写权限&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 edit .\test_file.txt
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;然后用编辑器改一下里面的内容&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 submit -d &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Modify a test file&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;shan-chu-wen-jian&quot;&gt;删除文件&lt;&#x2F;h2&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 delete .\test_file.txt
+&lt;&#x2F;span&gt;&lt;span&gt;PS p4 submit -d &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Delete a test file&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;需要注意这个只是从服务端把该文件删除，Workspace里这个文件依然存在&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;yu-fu-wu-duan-tong-bu&quot;&gt;与服务端同步&lt;&#x2F;h2&gt;
+&lt;p&gt;如果其他人对Stream进行了修改并提交到了服务端，我们可以把这些修改同步到本地的Workspace里&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 sync
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;qie-huan-stream&quot;&gt;切换Stream&lt;&#x2F;h2&gt;
+&lt;p&gt;我们可以使用下面这个命令查看所有的Stream&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;switch &lt;&#x2F;span&gt;&lt;span&gt;-l
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;然后我们切换到dev&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;switch &lt;&#x2F;span&gt;&lt;span&gt;-r dev
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;he-bing-stream&quot;&gt;合并Stream&lt;&#x2F;h2&gt;
+&lt;p&gt;merge命令只能以父Stream为源，子Stream为目标&lt;&#x2F;p&gt;
+&lt;p&gt;首先switch到子Stream，然后执行下面的命令，会自动从父Stream上合并过来&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 merge
+&lt;&#x2F;span&gt;&lt;span&gt;PS p4 resolve
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;后面的resolve命令是解决两个Stream的冲突，不同于Git的自动合并，手动合并非常原始，建议使用图形化界面或者编辑器插件&lt;&#x2F;p&gt;
+&lt;p&gt;resolve完了之后记得submit&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 submit -d &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Merge&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+</content>
+	</entry>
+	<entry xml:lang="zh">
+		<title>渲染管线浅析</title>
+		<published>2020-05-06T23:56:00+00:00</published>
+		<updated>2020-05-06T23:56:00+00:00</updated>
+		<link href="https://paakmau.github.io/xuan-ran-guan-xian-qian-xi/" type="text/html"/>
+		<id>https://paakmau.github.io/xuan-ran-guan-xian-qian-xi/</id>
+		<content type="html">&lt;p&gt;渲染管线会把内存中的三维模型输出到二维的屏幕上，它具有明显的先后顺序，每一个阶段的输出都会作为下一个阶段的输入。它也可以翻译为渲染流水线&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;大致上，渲染管线有数据预处理、顶点着色器、图元组装、光栅化和片元着色器这几个阶段&lt;br &#x2F;&gt;
+不过不同的游戏引擎可能阶段划分不尽相同也没有统一的说法，另外也可能会增加其他阶段以实现更好的效果&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;shu-ju-yu-chu-li&quot;&gt;数据预处理&lt;&#x2F;h2&gt;
+&lt;p&gt;由CPU负责完成，假设要渲染一堆模型，就需要准备好这些模型的所有点、三角面、法向量、材质、变换矩阵等信息&lt;&#x2F;p&gt;
+&lt;p&gt;然后可以做一些简单的剔除，把不可能被渲染的模型直接排除掉，比如排除掉远处模型的距离剔除、根据摄像机剔除不可能看见的模型的视锥剔除等等&lt;br &#x2F;&gt;
+需要注意的是一般只能剔除整个模型，而不会具体到模型的点和面&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;ding-dian-zhao-se-qi&quot;&gt;顶点着色器&lt;&#x2F;h2&gt;
+&lt;p&gt;首先进入这一阶段之前，需要把需要的顶点坐标、面、法向量、变换矩阵等准备好，并放入显存之中&lt;br &#x2F;&gt;
+其中，模型的顶点坐标是相对于模型原点的，也就是局部空间；而我们能在屏幕上看到的模型被拍扁成了二维图像，甚至可以有透视效果，这个叫做屏幕空间；从局部空间到屏幕空间的过程中会先转换为裁剪空间以方便视锥外的点的剔除&lt;br &#x2F;&gt;
+把模型的信息从局部空间转换到裁剪空间，就是这一阶段需要做的事情&lt;&#x2F;p&gt;
+&lt;p&gt;具体说的话，有以下三个步骤&lt;&#x2F;p&gt;
+&lt;p&gt;Model变换，从局部空间转换到世界空间&lt;br &#x2F;&gt;
+一个模型的transform会有translation、rotation、scale这三个东西，经过这样的transform，模型中的顶点和法向量就能转移到世界坐标&lt;&#x2F;p&gt;
+&lt;p&gt;View变换，从世界空间转换到视角空间&lt;br &#x2F;&gt;
+简单地说，就是通过旋转平移场景中的所有物体，把摄像机挪到原点，并且面向某个轴。其实跟第一个步骤很像&lt;br &#x2F;&gt;
+这个步骤是为了方便接下来的投影&lt;&#x2F;p&gt;
+&lt;p&gt;Projection变换，从视角空间转换到裁剪空间&lt;br &#x2F;&gt;
+这个比较关键，有透视投影和正交投影两种，透视投影会有近大远小的效果而正交投影不会&lt;&#x2F;p&gt;
+&lt;p&gt;这三个步骤其实就是对所有的点依次做三个矩阵乘法，根据结合律可以直接先把它们乘起来（也就是上一个阶段中传入进来的变换矩阵）&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;tu-yuan-zu-zhuang&quot;&gt;图元组装&lt;&#x2F;h2&gt;
+&lt;p&gt;总的说就是把视锥外的点和面剔除掉，然后得到屏幕空间上的坐标&lt;&#x2F;p&gt;
+&lt;p&gt;具体来说要做下面几件事情&lt;&#x2F;p&gt;
+&lt;p&gt;剪裁&lt;br &#x2F;&gt;
+经过了上一个阶段，可以通过点的z和w坐标判断某个点是否在视锥内部&lt;br &#x2F;&gt;
+如果不在就进行剪裁，可以用Sutherland-Hodgeman算法来生成新的边界&lt;&#x2F;p&gt;
+&lt;p&gt;背面剔除&lt;br &#x2F;&gt;
+根据三角面的环绕顺序可以判断面向摄像机的是正面还是背面&lt;br &#x2F;&gt;
+使用行列式（或者说二维向量的叉乘）的结果看正负号就行了&lt;&#x2F;p&gt;
+&lt;p&gt;齐次除法&lt;br &#x2F;&gt;
+向量除以它的w坐标，得到NDC坐标&lt;br &#x2F;&gt;
+（只有透视投影才需要做齐次除法，因为正交投影后点的w坐标都是1）&lt;&#x2F;p&gt;
+&lt;p&gt;视口变换&lt;br &#x2F;&gt;
+把NDC坐标映射到屏幕上，只是简单的平移和缩放&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;guang-zha-hua&quot;&gt;光栅化&lt;&#x2F;h2&gt;
+&lt;p&gt;简单来说，我们上一阶段的点和面这些都是连续的，而电脑屏幕上的像素点是离散的，要把一个面或者一条边都变成一堆像素&lt;br &#x2F;&gt;
+所以光栅化也就是离散化&lt;&#x2F;p&gt;
+&lt;p&gt;因为一个面被转换为了一个一个的像素点，我们需要为每一个像素确定它的法向量、贴图坐标等等&lt;br &#x2F;&gt;
+于是插值就行了，需要注意的是法向量直接线性插值会爆炸所以要用到透视校正插值&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;pian-yuan-zhao-se-qi&quot;&gt;片元着色器&lt;&#x2F;h2&gt;
+&lt;p&gt;一个片元也就是光栅化中得到的一个像素&lt;br &#x2F;&gt;
+在这个阶段中，需要根据环境中的光源和每一个片元或者说像素的贴图、颜色、法向量、位置等计算出片元的最终颜色&lt;&#x2F;p&gt;
+&lt;p&gt;光照的计算&lt;br &#x2F;&gt;
+比较经典的就是Phong光照模型，最终颜色=环境光+漫反射+镜面反射&lt;br &#x2F;&gt;
+材质信息需要提供环境光、漫反射和镜面反射的颜色或者贴图，另外还可以带上系数和透明度&lt;br &#x2F;&gt;
+其中环境光是常量；漫反射用光线与法向量夹角的余弦值乘上片元本身的颜色来近似模拟，因为余弦随着夹角增大而减小，可以很好的模拟漫反射；镜面反射则是需要根据光线与法向量得到光线的反射向量，再跟摄像机视线的方向求余弦&lt;&#x2F;p&gt;
+&lt;p&gt;贴图&lt;br &#x2F;&gt;
+假设三维模型的壳就是一层纸，然后把纸撕碎（有一点夸张），全都贴到一个正方形里，这样这个模型上每一个点都可以映射到正方形上一个唯一的点，这个正方形就是贴图。（这个说法可能不太现实，因为贴图通常不会撕这么碎；而且面的大小也不一定是一比一，甚至可以不均匀）&lt;br &#x2F;&gt;
+那么模型中的每一个点都会有一个贴图坐标，光栅化之后的每个片元也会得到一个插值过后的贴图坐标&lt;br &#x2F;&gt;
+于是通过贴图坐标就能读取贴图中这个坐标上的颜色数据，比如说在漫反射贴图上我可以得到这个片元的漫反射颜色，法线贴图上可以得到这个片元的法线&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;bing-xing-xing&quot;&gt;并行性&lt;&#x2F;h2&gt;
+&lt;p&gt;渲染是一个高度并行的东西&lt;br &#x2F;&gt;
+渲染管线中主要的计算都集中在显卡上&lt;&#x2F;p&gt;
+&lt;p&gt;显卡的结构我们知道它的核心数远远大于CPU，比如目前千元级的N卡就能有大约一千五百个CUDA核心&lt;br &#x2F;&gt;
+并且渲染过程中的运算主要是对一堆向量做相同的运算（尤其是矩阵乘法），也就是会在每个GPU核心上都运行同样的逻辑&lt;&#x2F;p&gt;
+&lt;p&gt;因此渲染计算在硬件层面上本身就能并行，而且由于模型中点的数量一般都远大于显卡核心数量，所以并行也非常充分&lt;&#x2F;p&gt;
+&lt;p&gt;另外提一下流水线，我们很容易联想到CPU指令的流水线技术&lt;br &#x2F;&gt;
+于是我们就可以做类似的优化，比如说游戏主线程、CPU上的渲染线程、GPU上的渲染计算这三个阶段就有一点类似CPU指令的流水线技术&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;draw-call&quot;&gt;Draw call&lt;&#x2F;h2&gt;
+&lt;p&gt;由CPU发起，把需要渲染的原始数据扔给显卡，让显卡计算并输出到屏幕上&lt;&#x2F;p&gt;
+&lt;p&gt;需要注意的一个问题是CPU需要为渲染准备数据，比如材质、点、法线等等，而在显卡上计算通常会很快，因此如果频繁的发起draw call可能会导致性能瓶颈被卡在CPU准备数据上&lt;&#x2F;p&gt;
+&lt;p&gt;优化的思路主要是把多次draw call合并为一次；或者多次draw call可以共享相同的数据，比如静态网格或者共享材质&lt;&#x2F;p&gt;
+</content>
+	</entry>
+</feed>

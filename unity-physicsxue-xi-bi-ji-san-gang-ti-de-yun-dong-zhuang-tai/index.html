@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>泊谋</title>
+
+      
+
+      
+          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+    
+        
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io">
+                                <span itemprop="name">主页
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
+                                <span itemprop="name">分类
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
+                                <span itemprop="name">标签
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
+                                <span itemprop="name">GitHub
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Unity Physics学习笔记「三」 刚体的运动状态</h1>
+        <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>3 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2020-02-05
+</span>
+    </header>
+    <div itemprop="articleBody">
+      <p>本文介绍获取与修改刚体速度的方法</p>
+<span id="continue-reading"></span>
+<p>并实现控制立方体每隔一段时间朝随机方向运动，具有匀速运动与施加冲量两种方式</p>
+<h2 id="tian-jia-zu-jian-kong-zhi-fang-xiang">添加组件控制方向</h2>
+<p>我们新建一个用于控制运动方向的组件</p>
+<p>MoveDirection.cs</p>
+<pre data-lang="cs" style="background-color:#2b303b;color:#c0c5ce;" class="language-cs "><code class="language-cs" data-lang="cs"><span>[</span><span style="color:#bf616a;">Serializable</span><span>]
+</span><span style="color:#b48ead;">public struct </span><span>MoveDirection : </span><span style="color:#a3be8c;">IComponentData </span><span>{
+</span><span>    </span><span style="color:#b48ead;">public </span><span style="color:#a3be8c;">Unity</span><span>.</span><span style="color:#a3be8c;">Mathematics</span><span>.Random </span><span style="color:#bf616a;">random</span><span>;
+</span><span>    </span><span style="color:#b48ead;">public float </span><span style="color:#bf616a;">timeToChangeDirection</span><span>;
+</span><span>    </span><span style="color:#b48ead;">public </span><span>float2 </span><span style="color:#bf616a;">direction</span><span>;
+</span><span>}
+</span></code></pre>
+<p>解释：这里把random放进去是为了保证随机数生成的均匀性</p>
+<p>然后写一个Authoring用来把这个组件添加到Entity上</p>
+<p>RandomMoveCubeAuthoring.cs</p>
+<pre data-lang="cs" style="background-color:#2b303b;color:#c0c5ce;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">RandomMoveCubeAuthoring </span><span style="color:#eff1f5;">: </span><span style="color:#a3be8c;">MonoBehaviour</span><span style="color:#eff1f5;">, </span><span style="color:#a3be8c;">IConvertGameObjectToEntity </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">public void </span><span style="color:#8fa1b3;">Convert </span><span style="color:#eff1f5;">(Entity </span><span style="color:#bf616a;">entity</span><span style="color:#eff1f5;">, EntityManager </span><span style="color:#bf616a;">dstManager</span><span style="color:#eff1f5;">, GameObjectConversionSystem </span><span style="color:#bf616a;">conversionSystem</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">moveRandomCmpt </span><span>= new </span><span style="color:#eff1f5;">MoveDirection {
+</span><span style="color:#eff1f5;">            </span><span style="color:#bf616a;">random </span><span>= new </span><span style="color:#eff1f5;">Unity.Mathematics.Random ((</span><span style="color:#b48ead;">uint</span><span style="color:#eff1f5;">) </span><span style="color:#bf616a;">System</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">DateTime</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Now</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Ticks</span><span style="color:#eff1f5;">),
+</span><span style="color:#eff1f5;">            </span><span style="color:#bf616a;">timeToChangeDirection </span><span>= new </span><span style="color:#eff1f5;">Unity.Mathematics.Random ((</span><span style="color:#b48ead;">uint</span><span style="color:#eff1f5;">) </span><span style="color:#bf616a;">System</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">DateTime</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Now</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Ticks</span><span style="color:#eff1f5;">).</span><span style="color:#bf616a;">NextFloat </span><span style="color:#eff1f5;">(),
+</span><span style="color:#eff1f5;">            </span><span style="color:#bf616a;">direction </span><span>= </span><span style="color:#bf616a;">Unity</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Mathematics</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">float2</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">zero
+</span><span style="color:#eff1f5;">        };
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">dstManager</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">AddComponentData </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">entity</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">moveRandomCmpt</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">}
+</span></code></pre>
+<h2 id="pei-zhi-entity">配置Entity</h2>
+<p>新建一个立方体GameObject，移除Box Collider，添加Convert To Entity、Physics Shape、Physics Body以及我们写的RandomMoveCubeAuthoring脚本<br />
+在Physics Body中把重力系数设为0，线性阻尼设为0.5。其他的用默认值就行</p>
+<p>这样这个GameObject在启动后会被自动转化为Entity并具有物理相关的组件以及MoveDirection组件</p>
+<h2 id="kong-zhi-yun-dong-zhuang-tai">控制运动状态</h2>
+<p>显然，写一个System生成随机方向，然后修改这个立方体的速度就行了</p>
+<p>下面有匀速运动和添加冲量两个版本，区别在于匀速运动每一帧都把速度修改为指定值，而添加冲量只需要在方向改变的那一帧修改速度</p>
+<p>这个是匀速版本的</p>
+<pre data-lang="cs" style="background-color:#2b303b;color:#c0c5ce;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">RandomMoveSystem </span><span style="color:#eff1f5;">: </span><span style="color:#a3be8c;">JobComponentSystem </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    [</span><span style="color:#bf616a;">BurstCompile</span><span style="color:#eff1f5;">]
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">struct </span><span style="color:#eff1f5;">RandomMoveJob : </span><span style="color:#a3be8c;">IJobForEach</span><span style="color:#eff1f5;">&lt;MoveDirection, PhysicsVelocity&gt; {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">public float </span><span style="color:#bf616a;">deltaTime</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">public void </span><span style="color:#8fa1b3;">Execute </span><span style="color:#eff1f5;">(</span><span style="color:#b48ead;">ref </span><span style="color:#eff1f5;">MoveDirection </span><span style="color:#bf616a;">moveDirection</span><span style="color:#eff1f5;">, </span><span style="color:#b48ead;">ref </span><span style="color:#eff1f5;">PhysicsVelocity </span><span style="color:#bf616a;">velocity</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">dir </span><span>= </span><span style="color:#bf616a;">moveDirection</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">            </span><span style="color:#bf616a;">dir</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">timeToChangeDirection </span><span>-= </span><span style="color:#bf616a;">deltaTime</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">dir</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">timeToChangeDirection </span><span>&lt; </span><span style="color:#d08770;">0</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">                </span><span style="color:#bf616a;">dir</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">timeToChangeDirection </span><span>+= </span><span style="color:#d08770;">1</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">                </span><span style="color:#bf616a;">dir</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">direction </span><span>= </span><span style="color:#d08770;">0.5</span><span style="color:#b48ead;">f </span><span>* </span><span style="color:#bf616a;">math</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">normalize </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">dir</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">random</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">NextFloat2 </span><span style="color:#eff1f5;">() </span><span>- new </span><span style="color:#eff1f5;">float2 (</span><span style="color:#d08770;">0.5</span><span style="color:#b48ead;">f</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">0.5</span><span style="color:#b48ead;">f</span><span style="color:#eff1f5;">));
+</span><span style="color:#eff1f5;">            }
+</span><span style="color:#eff1f5;">            </span><span style="color:#bf616a;">moveDirection </span><span>= </span><span style="color:#bf616a;">dir</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">v </span><span>= </span><span style="color:#bf616a;">velocity</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Linear</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">            </span><span style="color:#bf616a;">v </span><span>= new </span><span style="color:#eff1f5;">float3 (</span><span style="color:#bf616a;">dir</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">direction</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">0</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">            </span><span style="color:#bf616a;">velocity </span><span>= new </span><span style="color:#eff1f5;">PhysicsVelocity { </span><span style="color:#bf616a;">Linear </span><span>= </span><span style="color:#bf616a;">v </span><span style="color:#eff1f5;">};
+</span><span style="color:#eff1f5;">        }
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">protected override </span><span style="color:#eff1f5;">JobHandle </span><span style="color:#8fa1b3;">OnUpdate </span><span style="color:#eff1f5;">(JobHandle </span><span style="color:#bf616a;">inputDeps</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">return </span><span>new </span><span style="color:#eff1f5;">RandomMoveJob { </span><span style="color:#bf616a;">deltaTime </span><span>= </span><span style="color:#bf616a;">Time</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">DeltaTime </span><span style="color:#eff1f5;">}.</span><span style="color:#bf616a;">Schedule </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">inputDeps</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">}
+</span></code></pre>
+<p>这个是冲量版本的，发现立方体会受到线性阻尼的影响，如果不明显可以把线性阻尼再改大一点</p>
+<pre data-lang="cs" style="background-color:#2b303b;color:#c0c5ce;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">RandomMoveSystem </span><span style="color:#eff1f5;">: </span><span style="color:#a3be8c;">JobComponentSystem </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    [</span><span style="color:#bf616a;">BurstCompile</span><span style="color:#eff1f5;">]
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">struct </span><span style="color:#eff1f5;">RandomMoveJob : </span><span style="color:#a3be8c;">IJobForEach</span><span style="color:#eff1f5;">&lt;MoveDirection, PhysicsVelocity&gt; {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">public float </span><span style="color:#bf616a;">deltaTime</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">public void </span><span style="color:#8fa1b3;">Execute </span><span style="color:#eff1f5;">(</span><span style="color:#b48ead;">ref </span><span style="color:#eff1f5;">MoveDirection </span><span style="color:#bf616a;">moveDirection</span><span style="color:#eff1f5;">, </span><span style="color:#b48ead;">ref </span><span style="color:#eff1f5;">PhysicsVelocity </span><span style="color:#bf616a;">velocity</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">dir </span><span>= </span><span style="color:#bf616a;">moveDirection</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">            </span><span style="color:#bf616a;">dir</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">timeToChangeDirection </span><span>-= </span><span style="color:#bf616a;">deltaTime</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">dir</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">timeToChangeDirection </span><span>&lt; </span><span style="color:#d08770;">0</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">                </span><span style="color:#bf616a;">dir</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">timeToChangeDirection </span><span>+= </span><span style="color:#d08770;">1</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">                </span><span style="color:#bf616a;">dir</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">direction </span><span>= </span><span style="color:#d08770;">0.5</span><span style="color:#b48ead;">f </span><span>* </span><span style="color:#bf616a;">math</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">normalize </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">dir</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">random</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">NextFloat2 </span><span style="color:#eff1f5;">() </span><span>- new </span><span style="color:#eff1f5;">float2 (</span><span style="color:#d08770;">0.5</span><span style="color:#b48ead;">f</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">0.5</span><span style="color:#b48ead;">f</span><span style="color:#eff1f5;">));
+</span><span style="color:#eff1f5;">                </span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">v </span><span>= </span><span style="color:#bf616a;">velocity</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Linear</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">                </span><span style="color:#bf616a;">v </span><span>+= new </span><span style="color:#eff1f5;">float3 (</span><span style="color:#bf616a;">dir</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">direction</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">0</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">                </span><span style="color:#bf616a;">velocity </span><span>= new </span><span style="color:#eff1f5;">PhysicsVelocity { </span><span style="color:#bf616a;">Linear </span><span>= </span><span style="color:#bf616a;">v </span><span style="color:#eff1f5;">};
+</span><span style="color:#eff1f5;">            }
+</span><span style="color:#eff1f5;">            </span><span style="color:#bf616a;">moveDirection </span><span>= </span><span style="color:#bf616a;">dir</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">        }
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">protected override </span><span style="color:#eff1f5;">JobHandle </span><span style="color:#8fa1b3;">OnUpdate </span><span style="color:#eff1f5;">(JobHandle </span><span style="color:#bf616a;">inputDeps</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">return </span><span>new </span><span style="color:#eff1f5;">RandomMoveJob { </span><span style="color:#bf616a;">deltaTime </span><span>= </span><span style="color:#bf616a;">Time</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">DeltaTime </span><span style="color:#eff1f5;">}.</span><span style="color:#bf616a;">Schedule </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">inputDeps</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">}
+</span></code></pre>
+
+    </div>
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                    Published by 何泊谋
+                
+                
+                    
+                    in <a href="https://paakmau.github.io/categories/unity/">Unity</a>
+                
+                
+                    and
+                    tagged
+                    
+                        <a href="https://paakmau.github.io/tags/unity-ecs/">Unity ECS</a>
+                        
+                            
+                                
+                                    and
+                                
+                            
+                        
+                    
+                        <a href="https://paakmau.github.io/tags/unity-physics/">Unity Physics</a>
+                        
+                            
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+    </body>
+
+</html>

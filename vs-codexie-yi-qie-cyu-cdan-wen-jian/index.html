@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>泊谋</title>
+
+      
+
+      
+          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+    
+        
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io">
+                                <span itemprop="name">主页
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
+                                <span itemprop="name">分类
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
+                                <span itemprop="name">标签
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
+                                <span itemprop="name">GitHub
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">VS Code写一切 C与C++单文件</h1>
+        <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>4 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2019-12-11
+</span>
+    </header>
+    <div itemprop="articleBody">
+      <p>配置很简单，刷题贼方便</p>
+<span id="continue-reading"></span>
+<p>这里以C++为例，C同理</p>
+<h2 id="c-c-huan-jing-pei-zhi">C/C++环境配置</h2>
+<p>跟VS Code无关，但还是提一下</p>
+<p>Win下可以装MinGW<br />
+Max下装Xcode自带Clang<br />
+只要环境变量中有C/C++的编译器就行了</p>
+<h2 id="xu-yao-an-zhuang-de-vs-codecha-jian">需要安装的VS Code插件</h2>
+<ul>
+<li>C/C++</li>
+</ul>
+<h2 id="gong-zuo-qu-pei-zhi">工作区配置</h2>
+<p>打开一个空文件夹，在其中新建文件hello.cpp，编辑内容如下</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">cstdio</span><span>&gt;
+</span><span>
+</span><span style="color:#b48ead;">using namespace</span><span> std;
+</span><span>
+</span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">main</span><span>() {
+</span><span>    </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">Hello world</span><span>&quot;);
+</span><span>    </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">0</span><span>;
+</span><span>}
+</span></code></pre>
+<p>按F5直接运行<br />
+VS Code提示选择环境，这里选择C++</p>
+<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191220-161845@2x-1024x447.png" alt="" /></p>
+<p>选择配置，随便一个C++编译器都行，我选了第一个clang++</p>
+<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191220-161916@2x-1024x351.png" alt="" /></p>
+<p>接下来VS Code自动生成了一个launch.json文件，我贴一下Mac下的</p>
+<pre data-lang="json" style="background-color:#2b303b;color:#c0c5ce;" class="language-json "><code class="language-json" data-lang="json"><span>{
+</span><span>    </span><span style="color:#65737e;">// Use IntelliSense to learn about possible attributes.
+</span><span>    </span><span style="color:#65737e;">// Hover to view descriptions of existing attributes.
+</span><span>    </span><span style="color:#65737e;">// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+</span><span>    &quot;</span><span style="color:#a3be8c;">version</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">0.2.0</span><span>&quot;,
+</span><span>    &quot;</span><span style="color:#a3be8c;">configurations</span><span>&quot;: [
+</span><span>        {
+</span><span>            &quot;</span><span style="color:#a3be8c;">name</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">clang++ build and debug active file</span><span>&quot;,
+</span><span>            &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">cppdbg</span><span>&quot;,
+</span><span>            &quot;</span><span style="color:#a3be8c;">request</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">launch</span><span>&quot;,
+</span><span>            &quot;</span><span style="color:#a3be8c;">program</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">${fileDirname}/${fileBasenameNoExtension}</span><span>&quot;,
+</span><span>            &quot;</span><span style="color:#a3be8c;">args</span><span>&quot;: [],
+</span><span>            &quot;</span><span style="color:#a3be8c;">stopAtEntry</span><span>&quot;: </span><span style="color:#d08770;">false</span><span>,
+</span><span>            &quot;</span><span style="color:#a3be8c;">cwd</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">${workspaceFolder}</span><span>&quot;,
+</span><span>            &quot;</span><span style="color:#a3be8c;">environment</span><span>&quot;: [],
+</span><span>            &quot;</span><span style="color:#a3be8c;">externalConsole</span><span>&quot;: </span><span style="color:#d08770;">false</span><span>,
+</span><span>            &quot;</span><span style="color:#a3be8c;">MIMode</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">lldb</span><span>&quot;,
+</span><span>            &quot;</span><span style="color:#a3be8c;">preLaunchTask</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">clang++ build active file</span><span>&quot;
+</span><span>        }
+</span><span>    ]
+</span><span>}
+</span></code></pre>
+<p>解释：启动类型为cppdbg，有各种参数，其中<br />
+externalConsole表示是否使用外部终端，如果需要用标准输入，这里要改成true<br />
+MIMode为调试器，Mac下用lldb，Win下用gdb<br />
+preLaunchTask表示launch之前执行的task</p>
+<p>这个launch其实只配置了调试器，它需要先执行preLaunchTask中配置的task用于编译，而这个task我们现在还没有请往后看</p>
+<p>切回之前的hello.cpp，再次按下F5<br />
+提示我们还没有配置task，于是点击Configure Task</p>
+<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191220-162852@2x-1024x302.png" alt="" /></p>
+<p>选与之前launch一样的，所以我选择clang++</p>
+<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191220-163513@2x-1024x345.png" alt="" /></p>
+<p>他生成了一个tasks.json文件，可以看到里面有个任务配置了编译器与编译命令等</p>
+<pre data-lang="json" style="background-color:#2b303b;color:#c0c5ce;" class="language-json "><code class="language-json" data-lang="json"><span>{
+</span><span>    </span><span style="color:#65737e;">// See https://go.microsoft.com/fwlink/?LinkId=733558 
+</span><span>    </span><span style="color:#65737e;">// for the documentation about the tasks.json format
+</span><span>    &quot;</span><span style="color:#a3be8c;">version</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">2.0.0</span><span>&quot;,
+</span><span>    &quot;</span><span style="color:#a3be8c;">tasks</span><span>&quot;: [
+</span><span>        {
+</span><span>            &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">shell</span><span>&quot;,
+</span><span>            &quot;</span><span style="color:#a3be8c;">label</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">clang++ build active file</span><span>&quot;,
+</span><span>            &quot;</span><span style="color:#a3be8c;">command</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">/usr/bin/clang++</span><span>&quot;,
+</span><span>            &quot;</span><span style="color:#a3be8c;">args</span><span>&quot;: [
+</span><span>                &quot;</span><span style="color:#a3be8c;">-g</span><span>&quot;,
+</span><span>                &quot;</span><span style="color:#a3be8c;">${file}</span><span>&quot;,
+</span><span>                &quot;</span><span style="color:#a3be8c;">-o</span><span>&quot;,
+</span><span>                &quot;</span><span style="color:#a3be8c;">${fileDirname}/${fileBasenameNoExtension}</span><span>&quot;
+</span><span>            ],
+</span><span>            &quot;</span><span style="color:#a3be8c;">options</span><span>&quot;: {
+</span><span>                &quot;</span><span style="color:#a3be8c;">cwd</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">/usr/bin</span><span>&quot;
+</span><span>            },
+</span><span>            &quot;</span><span style="color:#a3be8c;">problemMatcher</span><span>&quot;: [
+</span><span>                &quot;</span><span style="color:#a3be8c;">$gcc</span><span>&quot;
+</span><span>            ],
+</span><span>            &quot;</span><span style="color:#a3be8c;">group</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">build</span><span>&quot;
+</span><span>        }
+</span><span>    ]
+</span><span>}
+</span></code></pre>
+<p>切回hello.cpp，F5，这次可以运行了</p>
+<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191220-163937@2x-1024x215.png" alt="" /></p>
+<h2 id="codelldbcha-jian">CodeLLDB插件</h2>
+<p>也可以使用这个插件调试C/C++程序，它能在集成终端中进行输入<br />
+但调试控制台使用的是lldb命令就比较蛋疼</p>
+<p>另外升级macOS Catalina之后似乎C/C++插件出了点问题暂时不能调试，换成这个插件就行</p>
+
+    </div>
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                    Published by 何泊谋
+                
+                
+                    
+                    in <a href="https://paakmau.github.io/categories/vs-code/">VS Code</a>
+                
+                
+                    and
+                    tagged
+                    
+                        <a href="https://paakmau.github.io/tags/c/">C</a>
+                        
+                            
+                                
+                                    ,
+                                
+                            
+                        
+                    
+                        <a href="https://paakmau.github.io/tags/c/">C++</a>
+                        
+                            
+                                
+                                    and
+                                
+                            
+                        
+                    
+                        <a href="https://paakmau.github.io/tags/vs-code/">VS Code</a>
+                        
+                            
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+    </body>
+
+</html>

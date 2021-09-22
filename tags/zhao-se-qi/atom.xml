@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh">
+	<title>泊谋 - 着色器</title>
+	<subtitle>随便写写，开心就行。</subtitle>
+	<link href="https://paakmau.github.io/tags/zhao-se-qi/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://paakmau.github.io"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2020-09-12T00:28:34+00:00</updated>
+	<id>https://paakmau.github.io/tags/zhao-se-qi/atom.xml</id>
+	<entry xml:lang="zh">
+		<title>Vulkan画三角形「十」 着色器模块</title>
+		<published>2020-09-12T00:28:34+00:00</published>
+		<updated>2020-09-12T00:28:34+00:00</updated>
+		<link href="https://paakmau.github.io/vulkanhua-san-jiao-xing-shi-zhao-se-qi-mo-kuai/" type="text/html"/>
+		<id>https://paakmau.github.io/vulkanhua-san-jiao-xing-shi-zhao-se-qi-mo-kuai/</id>
+		<content type="html">&lt;p&gt;与早期API不同，Vulkan中的着色器代码必须要以字节码的格式指定，而不是像GLSL、HLSL这样人类可读的语法。这种字节码格式是SPIR-V，它可以用于Vulkan和OpenCL。它是一个用来写图形与计算着色器的格式，但是现在我们只关心可用于Vulkan图形流水线的着色器&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;使用字节码的优点在于GPU厂商自己写的编译器把着色器代码编译为原生代码会非常简单。过去的经验告诉我们，对于像是GLSL这样的人类可读的语法，GPU厂商在对标准的解释上会有更大的灵活性。如果你正在写一些非常复杂的着色器，那么有可能存在这样的风险，在你的开发机上可以正常运行，但在其他GPU厂商提供的驱动上可能因为语法错误等问题而无法使用这些着色器。而使用简单的SPIR-V这样的字节码格式就可以避免这样的问题&lt;&#x2F;p&gt;
+&lt;p&gt;然而这并不意味着我们需要手写字节码。Khronos已经发布了他们自己的独立于厂商的编译器，用于把GLSL编译为SPIR-V。这个编译器可以验证你的着色器代码是否满足标准，然后生成一个SPIR-V的二进制文件，你可以把这个文件用于你自己的应用程序。你同样可以引入这个编译器作为类库，从而在运行时产生SPIR-V，当然这不在本系列文章范围之内。尽管glslangValidator可以直接用来编译，但这里我们还是使用谷歌提供的glslc。glslc的优点在于它的参数格式与GCC、Clang等众所周知的编译器类似，并且添加了一些额外功能。这两个工具都已经被包含在Vulkan SDK中，所以我们不需要额外下载任何东西&lt;&#x2F;p&gt;
+&lt;p&gt;GLSL是一个具有C语言风格语法的着色器语言。用它写的程序中会有一个main函数，这个函数对于每一个对象都会触发。GLSL使用全局变量来处理输入输出，而没有使用函数参数和返回值。这个语言包含图形编程中有用的许多特性，比如内建的向量和矩阵等类型、一些用于计算叉乘、计算矩阵-向量乘法等的函数。向量类型写作vec后跟一个表示向量元素个数的数字，比如三维的位置信息应当使用vec3来存储。我们可以通过.x等成员来访问它的某个元素，但是可以使用它的多个元素来创建一个新的向量，比如vec3(1.0, 2.0, 3.0).xy会得到一个vec2。向量的构造函数也可以传入向量和标量的组合，比如vec3(vec2(1.0, 2.0), 3.0)&lt;&#x2F;p&gt;
+&lt;p&gt;正如前面的文章所说，我们需要一个顶点着色器和一个片元着色器来在屏幕上画一个三角形&lt;&#x2F;p&gt;
+&lt;p&gt;接下来我们使用GLSL来编写这两个着色器，然后把它们编译成SPIR-V的二进制文件，最后加载到我们的应用程序中&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;ding-dian-zhao-se-qi&quot;&gt;顶点着色器&lt;&#x2F;h2&gt;
+&lt;p&gt;顶点着色器会处理每一个输入进来的顶点。输入的顶点数据包括世界位置、颜色、法向量、贴图坐标等属性。输出的则是顶点在裁剪空间中的最终位置以及需要被传递到片元着色器中的一些其他属性比如颜色、贴图坐标等。在光栅化阶段，这些值会随着片元的分布被逐一插值，从而实现一个平滑的梯度&lt;&#x2F;p&gt;
+&lt;p&gt;裁剪坐标是一个由顶点着色器计算得到的四维向量，随后会被做齐次除法从而转换为NDC坐标&lt;&#x2F;p&gt;
+&lt;p&gt;如果你之前接触过计算机图形学，那么应该会对这些非常熟悉。如果你之前用过OpenGL，你会发现Y坐标会被翻转，而Z坐标的范围跟Direct3D的一样，是零到一&lt;&#x2F;p&gt;
+&lt;p&gt;对于我们要绘制的三角形，我们不需要对它应用任何的变换，我们只需要从一开始就指定它三个顶点的NDC坐标就行了&lt;&#x2F;p&gt;
+&lt;p&gt;然后我们把这几个坐标的最后一个元素设为一，就可以直接作为顶点着色器的裁剪坐标输出。这样的话，在做齐次除法之后，三角形的坐标也不会有任何的改变&lt;&#x2F;p&gt;
+&lt;p&gt;通常来说输入的三角形坐标会被存放在顶点缓冲区中，但是在Vulkan中创建顶点缓冲区并且向其中填入数据非常复杂。我们先做一些不那么正统的操作，直接把这些坐标硬编码在顶点着色器中&lt;&#x2F;p&gt;
+&lt;p&gt;然后为了让这个三角形好看一些，我们可以指定顶点的颜色，于是可以把它们也硬编码进去&lt;&#x2F;p&gt;
+&lt;p&gt;最后创建一个shader.vert文件用来保存顶点着色器的GLSL代码，内容如下&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;glsl&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-glsl &quot;&gt;&lt;code class=&quot;language-glsl&quot; data-lang=&quot;glsl&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#version&lt;&#x2F;span&gt;&lt;span&gt; 450
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;vec2&lt;&#x2F;span&gt;&lt;span&gt; positions[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;3&lt;&#x2F;span&gt;&lt;span&gt;] = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;vec2&lt;&#x2F;span&gt;&lt;span&gt;[](
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;vec2&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0.0&lt;&#x2F;span&gt;&lt;span&gt;, -&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0.5&lt;&#x2F;span&gt;&lt;span&gt;),
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;vec2&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0.5&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0.5&lt;&#x2F;span&gt;&lt;span&gt;),
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;vec2&lt;&#x2F;span&gt;&lt;span&gt;(-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0.5&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0.5&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;vec3&lt;&#x2F;span&gt;&lt;span&gt; colors[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;3&lt;&#x2F;span&gt;&lt;span&gt;] = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;vec3&lt;&#x2F;span&gt;&lt;span&gt;[](
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;vec3&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1.0&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0.0&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0.0&lt;&#x2F;span&gt;&lt;span&gt;),
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;vec3&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0.0&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1.0&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0.0&lt;&#x2F;span&gt;&lt;span&gt;),
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;vec3&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0.0&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0.0&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1.0&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;layout&lt;&#x2F;span&gt;&lt;span&gt;(location = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;out vec3&lt;&#x2F;span&gt;&lt;span&gt; fragColor;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;gl_Position &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;vec4&lt;&#x2F;span&gt;&lt;span&gt;(positions[gl_VertexIndex], &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0.0&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1.0&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;    fragColor = colors[gl_VertexIndex];
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;其中，对于每一个顶点，都会执行一次main函数。内建的gl_VertextIndex变量表示当前正在处理的顶点的索引，这本该是顶点缓冲区的索引，而在上面的代码中它其实是硬编码的顶点数据的数组的索引。每一个顶点的位置都来自于着色器中的常量数组，结合了z和w元素后就可以作为裁剪坐标输出，内建的gl_Position也就是起到输出这个裁剪坐标的作用&lt;&#x2F;p&gt;
+&lt;p&gt;然后注意到我们手动添加了一个输出变量fragColor，这用于输出顶点颜色。在随后的片元着色器中，我们可以接收到它，但并不需要使用同样的变量名，只需要location值相同就行了。另外对于三角形三个顶点之间的片元，fragColor的值会被自动地插值，从而实现平滑的过渡效果&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;pian-yuan-zhao-se-qi&quot;&gt;片元着色器&lt;&#x2F;h2&gt;
+&lt;p&gt;顶点着色器输出的三个顶点的位置形成的三角形会用许多片元填充到屏幕上的一块区域中。片元着色器会对每一个片元都计算一遍，然后输出颜色和深度到一个或多个帧缓冲区中&lt;&#x2F;p&gt;
+&lt;p&gt;创建一个shader.frag文件用于保存片元着色器的GLSL代码，内容如下&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;glsl&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-glsl &quot;&gt;&lt;code class=&quot;language-glsl&quot; data-lang=&quot;glsl&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#version&lt;&#x2F;span&gt;&lt;span&gt; 450
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#extension &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;GL_ARB_separate_shader_objects &lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;enable
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;layout&lt;&#x2F;span&gt;&lt;span&gt;(location = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;in vec3&lt;&#x2F;span&gt;&lt;span&gt; fragColor;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;layout&lt;&#x2F;span&gt;&lt;span&gt;(location = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;out vec4&lt;&#x2F;span&gt;&lt;span&gt; outColor;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    outColor = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;vec4&lt;&#x2F;span&gt;&lt;span&gt;(fragColor, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1.0&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;与顶点着色器类似，对于每一个片元，main函数都会执行一次。GLSL中颜色是一个由R、G、B、A四个元素组成的四维向量，这些元素的取值都在零到一范围内。与顶点着色器中的gl_Position不同，对于正在处理的片元，没有一个内建的变量用于输出它的颜色值。我们必须指定为每一个帧缓冲区指定我们自己的输出变量，其中location指定的是帧缓冲区的索引&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;bian-yi-zhao-se-qi&quot;&gt;编译着色器&lt;&#x2F;h2&gt;
+&lt;p&gt;首先在项目的根目录下创建一个目录，命名为shaders，把之前写好的shader.vert和shader.frag放进去。需要注意，GLSL着色器并没有一个官方规定的扩展名，这两个文件名只是一种常用的写法&lt;&#x2F;p&gt;
+&lt;p&gt;接下来我们使用最开始提到的glslc这个命令行工具来进行编译&lt;&#x2F;p&gt;
+&lt;p&gt;对于Linux和macOS，我们使用下面的命令就能把顶点着色器和片元着色器分别编译为vert.spv和frag.spv两个SPIR-V的二进制文件&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; glslc shader.vert&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -o&lt;&#x2F;span&gt;&lt;span&gt; vert.spv
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; glslc shader.frag&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -o&lt;&#x2F;span&gt;&lt;span&gt; frag.spv
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;对于Windows，使用下面的命令&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;glslc.exe&lt;&#x2F;span&gt;&lt;span&gt; shader.vert -o vert.spv
+&lt;&#x2F;span&gt;&lt;span&gt;PS &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;glslc.exe&lt;&#x2F;span&gt;&lt;span&gt; shader.frag -o frag.spv
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;当然，如果提示找不到glslc，可能是没有添加环境变量，所以就去添加环境变量，或者直接在Vulkan SDK的安装目录下找到glslc，使用绝对路径就行了&lt;&#x2F;p&gt;
+&lt;p&gt;这两行命令告诉编译器去读取GLSL源文件然后把编译后的SPIR-V字节码输出到由-o标志指定的文件中&lt;&#x2F;p&gt;
+&lt;p&gt;如果你的着色器存在语法错误，那么编译器会如你期望的一样，告诉你行号和问题。我们可以删个分号试试。也可以不加任何参数直接运行编译器看看它支持什么样的标记。它同样可以把字节码输出为一个人类可读的格式，于是我们就能看到我们的着色器具体做了什么以及到底有哪些优化被应用到了这个阶段&lt;&#x2F;p&gt;
+&lt;p&gt;在命令行中编译着色器是最直接的方式之一，同时也是本文所使用的方式，但我们也可以直接用自己的代码编译它。Vulkan SDK包含了libshaderc，这是一个能够在程序中把GLSL编译为SPIR-V的库&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;jia-zai-zhao-se-qi&quot;&gt;加载着色器&lt;&#x2F;h2&gt;
+&lt;p&gt;我们生成了SPIR-V着色器之后，就可以把它们加载到应用程序并插入到图形流水线中了。我们首先添加一个工具函数来从文件中读取着色器字节码的二进制数据&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;static&lt;&#x2F;span&gt;&lt;span&gt; std::vector&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;char&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;readFile&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const&lt;&#x2F;span&gt;&lt;span&gt; std::string &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;filename&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;    std::ifstream &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;file&lt;&#x2F;span&gt;&lt;span&gt;(filename, std::ios::ate  std::ios::binary);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(!file.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;is_open&lt;&#x2F;span&gt;&lt;span&gt;())
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;throw &lt;&#x2F;span&gt;&lt;span&gt;std::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;runtime_error&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;failed to open file!&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    size_t fileSize = (size_t) file.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;tellg&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    std::vector&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;char&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;buffer&lt;&#x2F;span&gt;&lt;span&gt;(fileSize);
+&lt;&#x2F;span&gt;&lt;span&gt;    file.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;seekg&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;    file.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;read&lt;&#x2F;span&gt;&lt;span&gt;(buffer.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;data&lt;&#x2F;span&gt;&lt;span&gt;(), fileSize);
+&lt;&#x2F;span&gt;&lt;span&gt;    file.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;close&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; buffer;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;最后再添加一个工具函数来根据读取出来的二进制数据创建着色器模块，就好了&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span&gt;VkShaderModule &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;createShaderModule&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const&lt;&#x2F;span&gt;&lt;span&gt; std::vector&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;char&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt; &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;code&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;    VkShaderModuleCreateInfo createInfo = {};
+&lt;&#x2F;span&gt;&lt;span&gt;    createInfo.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sType &lt;&#x2F;span&gt;&lt;span&gt;= VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+&lt;&#x2F;span&gt;&lt;span&gt;    createInfo.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;codeSize &lt;&#x2F;span&gt;&lt;span&gt;= code.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;size&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    createInfo.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;pCode &lt;&#x2F;span&gt;&lt;span&gt;= reinterpret_cast&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span&gt;uint32_t*&amp;gt;(code.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;data&lt;&#x2F;span&gt;&lt;span&gt;());
+&lt;&#x2F;span&gt;&lt;span&gt;    VkShaderModule shaderModule;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;vkCreateShaderModule&lt;&#x2F;span&gt;&lt;span&gt;(device, &amp;amp;createInfo, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;nullptr&lt;&#x2F;span&gt;&lt;span&gt;, &amp;amp;shaderModule) != VK_SUCCESS)
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;throw &lt;&#x2F;span&gt;&lt;span&gt;std::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;runtime_error&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;failed to create shader module&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; shaderModule;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+</content>
+	</entry>
+</feed>

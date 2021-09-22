@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>泊谋</title>
+
+      
+
+      
+          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+    
+        
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io">
+                                <span itemprop="name">主页
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
+                                <span itemprop="name">分类
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
+                                <span itemprop="name">标签
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
+                                <span itemprop="name">GitHub
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">C++右值引用与转移语义简要介绍</h1>
+        <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>4 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2020-04-06
+</span>
+    </header>
+    <div itemprop="articleBody">
+      <p>在C++11之前，值类型变量的传递会导致把它完整的拷贝一份</p>
+<span id="continue-reading"></span>
+<p>比如说把一个vector作为函数返回值赋值给某个局部变量，他就会调用vector的拷贝构造函数创建一个完整的副本，把这个副本作为函数返回的临时变量，然后把这个临时变量赋值给那个局部变量时又会再次拷贝构造<br />
+（不过这其实会被大多数编译器优化掉）</p>
+<h2 id="you-zhi">右值</h2>
+<p>上面例子中的临时变量就是一个右值</p>
+<p>右值是无法获取到地址的值<br />
+大概可以理解为临时的变量或者没有被声明但是实际存在的变量</p>
+<p>函数的返回值，还有常量都是右值</p>
+<h2 id="you-zhi-yin-yong">右值引用</h2>
+<p>根据名字我们知道它是一个右值的引用（废话）</p>
+<p>使用右值引用接收右值可以让右值不被销毁，同时也不会拷贝任何数据</p>
+<p>举个例子，下面代码中str变量接收了GetStr函数返回的右值</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>string </span><span style="color:#8fa1b3;">GetStr</span><span>() {
+</span><span>    </span><span style="color:#b48ead;">return </span><span>&quot;</span><span style="color:#a3be8c;">Hello world</span><span>&quot;;
+</span><span>}
+</span><span>
+</span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">main</span><span>() {
+</span><span>    string&amp;&amp; str = </span><span style="color:#bf616a;">GetStr</span><span>();
+</span><span>    </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">0</span><span>;
+</span><span>}
+</span></code></pre>
+<h2 id="zhuan-yi-gou-zao-han-shu">转移构造函数</h2>
+<p>因为右值被使用过后就会被销毁，所以完整拷贝它的备份是很不划算的<br />
+我们希望把右值里的数据直接偷出来</p>
+<p>那么我们可以通过转移构造函数来实现</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">Array </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">   </span><span style="color:#b48ead;">private</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">int</span><span>*</span><span style="color:#eff1f5;"> arr;
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">int</span><span style="color:#eff1f5;"> len;
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">   </span><span style="color:#b48ead;">public</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">    </span><span style="color:#8fa1b3;">Array</span><span style="color:#eff1f5;">(</span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">len</span><span style="color:#eff1f5;">) : </span><span style="color:#bf616a;">arr</span><span style="color:#eff1f5;">(</span><span style="color:#b48ead;">new int</span><span style="color:#eff1f5;">[len]) {}
+</span><span style="color:#eff1f5;">    </span><span style="color:#8fa1b3;">~Array</span><span style="color:#eff1f5;">() {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(arr) </span><span style="color:#b48ead;">delete[]</span><span style="color:#eff1f5;"> arr;
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#8fa1b3;">Array</span><span style="color:#eff1f5;">(</span><span style="color:#b48ead;">const</span><span style="color:#eff1f5;"> Array</span><span>&amp; </span><span style="color:#bf616a;">other</span><span style="color:#eff1f5;">) : </span><span style="color:#bf616a;">len</span><span style="color:#eff1f5;">(other.</span><span style="color:#bf616a;">len</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#65737e;">// 拷贝构造会导致整个数组被复制
+</span><span style="color:#eff1f5;">        arr </span><span>= </span><span style="color:#b48ead;">new int</span><span style="color:#eff1f5;">[other.</span><span style="color:#bf616a;">len</span><span style="color:#eff1f5;">];
+</span><span style="color:#eff1f5;">        </span><span style="color:#96b5b4;">memcpy</span><span style="color:#eff1f5;">(arr, other.</span><span style="color:#bf616a;">arr</span><span style="color:#eff1f5;">, len </span><span>* sizeof</span><span style="color:#eff1f5;">(</span><span style="color:#b48ead;">int</span><span style="color:#eff1f5;">));
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#8fa1b3;">Array</span><span style="color:#eff1f5;">(Array</span><span>&amp;&amp; </span><span style="color:#bf616a;">other</span><span style="color:#eff1f5;">) : </span><span style="color:#bf616a;">arr</span><span style="color:#eff1f5;">(other.</span><span style="color:#bf616a;">arr</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#65737e;">// 转移构造可以直接把数组的指针偷过来
+</span><span style="color:#eff1f5;">        other.</span><span style="color:#bf616a;">arr </span><span>= </span><span style="color:#d08770;">NULL</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">}</span><span>;
+</span></code></pre>
+<p>可以看到上面的代码把other这个右值里的arr偷走了</p>
+<p>另外类似的还有转移赋值函数，也是使用右值引用传参，然后在函数里把右值里的东西偷出来</p>
+<h2 id="zhuan-yi-yu-yi">转移语义</h2>
+<p>那么又有一个问题，如果有一个左值，他以后不会再被用到，我希望能把它里面的东西偷出来放到另一个左值里，怎么实现</p>
+<p>使用std::move，把一个左值转换为右值，然后把它里面存的东西搬空</p>
+<p>看这个例子就很清晰了</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">Array </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">   </span><span style="color:#b48ead;">private</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">int</span><span>*</span><span style="color:#eff1f5;"> arr;
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">int</span><span style="color:#eff1f5;"> len;
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">   </span><span style="color:#b48ead;">public</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">    </span><span style="color:#8fa1b3;">Array</span><span style="color:#eff1f5;">(</span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">len</span><span style="color:#eff1f5;">) : </span><span style="color:#bf616a;">arr</span><span style="color:#eff1f5;">(</span><span style="color:#b48ead;">new int</span><span style="color:#eff1f5;">[len]) {}
+</span><span style="color:#eff1f5;">    </span><span style="color:#8fa1b3;">~Array</span><span style="color:#eff1f5;">() {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(arr) </span><span style="color:#b48ead;">delete[]</span><span style="color:#eff1f5;"> arr;
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#8fa1b3;">Array</span><span style="color:#eff1f5;">(</span><span style="color:#b48ead;">const</span><span style="color:#eff1f5;"> Array</span><span>&amp; </span><span style="color:#bf616a;">other</span><span style="color:#eff1f5;">) : </span><span style="color:#bf616a;">len</span><span style="color:#eff1f5;">(other.</span><span style="color:#bf616a;">len</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#65737e;">// 拷贝构造会导致整个数组被复制
+</span><span style="color:#eff1f5;">        arr </span><span>= </span><span style="color:#b48ead;">new int</span><span style="color:#eff1f5;">[other.</span><span style="color:#bf616a;">len</span><span style="color:#eff1f5;">];
+</span><span style="color:#eff1f5;">        </span><span style="color:#96b5b4;">memcpy</span><span style="color:#eff1f5;">(arr, other.</span><span style="color:#bf616a;">arr</span><span style="color:#eff1f5;">, len </span><span>* sizeof</span><span style="color:#eff1f5;">(</span><span style="color:#b48ead;">int</span><span style="color:#eff1f5;">));
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#8fa1b3;">Array</span><span style="color:#eff1f5;">(Array</span><span>&amp;&amp; </span><span style="color:#bf616a;">other</span><span style="color:#eff1f5;">) : </span><span style="color:#bf616a;">arr</span><span style="color:#eff1f5;">(other.</span><span style="color:#bf616a;">arr</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#65737e;">// 转移构造可以直接把数组的指针偷过来
+</span><span style="color:#eff1f5;">        other.</span><span style="color:#bf616a;">arr </span><span>= </span><span style="color:#d08770;">NULL</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">}</span><span>;
+</span><span>
+</span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">main</span><span>() {
+</span><span>    Array </span><span style="color:#bf616a;">a</span><span>(</span><span style="color:#d08770;">100</span><span>);
+</span><span>    Array </span><span style="color:#bf616a;">b</span><span>(</span><span style="color:#bf616a;">move</span><span>(a));
+</span><span>    </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">0</span><span>;
+</span><span>}
+</span></code></pre>
+<p>可以看到变量a里存的数组指针被变量b偷出来了，从而避免了整个数组的拷贝</p>
+
+    </div>
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                    Published by 何泊谋
+                
+                
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+    </body>
+
+</html>

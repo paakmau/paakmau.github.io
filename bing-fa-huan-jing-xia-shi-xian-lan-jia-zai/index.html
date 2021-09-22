@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>泊谋</title>
+
+      
+
+      
+          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+    
+        
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io">
+                                <span itemprop="name">主页
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
+                                <span itemprop="name">分类
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
+                                <span itemprop="name">标签
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
+                                <span itemprop="name">GitHub
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">并发环境下实现懒加载</h1>
+        <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>4 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2020-07-14
+</span>
+    </header>
+    <div itemprop="articleBody">
+      <h2 id="dan-xian-cheng-lan-jia-zai">单线程懒加载</h2>
+<span id="continue-reading"></span>
+<p>一般这样写</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">Test
+</span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    shared_ptr&lt;string&gt; str;
+</span><span style="color:#eff1f5;">
+</span><span style="color:#b48ead;">public</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">    shared_ptr&lt;string&gt; </span><span style="color:#8fa1b3;">GetStr</span><span style="color:#eff1f5;">()
+</span><span style="color:#eff1f5;">    {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span>!</span><span style="color:#eff1f5;">str)
+</span><span style="color:#eff1f5;">            str </span><span>= </span><span style="color:#bf616a;">make_shared</span><span style="color:#eff1f5;">&lt;string&gt;(</span><span>&quot;</span><span style="color:#a3be8c;">Test str</span><span>&quot;</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">return</span><span style="color:#eff1f5;"> str;
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">}</span><span>;
+</span></code></pre>
+<p>然后发现一个问题是如果str没有初始化，此时有多个线程同时访问GetStr方法，它们可能会同时把这个str初始化多次。虽然这里用的是string类型，问题不大，但如果是其他类型就很可能会爆炸</p>
+<h2 id="jian-dan-jia-suo">简单加锁</h2>
+<p>解决并发访问问题，可以加个锁</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">Test
+</span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    shared_ptr&lt;string&gt; str;
+</span><span style="color:#eff1f5;">    mutex mtx;
+</span><span style="color:#eff1f5;">
+</span><span style="color:#b48ead;">public</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">    shared_ptr&lt;string&gt; </span><span style="color:#8fa1b3;">GetStr</span><span style="color:#eff1f5;">()
+</span><span style="color:#eff1f5;">    {
+</span><span style="color:#eff1f5;">        lock_guard&lt;mutex&gt; </span><span style="color:#bf616a;">lk</span><span style="color:#eff1f5;">(mtx);
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span>!</span><span style="color:#eff1f5;">str)
+</span><span style="color:#eff1f5;">            str </span><span>= </span><span style="color:#bf616a;">make_shared</span><span style="color:#eff1f5;">&lt;string&gt;(</span><span>&quot;</span><span style="color:#a3be8c;">Test str</span><span>&quot;</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">return</span><span style="color:#eff1f5;"> str;
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">}</span><span>;
+</span></code></pre>
+<p>然而这样写也有问题，假设对于str的访问（除了初始化）都是只读的，那么在str初始化之后其实各个线程访问str都是不会产生竞争条件的，根本不需要上锁，因此这样写会造成巨大的性能浪费</p>
+<h2 id="double-check">Double check</h2>
+<p>简单地说就是在上锁之前检查一下是否已经初始化，如果已经初始化了，就不用上锁。其实很简单，就是写起来不怎么高雅</p>
+<p>为什么叫做Double check呢，因为上锁之后还要检查一下初始化情况，所以总共检查两次</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">Test
+</span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    shared_ptr&lt;string&gt; str;
+</span><span style="color:#eff1f5;">    mutex mtx;
+</span><span style="color:#eff1f5;">
+</span><span style="color:#b48ead;">public</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">    shared_ptr&lt;string&gt; </span><span style="color:#8fa1b3;">GetStr</span><span style="color:#eff1f5;">()
+</span><span style="color:#eff1f5;">    {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span>!</span><span style="color:#eff1f5;">str)
+</span><span style="color:#eff1f5;">        {
+</span><span style="color:#eff1f5;">            lock_guard&lt;mutex&gt; </span><span style="color:#bf616a;">lk</span><span style="color:#eff1f5;">(mtx);
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span>!</span><span style="color:#eff1f5;">str)
+</span><span style="color:#eff1f5;">                str </span><span>= </span><span style="color:#bf616a;">make_shared</span><span style="color:#eff1f5;">&lt;string&gt;(</span><span>&quot;</span><span style="color:#a3be8c;">Test str</span><span>&quot;</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">        }
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">return</span><span style="color:#eff1f5;"> str;
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">}</span><span>;
+</span></code></pre>
+<p>然而这样写还是有风险。在某一个线程拿到了锁，初始化到一半的时候，也就是str的指针非空且分配了内存但是它内部数据没有初始化；而此时另一个线程却可以直接拿到str，且str内部的数据是爆炸的，就会产生未定义行为。这种情况的原因可能是编译器指令重排或者处理器乱序执行</p>
+<h2 id="std-call-once">std::call_once</h2>
+<p>C++钦定的只执行一次，看代码就行了</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">Test
+</span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    shared_ptr&lt;string&gt; str;
+</span><span style="color:#eff1f5;">    once_flag flag;
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">InitStr</span><span style="color:#eff1f5;">() {
+</span><span style="color:#eff1f5;">        str </span><span>= </span><span style="color:#bf616a;">make_shared</span><span style="color:#eff1f5;">&lt;string&gt;(</span><span>&quot;</span><span style="color:#a3be8c;">Test str</span><span>&quot;</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#b48ead;">public</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">    shared_ptr&lt;string&gt; </span><span style="color:#8fa1b3;">GetStr</span><span style="color:#eff1f5;">()
+</span><span style="color:#eff1f5;">    {
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">call_once</span><span style="color:#eff1f5;">(flag, </span><span>&amp;</span><span style="color:#eff1f5;">Test::InitStr, </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">return</span><span style="color:#eff1f5;"> str;
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">}</span><span>;
+</span></code></pre>
+<h2 id="ju-bu-jing-tai-bian-liang">局部静态变量</h2>
+<p>如果需要懒加载的对象是一个单例，可以考虑使用局部静态变量</p>
+<p>局部静态变量只有在被用到的时候才会分配内存并初始化。当然看起来还是存在竞争条件，但是在C++11标准中，规定了静态局部变量要线程安全，所以还是可以放心食用</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">Test
+</span><span style="color:#eff1f5;">{
+</span><span style="color:#b48ead;">public</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">    shared_ptr&lt;string&gt; </span><span style="color:#8fa1b3;">GetStr</span><span style="color:#eff1f5;">()
+</span><span style="color:#eff1f5;">    {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">static</span><span style="color:#eff1f5;"> shared_ptr&lt;string&gt; str </span><span>= </span><span style="color:#bf616a;">make_shared</span><span style="color:#eff1f5;">&lt;string&gt;(</span><span>&quot;</span><span style="color:#a3be8c;">Test_str</span><span>&quot;</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">return</span><span style="color:#eff1f5;"> str;
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">}</span><span>;
+</span></code></pre>
+<p>需要注意的是，静态成员变量、全局变量和文件域的静态变量都是在程序运行开始就分配内存并初始化好了，因此它们的初始化过程也是线程安全的，不过这样就不是懒加载了</p>
+
+    </div>
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                    Published by 何泊谋
+                
+                
+                    
+                    in <a href="https://paakmau.github.io/categories/bing-fa/">并发</a>
+                
+                
+                    and
+                    tagged
+                    
+                        <a href="https://paakmau.github.io/tags/c/">C++</a>
+                        
+                            
+                                
+                                    ,
+                                
+                            
+                        
+                    
+                        <a href="https://paakmau.github.io/tags/c-stl/">C++ STL</a>
+                        
+                            
+                                
+                                    and
+                                
+                            
+                        
+                    
+                        <a href="https://paakmau.github.io/tags/bing-fa/">并发</a>
+                        
+                            
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+    </body>
+
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>泊谋</title>
+
+      
+
+      
+          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+    
+        
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io">
+                                <span itemprop="name">主页
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
+                                <span itemprop="name">分类
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
+                                <span itemprop="name">标签
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
+                                <span itemprop="name">GitHub
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Docker部署.NET Core 3.0控制台项目</h1>
+        <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>2 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2019-12-12
+</span>
+    </header>
+    <div itemprop="articleBody">
+      <p>为了方便描述，我们快速新建HelloWorld项目作为示例。</p>
+<span id="continue-reading"></span><h2 id="xin-jian-bing-fa-bu-net-corekong-zhi-tai-xiang-mu">新建并发布.NET Core控制台项目</h2>
+<p>首先新建一个.NET Core控制台项目，并直接运行<br />
+控制台应该会输出“Hello World!”，如果没有可以自己写一个。</p>
+<pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> dotnet new console</span><span style="color:#bf616a;"> --name</span><span> hello
+</span><span style="color:#bf616a;">$</span><span> cd hello
+</span><span style="color:#bf616a;">$</span><span> dotnet run
+</span></code></pre>
+<p>解释：<br />
+dotnet new用于创建新项目，console表示是控制台项目，--name指定项目名称为hello并在当前路径下创建hello文件夹，而项目在其中。</p>
+<p>于是直接发布</p>
+<pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> dotnet publish</span><span style="color:#bf616a;"> -c</span><span> Release
+</span></code></pre>
+<p>解释：该命令会把项目发布到hello文件夹中的bin/Release/netcoreapp3.0/publish里</p>
+<p>然后在hello目录下编写Dockerfile文件用于生成镜像<br />
+Dockerfile</p>
+<pre data-lang="dockerfile" style="background-color:#2b303b;color:#c0c5ce;" class="language-dockerfile "><code class="language-dockerfile" data-lang="dockerfile"><span style="color:#b48ead;">FROM</span><span> mcr.microsoft.com/dotnet/core/runtime
+</span><span style="color:#b48ead;">COPY</span><span> bin/Release/netcoreapp3.0/publish/ /publish
+</span><span style="color:#b48ead;">WORKDIR </span><span>/publish
+</span><span>ENTRYPOINT [&quot;</span><span style="color:#a3be8c;">dotnet</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">hello.dll</span><span>&quot;]
+</span></code></pre>
+<p>解释：<br />
+FROM<br />
+表示我们的镜像基于dotnet core runtime</p>
+<p>COPY<br />
+用于拷贝我们打包好的应用，这里第一个参数的路径应该替换为应用的发布路径</p>
+<p>WORKDIR<br />
+用于切换当前工作路径</p>
+<p>ENTRYPOINT<br />
+运行应用</p>
+<p>接下来利用这个Dockerfile构建镜像</p>
+<pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> docker build</span><span style="color:#bf616a;"> -t</span><span> dotnet-hello .
+</span></code></pre>
+<p>解释：dotnet-hello是镜像的名称</p>
+<p>最后利用该镜像构建容器并运行</p>
+<pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> docker run</span><span style="color:#bf616a;"> -t --name</span><span> hello dotnet-hello
+</span></code></pre>
+<p>解释：<br />
+-t 表示虚拟终端，用于在Docker命令行工具中输出应用的控制台输出。但一般项目中不需要<br />
+--name hello表示容器名为hello</p>
+<p>最后看到终端输出“Hello World!”</p>
+
+    </div>
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                    Published by 何泊谋
+                
+                
+                    
+                    in <a href="https://paakmau.github.io/categories/net-core/">.NET Core</a>
+                
+                
+                    and
+                    tagged
+                    
+                        <a href="https://paakmau.github.io/tags/net-core/">.NET Core</a>
+                        
+                            
+                                
+                                    and
+                                
+                            
+                        
+                    
+                        <a href="https://paakmau.github.io/tags/docker/">Docker</a>
+                        
+                            
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+    </body>
+
+</html>

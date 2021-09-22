@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>泊谋</title>
+
+      
+
+      
+          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+    
+        
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io">
+                                <span itemprop="name">主页
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
+                                <span itemprop="name">分类
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
+                                <span itemprop="name">标签
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
+                                <span itemprop="name">GitHub
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">乒乓缓存与伪共享</h1>
+        <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>4 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2020-04-20
+</span>
+    </header>
+    <div itemprop="articleBody">
+      <p>这两个东西都是并行程序设计中必须考虑的问题</p>
+<span id="continue-reading"></span>
+<p>他跟多核CPU的缓存机制有关</p>
+<h2 id="cpuhuan-cun">CPU缓存</h2>
+<p>因为CPU处理的速度远大于内存读写，因此在CPU的每个核心都会有小容量的高速缓存用于保存内存中的数据，CPU的处理都会直接基于缓存而不是内存</p>
+<p>把内存的东西搬到缓存里开销是比较大的，因此每次缓存的时候会把一块比较大的连续内存区域搬进去，这块区域就是一条Cache Line<br />
+整块内存就会被划分为一条一条的Cache Line</p>
+<p>所以一个核心如果要访问某块内存，他必须要把这个块内存所在的Cache Line搬进自己的缓存里</p>
+<h2 id="ping-pang-huan-cun">乒乓缓存</h2>
+<p>如果两个在跑在不同核心上的线程同时访问同一块内存，比如访问同一个全局的原子变量<br />
+那么这两个核心的缓存中就都会有包含该变量的Cache Line</p>
+<p>然后一个线程使用原子操作修改了这个原子变量，那么另一个线程所在的核心就应该修改这个变量所在的Cache Line，来让这两个核心上的这条Cache Line保持一致</p>
+<p>于是另一个线程不得不等待缓存更新后才能继续处理<br />
+如果这样的线程很多，就会导致这条Cache Line在多个CPU核心之间传来传去，这就是乒乓缓存</p>
+<p>这样的话，多个线程对同一个原子变量的原子操作，由于需要等待Cache Line反复传递，就会非常缓慢，即使这些线程是并行的</p>
+<p>互斥锁也同理<br />
+但是有一个区别，互斥锁一般是操作系统级别，而原子操作一般是处理器级别<br />
+那么在等待缓存更新时，使用互斥锁的情况下，操作系统可以安排别的线程先执行；而如果使用原子操作，处理器只能继续当前的线程，也就是只能等待缓存的更新</p>
+<p>另外，除了原子操作和互斥锁，java中的volatile变量以及C++中的内存屏障也都可能引发乒乓缓存</p>
+<h2 id="wei-gong-xiang">伪共享</h2>
+<p>跟乒乓缓存相类似，如果两个核心访问的不是同一原子变量，但是这两个原子变量在同一个Cache Line里，那么一旦产生修改这条Cache Line还是会被传来传去</p>
+<p>举个简单的例子，一个处理器的四个核心各跑一个线程，分别处理一个长度为四的数组的四个原子变量（假设它们都在同一个Cache Line中）<br />
+看起来这四个核心互不影响，但一旦出现写操作，Cache Line就还是会传来传去</p>
+
+    </div>
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                    Published by 何泊谋
+                
+                
+                    
+                    in <a href="https://paakmau.github.io/categories/bing-fa/">并发</a>
+                
+                
+                    and
+                    tagged
+                    
+                        <a href="https://paakmau.github.io/tags/bing-fa/">并发</a>
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+    </body>
+
+</html>

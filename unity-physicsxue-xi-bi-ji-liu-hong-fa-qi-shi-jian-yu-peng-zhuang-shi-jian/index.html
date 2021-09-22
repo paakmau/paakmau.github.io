@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>泊谋</title>
+
+      
+
+      
+          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+    
+        
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io">
+                                <span itemprop="name">主页
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
+                                <span itemprop="name">分类
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
+                                <span itemprop="name">标签
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
+                                <span itemprop="name">GitHub
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Unity Physics学习笔记「六」 触发器事件与碰撞事件</h1>
+        <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>5 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2020-02-11
+</span>
+    </header>
+    <div itemprop="articleBody">
+      <p>这部分内容手册中没有，本文参考的是官方示例代码与官方论坛</p>
+<span id="continue-reading"></span>
+<p><a href="https://github.com/Unity-Technologies/EntityComponentSystemSamples">https://github.com/Unity-Technologies/EntityComponentSystemSamples</a></p>
+<p>在OOP的物理引擎中，碰撞发生后引擎可以通过调用用户提供的回调函数将碰撞事件传递给用户程序。而在Unity的ECS框架中我们需要使用数据驱动的思路来处理碰撞<br />
+但是引擎已经把事件处理封装好了，因此我们实现的时候其实看起来跟回调差不多</p>
+<h2 id="jian-jie">简介</h2>
+<p>Unity Physics中，刚体可以通过Trigger或者Collision触发事件，需要勾选Physics Shape中的Is Trigger或Raises Collision Events<br />
+它们的区别在于Trigger不会引起物理上的碰撞，只产生事件</p>
+<p><img src="https://hebomou.top/wp-content/uploads/2020/02/image-1.png" alt="" /></p>
+<p>对于产生的Trigger事件或Collision事件，我们可以通过ITriggerEventsJob或ICollisionEventsJob来获取并处理</p>
+<p>下面的例子可以实现这样的效果<br />
+开始时所有的刚体不受重力影响，但是一个刚体被Trigger碰到后它就会重新受到重力并下坠</p>
+<h2 id="zhun-bei-trigger">准备Trigger</h2>
+<p>首先准备一个Entity作为Trigger，并且让他受到键盘控制运动。<br />
+新建一个Cube的GameObject，移除Box Collider，添加Convert To Entity，Physics Body，Physics Shape。在Physics Body中把重力系数设为0，在Physics Shape中勾选Is Trigger<br />
+然后使用Authoring为它添加PlayerInput组件。</p>
+<p>保存键盘输入的组件<br />
+PlayerInput.cs</p>
+<pre data-lang="cs" style="background-color:#2b303b;color:#c0c5ce;" class="language-cs "><code class="language-cs" data-lang="cs"><span>[</span><span style="color:#bf616a;">Serializable</span><span>]
+</span><span style="color:#b48ead;">public struct </span><span>PlayerInput : </span><span style="color:#a3be8c;">IComponentData </span><span>{
+</span><span>    </span><span style="color:#b48ead;">public </span><span>float2 </span><span style="color:#bf616a;">moveDirection</span><span>;
+</span><span>}
+</span></code></pre>
+<p>获取键盘输入的系统<br />
+FetchInputSystem.cs</p>
+<pre data-lang="cs" style="background-color:#2b303b;color:#c0c5ce;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">FetchInputSystem </span><span style="color:#eff1f5;">: </span><span style="color:#a3be8c;">ComponentSystem </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">protected override void </span><span style="color:#8fa1b3;">OnUpdate </span><span style="color:#eff1f5;">() {
+</span><span style="color:#eff1f5;">        float2 </span><span style="color:#bf616a;">dir </span><span>= </span><span style="color:#bf616a;">float2</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">zero</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">UnityEngine</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Input</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">GetKey</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">UnityEngine</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">KeyCode</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">A</span><span style="color:#eff1f5;">))
+</span><span style="color:#eff1f5;">            </span><span style="color:#bf616a;">dir </span><span>+= new </span><span style="color:#eff1f5;">float2 (</span><span>-</span><span style="color:#d08770;">1</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">0</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">UnityEngine</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Input</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">GetKey</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">UnityEngine</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">KeyCode</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">D</span><span style="color:#eff1f5;">))
+</span><span style="color:#eff1f5;">            </span><span style="color:#bf616a;">dir </span><span>+= new </span><span style="color:#eff1f5;">float2 (</span><span style="color:#d08770;">1</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">0</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">UnityEngine</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Input</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">GetKey</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">UnityEngine</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">KeyCode</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">W</span><span style="color:#eff1f5;">))
+</span><span style="color:#eff1f5;">            </span><span style="color:#bf616a;">dir </span><span>+= new </span><span style="color:#eff1f5;">float2 (</span><span style="color:#d08770;">0</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">1</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">UnityEngine</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Input</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">GetKey</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">UnityEngine</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">KeyCode</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">S</span><span style="color:#eff1f5;">))
+</span><span style="color:#eff1f5;">            </span><span style="color:#bf616a;">dir </span><span>+= new </span><span style="color:#eff1f5;">float2 (</span><span style="color:#d08770;">0</span><span style="color:#eff1f5;">, </span><span>-</span><span style="color:#d08770;">1</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">dir </span><span>= </span><span style="color:#bf616a;">math</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">normalizesafe</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">dir</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">Entities</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">ForEach</span><span style="color:#eff1f5;">((ref PlayerInput </span><span style="color:#bf616a;">input</span><span style="color:#eff1f5;">) </span><span style="color:#b48ead;">=&gt; </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">            </span><span style="color:#bf616a;">input</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">moveDirection </span><span>= </span><span style="color:#bf616a;">dir</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">        });
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">}
+</span></code></pre>
+<p>根据得到的键盘输入控制Trigger移动的系统<br />
+MoveSystem.cs</p>
+<pre data-lang="cs" style="background-color:#2b303b;color:#c0c5ce;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">MoveSystem </span><span style="color:#eff1f5;">: </span><span style="color:#a3be8c;">JobComponentSystem </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    [</span><span style="color:#bf616a;">BurstCompile</span><span style="color:#eff1f5;">]
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">struct </span><span style="color:#eff1f5;">MoveJob : </span><span style="color:#a3be8c;">IJobForEach</span><span style="color:#eff1f5;">&lt;PlayerInput, PhysicsVelocity&gt; {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">public void </span><span style="color:#8fa1b3;">Execute </span><span style="color:#eff1f5;">([</span><span style="color:#bf616a;">ReadOnly</span><span style="color:#eff1f5;">] </span><span style="color:#b48ead;">ref </span><span style="color:#eff1f5;">PlayerInput </span><span style="color:#bf616a;">input</span><span style="color:#eff1f5;">, </span><span style="color:#b48ead;">ref </span><span style="color:#eff1f5;">PhysicsVelocity </span><span style="color:#bf616a;">velocity</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">v </span><span>= </span><span style="color:#bf616a;">velocity</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Linear</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">            </span><span style="color:#bf616a;">v </span><span>= new </span><span style="color:#eff1f5;">float3 (</span><span style="color:#bf616a;">input</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">moveDirection</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">0</span><span style="color:#eff1f5;">) </span><span>* </span><span style="color:#d08770;">1.8</span><span style="color:#b48ead;">f</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">            </span><span style="color:#bf616a;">velocity </span><span>= new </span><span style="color:#eff1f5;">PhysicsVelocity { </span><span style="color:#bf616a;">Linear </span><span>= </span><span style="color:#bf616a;">v </span><span style="color:#eff1f5;">};
+</span><span style="color:#eff1f5;">        }
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">protected override </span><span style="color:#eff1f5;">JobHandle </span><span style="color:#8fa1b3;">OnUpdate </span><span style="color:#eff1f5;">(JobHandle </span><span style="color:#bf616a;">inputDeps</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">return </span><span>new </span><span style="color:#eff1f5;">MoveJob ().</span><span style="color:#bf616a;">Schedule </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">inputDeps</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">}
+</span></code></pre>
+<h2 id="zhun-bei-yong-yu-bei-hong-fa-de-entity">准备用于被触发的Entity</h2>
+<p>然后准备另一个用于被触发的Entity，它至少需要有Physics Shape、Physics Body<br />
+当然要在Physics Body中将重力系数设为0</p>
+<h2 id="chu-li-triggershi-jian">处理Trigger事件</h2>
+<p>写一个简单的JobComponentSystem就行了<br />
+只是其中的Job需要使用ITriggerEventsJob接口，个人感觉是物理引擎Simulate之后会产生Trigger事件的数组，然后通过ITriggerEventsJob来遍历它处理每个Trigger事件</p>
+<p>DetectTriggerSystem.cs</p>
+<pre data-lang="cs" style="background-color:#2b303b;color:#c0c5ce;" class="language-cs "><code class="language-cs" data-lang="cs"><span>[</span><span style="color:#bf616a;">UpdateAfter</span><span> (</span><span style="color:#bf616a;">typeof</span><span> (</span><span style="color:#bf616a;">EndFramePhysicsSystem</span><span>))]
+</span><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">DetectTriggerSystem </span><span style="color:#eff1f5;">: </span><span style="color:#a3be8c;">JobComponentSystem </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    [</span><span style="color:#bf616a;">BurstCompile</span><span style="color:#eff1f5;">]
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">struct </span><span style="color:#eff1f5;">DetectTriggerJob : </span><span style="color:#a3be8c;">ITriggerEventsJob </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">        [</span><span style="color:#bf616a;">ReadOnly</span><span style="color:#eff1f5;">] </span><span style="color:#b48ead;">public </span><span style="color:#eff1f5;">ComponentDataFromEntity&lt;PlayerInput&gt; </span><span style="color:#bf616a;">playerInputGroup</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">public </span><span style="color:#eff1f5;">ComponentDataFromEntity&lt;PhysicsGravityFactor&gt; </span><span style="color:#bf616a;">physicsGravityFactorGroup</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">public void </span><span style="color:#8fa1b3;">Execute </span><span style="color:#eff1f5;">(TriggerEvent </span><span style="color:#bf616a;">triggerEvent</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">triggeredEntity </span><span>= </span><span style="color:#bf616a;">triggerEvent</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Entities</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">EntityA</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">playerInputGroup</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Exists </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">triggeredEntity</span><span style="color:#eff1f5;">))
+</span><span style="color:#eff1f5;">                </span><span style="color:#bf616a;">triggeredEntity </span><span>= </span><span style="color:#bf616a;">triggerEvent</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Entities</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">EntityB</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">cmpt </span><span>= </span><span style="color:#bf616a;">physicsGravityFactorGroup</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">triggeredEntity</span><span style="color:#eff1f5;">];
+</span><span style="color:#eff1f5;">            </span><span style="color:#bf616a;">cmpt</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Value </span><span>= </span><span style="color:#d08770;">1</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">            </span><span style="color:#bf616a;">physicsGravityFactorGroup</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">triggeredEntity</span><span style="color:#eff1f5;">] </span><span>= </span><span style="color:#bf616a;">cmpt</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">        }
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    BuildPhysicsWorld </span><span style="color:#bf616a;">buildPhysicsWorld</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    StepPhysicsWorld </span><span style="color:#bf616a;">stepPhysicsWorld</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">protected override void </span><span style="color:#8fa1b3;">OnCreate </span><span style="color:#eff1f5;">() {
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">buildPhysicsWorld </span><span>= </span><span style="color:#bf616a;">World</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">GetOrCreateSystem</span><span style="color:#eff1f5;">&lt;BuildPhysicsWorld&gt; ();
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">stepPhysicsWorld </span><span>= </span><span style="color:#bf616a;">World</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">GetOrCreateSystem</span><span style="color:#eff1f5;">&lt;StepPhysicsWorld&gt; ();
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">protected override </span><span style="color:#eff1f5;">JobHandle </span><span style="color:#8fa1b3;">OnUpdate </span><span style="color:#eff1f5;">(JobHandle </span><span style="color:#bf616a;">inputDeps</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">return </span><span>new </span><span style="color:#eff1f5;">DetectTriggerJob {
+</span><span style="color:#eff1f5;">            </span><span style="color:#bf616a;">playerInputGroup </span><span>= </span><span style="color:#bf616a;">GetComponentDataFromEntity</span><span style="color:#eff1f5;">&lt;PlayerInput&gt; (</span><span style="color:#d08770;">true</span><span style="color:#eff1f5;">),
+</span><span style="color:#eff1f5;">                </span><span style="color:#bf616a;">physicsGravityFactorGroup </span><span>= </span><span style="color:#bf616a;">GetComponentDataFromEntity</span><span style="color:#eff1f5;">&lt;PhysicsGravityFactor&gt; ()
+</span><span style="color:#eff1f5;">        }.</span><span style="color:#bf616a;">Schedule </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">stepPhysicsWorld</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Simulation</span><span style="color:#eff1f5;">, </span><span style="color:#b48ead;">ref </span><span style="color:#bf616a;">buildPhysicsWorld</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">PhysicsWorld</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">inputDeps</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">}
+</span></code></pre>
+<h2 id="chu-li-collisionshi-jian">处理Collision事件</h2>
+<p>跟上文Trigger事件类似，也是使用JobComponentSystem，Job需要换成ICollisionEventsJob接口，然后调整Update的顺序并使用EndFramePhysicsSystem.HandlesToWaitFor处理同步，官方给的例子是有问题的，本文根据论坛作了一些修改</p>
+<p>贴一下代码<br />
+DetectCollisionSystem.cs</p>
+<pre data-lang="cs" style="background-color:#2b303b;color:#c0c5ce;" class="language-cs "><code class="language-cs" data-lang="cs"><span>[</span><span style="color:#bf616a;">UpdateAfter</span><span> (</span><span style="color:#bf616a;">typeof</span><span> (</span><span style="color:#bf616a;">StepPhysicsWorld</span><span>))]
+</span><span>[</span><span style="color:#bf616a;">UpdateBefore</span><span> (</span><span style="color:#bf616a;">typeof</span><span> (</span><span style="color:#bf616a;">EndFramePhysicsSystem</span><span>))]
+</span><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">DetectCollisionSystem </span><span style="color:#eff1f5;">: </span><span style="color:#a3be8c;">JobComponentSystem </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    [</span><span style="color:#bf616a;">BurstCompile</span><span style="color:#eff1f5;">]
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">struct </span><span style="color:#eff1f5;">DetectCollisionJob : </span><span style="color:#a3be8c;">ICollisionEventsJob </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">        [</span><span style="color:#bf616a;">ReadOnly</span><span style="color:#eff1f5;">] </span><span style="color:#b48ead;">public </span><span style="color:#eff1f5;">ComponentDataFromEntity&lt;PlayerInput&gt; </span><span style="color:#bf616a;">playerInputGroup</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">public </span><span style="color:#eff1f5;">ComponentDataFromEntity&lt;PhysicsGravityFactor&gt; </span><span style="color:#bf616a;">physicsGravityFactorGroup</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">public void </span><span style="color:#8fa1b3;">Execute </span><span style="color:#eff1f5;">(CollisionEvent </span><span style="color:#bf616a;">collisionEvent</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">triggeredEntity </span><span>= </span><span style="color:#bf616a;">collisionEvent</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Entities</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">EntityA</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">playerInputGroup</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Exists </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">triggeredEntity</span><span style="color:#eff1f5;">))
+</span><span style="color:#eff1f5;">                </span><span style="color:#bf616a;">triggeredEntity </span><span>= </span><span style="color:#bf616a;">collisionEvent</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Entities</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">EntityB</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">cmpt </span><span>= </span><span style="color:#bf616a;">physicsGravityFactorGroup</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">triggeredEntity</span><span style="color:#eff1f5;">];
+</span><span style="color:#eff1f5;">            </span><span style="color:#bf616a;">cmpt</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Value </span><span>= </span><span style="color:#d08770;">1</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">            </span><span style="color:#bf616a;">physicsGravityFactorGroup</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">triggeredEntity</span><span style="color:#eff1f5;">] </span><span>= </span><span style="color:#bf616a;">cmpt</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">        }
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    BuildPhysicsWorld </span><span style="color:#bf616a;">buildPhysicsWorld</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    StepPhysicsWorld </span><span style="color:#bf616a;">stepPhysicsWorld</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    EndFramePhysicsSystem </span><span style="color:#bf616a;">endFramePhysicsSystem</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">protected override void </span><span style="color:#8fa1b3;">OnCreate </span><span style="color:#eff1f5;">() {
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">buildPhysicsWorld </span><span>= </span><span style="color:#bf616a;">World</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">GetOrCreateSystem</span><span style="color:#eff1f5;">&lt;BuildPhysicsWorld&gt; ();
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">stepPhysicsWorld </span><span>= </span><span style="color:#bf616a;">World</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">GetOrCreateSystem</span><span style="color:#eff1f5;">&lt;StepPhysicsWorld&gt; ();
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">endFramePhysicsSystem </span><span>= </span><span style="color:#bf616a;">World</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">GetOrCreateSystem</span><span style="color:#eff1f5;">&lt;EndFramePhysicsSystem&gt; ();
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">protected override </span><span style="color:#eff1f5;">JobHandle </span><span style="color:#8fa1b3;">OnUpdate </span><span style="color:#eff1f5;">(JobHandle </span><span style="color:#bf616a;">inputDeps</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">jobHandle </span><span>= new </span><span style="color:#eff1f5;">DetectCollisionJob {
+</span><span style="color:#eff1f5;">            </span><span style="color:#bf616a;">playerInputGroup </span><span>= </span><span style="color:#bf616a;">GetComponentDataFromEntity</span><span style="color:#eff1f5;">&lt;PlayerInput&gt; (</span><span style="color:#d08770;">true</span><span style="color:#eff1f5;">), </span><span style="color:#bf616a;">physicsGravityFactorGroup </span><span>= </span><span style="color:#bf616a;">GetComponentDataFromEntity</span><span style="color:#eff1f5;">&lt;PhysicsGravityFactor&gt; ()
+</span><span style="color:#eff1f5;">        }.</span><span style="color:#bf616a;">Schedule </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">stepPhysicsWorld</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Simulation</span><span style="color:#eff1f5;">, </span><span style="color:#b48ead;">ref </span><span style="color:#bf616a;">buildPhysicsWorld</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">PhysicsWorld</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">inputDeps</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">endFramePhysicsSystem</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">HandlesToWaitFor</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Add </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">jobHandle</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">jobHandle</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">}
+</span></code></pre>
+
+    </div>
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                    Published by 何泊谋
+                
+                
+                    
+                    in <a href="https://paakmau.github.io/categories/unity/">Unity</a>
+                
+                
+                    and
+                    tagged
+                    
+                        <a href="https://paakmau.github.io/tags/unity-ecs/">Unity ECS</a>
+                        
+                            
+                                
+                                    and
+                                
+                            
+                        
+                    
+                        <a href="https://paakmau.github.io/tags/unity-physics/">Unity Physics</a>
+                        
+                            
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+    </body>
+
+</html>

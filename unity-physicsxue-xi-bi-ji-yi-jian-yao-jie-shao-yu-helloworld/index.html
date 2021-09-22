@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>泊谋</title>
+
+      
+
+      
+          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+    
+        
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io">
+                                <span itemprop="name">主页
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
+                                <span itemprop="name">分类
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
+                                <span itemprop="name">标签
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
+                                <span itemprop="name">GitHub
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Unity Physics学习笔记「一」 简要介绍与HelloWorld</h1>
+        <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>3 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2020-02-04
+</span>
+    </header>
+    <div itemprop="articleBody">
+      <p>现在Unity的Package Manager中已经有了适用于ECS框架的物理引擎，功能完善</p>
+<span id="continue-reading"></span>
+<p>可以说Unity的DOTS（面向数据技术栈）已经能够用于制作大部分游戏类型</p>
+<p>这个系列会介绍目前Unity Physics中的绝大多数内容，与Havok Physics关系不大</p>
+<p>需要旧版Unity的基础，Unity ECS基础，并对常见物理引擎有一定了解</p>
+<p>本系列文章基于<br />
+com.unity.entities 0.5.1-preview.11<br />
+com.unity.physics 0.2.5-preview.1</p>
+<h2 id="xiang-guan-packagejie-shao">相关Package介绍</h2>
+<p>目前相关的包有两个，一个是com.unity.physics，另一个是com.havok.physics</p>
+<p>com.unity.physics是Unity自己写的</p>
+<ul>
+<li>无状态。现代物理引擎通常会维护大量的状态缓存以提高性能，但这对网络同步中状态的回退与恢复不太友好，因此Unity舍弃了这一特性以提高简单性与可控性</li>
+<li>模块化。该物理引擎可以脱离jobs和ECS单独存在，这使得用户在使用时更加灵活</li>
+<li>高性能。该引擎比较轻量化，跟其他商业引擎相比，功能相似，但性能持平或更优</li>
+</ul>
+<p>com.havok.physics是微软写的，是Havok引擎在Unity上的发行版，本系列文章不做具体介绍</p>
+<ul>
+<li>基于com.unity.physics</li>
+<li>性能更好</li>
+<li>质量更好</li>
+<li>调试更好</li>
+</ul>
+<h2 id="kai-shi-qian-de-zhun-bei">开始前的准备</h2>
+<p>在Package Manager中安装Hybrid Renderer和Unity Physics两个包就行了</p>
+<p>其中Hybrid Renderer依赖Entities，Entities依赖Collections、Mathematics等包，Package Manager会自动安装所有依赖</p>
+<p>另外注意，如果在mac上使用VS Code作为编辑器，Visual Studio Code Editor这个包的1.1.4版本会导致Omnisharp出问题，需要退至1.1.3版本</p>
+<h2 id="helloworld">HelloWorld</h2>
+<p>创建一个Cube GameObject命名为CubeA，移除Box Collider，添加Convert To Entity、Physics Shape，这样他就是一个static的刚体</p>
+<p>再创建一个Cube GameObject命名为CubeB，移除Box Collider，添加Convert To Entity、Physics Shape、Physics Body，这样他就是一个dynamic的刚体，注意Physics Body默认会添加重力</p>
+<p>然后把CubeA移到CubeB的正上方，运行就会看到CubeA落下砸到CubeB上并发生碰撞</p>
+<p><img src="https://hebomou.top/wp-content/uploads/2020/02/image-258x300.png" alt="" /></p>
+<h2 id="debug-display">Debug Display</h2>
+<p>在场景中新建一个空的GameObject，添加ConvertToEntity与PhysicsDebugDisplay，并在PhysicsDebugDisplay中勾选需要展示的信息，运行后就能在Scene窗体中看到了</p>
+<p>注意是在Scene窗体中而不是Game窗体</p>
+
+    </div>
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                    Published by 何泊谋
+                
+                
+                    
+                    in <a href="https://paakmau.github.io/categories/unity/">Unity</a>
+                
+                
+                    and
+                    tagged
+                    
+                        <a href="https://paakmau.github.io/tags/unity-ecs/">Unity ECS</a>
+                        
+                            
+                                
+                                    and
+                                
+                            
+                        
+                    
+                        <a href="https://paakmau.github.io/tags/unity-physics/">Unity Physics</a>
+                        
+                            
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+    </body>
+
+</html>

@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh">
+	<title>泊谋 - VS Code</title>
+	<subtitle>随便写写，开心就行。</subtitle>
+	<link href="https://paakmau.github.io/tags/vs-code/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://paakmau.github.io"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2020-12-11T21:41:47+00:00</updated>
+	<id>https://paakmau.github.io/tags/vs-code/atom.xml</id>
+	<entry xml:lang="zh">
+		<title>VS Code写一切 CMake</title>
+		<published>2020-12-11T21:41:47+00:00</published>
+		<updated>2020-12-11T21:41:47+00:00</updated>
+		<link href="https://paakmau.github.io/vs-codexie-yi-qie-cmake/" type="text/html"/>
+		<id>https://paakmau.github.io/vs-codexie-yi-qie-cmake/</id>
+		<content type="html">&lt;h2 id=&quot;huan-jing-pei-zhi&quot;&gt;环境配置&lt;&#x2F;h2&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;安装C++编译器、C++调试器和CMake，并确保它们在PATH中&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;macos&quot;&gt;macOS&lt;&#x2F;h3&gt;
+&lt;p&gt;安装Xcode命令行工具使用它的Clang，然后用brew安装CMake&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; xcode-select&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --install
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; brew install cmake
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;然后通过查看它们的版本信息测试是否安装成功&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; clang&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --version
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; cmake&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --version
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;windows&quot;&gt;Windows&lt;&#x2F;h3&gt;
+&lt;p&gt;使用MSYS2安装mingw-w64集成的Clang和CMake，并把它们所在的目录添加的环境变量，如果你使用的是64位Windows且使用默认路径安装了MSYS2，那么这个目录应该是C:\msys64\mingw32\bin&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; pacman&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -S&lt;&#x2F;span&gt;&lt;span&gt; mingw-w64-x86_64-clang
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; pacman&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -S&lt;&#x2F;span&gt;&lt;span&gt; mingw-w64-x86_64_cmake
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;然后打开PowerShell验证是否安装成功，如果环境变量没有生效需要重启&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;clang.exe &lt;&#x2F;span&gt;&lt;span&gt;--version
+&lt;&#x2F;span&gt;&lt;span&gt;PS &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;cmake.exe &lt;&#x2F;span&gt;&lt;span&gt;--version
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;xu-yao-an-zhuang-de-vs-codecha-jian&quot;&gt;需要安装的VS Code插件&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;C&#x2F;C++插件&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;CMake插件用于CMakeLists.txt的语法高亮&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;CMake Tools插件用于CMake项目的构建、安装、调试等&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;cmakexiang-mu-chuang-jian&quot;&gt;CMake项目创建&lt;&#x2F;h2&gt;
+&lt;p&gt;创建一个文件夹HelloWorld，用VS Code打开&lt;&#x2F;p&gt;
+&lt;p&gt;在macOS下键入Cmd + Shift + P，或者在Windows下键入Ctrl + Shift + P，呼出命令面板&lt;&#x2F;p&gt;
+&lt;p&gt;搜索CMake: Quick Start命令，找到后回车&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;12&#x2F;cmake_quick_start.jpg&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;输入项目名为HelloWorld&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;12&#x2F;cmake_project_name.jpg&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;然后选择Executable创建可执行文件&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;12&#x2F;cmake_target.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;然后就会看到CMake Tools插件在目录下生成了main.cpp和CMakeLists.txt，打开可以看到它的代码就是输出一个字符串&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;diao-shi-yun-xing&quot;&gt;调试运行&lt;&#x2F;h2&gt;
+&lt;p&gt;按下Ctrl + F5就行了&lt;&#x2F;p&gt;
+&lt;p&gt;比较折磨的是，CMake Tools插件一开始就没有集成到launch.json和tasks.json，所以需要使用它自己定的快捷键来构建和调试，但是最近已经有人提了issue并且受到了重视所以应该也快了吧&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="zh">
+		<title>Vulkan画三角形「一」 概要与环境配置</title>
+		<published>2020-09-03T20:23:56+00:00</published>
+		<updated>2020-09-03T20:23:56+00:00</updated>
+		<link href="https://paakmau.github.io/vulkanhua-san-jiao-xing-yi-gai-yao-yu-huan-jing-pei-zhi/" type="text/html"/>
+		<id>https://paakmau.github.io/vulkanhua-san-jiao-xing-yi-gai-yao-yu-huan-jing-pei-zhi/</id>
+		<content type="html">&lt;p&gt;Vulkan是一个跨平台的图形与计算API，本系列文章将使用Vulkan绘制一个三角形，旨在为上手Vulkan提供帮助&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;使用CMake管理项目&lt;br &#x2F;&gt;
+使用VS Code编辑代码&lt;br &#x2F;&gt;
+使用GLFW管理窗体&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;09&#x2F;image-1.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;本系列文章主要是下面这个教程的翻译，但是做了一些修改&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;vulkan-tutorial.com&#x2F;&quot;&gt;https:&#x2F;&#x2F;vulkan-&lt;&#x2F;a&gt;&lt;a href=&quot;https:&#x2F;&#x2F;vulkan-tutorial.com&#x2F;&quot;&gt;tutorial&lt;&#x2F;a&gt;&lt;a href=&quot;https:&#x2F;&#x2F;vulkan-tutorial.com&#x2F;&quot;&gt;.com&#x2F;&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;an-zhuang-vulkan&quot;&gt;安装Vulkan&lt;&#x2F;h2&gt;
+&lt;p&gt;前往官网下载安装包直接安装&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;vulkan.lunarg.com&#x2F;&quot;&gt;https:&#x2F;&#x2F;vulkan.lunarg.com&#x2F;&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;an-zhuang-glfw&quot;&gt;安装GLFW&lt;&#x2F;h2&gt;
+&lt;p&gt;Vulkan只是一个图形API，无法管理窗体。为了方便，我们引入跨平台的GLFW库&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;macos&quot;&gt;macOS&lt;&#x2F;h3&gt;
+&lt;p&gt;可以用brew安装&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; brew install glfw
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;windows&quot;&gt;Windows&lt;&#x2F;h3&gt;
+&lt;p&gt;稍微麻烦一点，可以用MinGW-w64编译GLFW的源码并安装，最后添加环境变量&lt;&#x2F;p&gt;
+&lt;p&gt;先去官网下载源码&lt;br &#x2F;&gt;
+&lt;a href=&quot;https:&#x2F;&#x2F;www.glfw.org&#x2F;&quot;&gt;https:&#x2F;&#x2F;www.glfw.org&#x2F;&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;然后以管理员身份运行PowerShell，cd到GLFW源码项目文件夹下，输入以下命令&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS mkdir build
+&lt;&#x2F;span&gt;&lt;span&gt;PS cd build
+&lt;&#x2F;span&gt;&lt;span&gt;PS cmake -G &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;MinGW Makefiles&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; ..
+&lt;&#x2F;span&gt;&lt;span&gt;PS mingw32-make install
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;这样GLFW默认会被安装在C:&#x2F;Program Files (x86)&#x2F;GLFW文件夹中，如果想装在别的地方可以修改CMAKE_INSTALL_PREFIX环境变量，当然也可以直接下载预编译的二进制文件，但是可能它不会提供配置GLFW所需的CMake模块&lt;&#x2F;p&gt;
+&lt;p&gt;最后需要添加一个glfw3_DIR环境变量，指向存放配置GLFW的CMake模块的路径，值是C:\Program Files (x86)\GLFW\lib\cmake\glfw3，如果你使用了不同的安装路径，请做相应修改，这样后续find_package才能找到glfw3的头文件和依赖库&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;an-zhuang-cmake&quot;&gt;安装CMake&lt;&#x2F;h2&gt;
+&lt;p&gt;考虑到跨平台，我们用CMake配合VS Code会很方便&lt;&#x2F;p&gt;
+&lt;p&gt;mac下同样可以用brew安装&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; brew install cmake
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Windows下使用官网安装包安装就行了&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;an-zhuang-vs-codecha-jian&quot;&gt;安装VS Code插件&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;C&#x2F;C++&lt;&#x2F;li&gt;
+&lt;li&gt;CMake&lt;&#x2F;li&gt;
+&lt;li&gt;CMake Tools&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;chuang-jian-cmakexiang-mu&quot;&gt;创建CMake项目&lt;&#x2F;h2&gt;
+&lt;p&gt;直接新建一个文件夹，用VS Code打开它&lt;&#x2F;p&gt;
+&lt;p&gt;在其中创建CMakeList.txt文件，内容如下&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cmake&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cmake &quot;&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;cmake_minimum_required&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VERSION &lt;&#x2F;span&gt;&lt;span&gt;3.0.0)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;project&lt;&#x2F;span&gt;&lt;span&gt;(VulkanTest &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VERSION &lt;&#x2F;span&gt;&lt;span&gt;0.1.0)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;set&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CMAKE_CXX_STANDARD &lt;&#x2F;span&gt;&lt;span&gt;17)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;add_executable&lt;&#x2F;span&gt;&lt;span&gt;(VulkanTest main.cpp)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;find_package&lt;&#x2F;span&gt;&lt;span&gt;(glfw3 3.3 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;REQUIRED&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;target_link_libraries&lt;&#x2F;span&gt;&lt;span&gt;(VulkanTest glfw)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;find_package&lt;&#x2F;span&gt;&lt;span&gt;(Vulkan &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;REQUIRED&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;target_include_directories&lt;&#x2F;span&gt;&lt;span&gt;(VulkanTest &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;PRIVATE &lt;&#x2F;span&gt;&lt;span&gt;${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Vulkan_INCLUDE_DIRS&lt;&#x2F;span&gt;&lt;span&gt;})
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;target_link_libraries&lt;&#x2F;span&gt;&lt;span&gt;(VulkanTest ${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Vulkan_LIBRARIES&lt;&#x2F;span&gt;&lt;span&gt;})
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;简单说就是这个项目只有main.cpp一个文件，然后寻找Vulkan和glfw3这两个库，并链接到我们的项目中&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;yong-glfwchuang-jian-chuang-ti&quot;&gt;用GLFW创建窗体&lt;&#x2F;h2&gt;
+&lt;p&gt;接下来我们创建main.cpp文件&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;GLFW&#x2F;glfw3.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span&gt;uint32_t WIDTH = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;800&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span&gt;uint32_t HEIGHT = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;600&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;VulkanHelloWorld &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;:
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;Run&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;() {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;initWindow&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;();
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;initVulkan&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;();
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;mainLoop&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;();
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cleanup&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;();
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;private&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;:
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;initWindow&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;() {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwInit&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;();
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwWindowHint&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(GLFW_CLIENT_API, GLFW_NO_API);
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwWindowHint&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(GLFW_RESIZABLE, GLFW_FALSE);
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        window &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwCreateWindow&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(WIDTH, HEIGHT, &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;VulkanHelloWorld&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;nullptr&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;nullptr&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;);
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;initVulkan&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;() {}
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;mainLoop&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;() {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;while &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span&gt;!&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwWindowShouldClose&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(window)) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwPollEvents&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;();
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;cleanup&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;() {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwDestroyWindow&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(window);
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwTerminate&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;();
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;private&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;:
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    GLFWwindow &lt;&#x2F;span&gt;&lt;span&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;window;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    VulkanHelloWorld helloWorld;
+&lt;&#x2F;span&gt;&lt;span&gt;    helloWorld.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Run&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;这段代码主要是用GLFW处理窗体创建、主循环、窗体销毁等事情&lt;br &#x2F;&gt;
+因为GLFW不是本系列的主要内容，因此只是简单解释一下&lt;&#x2F;p&gt;
+&lt;p&gt;glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);&lt;br &#x2F;&gt;
+GLFW原本设计就是要为OpenGL创建上下文，而这里我们只用它管理窗体，因此使用这行代码防止他为OpenGL创建上下文&lt;&#x2F;p&gt;
+&lt;p&gt;glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);&lt;br &#x2F;&gt;
+处理可变大小窗体很麻烦，因此我们直接禁用它&lt;&#x2F;p&gt;
+&lt;p&gt;在VS Code中键入cmd + shift + p呼出命令面板，在其中输入CMake: Debug选项并回车调试项目，就能看到它创建了一个空窗体&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;09&#x2F;image-2.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;在接下来的文章中我们会不断填充这段代码，最终在屏幕中渲染出一个三角形&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="zh">
+		<title>VS Code写一切 Node.js</title>
+		<published>2019-12-13T21:36:11+00:00</published>
+		<updated>2019-12-13T21:36:11+00:00</updated>
+		<link href="https://paakmau.github.io/vs-codexie-yi-qie-node-js/" type="text/html"/>
+		<id>https://paakmau.github.io/vs-codexie-yi-qie-node-js/</id>
+		<content type="html">&lt;p&gt;开发Node.js项目可能还是WebStorm功能多一点？？&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;相比之下VS Code比较轻量级&lt;&#x2F;p&gt;
+&lt;p&gt;VSC天生支持Node.js不装插件就能调试&lt;br &#x2F;&gt;
+但是，对于要装各种依赖的Node.js项目，VSC没有自带图形化的管理工具，重度依赖终端，有点蛋疼（虽然有插件我也不乐意装毕竟命令行多方便）&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;xiang-mu-xin-jian-yu-diao-shi&quot;&gt;项目新建与调试&lt;&#x2F;h2&gt;
+&lt;p&gt;打开一个空目录，ctrl+`呼出终端&lt;&#x2F;p&gt;
+&lt;p&gt;$ npm init&lt;&#x2F;p&gt;
+&lt;p&gt;一路回车，然后编辑工作区中的index.js如下&lt;&#x2F;p&gt;
+&lt;p&gt;console.log(&amp;quot;Hello World&amp;quot;)&lt;&#x2F;p&gt;
+&lt;p&gt;F9下断点，F5直接跑&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="zh">
+		<title>VS Code写一切 Jupyter Notebook</title>
+		<published>2019-12-12T01:35:40+00:00</published>
+		<updated>2019-12-12T01:35:40+00:00</updated>
+		<link href="https://paakmau.github.io/vs-codexie-yi-qie-jupyter-notebook/" type="text/html"/>
+		<id>https://paakmau.github.io/vs-codexie-yi-qie-jupyter-notebook/</id>
+		<content type="html">&lt;p&gt;因为院里不少课程要机器学习，于是Notebook用的挺频繁的。当时用VSC写还行吧，就是快捷键有点问题，语法提示不太行，现在似乎好多了&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;jupyterhuan-jing-pei-zhi&quot;&gt;Jupyter环境配置&lt;&#x2F;h2&gt;
+&lt;p&gt;安装Python与Jupyter&lt;br &#x2F;&gt;
+Mac下用brew安装即可&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; brew install python jupyter
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;xu-yao-an-zhuang-de-vsccha-jian&quot;&gt;需要安装的VSC插件&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Python&lt;&#x2F;li&gt;
+&lt;li&gt;VS Code Jupyter Notebook Previewer&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;notebookchuang-jian-yu-yun-xing&quot;&gt;Notebook创建与运行&lt;&#x2F;h2&gt;
+&lt;p&gt;打开一个空文件夹，cmd+shift+p呼出命令面板&lt;br &#x2F;&gt;
+输入python create进行搜索，选择Python: Create New Blank Jupyter Notebook&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191222-011543@2x-1024x199.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;在当前目录保存为hello.ipynb&lt;br &#x2F;&gt;
+然后编辑内容如下并按ctrl+enter运行（为什么不是cmd+enter）&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191222-013041@2x.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;操作跟web版的差不多但是Mac下快捷键很蛋疼就这样吧&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="zh">
+		<title>VS Code写一切 Python</title>
+		<published>2019-12-11T19:48:37+00:00</published>
+		<updated>2019-12-11T19:48:37+00:00</updated>
+		<link href="https://paakmau.github.io/vs-codexie-yi-qie-python/" type="text/html"/>
+		<id>https://paakmau.github.io/vs-codexie-yi-qie-python/</id>
+		<content type="html">&lt;p&gt;VSC写Python也挺方便的，不过功能没那么多&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;pythonhuan-jing-pei-zhi&quot;&gt;Python环境配置&lt;&#x2F;h2&gt;
+&lt;p&gt;xjb装就行了&lt;br &#x2F;&gt;
+macOS Catalina自带的Python3不建议用，brew install python3&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;xu-yao-an-zhuang-de-vsccha-jian&quot;&gt;需要安装的VSC插件&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Python&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;gong-zuo-qu-pei-zhi&quot;&gt;工作区配置&lt;&#x2F;h2&gt;
+&lt;p&gt;打开一个空文件夹，在其中新建并编辑一个文件hello.py，如下&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;py&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-py &quot;&gt;&lt;code class=&quot;language-py&quot; data-lang=&quot;py&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Hello World&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;按F5运行，配置选Python&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-194755@2x.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;另外，可以根据提示装一下语法提示器&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="zh">
+		<title>VS Code写一切 .NET Core与C#</title>
+		<published>2019-12-11T19:37:00+00:00</published>
+		<updated>2019-12-11T19:37:00+00:00</updated>
+		<link href="https://paakmau.github.io/vs-codexie-yi-qie-net-coreyu-c/" type="text/html"/>
+		<id>https://paakmau.github.io/vs-codexie-yi-qie-net-coreyu-c/</id>
+		<content type="html">&lt;p&gt;开发.NET Core项目VSC应该是首选了吧，毕竟跨平台而且它们还都是微软的私生子&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;net-corehuan-jing-pei-zhi&quot;&gt;.NET Core环境配置&lt;&#x2F;h2&gt;
+&lt;p&gt;到官网下安装包&lt;br &#x2F;&gt;
+或者Mac下&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; brew install dotnet
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;xu-yao-an-zhuang-de-vs-codecha-jian&quot;&gt;需要安装的VS Code插件&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;C#&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;net-corexiang-mu-chuang-jian&quot;&gt;.NET Core项目创建&lt;&#x2F;h2&gt;
+&lt;p&gt;新建一个文件夹hello并打开它，按下快捷键ctrl+`呼出终端并输入如下命令创建控制台项目&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; dotnet new console
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;看到目录中生成了一些文件，其中&lt;br &#x2F;&gt;
+Program.cs是入口函数所在的文件，打开发现里面已经写好了HelloWorld，所以就不改了&lt;br &#x2F;&gt;
+hello.csproj是项目配置&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;diao-shi-yun-xing&quot;&gt;调试运行&lt;&#x2F;h2&gt;
+&lt;p&gt;直接按F5，选择.NET Core，再按F5就行了&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-193323@2x-1024x410.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-193406@2x.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="zh">
+		<title>VS Code写一切 Maven与Spring Boot</title>
+		<published>2019-12-11T15:13:45+00:00</published>
+		<updated>2019-12-11T15:13:45+00:00</updated>
+		<link href="https://paakmau.github.io/vs-codexie-yi-qie-mavenyu-spring-boot/" type="text/html"/>
+		<id>https://paakmau.github.io/vs-codexie-yi-qie-mavenyu-spring-boot/</id>
+		<content type="html">&lt;p&gt;VSC用于开发Maven项目已经比较成熟&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;直接打开就行，没什么好说的&lt;&#x2F;p&gt;
+&lt;p&gt;因此本文介绍VS Code创建与调试Spring Boot项目&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;javahuan-jing-pei-zhi&quot;&gt;Java环境配置&lt;&#x2F;h2&gt;
+&lt;p&gt;问题不大，xjb装就行了&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;xu-yao-an-zhuang-de-vs-codecha-jian&quot;&gt;需要安装的VS Code插件&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Java Extension Pack&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;Spring Boot Extension Pack&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;chuang-jian-spring-bootxiang-mu&quot;&gt;创建Spring Boot项目&lt;&#x2F;h2&gt;
+&lt;p&gt;按下Shift-Cmd-P打开命令面板，输入spring搜索相关命令&lt;br &#x2F;&gt;
+选择Spring Initializr: Generate a Maven Project&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-145332@2x-1024x342.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;他会依次让你选择语言、Group Id、Artifact Id、Spring Boot版本、依赖等，除了依赖我们一路回车&lt;br &#x2F;&gt;
+为了方便，依赖只选一个Spring Web&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-150634@2x-1024x202.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-150641@2x-1024x127.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-150649@2x-1024x121.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-150659@2x-1024x241.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-150304@2x-1024x620.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;接下来选择项目生成路径&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-150514@2x-1024x600.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;然后他会在路径下生成一个demo文件夹&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;gong-zuo-qu-pei-zhi&quot;&gt;工作区配置&lt;&#x2F;h2&gt;
+&lt;p&gt;用VSC打开这个文件夹，按F5运行，配置选择Java&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-151044@2x-1024x451.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;他会生成launch.json，跟上一篇Java的类似，用于确定主类，就不贴了&lt;br &#x2F;&gt;
+可以把Current File的那条删了，因为暂时不需要单文件运行&lt;&#x2F;p&gt;
+&lt;p&gt;按F5运行，跑起来了&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-151311@2x-1024x285.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="zh">
+		<title>VS Code写一切 Java单文件</title>
+		<published>2019-12-11T00:44:50+00:00</published>
+		<updated>2019-12-11T00:44:50+00:00</updated>
+		<link href="https://paakmau.github.io/vs-codexie-yi-qie-javadan-wen-jian/" type="text/html"/>
+		<id>https://paakmau.github.io/vs-codexie-yi-qie-javadan-wen-jian/</id>
+		<content type="html">&lt;p&gt;VSC可以直接编译调试单个Java源文件（虽然没什么用）&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;javahuan-jing-pei-zhi&quot;&gt;Java环境配置&lt;&#x2F;h2&gt;
+&lt;p&gt;与VSC无关，但提一下mac的配置&lt;&#x2F;p&gt;
+&lt;p&gt;macOS下用brew装OpenJDK&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; brew install openjdk
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;然后根据提示创建符号链接以便系统找到JDK&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; sudo ln&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -sfn&lt;&#x2F;span&gt;&lt;span&gt; &#x2F;usr&#x2F;local&#x2F;opt&#x2F;openjdk&#x2F;libexec&#x2F;openjdk.jdk \
+&lt;&#x2F;span&gt;&lt;span&gt;   &#x2F;Library&#x2F;Java&#x2F;JavaVirtualMachines&#x2F;openjdk.jdk
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;xu-yao-an-zhuang-de-vs-codecha-jian&quot;&gt;需要安装的VS Code插件&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Java Extension Pack&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;gong-zuo-qu-pei-zhi&quot;&gt;工作区配置&lt;&#x2F;h2&gt;
+&lt;p&gt;打开一个空文件夹，在其中创建一个文件Hello.java，编辑内容如下&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Hello &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public static void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;[] &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;args&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;System&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;.out.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Hello World&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;);
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;按F5直接运行，VSC自动生成launch.json，有时候会失败，可以重试几遍&lt;br &#x2F;&gt;
+内容大概如下&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;json&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-json &quot;&gt;&lt;code class=&quot;language-json&quot; data-lang=&quot;json&quot;&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Use IntelliSense to learn about possible attributes.
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Hover to view descriptions of existing attributes.
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; For more information, visit: https:&#x2F;&#x2F;go.microsoft.com&#x2F;fwlink&#x2F;?linkid=830387
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;version&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;0.2.0&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;configurations&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: [
+&lt;&#x2F;span&gt;&lt;span&gt;        {
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;java&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Debug (Launch) - Current File&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;request&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;launch&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;mainClass&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;${file}&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;        },
+&lt;&#x2F;span&gt;&lt;span&gt;        {
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;java&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Debug (Launch)-Hello&amp;lt;java_single_file_9fc652ff&amp;gt;&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;request&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;launch&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;mainClass&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Hello&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;projectName&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;java_single_file_9fc652ff&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;        }
+&lt;&#x2F;span&gt;&lt;span&gt;    ]
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;解释：它配置了两个launch，一个是以当前打开的Java源文件作为主类调试，一个是以Hello.java作为主类进行调试&lt;&#x2F;p&gt;
+&lt;p&gt;切回Hello.java按F5，得到如下输出&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-004354@2x.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="zh">
+		<title>VS Code写一切 C与C++单文件</title>
+		<published>2019-12-11T00:22:34+00:00</published>
+		<updated>2019-12-11T00:22:34+00:00</updated>
+		<link href="https://paakmau.github.io/vs-codexie-yi-qie-cyu-cdan-wen-jian/" type="text/html"/>
+		<id>https://paakmau.github.io/vs-codexie-yi-qie-cyu-cdan-wen-jian/</id>
+		<content type="html">&lt;p&gt;配置很简单，刷题贼方便&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;这里以C++为例，C同理&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;c-c-huan-jing-pei-zhi&quot;&gt;C&#x2F;C++环境配置&lt;&#x2F;h2&gt;
+&lt;p&gt;跟VS Code无关，但还是提一下&lt;&#x2F;p&gt;
+&lt;p&gt;Win下可以装MinGW&lt;br &#x2F;&gt;
+Max下装Xcode自带Clang&lt;br &#x2F;&gt;
+只要环境变量中有C&#x2F;C++的编译器就行了&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;xu-yao-an-zhuang-de-vs-codecha-jian&quot;&gt;需要安装的VS Code插件&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;C&#x2F;C++&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;gong-zuo-qu-pei-zhi&quot;&gt;工作区配置&lt;&#x2F;h2&gt;
+&lt;p&gt;打开一个空文件夹，在其中新建文件hello.cpp，编辑内容如下&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;cstdio&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;using namespace&lt;&#x2F;span&gt;&lt;span&gt; std;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Hello world&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;按F5直接运行&lt;br &#x2F;&gt;
+VS Code提示选择环境，这里选择C++&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191220-161845@2x-1024x447.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;选择配置，随便一个C++编译器都行，我选了第一个clang++&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191220-161916@2x-1024x351.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;接下来VS Code自动生成了一个launch.json文件，我贴一下Mac下的&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;json&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-json &quot;&gt;&lt;code class=&quot;language-json&quot; data-lang=&quot;json&quot;&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Use IntelliSense to learn about possible attributes.
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Hover to view descriptions of existing attributes.
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; For more information, visit: https:&#x2F;&#x2F;go.microsoft.com&#x2F;fwlink&#x2F;?linkid=830387
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;version&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;0.2.0&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;configurations&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: [
+&lt;&#x2F;span&gt;&lt;span&gt;        {
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;clang++ build and debug active file&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;cppdbg&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;request&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;launch&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;program&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;${fileDirname}&#x2F;${fileBasenameNoExtension}&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;args&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: [],
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;stopAtEntry&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;false&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;cwd&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;${workspaceFolder}&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;environment&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: [],
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;externalConsole&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;false&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;MIMode&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;lldb&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;preLaunchTask&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;clang++ build active file&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;        }
+&lt;&#x2F;span&gt;&lt;span&gt;    ]
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;解释：启动类型为cppdbg，有各种参数，其中&lt;br &#x2F;&gt;
+externalConsole表示是否使用外部终端，如果需要用标准输入，这里要改成true&lt;br &#x2F;&gt;
+MIMode为调试器，Mac下用lldb，Win下用gdb&lt;br &#x2F;&gt;
+preLaunchTask表示launch之前执行的task&lt;&#x2F;p&gt;
+&lt;p&gt;这个launch其实只配置了调试器，它需要先执行preLaunchTask中配置的task用于编译，而这个task我们现在还没有请往后看&lt;&#x2F;p&gt;
+&lt;p&gt;切回之前的hello.cpp，再次按下F5&lt;br &#x2F;&gt;
+提示我们还没有配置task，于是点击Configure Task&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191220-162852@2x-1024x302.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;选与之前launch一样的，所以我选择clang++&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191220-163513@2x-1024x345.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;他生成了一个tasks.json文件，可以看到里面有个任务配置了编译器与编译命令等&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;json&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-json &quot;&gt;&lt;code class=&quot;language-json&quot; data-lang=&quot;json&quot;&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; See https:&#x2F;&#x2F;go.microsoft.com&#x2F;fwlink&#x2F;?LinkId=733558 
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; for the documentation about the tasks.json format
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;version&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;2.0.0&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;tasks&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: [
+&lt;&#x2F;span&gt;&lt;span&gt;        {
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;shell&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;label&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;clang++ build active file&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;command&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;usr&#x2F;bin&#x2F;clang++&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;args&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: [
+&lt;&#x2F;span&gt;&lt;span&gt;                &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-g&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;                &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;${file}&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;                &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-o&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;                &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;${fileDirname}&#x2F;${fileBasenameNoExtension}&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;            ],
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;options&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: {
+&lt;&#x2F;span&gt;&lt;span&gt;                &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;cwd&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;usr&#x2F;bin&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;            },
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;problemMatcher&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: [
+&lt;&#x2F;span&gt;&lt;span&gt;                &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;$gcc&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;            ],
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;group&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;build&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;        }
+&lt;&#x2F;span&gt;&lt;span&gt;    ]
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;切回hello.cpp，F5，这次可以运行了&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191220-163937@2x-1024x215.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;codelldbcha-jian&quot;&gt;CodeLLDB插件&lt;&#x2F;h2&gt;
+&lt;p&gt;也可以使用这个插件调试C&#x2F;C++程序，它能在集成终端中进行输入&lt;br &#x2F;&gt;
+但调试控制台使用的是lldb命令就比较蛋疼&lt;&#x2F;p&gt;
+&lt;p&gt;另外升级macOS Catalina之后似乎C&#x2F;C++插件出了点问题暂时不能调试，换成这个插件就行&lt;&#x2F;p&gt;
+</content>
+	</entry>
+</feed>

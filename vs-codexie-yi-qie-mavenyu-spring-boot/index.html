@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>泊谋</title>
+
+      
+
+      
+          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+    
+        
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io">
+                                <span itemprop="name">主页
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
+                                <span itemprop="name">分类
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
+                                <span itemprop="name">标签
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
+                                <span itemprop="name">GitHub
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">VS Code写一切 Maven与Spring Boot</h1>
+        <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>2 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2019-12-11
+</span>
+    </header>
+    <div itemprop="articleBody">
+      <p>VSC用于开发Maven项目已经比较成熟</p>
+<span id="continue-reading"></span>
+<p>直接打开就行，没什么好说的</p>
+<p>因此本文介绍VS Code创建与调试Spring Boot项目</p>
+<h2 id="javahuan-jing-pei-zhi">Java环境配置</h2>
+<p>问题不大，xjb装就行了</p>
+<h2 id="xu-yao-an-zhuang-de-vs-codecha-jian">需要安装的VS Code插件</h2>
+<ul>
+<li>
+<p>Java Extension Pack</p>
+</li>
+<li>
+<p>Spring Boot Extension Pack</p>
+</li>
+</ul>
+<h2 id="chuang-jian-spring-bootxiang-mu">创建Spring Boot项目</h2>
+<p>按下Shift-Cmd-P打开命令面板，输入spring搜索相关命令<br />
+选择Spring Initializr: Generate a Maven Project</p>
+<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191221-145332@2x-1024x342.png" alt="" /></p>
+<p>他会依次让你选择语言、Group Id、Artifact Id、Spring Boot版本、依赖等，除了依赖我们一路回车<br />
+为了方便，依赖只选一个Spring Web</p>
+<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191221-150634@2x-1024x202.png" alt="" /></p>
+<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191221-150641@2x-1024x127.png" alt="" /></p>
+<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191221-150649@2x-1024x121.png" alt="" /></p>
+<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191221-150659@2x-1024x241.png" alt="" /></p>
+<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191221-150304@2x-1024x620.png" alt="" /></p>
+<p>接下来选择项目生成路径</p>
+<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191221-150514@2x-1024x600.png" alt="" /></p>
+<p>然后他会在路径下生成一个demo文件夹</p>
+<h2 id="gong-zuo-qu-pei-zhi">工作区配置</h2>
+<p>用VSC打开这个文件夹，按F5运行，配置选择Java</p>
+<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191221-151044@2x-1024x451.png" alt="" /></p>
+<p>他会生成launch.json，跟上一篇Java的类似，用于确定主类，就不贴了<br />
+可以把Current File的那条删了，因为暂时不需要单文件运行</p>
+<p>按F5运行，跑起来了</p>
+<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191221-151311@2x-1024x285.png" alt="" /></p>
+
+    </div>
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                    Published by 何泊谋
+                
+                
+                    
+                    in <a href="https://paakmau.github.io/categories/vs-code/">VS Code</a>
+                
+                
+                    and
+                    tagged
+                    
+                        <a href="https://paakmau.github.io/tags/java/">Java</a>
+                        
+                            
+                                
+                                    ,
+                                
+                            
+                        
+                    
+                        <a href="https://paakmau.github.io/tags/maven/">Maven</a>
+                        
+                            
+                                
+                                    ,
+                                
+                            
+                        
+                    
+                        <a href="https://paakmau.github.io/tags/spring-boot/">Spring Boot</a>
+                        
+                            
+                                
+                                    and
+                                
+                            
+                        
+                    
+                        <a href="https://paakmau.github.io/tags/vs-code/">VS Code</a>
+                        
+                            
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+    </body>
+
+</html>

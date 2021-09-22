@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>泊谋</title>
+
+      
+
+      
+          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+    
+        
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io">
+                                <span itemprop="name">主页
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
+                                <span itemprop="name">分类
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
+                                <span itemprop="name">标签
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
+                                <span itemprop="name">GitHub
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Vulkan画三角形「七」 创建图像视图</h1>
+        <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>3 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2020-09-08
+</span>
+    </header>
+    <div itemprop="articleBody">
+      <p>为了能够使用VkImage，包括交换链中的在内，我们需要在渲染管线中创建VkImageView。一个图像视图真的就是字面意思的图像的视图。它描述了如何访问这个图像以及访问这个图像的哪个部分，例如图像可能被当作不需要Mipmap的二维深度贴图</p>
+<span id="continue-reading"></span><h2 id="chuang-jian-tu-xiang-shi-tu">创建图像视图</h2>
+<p>首先还是先定义一个成员变量用于保存图像视图</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>std::vector&lt;VkImageView&gt; swapchainImageViews;
+</span></code></pre>
+<p>添加一个成员函数用于创建图像视图，并在initVulkan中调用它</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">initVulkan</span><span>() {
+</span><span>    </span><span style="color:#bf616a;">createInstance</span><span>();
+</span><span>    </span><span style="color:#bf616a;">createSurface</span><span>();
+</span><span>    </span><span style="color:#bf616a;">pickPhysicalDevice</span><span>();
+</span><span>    </span><span style="color:#bf616a;">createLogicalDevice</span><span>();
+</span><span>    </span><span style="color:#bf616a;">createSwapchain</span><span>();
+</span><span>    </span><span style="color:#bf616a;">createImageViews</span><span>();
+</span><span>}
+</span><span>
+</span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">createImageViews</span><span>() {
+</span><span>
+</span><span>}
+</span></code></pre>
+<p>我们需要为每一个图像都创建一个图像视图</p>
+<p>对于一个图像视图，填充它的创建信息就行了</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">createImageViews</span><span>() {
+</span><span>    swapchainImageViews.</span><span style="color:#bf616a;">resize</span><span>(swapchainImages.</span><span style="color:#bf616a;">size</span><span>());
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(size_t i = </span><span style="color:#d08770;">0</span><span>; i &lt; swapchainImages.</span><span style="color:#bf616a;">size</span><span>(); i++) {
+</span><span>        VkImageViewCreateInfo createInfo = {};
+</span><span>        createInfo.</span><span style="color:#bf616a;">sType </span><span>= VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+</span><span>        createInfo.</span><span style="color:#bf616a;">image </span><span>= swapchainImages[i];
+</span><span>        createInfo.</span><span style="color:#bf616a;">viewType </span><span>= VK_IMAGE_VIEW_TYPE_2D;
+</span><span>        createInfo.</span><span style="color:#bf616a;">format </span><span>= swapchainImageFormat;
+</span><span>        createInfo.</span><span style="color:#bf616a;">components</span><span>.</span><span style="color:#bf616a;">r </span><span>= VK_COMPONENT_SWIZZLE_IDENTITY;
+</span><span>        createInfo.</span><span style="color:#bf616a;">components</span><span>.</span><span style="color:#bf616a;">g </span><span>= VK_COMPONENT_SWIZZLE_IDENTITY;
+</span><span>        createInfo.</span><span style="color:#bf616a;">components</span><span>.</span><span style="color:#bf616a;">b </span><span>= VK_COMPONENT_SWIZZLE_IDENTITY;
+</span><span>        createInfo.</span><span style="color:#bf616a;">components</span><span>.</span><span style="color:#bf616a;">a </span><span>= VK_COMPONENT_SWIZZLE_IDENTITY;
+</span><span>        createInfo.</span><span style="color:#bf616a;">subresourceRange</span><span>.</span><span style="color:#bf616a;">aspectMask </span><span>= VK_IMAGE_ASPECT_COLOR_BIT;
+</span><span>        createInfo.</span><span style="color:#bf616a;">subresourceRange</span><span>.</span><span style="color:#bf616a;">baseMipLevel </span><span>= </span><span style="color:#d08770;">0</span><span>;
+</span><span>        createInfo.</span><span style="color:#bf616a;">subresourceRange</span><span>.</span><span style="color:#bf616a;">levelCount </span><span>= </span><span style="color:#d08770;">1</span><span>;
+</span><span>        createInfo.</span><span style="color:#bf616a;">subresourceRange</span><span>.</span><span style="color:#bf616a;">baseArrayLayer </span><span>= </span><span style="color:#d08770;">0</span><span>;
+</span><span>        createInfo.</span><span style="color:#bf616a;">subresourceRange</span><span>.</span><span style="color:#bf616a;">layerCount </span><span>= </span><span style="color:#d08770;">1</span><span>;
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">vkCreateImageView</span><span>(device, &amp;createInfo, </span><span style="color:#d08770;">nullptr</span><span>, &amp;swapchainImageViews[i]) != VK_SUCCESS)
+</span><span>            </span><span style="color:#b48ead;">throw </span><span>std::</span><span style="color:#bf616a;">runtime_error</span><span>(&quot;</span><span style="color:#a3be8c;">failed to create image views!</span><span>&quot;);
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>稍微解释一下创建信息的成员</p>
+<p>viewType和format指定了图像数据应当如何被解释</p>
+<p>components允许我们进行颜色通道的映射，比如把红色通道映射到所有的通道来实现黑白纹理，也可以为一个通道映射一个常量，当然我们这里使用了默认映射</p>
+<p>subresourceRange描述了图像的目的以及应当访问图像的哪一个部分，我们的图像将会被用于不需要Mipmap也不需要多层的颜色目标。但如果需要开发立体三维应用，我们应当创建一个多层的交换链，并为图像创建多层图像视图，通过访问不同的层来代表左眼和右眼</p>
+<h2 id="xiao-hui-tu-xiang-shi-tu">销毁图像视图</h2>
+<p>编辑cleanup函数</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">cleanup</span><span>() {
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">auto</span><span> imageView : swapchainImageViews)
+</span><span>        </span><span style="color:#bf616a;">vkDestroyImageView</span><span>(device, imageView, </span><span style="color:#d08770;">nullptr</span><span>);
+</span><span>    </span><span style="color:#bf616a;">vkDestroySwapchainKHR</span><span>(device, swapchain, </span><span style="color:#d08770;">nullptr</span><span>);
+</span><span>    </span><span style="color:#bf616a;">vkDestroyDevice</span><span>(device, </span><span style="color:#d08770;">nullptr</span><span>);
+</span><span>    </span><span style="color:#bf616a;">vkDestroySurfaceKHR</span><span>(instance, surface, </span><span style="color:#d08770;">nullptr</span><span>);
+</span><span>    </span><span style="color:#bf616a;">vkDestroyInstance</span><span>(instance, </span><span style="color:#d08770;">nullptr</span><span>);
+</span><span>
+</span><span>    </span><span style="color:#bf616a;">glfwDestroyWindow</span><span>(window);
+</span><span>    </span><span style="color:#bf616a;">glfwTerminate</span><span>();
+</span><span>}
+</span></code></pre>
+
+    </div>
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                    Published by 何泊谋
+                
+                
+                    
+                    in <a href="https://paakmau.github.io/categories/vulkan/">Vulkan</a>
+                
+                
+                    and
+                    tagged
+                    
+                        <a href="https://paakmau.github.io/tags/vulkan/">Vulkan</a>
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+    </body>
+
+</html>

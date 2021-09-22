@@ -119,27 +119,27 @@ nginx的配置文件会被放在data_nginx_conf数据卷中<br />
 映射data_letsencrypt数据卷以获取证书<br />
 链接wordpress容器用于代理转发</p>
 <p>进入data_nginx_conf数据卷并修改default.conf如下</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>server {
-</span><span>    listen 443 ssl;
-</span><span>    server_name example.com;
+<pre data-lang="conf" style="background-color:#2b303b;color:#c0c5ce;" class="language-conf "><code class="language-conf" data-lang="conf"><span style="color:#b48ead;">server </span><span>{
+</span><span>    </span><span style="color:#bf616a;">listen </span><span style="color:#d08770;">443</span><span> ssl;
+</span><span>    </span><span style="color:#bf616a;">server_name </span><span>example.com;
 </span><span> 
-</span><span>    ssl_certificate /etc/letsencrypt/live/example.com/fullchain.pem;
-</span><span>    ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
-</span><span>    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+</span><span>    </span><span style="color:#bf616a;">ssl_certificate </span><span>/etc/letsencrypt/live/example.com/fullchain.pem;
+</span><span>    </span><span style="color:#bf616a;">ssl_certificate_key </span><span>/etc/letsencrypt/live/example.com/privkey.pem;
+</span><span>    </span><span style="color:#bf616a;">ssl_protocols </span><span>TLSv1 TLSv1.</span><span style="color:#d08770;">1</span><span> TLSv1.</span><span style="color:#d08770;">2</span><span>;
 </span><span> 
 </span><span> 
-</span><span>    location / {
-</span><span>        proxy_set_header Host $host;
-</span><span>        proxy_set_header X-Real-IP $remote_addr;
-</span><span>        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-</span><span>        proxy_set_header X-Forwarded-Proto $scheme;
-</span><span>        proxy_pass http://wordpress:80;
+</span><span style="color:#b48ead;">    location </span><span>/ {
+</span><span>        </span><span style="color:#bf616a;">proxy_set_header </span><span>Host </span><span style="color:#b48ead;">$host</span><span>;
+</span><span>        </span><span style="color:#bf616a;">proxy_set_header </span><span>X-Real-IP </span><span style="color:#b48ead;">$remote_addr</span><span>;
+</span><span>        </span><span style="color:#bf616a;">proxy_set_header </span><span>X-Forwarded-For </span><span style="color:#b48ead;">$proxy_add_x_forwarded_for</span><span>;
+</span><span>        </span><span style="color:#bf616a;">proxy_set_header </span><span>X-Forwarded-Proto </span><span style="color:#b48ead;">$scheme</span><span>;
+</span><span>        </span><span style="color:#bf616a;">proxy_pass </span><span style="color:#d08770;">http://wordpress:80</span><span>;
 </span><span>    }
 </span><span>}
 </span><span>
-</span><span>server {
-</span><span>    listen 80;
-</span><span>    return 301 https://$host$request_uri;
+</span><span style="color:#b48ead;">server </span><span>{
+</span><span>    </span><span style="color:#bf616a;">listen </span><span style="color:#d08770;">80</span><span>;
+</span><span>    </span><span style="color:#bf616a;">return </span><span style="color:#d08770;">301 https://$host$request_uri</span><span>;
 </span><span>}
 </span></code></pre>
 <p>解释：<br />

@@ -87,9 +87,9 @@
 <p>覆盖配置docker.service即可</p>
 <p>修改/etc/systemd/system/docker.service.d/override.conf的内容如下<br />
 （如果目录或文件不存在就直接创建）</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>[Service]
-</span><span>ExecStart=
-</span><span>ExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:2337 -H unix:///var/run/docker.sock
+<pre data-lang="conf" style="background-color:#2b303b;color:#c0c5ce;" class="language-conf "><code class="language-conf" data-lang="conf"><span style="color:#b48ead;">[Service]
+</span><span style="color:#bf616a;">ExecStart</span><span>=
+</span><span style="color:#bf616a;">ExecStart</span><span>=/usr/bin/dockerd -H </span><span style="color:#d08770;">tcp://0.0.0.0:2337 </span><span>-H </span><span style="color:#d08770;">unix:///var/run/docker.sock
 </span></code></pre>
 <p>解释：<br />
 第二行用于清除原本的ExecStart，不可缺少</p>
@@ -153,9 +153,9 @@
 <p>接下来覆盖配置docker.service<br />
 修改/etc/systemd/system/docker.service.d/override.conf的内容如下<br />
 （如果目录或文件不存在就直接创建）</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>[Service]
-</span><span>ExecStart=
-</span><span>ExecStart=/usr/bin/dockerd --tlsverify --tlscacert=/etc/docker/certs/ca.pem --tlscert=/etc/docker/certs/server-cert.pem --tlskey=/etc/docker/certs/server-key.pem -H tcp://0.0.0.0:2337 -H unix:///var/run/docker.sock
+<pre data-lang="conf" style="background-color:#2b303b;color:#c0c5ce;" class="language-conf "><code class="language-conf" data-lang="conf"><span style="color:#b48ead;">[Service]
+</span><span style="color:#bf616a;">ExecStart</span><span>=
+</span><span style="color:#bf616a;">ExecStart</span><span>=/usr/bin/dockerd --tlsverify --tlscacert=/etc/docker/certs/ca.pem --tlscert=/etc/docker/certs/server-cert.pem --tlskey=/etc/docker/certs/server-key.pem -H </span><span style="color:#d08770;">tcp://0.0.0.0:2337 </span><span>-H </span><span style="color:#d08770;">unix:///var/run/docker.sock
 </span></code></pre>
 <p>解释：基本跟上文的远程连接配置相同，只是指定了tls认证方式</p>
 <h2 id="ke-hu-duan-macos-pei-zhi-yuan-cheng-lian-jie-jia-mi">客户端（macOS）配置远程连接加密</h2>

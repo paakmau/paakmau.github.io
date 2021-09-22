@@ -107,27 +107,27 @@ nginx的配置文件会被放在data_nginx_conf数据卷中&lt;br &#x2F;&gt;
 映射data_letsencrypt数据卷以获取证书&lt;br &#x2F;&gt;
 链接wordpress容器用于代理转发&lt;&#x2F;p&gt;
 &lt;p&gt;进入data_nginx_conf数据卷并修改default.conf如下&lt;&#x2F;p&gt;
-&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;server {
-&lt;&#x2F;span&gt;&lt;span&gt;    listen 443 ssl;
-&lt;&#x2F;span&gt;&lt;span&gt;    server_name example.com;
+&lt;pre data-lang=&quot;conf&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-conf &quot;&gt;&lt;code class=&quot;language-conf&quot; data-lang=&quot;conf&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;server &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;listen &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;443&lt;&#x2F;span&gt;&lt;span&gt; ssl;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;server_name &lt;&#x2F;span&gt;&lt;span&gt;example.com;
 &lt;&#x2F;span&gt;&lt;span&gt; 
-&lt;&#x2F;span&gt;&lt;span&gt;    ssl_certificate &#x2F;etc&#x2F;letsencrypt&#x2F;live&#x2F;example.com&#x2F;fullchain.pem;
-&lt;&#x2F;span&gt;&lt;span&gt;    ssl_certificate_key &#x2F;etc&#x2F;letsencrypt&#x2F;live&#x2F;example.com&#x2F;privkey.pem;
-&lt;&#x2F;span&gt;&lt;span&gt;    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ssl_certificate &lt;&#x2F;span&gt;&lt;span&gt;&#x2F;etc&#x2F;letsencrypt&#x2F;live&#x2F;example.com&#x2F;fullchain.pem;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ssl_certificate_key &lt;&#x2F;span&gt;&lt;span&gt;&#x2F;etc&#x2F;letsencrypt&#x2F;live&#x2F;example.com&#x2F;privkey.pem;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ssl_protocols &lt;&#x2F;span&gt;&lt;span&gt;TLSv1 TLSv1.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt; TLSv1.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;2&lt;&#x2F;span&gt;&lt;span&gt;;
 &lt;&#x2F;span&gt;&lt;span&gt; 
 &lt;&#x2F;span&gt;&lt;span&gt; 
-&lt;&#x2F;span&gt;&lt;span&gt;    location &#x2F; {
-&lt;&#x2F;span&gt;&lt;span&gt;        proxy_set_header Host $host;
-&lt;&#x2F;span&gt;&lt;span&gt;        proxy_set_header X-Real-IP $remote_addr;
-&lt;&#x2F;span&gt;&lt;span&gt;        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-&lt;&#x2F;span&gt;&lt;span&gt;        proxy_set_header X-Forwarded-Proto $scheme;
-&lt;&#x2F;span&gt;&lt;span&gt;        proxy_pass http:&#x2F;&#x2F;wordpress:80;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;    location &lt;&#x2F;span&gt;&lt;span&gt;&#x2F; {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;proxy_set_header &lt;&#x2F;span&gt;&lt;span&gt;Host &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$host&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;proxy_set_header &lt;&#x2F;span&gt;&lt;span&gt;X-Real-IP &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$remote_addr&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;proxy_set_header &lt;&#x2F;span&gt;&lt;span&gt;X-Forwarded-For &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$proxy_add_x_forwarded_for&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;proxy_set_header &lt;&#x2F;span&gt;&lt;span&gt;X-Forwarded-Proto &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$scheme&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;proxy_pass &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;http:&#x2F;&#x2F;wordpress:80&lt;&#x2F;span&gt;&lt;span&gt;;
 &lt;&#x2F;span&gt;&lt;span&gt;    }
 &lt;&#x2F;span&gt;&lt;span&gt;}
 &lt;&#x2F;span&gt;&lt;span&gt;
-&lt;&#x2F;span&gt;&lt;span&gt;server {
-&lt;&#x2F;span&gt;&lt;span&gt;    listen 80;
-&lt;&#x2F;span&gt;&lt;span&gt;    return 301 https:&#x2F;&#x2F;$host$request_uri;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;server &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;listen &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;80&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;301 https:&#x2F;&#x2F;$host$request_uri&lt;&#x2F;span&gt;&lt;span&gt;;
 &lt;&#x2F;span&gt;&lt;span&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;解释：&lt;br &#x2F;&gt;
@@ -217,9 +217,9 @@ FROM&lt;br &#x2F;&gt;
 &lt;p&gt;覆盖配置docker.service即可&lt;&#x2F;p&gt;
 &lt;p&gt;修改&#x2F;etc&#x2F;systemd&#x2F;system&#x2F;docker.service.d&#x2F;override.conf的内容如下&lt;br &#x2F;&gt;
 （如果目录或文件不存在就直接创建）&lt;&#x2F;p&gt;
-&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;[Service]
-&lt;&#x2F;span&gt;&lt;span&gt;ExecStart=
-&lt;&#x2F;span&gt;&lt;span&gt;ExecStart=&#x2F;usr&#x2F;bin&#x2F;dockerd -H tcp:&#x2F;&#x2F;0.0.0.0:2337 -H unix:&#x2F;&#x2F;&#x2F;var&#x2F;run&#x2F;docker.sock
+&lt;pre data-lang=&quot;conf&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-conf &quot;&gt;&lt;code class=&quot;language-conf&quot; data-lang=&quot;conf&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;[Service]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ExecStart&lt;&#x2F;span&gt;&lt;span&gt;=
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ExecStart&lt;&#x2F;span&gt;&lt;span&gt;=&#x2F;usr&#x2F;bin&#x2F;dockerd -H &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;tcp:&#x2F;&#x2F;0.0.0.0:2337 &lt;&#x2F;span&gt;&lt;span&gt;-H &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;unix:&#x2F;&#x2F;&#x2F;var&#x2F;run&#x2F;docker.sock
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;解释：&lt;br &#x2F;&gt;
 第二行用于清除原本的ExecStart，不可缺少&lt;&#x2F;p&gt;
@@ -283,9 +283,9 @@ FROM&lt;br &#x2F;&gt;
 &lt;p&gt;接下来覆盖配置docker.service&lt;br &#x2F;&gt;
 修改&#x2F;etc&#x2F;systemd&#x2F;system&#x2F;docker.service.d&#x2F;override.conf的内容如下&lt;br &#x2F;&gt;
 （如果目录或文件不存在就直接创建）&lt;&#x2F;p&gt;
-&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;[Service]
-&lt;&#x2F;span&gt;&lt;span&gt;ExecStart=
-&lt;&#x2F;span&gt;&lt;span&gt;ExecStart=&#x2F;usr&#x2F;bin&#x2F;dockerd --tlsverify --tlscacert=&#x2F;etc&#x2F;docker&#x2F;certs&#x2F;ca.pem --tlscert=&#x2F;etc&#x2F;docker&#x2F;certs&#x2F;server-cert.pem --tlskey=&#x2F;etc&#x2F;docker&#x2F;certs&#x2F;server-key.pem -H tcp:&#x2F;&#x2F;0.0.0.0:2337 -H unix:&#x2F;&#x2F;&#x2F;var&#x2F;run&#x2F;docker.sock
+&lt;pre data-lang=&quot;conf&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-conf &quot;&gt;&lt;code class=&quot;language-conf&quot; data-lang=&quot;conf&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;[Service]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ExecStart&lt;&#x2F;span&gt;&lt;span&gt;=
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ExecStart&lt;&#x2F;span&gt;&lt;span&gt;=&#x2F;usr&#x2F;bin&#x2F;dockerd --tlsverify --tlscacert=&#x2F;etc&#x2F;docker&#x2F;certs&#x2F;ca.pem --tlscert=&#x2F;etc&#x2F;docker&#x2F;certs&#x2F;server-cert.pem --tlskey=&#x2F;etc&#x2F;docker&#x2F;certs&#x2F;server-key.pem -H &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;tcp:&#x2F;&#x2F;0.0.0.0:2337 &lt;&#x2F;span&gt;&lt;span&gt;-H &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;unix:&#x2F;&#x2F;&#x2F;var&#x2F;run&#x2F;docker.sock
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;解释：基本跟上文的远程连接配置相同，只是指定了tls认证方式&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;ke-hu-duan-macos-pei-zhi-yuan-cheng-lian-jie-jia-mi&quot;&gt;客户端（macOS）配置远程连接加密&lt;&#x2F;h2&gt;

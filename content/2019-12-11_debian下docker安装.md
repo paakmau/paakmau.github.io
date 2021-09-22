@@ -48,7 +48,7 @@ categories = ["Docker"]
 使用apt安装，首先根据处理器架构添加合适的apt仓库，然后直接apt install即可。
 
 官网链接在这里  
-[https://docs.docker.com/install/linux/docker-ce/debian/](https://docs.docker.com/install/linux/docker-ce/debian/)
+<https://docs.docker.com/install/linux/docker-ce/debian/>
 
 注意：如果已有旧版的Docker，请移步上述官网教程按步骤卸载
 
@@ -151,7 +151,7 @@ $ sudo snap install docker
 ## Docker Compose安装
 
 官网在这里  
-[https://docs.docker.com/compose/install/#alternative-install-options](https://docs.docker.com/compose/install/#alternative-install-options)
+<https://docs.docker.com/compose/install/#alternative-install-options>
 
 普通方式  
 直接curl下载预编译的可执行文件然后改个权限就好了

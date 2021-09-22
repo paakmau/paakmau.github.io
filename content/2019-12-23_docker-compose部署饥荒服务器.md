@@ -9,7 +9,7 @@ categories = ["Docker"]
 
 参考的是这个项目  
 
-[https://github.com/mathielo/dst-dedicated-server](https://github.com/mathielo/dst-dedicated-server)
+<https://github.com/mathielo/dst-dedicated-server>
 
 <!-- more -->
 

@@ -13,7 +13,7 @@ categories = [".NET Core"]
 
 这个东西依然支持.NET Core 3.1和.NET Framework 4.x（虽然官网都没写）。功能不多，用起来方便，很适合小规模的实时联机游戏。
 
-[https://github.com/RevenantX/LiteNetLib](https://github.com/RevenantX/LiteNetLib)
+<https://github.com/RevenantX/LiteNetLib>
 
 ## 概括
 

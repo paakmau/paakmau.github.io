@@ -27,7 +27,7 @@ $ brew install glfw
 我们可以直接把它的源码Clone下来
 
 仓库地址在这里  
-[https://github.com/ocornut/imgui](https://github.com/ocornut/imgui)
+<https://github.com/ocornut/imgui>
 
 然后其实看看examples里的例子抄抄就完事了（本文也是靠着它写的）
 

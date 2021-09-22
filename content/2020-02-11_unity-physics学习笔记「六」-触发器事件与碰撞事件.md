@@ -9,7 +9,7 @@ categories = ["Unity"]
 
 这部分内容手册中没有，本文参考的是官方示例代码与官方论坛  
 
-[https://github.com/Unity-Technologies/EntityComponentSystemSamples](https://github.com/Unity-Technologies/EntityComponentSystemSamples)
+<https://github.com/Unity-Technologies/EntityComponentSystemSamples>
 
 <!-- more -->
 

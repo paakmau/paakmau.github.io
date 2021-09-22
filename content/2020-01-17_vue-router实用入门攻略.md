@@ -141,7 +141,7 @@ export default router;
 ```
 
 这个东西使用path-to-regexp作为路径匹配引擎，支持正则匹配，这是它的GitHub链接  
-[https://github.com/pillarjs/path-to-regexp](https://github.com/pillarjs/path-to-regexp)
+<https://github.com/pillarjs/path-to-regexp>
 
 然后路由匹配是按照定义的顺序决定的，先定义的先匹配  
 因此可以在路由的最后配置404页面
@@ -303,4 +303,4 @@ export default router;
 ```
 
 还可以把多个组件打包到一个chunk中，就能以chunk为单位异步加载，参考这个  
-[https://webpack.js.org/guides/code-splitting/](https://webpack.js.org/guides/code-splitting/)
+<https://webpack.js.org/guides/code-splitting/>

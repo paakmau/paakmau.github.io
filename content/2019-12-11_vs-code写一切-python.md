@@ -1,5 +1,5 @@
 +++
-title = "VS Code写一切 Python"
+title = "VS Code 写一切 Python"
 date = 2019-12-11 19:48:37
 slug = "201912111948"
 
@@ -8,16 +8,16 @@ tags = ["Python", "VS Code"]
 categories = ["VS Code"]
 +++
 
-VSC写Python也挺方便的，不过功能没那么多
+VSC 写 Python 也挺方便的，不过功能没那么多
 
 <!-- more -->
 
-## Python环境配置
+## Python 环境配置
 
-xjb装就行了  
-macOS Catalina自带的Python3不建议用，brew install python3
+xjb 装就行了  
+macOS Catalina 自带的Python3不建议用，brew install python3
 
-## 需要安装的VSC插件
+## 需要安装的 VSC 插件
 
 - Python
 

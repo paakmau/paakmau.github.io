@@ -1,5 +1,5 @@
 +++
-title = "Unity ECS框架摸索 第三章 HelloWorld后续"
+title = "Unity ECS 框架摸索 第三章 HelloWorld 后续"
 date = 2020-02-01 20:34:04
 slug = "202002012034"
 
@@ -8,15 +8,15 @@ tags = ["Unity ECS"]
 categories = ["Unity"]
 +++
 
-上一章介绍了ECS并行处理的实现，接下来就这个HelloWorld进行深入的研究。
+上一章介绍了 ECS 并行处理的实现，接下来就这个 HelloWorld 进行深入的研究。
 
 <!-- more -->
 
-## 添加Component的技巧
+## 添加 Component 的技巧
 
-第二章中为Entity添加Component的方式是直接在GameObject上挂载脚本，但是Unity编辑器目前并非为ECS设计，如果为每一个Component都挂载一个脚本会很麻烦，所以考虑使用代码添加组件。
+第二章中为 Entity 添加Component 的方式是直接在 GameObject 上挂载脚本，但是 Unity 编辑器目前并非为ECS 设计，如果为每一个 Component 都挂载一个脚本会很麻烦，所以考虑使用代码添加组件。
 
-我们编写如下脚本，把它挂载在Cube上，它就能为Cube生成的Entity添加RotationSpeed组件。  
+我们编写如下脚本，把它挂载在 Cube 上，它就能为 Cube 生成的Entity 添加 RotationSpeed 组件。  
 RotatingCubeAuthoring.cs
 
 ```cs
@@ -31,10 +31,10 @@ public class RotatingCubeAuthoring : MonoBehaviour, IConvertGameObjectToEntity {
 }
 ```
 
-解释：IConvertGameObjectToEntity接口的Convert方法会在GameObject转换的过程中被调用，可以在其中直接用EntityManager为Entity添加任意Component，并能对其赋值，更加灵活。  
-在该段代码中我们就把直观的Degree转换成了Radian。
+解释：IConvertGameObjectToEntity 接口的 Convert 方法会在GameObject 转换的过程中被调用，可以在其中直接用 EntityManager 为Entity 添加任意Component，并能对其赋值，更加灵活。  
+在该段代码中我们就把直观的 Degree 转换成了Radian。
 
-再把之前的RotationSpeed组件修改一下  
+再把之前的 RotationSpeed 组件修改一下  
 RotationSpeed.cs
 
 ```cs
@@ -53,17 +53,17 @@ public struct RotationSpeed : IComponentData
 }
 ```
 
-解释：原本的GenerateAuthoringComponent特性被改成了Serializable。GenerateAuthoringComponent的作用是允许ECS的组件直接挂载在GameObject上，但是使用代码添加组件时不需要这个特性，因此只需要Serializable即可。
+解释：原本的 GenerateAuthoringComponent 特性被改成了Serializable。GenerateAuthoringComponent 的作用是允许 ECS 的组件直接挂载在GameObject 上，但是使用代码添加组件时不需要这个特性，因此只需要 Serializable 即可。
 
-在编辑器中修改Cube的RotatingCubeAuthoring的旋转速度为每秒180度，如下
+在编辑器中修改 Cube 的RotatingCubeAuthoring 的旋转速度为每秒180度，如下
 
 ![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191210-160141@2x.png)
 
 ## IJobForEach
 
-上一章中，我们使用Lambda对Entity进行了遍历，写法很简洁。但是这样的写法会产生GC，为了更好的性能，可以使用IJobForEach接口进行遍历。
+上一章中，我们使用 Lambda 对Entity 进行了遍历，写法很简洁。但是这样的写法会产生GC，为了更好的性能，可以使用 IJobForEach 接口进行遍历。
 
-修改RotationSpeedSystem为如下代码
+修改 RotationSpeedSystem 为如下代码
 
 ```cs
 // 修改后
@@ -83,4 +83,4 @@ public class RotateSpeedSystem : JobComponentSystem {
 }
 ```
 
-解释：原本使用Lambda对Job进行规划。修改后使用一个结构体实现IJobForEach接口。在其中规定了Entity的筛选条件为拥有Rotation和RotationSpeed组件，并实现Execute方法规划Job。有效避免了GC。
+解释：原本使用 Lambda 对Job 进行规划。修改后使用一个结构体实现 IJobForEach 接口。在其中规定了 Entity 的筛选条件为拥有Rotation 和 RotationSpeed 组件，并实现 Execute 方法规划Job。有效避免了GC。

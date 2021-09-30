@@ -1,5 +1,5 @@
 +++
-title = "Express + MySQL + Session搭建Web后端脚手架"
+title = "Express + MySQL + Session 搭建 Web 后端脚手架"
 date = 2019-12-18 00:59:09
 slug = "201912180059"
 
@@ -8,26 +8,26 @@ tags = ["MySQL", "Node.js", "Express"]
 categories = ["Node.js"]
 +++
 
-因为是我某门课的作业才顺便写的，因为感觉js后端偏向玩具所以不太感兴趣。但还是不得不说这玩具真好玩，贼牛逼。Express框架用几十行代码就能搭出几乎完整的后端脚手架
+因为是我某门课的作业才顺便写的，因为感觉 js 后端偏向玩具所以不太感兴趣。但还是不得不说这玩具真好玩，贼牛逼。Express 框架用几十行代码就能搭出几乎完整的后端脚手架
 
 <!-- more -->
 
 本项目是一个近似完整的后端脚手  
-以Express框架为基础，以MySQL作为数据存储，有跨域处理，有Session。
+以 Express 框架为基础，以 MySQL 作为数据存储，有跨域处理，有Session。
 
-但是该脚手架缺少Express异常处理，感兴趣可以自行添加  
-而且用MySQL存Session感觉不太正常，应该换Redis，篇幅有限就不写了（虽然已经很长了）
+但是该脚手架缺少 Express 异常处理，感兴趣可以自行添加  
+而且用 MySQL 存Session 感觉不太正常，应该换Redis，篇幅有限就不写了（虽然已经很长了）
 
-作为示例，本文还实现了基于Session的验证码认证、RESTful风格接口与MD5加密的登陆注册
+作为示例，本文还实现了基于 Session 的验证码认证、RESTful 风格接口与MD5加密的登陆注册
 
 ## 环境
 
 Node.js v13.3.0
 
 MySQL 8.0.18，监听3306端口，认证插件为mysql\_native\_password  
-root账户的密码为root
+root 账户的密码为root
 
-在MySQL中执行以下脚本建立两个数据库，分别用于存储Session数据与用户数据
+在 MySQL 中执行以下脚本建立两个数据库，分别用于存储 Session 数据与用户数据
 
 ```SQL
 CREATE SCHEMA `hello_session` ;
@@ -41,9 +41,9 @@ CREATE TABLE `hello`.`user` (
   PRIMARY KEY (`id`));
 ```
 
-## 新建Node.js项目
+## 新建Node.js 项目
 
-然后建立文件夹并初始化Node.js项目
+然后建立文件夹并初始化Node.js 项目
 
 ```sh
 $ mkdir hello-world
@@ -54,21 +54,21 @@ $ npm init
 然后一路回车即可  
 本文配置中入口点（entry point）使用了默认值，即index.js
 
-## Express框架快速上手
+## Express 框架快速上手
 
-首先安装express依赖
+首先安装 express 依赖
 
 ```sh
 $ npm install express
 ```
 
-然后修改入口点index.js代码如下
+然后修改入口点index.js 代码如下
 
 ```js
 const express = require("express")
 const app = express()
 
-// 定义一个Get请求的回调
+// 定义一个 Get 请求的回调
 app.get('/helloworld', (req, res) => res.send("hello world!"))
 
 // 将后端开在8080端口
@@ -82,30 +82,30 @@ app.listen(8080)
 $ node index.js
 ```
 
-在Postman中对localhost:8080/helloworld发送Get请求，得到如下结果
+在 Postman 中对localhost:8080/helloworld 发送 Get 请求，得到如下结果
 
 ![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191217-005416@2x.png)
 
-Express框架就搭建成功了
+Express 框架就搭建成功了
 
-## Express中间件
+## Express 中间件
 
-Express每次处理Request都会经过所有的中间件，可以想像成流水线。因此可以利用它为Express添加新的功能
+Express 每次处理 Request 都会经过所有的中间件，可以想像成流水线。因此可以利用它为 Express 添加新的功能
 
-而对于上文代码中的app，调用app.use方法就能为app添加中间件
+而对于上文代码中的app，调用app.use 方法就能为 app 添加中间件
 
-## 引入body-parser中间件
+## 引入body-parser 中间件
 
-这个中间件能将HTTP请求体中的JSON转换为js对象属性
+这个中间件能将 HTTP 请求体中的JSON 转换为 js 对象属性
 
-首先安装body-parser依赖
+首先安装body-parser 依赖
 
 ```sh
 $ npm install body-parser
 ```
 
-接下来我们测试一下获取body的内容  
-修改index.js如下，并运行
+接下来我们测试一下获取 body 的内容  
+修改index.js 如下，并运行
 
 ```js
 const express = require("express")
@@ -116,30 +116,30 @@ var bodyParser = require("body-parser")
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
-// 添加post请求并获取body的json数据
+// 添加 post 请求并获取body 的 json 数据
 app.post('/helloworld', (req, res) => res.send("You msg is: " + req.body.msg));
 
 app.listen(8080)
 ```
 
-Postman中发送post请求，并收到回应，见下图。
+Postman 中发送 post 请求，并收到回应，见下图。
 
 ![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191217-011755@2x-1024x505.png)
 
-## 引入express-session中间件
+## 引入express-session 中间件
 
-Session是一种存储在后端的缓存数据，可以理解为以id索引的一块临时数据。前端将id存储在Cookie中，它把id传递给后端，后端就能根据id找到对应的Session。它的安全性相对Cookie高很多，一般用于登陆、验证码等。  
-Session可以简单存储在内存中，也可以存储在数据库中
+Session 是一种存储在后端的缓存数据，可以理解为以 id 索引的一块临时数据。前端将 id 存储在Cookie 中，它把 id 传递给后端，后端就能根据 id 找到对应的Session。它的安全性相对 Cookie 高很多，一般用于登陆、验证码等。  
+Session 可以简单存储在内存中，也可以存储在数据库中
 
-在express中可以通过express-session中间件实现Session功能
+在 express 中可以通过express-session 中间件实现 Session 功能
 
-为了方便我们选择mysql作为Session的存储方式（但一般使用redis数据库）
+为了方便我们选择 mysql 作为Session 的存储方式（但一般使用 redis 数据库）
 
-它会使用我们最开始时建立的mysql数据库hello\_session  
-（express-session会自动建表所以不用担心）
+它会使用我们最开始时建立的 mysql 数据库hello\_session  
+（express-session 会自动建表所以不用担心）
 
 然后测试一下看看  
-修改index.js如下，并运行
+修改index.js 如下，并运行
 
 ```js
 const express = require("express")
@@ -167,7 +167,7 @@ app.get('/set-session', (req, res) => {
     req.session.hello = "Hello!"
     res.send("session.hello has been set.")
 })
-// 获取session.hello的值
+// 获取session.hello 的值
 app.get('/get-session', (req, res) => {
     if (req.session.hello == undefined)
         res.send("session.hello is undefined.")
@@ -179,28 +179,28 @@ app.listen(8080)
 ```
 
 解释：  
-对于同一个客户端，req.session是相同的，它其实是根据客户端持有的Session ID（如果没有，则会自动分配一个）找到的对应Session
+对于同一个客户端，req.session 是相同的，它其实是根据客户端持有的Session ID（如果没有，则会自动分配一个）找到的对应Session
 
-Postman中直接请求get-session会收到“session.hello is undefined.”，但是如果先请求set-session在get-session就会收到“Hello!”
+Postman 中直接请求get-session 会收到“session.hello is undefined.”，但是如果先请求set-session 在get-session 就会收到“Hello!”
 
 ## 跨域处理
 
 因为前后端分离，前端与后端会部署在不同的服务器或者同一台服务器的不同端口上，所以前端要访问后端接口就会产生跨域问题。
 
-而由于使用了Session，前端需要将Cookie的内容传递给后端，跨域配置的安全性要求也就更高
+而由于使用了Session，前端需要将 Cookie 的内容传递给后端，跨域配置的安全性要求也就更高
 
 可以参考后文代码中配置示例
 
 ## 生成验证码
 
-安装svg-captcha库
+安装svg-captcha 库
 
 ```sh
 $ npm install svg-captcha
 ```
 
 尝试生成验证码  
-修改index.js如下并运行
+修改index.js 如下并运行
 
 ```js
 const svgCaptcha = require("svg-captcha")
@@ -221,22 +221,22 @@ console.log(captcha.data)
 ```
 
 解释：  
-svg-captcha的create方法生成一个验证码对象  
-它的text属性是验证码文本，data属性是一个svg图像
+svg-captcha 的 create 方法生成一个验证码对象  
+它的 text 属性是验证码文本，data 属性是一个 svg 图像
 
 ## MD5加密
 
 MD5加密其实就是一个哈希函数，只是他的哈希值长的又丑又长，不可逆  
 因此把用户的密码用MD5算法哈希后存储，就可以通过哈希值比对用户密码实现登陆，也没有人能知道密码原文
 
-安装utility依赖
+安装 utility 依赖
 
 ```sh
 $ npm install utility
 ```
 
 尝试加密  
-修改index.js如下，并运行
+修改index.js 如下，并运行
 
 ```js
 const utility = require("utility")
@@ -254,12 +254,12 @@ console.log(encodePassword("test_password"))
 
 ## 连接MySQL
 
-这部分与Express无关
+这部分与 Express 无关
 
-这里会使用到我们最初建立的hello数据库及其中的user表
+这里会使用到我们最初建立的 hello 数据库及其中的user 表
 
-尝试连接MySQL服务器，并添加一条测试记录  
-编辑index.js脚本如下
+尝试连接 MySQL 服务器，并添加一条测试记录  
+编辑index.js 脚本如下
 
 ```js
 const mysql = require("mysql")
@@ -280,7 +280,7 @@ mysqlConnect.connect()
 
 ## 构造完整的脚手架
 
-编辑index.js如下并运行
+编辑index.js 如下并运行
 
 ```js
 const express = require("express")
@@ -297,12 +297,12 @@ app.all("*", function (req, res, next) {
     next();
 });
 
-// 添加body-parser中间件
+// 添加body-parser 中间件
 const bodyParser = require("body-parser")
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
-// 添加session中间件
+// 添加 session 中间件
 const session = require("express-session")
 const mysqlStore = require("express-mysql-session")
 app.use(session({
@@ -332,7 +332,7 @@ function encodePassword(pwd) {
 
 console.log(encodePassword("test_password"))
 
-// mysql配置
+// mysql 配置
 const mysql = require("mysql")
 const mysqlConnect = mysql.createConnection({
     host: 'localhost',

@@ -1,5 +1,5 @@
 +++
-title = "Unity Physics学习笔记「六」 触发器事件与碰撞事件"
+title = "Unity Physics 学习笔记「六」 触发器事件与碰撞事件"
 date = 2020-02-11 01:01:00
 slug = "202002110101"
 
@@ -14,26 +14,26 @@ categories = ["Unity"]
 
 <!-- more -->
 
-在OOP的物理引擎中，碰撞发生后引擎可以通过调用用户提供的回调函数将碰撞事件传递给用户程序。而在Unity的ECS框架中我们需要使用数据驱动的思路来处理碰撞  
+在 OOP 的物理引擎中，碰撞发生后引擎可以通过调用用户提供的回调函数将碰撞事件传递给用户程序。而在 Unity 的ECS 框架中我们需要使用数据驱动的思路来处理碰撞  
 但是引擎已经把事件处理封装好了，因此我们实现的时候其实看起来跟回调差不多
 
 ## 简介
 
-Unity Physics中，刚体可以通过Trigger或者Collision触发事件，需要勾选Physics Shape中的Is Trigger或Raises Collision Events  
-它们的区别在于Trigger不会引起物理上的碰撞，只产生事件
+Unity Physics 中，刚体可以通过 Trigger 或者Collision 触发事件，需要勾选Physics Shape 中的Is Trigger 或Raises Collision Events  
+它们的区别在于 Trigger 不会引起物理上的碰撞，只产生事件
 
 ![](https://hebomou.top/wp-content/uploads/2020/02/image-1.png)
 
-对于产生的Trigger事件或Collision事件，我们可以通过ITriggerEventsJob或ICollisionEventsJob来获取并处理
+对于产生的 Trigger 事件或Collision 事件，我们可以通过 ITriggerEventsJob 或ICollisionEventsJob 来获取并处理
 
 下面的例子可以实现这样的效果  
-开始时所有的刚体不受重力影响，但是一个刚体被Trigger碰到后它就会重新受到重力并下坠
+开始时所有的刚体不受重力影响，但是一个刚体被 Trigger 碰到后它就会重新受到重力并下坠
 
 ## 准备Trigger
 
-首先准备一个Entity作为Trigger，并且让他受到键盘控制运动。  
-新建一个Cube的GameObject，移除Box Collider，添加Convert To Entity，Physics Body，Physics Shape。在Physics Body中把重力系数设为0，在Physics Shape中勾选Is Trigger  
-然后使用Authoring为它添加PlayerInput组件。
+首先准备一个 Entity 作为Trigger，并且让他受到键盘控制运动。  
+新建一个 Cube 的GameObject，移除Box Collider，添加Convert To Entity，Physics Body，Physics Shape。在Physics Body 中把重力系数设为0，在Physics Shape 中勾选Is Trigger  
+然后使用 Authoring 为它添加PlayerInput 组件。
 
 保存键盘输入的组件  
 PlayerInput.cs
@@ -68,7 +68,7 @@ public class FetchInputSystem : ComponentSystem {
 }
 ```
 
-根据得到的键盘输入控制Trigger移动的系统  
+根据得到的键盘输入控制 Trigger 移动的系统  
 MoveSystem.cs
 
 ```cs
@@ -90,12 +90,12 @@ public class MoveSystem : JobComponentSystem {
 ## 准备用于被触发的Entity
 
 然后准备另一个用于被触发的Entity，它至少需要有Physics Shape、Physics Body  
-当然要在Physics Body中将重力系数设为0
+当然要在Physics Body 中将重力系数设为0
 
-## 处理Trigger事件
+## 处理 Trigger 事件
 
-写一个简单的JobComponentSystem就行了  
-只是其中的Job需要使用ITriggerEventsJob接口，个人感觉是物理引擎Simulate之后会产生Trigger事件的数组，然后通过ITriggerEventsJob来遍历它处理每个Trigger事件
+写一个简单的 JobComponentSystem 就行了  
+只是其中的 Job 需要使用ITriggerEventsJob 接口，个人感觉是物理引擎 Simulate 之后会产生Trigger 事件的数组，然后通过 ITriggerEventsJob 来遍历它处理每个Trigger 事件
 
 DetectTriggerSystem.cs
 
@@ -130,9 +130,9 @@ public class DetectTriggerSystem : JobComponentSystem {
 }
 ```
 
-## 处理Collision事件
+## 处理 Collision 事件
 
-跟上文Trigger事件类似，也是使用JobComponentSystem，Job需要换成ICollisionEventsJob接口，然后调整Update的顺序并使用EndFramePhysicsSystem.HandlesToWaitFor处理同步，官方给的例子是有问题的，本文根据论坛作了一些修改
+跟上文 Trigger 事件类似，也是使用JobComponentSystem，Job 需要换成 ICollisionEventsJob 接口，然后调整 Update 的顺序并使用EndFramePhysicsSystem.HandlesToWaitFor 处理同步，官方给的例子是有问题的，本文根据论坛作了一些修改
 
 贴一下代码  
 DetectCollisionSystem.cs

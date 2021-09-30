@@ -1,5 +1,5 @@
 +++
-title = "支持.NET Core以及Unity的轻量级可靠UDP库LiteNetLib介绍"
+title = "支持.NET Core 以及 Unity 的轻量级可靠UDP 库 LiteNetLib 介绍"
 date = 2019-12-15 20:20:31
 slug = "201912152020"
 
@@ -8,7 +8,7 @@ tags = [".NET Core", "Unity ECS"]
 categories = [".NET Core"]
 +++
 
-之前做Unity网络游戏开发的时候，想着后端也用C#就很方便，于是看上了开源跨平台的.NET Core，当时网络模块就是用了LiteNetLib实现的。
+之前做 Unity 网络游戏开发的时候，想着后端也用C#就很方便，于是看上了开源跨平台的.NET Core，当时网络模块就是用了 LiteNetLib 实现的。
 
 <!-- more -->
 
@@ -18,21 +18,21 @@ categories = [".NET Core"]
 
 ## 概括
 
-跟随本文实现Unity前端与.NET Core后端互相发送信息  
+跟随本文实现 Unity 前端与.NET Core 后端互相发送信息  
   
-Unity的.NET版本为.NET Framework 4.x，后端为.NET Core 3.1，LiteNetLib库使用0.8.x稳定版本
+Unity 的.NET 版本为.NET Framework 4.x，后端为.NET Core 3.1，LiteNetLib 库使用0.8.x 稳定版本
 
 ![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191215-201104@2x.png)
 
 ![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191215-201120@2x.png)
 
-## Unity前端
+## Unity 前端
 
-注意：Unity里应当用源码而不是预编译的DLL文件，因为源码中使用了条件编译以避开Unity的Bug。
+注意：Unity 里应当用源码而不是预编译的 DLL 文件，因为源码中使用了条件编译以避开 Unity 的Bug。
 
-直接从GitHub上Clone下来，把其中的LiteNetLib拷贝到Unity项目里就能使用了。
+直接从 GitHub 上Clone 下来，把其中的 LiteNetLib 拷贝到Unity 项目里就能使用了。
 
-为了方便，我们简单写一个实现INetEventListener接口的MonoBehaviour就好，注释比较详细。
+为了方便，我们简单写一个实现 INetEventListener 接口的MonoBehaviour 就好，注释比较详细。
 
 LiteNetLibHello.cs
 
@@ -46,19 +46,19 @@ using UnityEngine;
 /// <summary> 作为MonoBehaviour，该类也是监听器 </summary>
 public class LiteNetLibHello : MonoBehaviour, INetEventListener {
 
-    /// <summary> server的监听端口 </summary>
+    /// <summary> server 的监听端口 </summary>
     private const int c_serverPort = 23333;
 
     /// <summary> 连接口令 </summary>
     private const string c_connectKey = "HelloWorld";
 
-    /// <summary> 发送hello消息的间隔 </summary>
+    /// <summary> 发送 hello 消息的间隔 </summary>
     private const float c_helloInterval = 1;
 
-    /// <summary> hello计时器 </summary>
+    /// <summary> hello 计时器 </summary>
     private float m_helloTimer;
 
-    /// <summary> LiteNetLib核心的网络管理器，用来主动连接、断开、触发事件回调等 </summary>
+    /// <summary> LiteNetLib 核心的网络管理器，用来主动连接、断开、触发事件回调等 </summary>
     private NetManager m_clientManager;
 
     /// <summary> 服务器Peer </summary>
@@ -81,7 +81,7 @@ public class LiteNetLibHello : MonoBehaviour, INetEventListener {
     }
 
     void Update () {
-        // 调用该函数会遍历并清空Manager的消息队列，并回调到监听器的相应位置
+        // 调用该函数会遍历并清空 Manager 的消息队列，并回调到监听器的相应位置
         m_clientManager.PollEvents ();
 
         // 定时
@@ -90,9 +90,9 @@ public class LiteNetLibHello : MonoBehaviour, INetEventListener {
             m_helloTimer = c_helloInterval;
 
             var peer = m_clientManager.FirstPeer;
-            if (peer != null && peer.ConnectionState == ConnectionState.Connected) { // 若已连接到Server则发送HelloWorld
+            if (peer != null && peer.ConnectionState == ConnectionState.Connected) { // 若已连接到 Server 则发送HelloWorld
                 m_writer.Put ("Hello, I'm client.");
-                // 不可靠UDP方式直接发送消息
+                // 不可靠 UDP 方式直接发送消息
                 peer.Send (m_writer, DeliveryMethod.Unreliable);
                 m_writer.Reset ();
             } else // 未连接则尝试连接
@@ -105,7 +105,7 @@ public class LiteNetLibHello : MonoBehaviour, INetEventListener {
             m_clientManager.Stop ();
     }
 
-    /// <summary> 有peer连接成功的事件回调 </summary>
+    /// <summary> 有 peer 连接成功的事件回调 </summary>
     public void OnPeerConnected (NetPeer peer) {
         Debug.Log ("连接到了 " + peer.EndPoint);
     }
@@ -134,7 +134,7 @@ public class LiteNetLibHello : MonoBehaviour, INetEventListener {
 }
 ```
 
-## DotNet Core后端
+## DotNet Core 后端
 
 为了方便，只写一个类并直接运行。
 
@@ -209,7 +209,7 @@ public class HelloLiteNetLib : INetEventListener {
 }
 ```
 
-## LiteNetLib内部实现介绍
+## LiteNetLib 内部实现介绍
 
 会用就行，可以直接跳过
 

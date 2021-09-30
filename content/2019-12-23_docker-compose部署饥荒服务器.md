@@ -1,5 +1,5 @@
 +++
-title = "Docker Compose部署饥荒服务器"
+title = "Docker Compose 部署饥荒服务器"
 date = 2019-12-23 21:05:11
 slug = "201912232105"
 
@@ -20,7 +20,7 @@ categories = ["Docker"]
 $ git clone https://github.com/mathielo/dst-dedicated-server.git
 ```
 
-## Token配置
+## Token 配置
 
 游戏中可以在控制台里输入如下命令生成Token
 
@@ -28,9 +28,9 @@ $ git clone https://github.com/mathielo/dst-dedicated-server.git
 TheNet:GenerateClusterToken()
 ```
 
-也可以用图形化界面生成（进游戏之后xjb乱按就能找到）
+也可以用图形化界面生成（进游戏之后 xjb 乱按就能找到）
 
-然后把得到的Token存入项目中的这个文件，注意只有一行  
+然后把得到的 Token 存入项目中的这个文件，注意只有一行  
 DSTClusterConfig/cluster\_token.txt
 
 ## 游戏服务器配置
@@ -57,7 +57,7 @@ $ sudo docker-compose up -d
 
 ## 服务器暂停
 
-如果需要停止服务器，需要attach到dst\_master容器中手动停止
+如果需要停止服务器，需要 attach 到dst\_master 容器中手动停止
 
 ```sh
 $ sudo docker attach dst_master

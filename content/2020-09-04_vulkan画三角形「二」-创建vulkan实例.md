@@ -1,5 +1,5 @@
 +++
-title = "Vulkan画三角形「二」 创建Vulkan实例"
+title = "Vulkan 画三角形「二」 创建 Vulkan 实例"
 date = 2020-09-04 20:49:09
 slug = "202009042049"
 
@@ -8,7 +8,7 @@ tags = ["GLFW", "Vulkan"]
 categories = ["Vulkan"]
 +++
 
-开始一切之前，我们先引入Vulkan的头文件
+开始一切之前，我们先引入 Vulkan 的头文件
 
 <!-- more -->
 
@@ -16,11 +16,11 @@ categories = ["Vulkan"]
 #include <vulkan/vulkan.h>
 ```
 
-注意这行代码要写在包含GLFW之前，因为GLFW可以通过条件编译来为Vulkan提供一些支持
+注意这行代码要写在包含 GLFW 之前，因为 GLFW 可以通过条件编译来为Vulkan 提供一些支持
 
 ## 创建实例
 
-然后要做的事情就是创建Vulkan实例。实例可以把你的应用程序跟Vulkan类库连接起来，创建实例需要指定一些信息
+然后要做的事情就是创建 Vulkan 实例。实例可以把你的应用程序跟 Vulkan 类库连接起来，创建实例需要指定一些信息
 
 首先添加一个成员变量用来保存和处理实例
 
@@ -28,7 +28,7 @@ categories = ["Vulkan"]
 VkInstance instance;
 ```
 
-然后添加一个成员函数createInstance用于创建实例，并在initVulkan中调用它
+然后添加一个成员函数 createInstance 用于创建实例，并在 initVulkan 中调用它
 
 ```cpp
 void initVulkan() {
@@ -53,11 +53,11 @@ void createInstance() {
 }
 ```
 
-对于这个结构体，我们在sType中明确地指定了它的类型，并且Vulkan中大部分的其他结构体也都是一样
+对于这个结构体，我们在 sType 中明确地指定了它的类型，并且 Vulkan 中大部分的其他结构体也都是一样
 
-接下来我们需要填充另一个结构体，这个结构体存储着创建实例所需要的信息，并作会在创建实例时直接把这个结构体作为参数传递过去。需要注意的是，Vulkan中的大部分方法调用也都是直接传递一个结构体，而不是拆开为一个一个的参数
+接下来我们需要填充另一个结构体，这个结构体存储着创建实例所需要的信息，并作会在创建实例时直接把这个结构体作为参数传递过去。需要注意的是，Vulkan 中的大部分方法调用也都是直接传递一个结构体，而不是拆开为一个一个的参数
 
-我们在createInstance方法的末端添加以下代码
+我们在 createInstance 方法的末端添加以下代码
 
 ```cpp
 // 实例创建信息
@@ -66,7 +66,7 @@ createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 createInfo.pApplicationInfo = &appInfo;
 ```
 
-这两行代码的作用显而易见，然后我们来指定扩展。Vulkan是一个跨平台的API，这就意味着你需要一些扩展来跟窗体系统交互。而GLFW提供了方便的内建函数来获取所需要的扩展，于是我们只需要把它们存入结构体中就行了
+这两行代码的作用显而易见，然后我们来指定扩展。Vulkan 是一个跨平台的API，这就意味着你需要一些扩展来跟窗体系统交互。而 GLFW 提供了方便的内建函数来获取所需要的扩展，于是我们只需要把它们存入结构体中就行了
 
 ```cpp
 uint32_t glfwExtensionCount = 0;
@@ -90,7 +90,7 @@ if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS)
     throw std::runtime_error("failed to create instance!");
 ```
 
-贴一下createInstance的完整代码，但其实就是把上面的代码片段按顺序拼接到createInstance函数里，为了方便，后面的文章就不贴完整代码了
+贴一下 createInstance 的完整代码，但其实就是把上面的代码片段按顺序拼接到 createInstance 函数里，为了方便，后面的文章就不贴完整代码了
 
 ```cpp
 void createInstance() {
@@ -120,7 +120,7 @@ void createInstance() {
 
 ## 销毁实例
 
-另外，需要在cleanup函数中销毁实例
+另外，需要在 cleanup 函数中销毁实例
 
 ```cpp
 void cleanup() {

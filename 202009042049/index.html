@@ -59,7 +59,7 @@
 
 <article itemscope itemtype="http://schema.org/BlogPosting">
     <header>
-        <h1 itemprop="headline">Vulkan画三角形「二」 创建Vulkan实例</h1>
+        <h1 itemprop="headline">Vulkan 画三角形「二」 创建 Vulkan 实例</h1>
         <span class="muted">
     <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
          width="16" height="16" fill="none" stroke="currentcolor"
@@ -78,16 +78,16 @@
 </span>
     </header>
     <div itemprop="articleBody">
-      <p>开始一切之前，我们先引入Vulkan的头文件</p>
+      <p>开始一切之前，我们先引入 Vulkan 的头文件</p>
 <span id="continue-reading"></span><pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">vulkan/vulkan.h</span><span>&gt;
 </span></code></pre>
-<p>注意这行代码要写在包含GLFW之前，因为GLFW可以通过条件编译来为Vulkan提供一些支持</p>
+<p>注意这行代码要写在包含 GLFW 之前，因为 GLFW 可以通过条件编译来为Vulkan 提供一些支持</p>
 <h2 id="chuang-jian-shi-li">创建实例</h2>
-<p>然后要做的事情就是创建Vulkan实例。实例可以把你的应用程序跟Vulkan类库连接起来，创建实例需要指定一些信息</p>
+<p>然后要做的事情就是创建 Vulkan 实例。实例可以把你的应用程序跟 Vulkan 类库连接起来，创建实例需要指定一些信息</p>
 <p>首先添加一个成员变量用来保存和处理实例</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkInstance instance;
 </span></code></pre>
-<p>然后添加一个成员函数createInstance用于创建实例，并在initVulkan中调用它</p>
+<p>然后添加一个成员函数 createInstance 用于创建实例，并在 initVulkan 中调用它</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">initVulkan</span><span>() {
 </span><span>    </span><span style="color:#bf616a;">createInstance</span><span>();
 </span><span>}
@@ -105,15 +105,15 @@
 </span><span>    appInfo.</span><span style="color:#bf616a;">apiVersion </span><span>= VK_API_VERSION_1_0;
 </span><span>}
 </span></code></pre>
-<p>对于这个结构体，我们在sType中明确地指定了它的类型，并且Vulkan中大部分的其他结构体也都是一样</p>
-<p>接下来我们需要填充另一个结构体，这个结构体存储着创建实例所需要的信息，并作会在创建实例时直接把这个结构体作为参数传递过去。需要注意的是，Vulkan中的大部分方法调用也都是直接传递一个结构体，而不是拆开为一个一个的参数</p>
-<p>我们在createInstance方法的末端添加以下代码</p>
+<p>对于这个结构体，我们在 sType 中明确地指定了它的类型，并且 Vulkan 中大部分的其他结构体也都是一样</p>
+<p>接下来我们需要填充另一个结构体，这个结构体存储着创建实例所需要的信息，并作会在创建实例时直接把这个结构体作为参数传递过去。需要注意的是，Vulkan 中的大部分方法调用也都是直接传递一个结构体，而不是拆开为一个一个的参数</p>
+<p>我们在 createInstance 方法的末端添加以下代码</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#65737e;">// 实例创建信息
 </span><span>VkInstanceCreateInfo createInfo = {};
 </span><span>createInfo.</span><span style="color:#bf616a;">sType </span><span>= VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 </span><span>createInfo.</span><span style="color:#bf616a;">pApplicationInfo </span><span>= &amp;appInfo;
 </span></code></pre>
-<p>这两行代码的作用显而易见，然后我们来指定扩展。Vulkan是一个跨平台的API，这就意味着你需要一些扩展来跟窗体系统交互。而GLFW提供了方便的内建函数来获取所需要的扩展，于是我们只需要把它们存入结构体中就行了</p>
+<p>这两行代码的作用显而易见，然后我们来指定扩展。Vulkan 是一个跨平台的API，这就意味着你需要一些扩展来跟窗体系统交互。而 GLFW 提供了方便的内建函数来获取所需要的扩展，于是我们只需要把它们存入结构体中就行了</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>uint32_t glfwExtensionCount = </span><span style="color:#d08770;">0</span><span>;
 </span><span style="color:#b48ead;">const char </span><span>**glfwExtensions;
 </span><span>glfwExtensions = </span><span style="color:#bf616a;">glfwGetRequiredInstanceExtensions</span><span>(&amp;glfwExtensionCount);
@@ -128,7 +128,7 @@
 </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">vkCreateInstance</span><span>(&amp;createInfo, </span><span style="color:#d08770;">nullptr</span><span>, &amp;instance) != VK_SUCCESS)
 </span><span>    </span><span style="color:#b48ead;">throw </span><span>std::</span><span style="color:#bf616a;">runtime_error</span><span>(&quot;</span><span style="color:#a3be8c;">failed to create instance!</span><span>&quot;);
 </span></code></pre>
-<p>贴一下createInstance的完整代码，但其实就是把上面的代码片段按顺序拼接到createInstance函数里，为了方便，后面的文章就不贴完整代码了</p>
+<p>贴一下 createInstance 的完整代码，但其实就是把上面的代码片段按顺序拼接到 createInstance 函数里，为了方便，后面的文章就不贴完整代码了</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">createInstance</span><span>() {
 </span><span>    </span><span style="color:#65737e;">// 应用程序信息
 </span><span>    VkApplicationInfo </span><span style="color:#bf616a;">appInfo</span><span>{};
@@ -154,7 +154,7 @@
 </span><span>}
 </span></code></pre>
 <h2 id="xiao-hui-shi-li">销毁实例</h2>
-<p>另外，需要在cleanup函数中销毁实例</p>
+<p>另外，需要在 cleanup 函数中销毁实例</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">cleanup</span><span>() {
 </span><span>    </span><span style="color:#bf616a;">vkDestroyInstance</span><span>(instance, </span><span style="color:#d08770;">nullptr</span><span>);
 </span><span>

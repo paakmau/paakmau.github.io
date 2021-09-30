@@ -59,7 +59,7 @@
 
 <article itemscope itemtype="http://schema.org/BlogPosting">
     <header>
-        <h1 itemprop="headline">Vuex完全学习笔记</h1>
+        <h1 itemprop="headline">Vuex 完全学习笔记</h1>
         <span class="muted">
     <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
          width="16" height="16" fill="none" stroke="currentcolor"
@@ -78,17 +78,17 @@
 </span>
     </header>
     <div itemprop="articleBody">
-      <p>官网说，Vuex是为Vue.js应用开发的状态管理模式。个人理解就是管理全局变量的单例，支持响应式，存储状态或数据</p>
+      <p>官网说，Vuex 是为Vue.js 应用开发的状态管理模式。个人理解就是管理全局变量的单例，支持响应式，存储状态或数据</p>
 <span id="continue-reading"></span>
 <p>可以用来处理多个页面数据共享，父子组件信息交互等麻烦的问题</p>
-<p>本文基于用Vue CLI创建的脚手架，包括State、Mutation、Action、Getter</p>
+<p>本文基于用Vue CLI 创建的脚手架，包括State、Mutation、Action、Getter</p>
 <h2 id="yin-ru-vuex">引入Vuex</h2>
-<p>在使用Vue CLI创建项目的时候引入Vuex就行</p>
-<p>如果没有，需要安装vuex依赖，修改main.js，还可以新建一个目录用于存放Vuex相关的代码，初学避免踩坑不建议这么整</p>
+<p>在使用Vue CLI 创建项目的时候引入 Vuex 就行</p>
+<p>如果没有，需要安装 vuex 依赖，修改main.js，还可以新建一个目录用于存放 Vuex 相关的代码，初学避免踩坑不建议这么整</p>
 <h2 id="jiao-shou-jia-zhong-de-xiang-guan-wen-jian">脚手架中的相关文件</h2>
-<p>介绍一下脚手架中与Vuex相关的部分</p>
+<p>介绍一下脚手架中与 Vuex 相关的部分</p>
 <p>src/store/index.js<br />
-用于配置Vuex的全局单例，贴一下代码</p>
+用于配置 Vuex 的全局单例，贴一下代码</p>
 <pre data-lang="js" style="background-color:#2b303b;color:#c0c5ce;" class="language-js "><code class="language-js" data-lang="js"><span style="color:#b48ead;">import </span><span style="color:#bf616a;">Vue </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">vue</span><span>&quot;;
 </span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">Vuex </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">vuex</span><span>&quot;;
 </span><span>
@@ -102,7 +102,7 @@
 </span><span>});
 </span></code></pre>
 <p>src/main.js<br />
-它import了src/store，并在Vue对象实例化时传入，没什么好说的，这里随便贴一个</p>
+它 import 了src/store，并在 Vue 对象实例化时传入，没什么好说的，这里随便贴一个</p>
 <pre data-lang="js" style="background-color:#2b303b;color:#c0c5ce;" class="language-js "><code class="language-js" data-lang="js"><span style="color:#b48ead;">import </span><span style="color:#bf616a;">Vue </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">vue</span><span>&quot;;
 </span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">App </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">./App.vue</span><span>&quot;;
 </span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">store </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">./store</span><span>&quot;;
@@ -114,12 +114,12 @@
 </span><span>  </span><span style="color:#8fa1b3;">render</span><span>: </span><span style="color:#bf616a;">h </span><span style="color:#b48ead;">=&gt; </span><span style="color:#8fa1b3;">h</span><span>(</span><span style="color:#bf616a;">App</span><span>)
 </span><span>}).</span><span style="color:#8fa1b3;">$mount</span><span>(&quot;</span><span style="color:#a3be8c;">#app</span><span>&quot;);
 </span></code></pre>
-<h2 id="stateyu-mutation">State与Mutation</h2>
-<p>简单说State就是全局变量，而且它发生变化时，其他与之关联的DOM也会更新</p>
-<p>然后Mutation是用于修改State的方法，并且他能提供回滚等功能<br />
-官方不允许直接修改State，虽然直接修改也能触发相应DOM的更新</p>
-<p>然后我们尝试使用State在父子组件之间共享状态</p>
-<p>首先在src/store/index.js中添加一个showChr状态以及用于修改这个状态的Mutation，代码如下</p>
+<h2 id="state-yu-mutation">State 与Mutation</h2>
+<p>简单说 State 就是全局变量，而且它发生变化时，其他与之关联的 DOM 也会更新</p>
+<p>然后 Mutation 是用于修改State 的方法，并且他能提供回滚等功能<br />
+官方不允许直接修改State，虽然直接修改也能触发相应 DOM 的更新</p>
+<p>然后我们尝试使用 State 在父子组件之间共享状态</p>
+<p>首先在src/store/index.js 中添加一个 showChr 状态以及用于修改这个状态的Mutation，代码如下</p>
 <pre data-lang="js" style="background-color:#2b303b;color:#c0c5ce;" class="language-js "><code class="language-js" data-lang="js"><span style="color:#b48ead;">import </span><span style="color:#bf616a;">Vue </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">vue</span><span>&quot;;
 </span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">Vuex </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">vuex</span><span>&quot;;
 </span><span>
@@ -136,7 +136,7 @@
 </span><span>  }
 </span><span>});
 </span></code></pre>
-<p>然后子组件Chr.vue的代码如下</p>
+<p>然后子组件Chr.vue 的代码如下</p>
 <pre data-lang="html" style="background-color:#2b303b;color:#c0c5ce;" class="language-html "><code class="language-html" data-lang="html"><span>&lt;</span><span style="color:#bf616a;">template</span><span>&gt;
 </span><span>  &lt;</span><span style="color:#bf616a;">div </span><span style="color:#d08770;">v-show</span><span>=&quot;</span><span style="color:#a3be8c;">$store.state.showChr</span><span>&quot;&gt;
 </span><span>    &lt;</span><span style="color:#bf616a;">h1</span><span>&gt;这里是Chr&lt;/</span><span style="color:#bf616a;">h1</span><span>&gt;
@@ -148,7 +148,7 @@
 </span><span style="color:#b48ead;">export default </span><span>{};
 </span><span>&lt;/</span><span style="color:#bf616a;">script</span><span>&gt;
 </span></code></pre>
-<p>最后父组件Prt.vue的代码如下</p>
+<p>最后父组件Prt.vue 的代码如下</p>
 <pre data-lang="html" style="background-color:#2b303b;color:#c0c5ce;" class="language-html "><code class="language-html" data-lang="html"><span>&lt;</span><span style="color:#bf616a;">template</span><span>&gt;
 </span><span>  &lt;</span><span style="color:#bf616a;">div</span><span>&gt;
 </span><span>      &lt;</span><span style="color:#bf616a;">button </span><span style="color:#d08770;">@click</span><span>=&quot;</span><span style="color:#a3be8c;">$store.commit(&#39;changeShowChr&#39;, true)</span><span>&quot;&gt;显示&lt;/</span><span style="color:#bf616a;">button</span><span>&gt;
@@ -165,18 +165,18 @@
 </span><span>};
 </span><span>&lt;/</span><span style="color:#bf616a;">script</span><span>&gt;
 </span></code></pre>
-<p>这样，子组件的显示与showChr关联，且父子组件都能修改它的值</p>
+<p>这样，子组件的显示与 showChr 关联，且父子组件都能修改它的值</p>
 <p>注意：<br />
-Mutation中不能包含异步操作<br />
-并且它也需要遵守Vue的响应规则，可以提前在store中初始化所有的属性或者使用Vue.set添加新的属性</p>
+Mutation 中不能包含异步操作<br />
+并且它也需要遵守 Vue 的响应规则，可以提前在 store 中初始化所有的属性或者使用Vue.set 添加新的属性</p>
 <p>另外再次强调：<br />
-虽然直接修改State也是响应式的，但官方明确说明必须使用Mutation</p>
+虽然直接修改 State 也是响应式的，但官方明确说明必须使用Mutation</p>
 <h2 id="action">Action</h2>
-<p>上面提到Mutation不能包含异步操作，如果需要异步，那么可以使用Action</p>
-<p>在Action中，可以使用State与Getter只读地访问状态，也可以提交Mutation修改状态，在其中能自由进行异步操作</p>
-<p>调用Action时使用$store.dispatch方法</p>
+<p>上面提到 Mutation 不能包含异步操作，如果需要异步，那么可以使用Action</p>
+<p>在 Action 中，可以使用 State 与Getter 只读地访问状态，也可以提交 Mutation 修改状态，在其中能自由进行异步操作</p>
+<p>调用 Action 时使用$store.dispatch 方法</p>
 <p>上面的例子可修改成这样</p>
-<p>在src/store/index.js中添加Action，这个Action中做了异步操作后提交Mutation</p>
+<p>在src/store/index.js 中添加Action，这个 Action 中做了异步操作后提交Mutation</p>
 <pre data-lang="js" style="background-color:#2b303b;color:#c0c5ce;" class="language-js "><code class="language-js" data-lang="js"><span style="color:#b48ead;">import </span><span style="color:#bf616a;">Vue </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">vue</span><span>&quot;;
 </span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">Vuex </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">vuex</span><span>&quot;;
 </span><span>
@@ -213,7 +213,7 @@ Mutation中不能包含异步操作<br />
 </span></code></pre>
 <p>最后观察到点击隐藏，间隔一秒后子组件消失</p>
 <h2 id="module">Module</h2>
-<p>把所有组件的状态或数据全部存储在$store.state中会很混乱且不好维护，可以把状态分割成多个模块（Module），每个模块都拥有自己的State，Getter，Mutation，Action，也可以嵌套子模块<br />
+<p>把所有组件的状态或数据全部存储在$store.state 中会很混乱且不好维护，可以把状态分割成多个模块（Module），每个模块都拥有自己的State，Getter，Mutation，Action，也可以嵌套子模块<br />
 比较简单，下面是示例</p>
 <pre data-lang="js" style="background-color:#2b303b;color:#c0c5ce;" class="language-js "><code class="language-js" data-lang="js"><span style="color:#b48ead;">import </span><span style="color:#bf616a;">Vue </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">vue</span><span>&quot;;
 </span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">Vuex </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">vuex</span><span>&quot;;
@@ -248,7 +248,7 @@ Mutation中不能包含异步操作<br />
 </span><span style="color:#bf616a;">store</span><span>.</span><span style="color:#bf616a;">state</span><span>.</span><span style="color:#bf616a;">b </span><span style="color:#65737e;">// -&gt; moduleB 的状态
 </span></code></pre>
 <h2 id="getter">Getter</h2>
-<p>有时候，我们可以从store的state中派生出一些状态，例如对列表进行过滤然后计数。这种情况下我们可以在store中定义getter，下面贴一个简单的例子</p>
+<p>有时候，我们可以从 store 的state 中派生出一些状态，例如对列表进行过滤然后计数。这种情况下我们可以在 store 中定义getter，下面贴一个简单的例子</p>
 <pre data-lang="js" style="background-color:#2b303b;color:#c0c5ce;" class="language-js "><code class="language-js" data-lang="js"><span style="color:#b48ead;">import </span><span style="color:#bf616a;">Vue </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">vue</span><span>&quot;;
 </span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">Vuex </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">vuex</span><span>&quot;;
 </span><span>

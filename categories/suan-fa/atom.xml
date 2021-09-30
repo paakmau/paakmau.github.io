@@ -13,14 +13,14 @@
 		<updated>2020-04-28T22:21:26+00:00</updated>
 		<link href="https://paakmau.github.io/202004282221/" type="text/html"/>
 		<id>https://paakmau.github.io/202004282221/</id>
-		<content type="html">&lt;p&gt;Unreal的Task Graph、Unity的Job System、HPX还有C#的Task都属于TAP&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;Unreal 的Task Graph、Unity 的Job System、HPX 还有C#的 Task 都属于TAP&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;tap&quot;&gt;TAP&lt;&#x2F;h2&gt;
 &lt;p&gt;Task-based asynchronous pattern&lt;&#x2F;p&gt;
 &lt;p&gt;是微软提出的，对你没猜错，就是C#的那个&lt;&#x2F;p&gt;
 &lt;p&gt;一般来说，如果多个异步操作之间存在共享数据的情况，我们可能会用信号量、互斥锁或者条件变量这样的东西搞来搞去。但是如果共享的数据很多很复杂或者异步操作也很多很复杂，这些东西绕来绕去，于是我们的代码可能写个几天就会变得十分丑陋&lt;&#x2F;p&gt;
-&lt;p&gt;接下来我们考虑用TAP的思路来设计异步代码&lt;br &#x2F;&gt;
+&lt;p&gt;接下来我们考虑用 TAP 的思路来设计异步代码&lt;br &#x2F;&gt;
 简单的说就是异步的任务之间存在依赖关系。如果一个任务依赖于别的任务，它必须等待这些任务完成后才能执行；然后如果几个任务的依赖都完成了，那么他们就能并行&lt;&#x2F;p&gt;
-&lt;p&gt;比如说我现在想要吃煎蛋、吃牛排，还要喝摩卡和拿铁，但是平底锅和胶囊咖啡机都只有一个。平常来说我要给平底锅和咖啡机各加一个互斥锁。但如果用TAP的思路，我可以让煎牛排任务依赖于煎鸡蛋任务，冲摩卡任务依赖于冲拿铁。也就是先煎蛋再煎牛排，先冲摩卡再冲拿铁&lt;&#x2F;p&gt;
+&lt;p&gt;比如说我现在想要吃煎蛋、吃牛排，还要喝摩卡和拿铁，但是平底锅和胶囊咖啡机都只有一个。平常来说我要给平底锅和咖啡机各加一个互斥锁。但如果用 TAP 的思路，我可以让煎牛排任务依赖于煎鸡蛋任务，冲摩卡任务依赖于冲拿铁。也就是先煎蛋再煎牛排，先冲摩卡再冲拿铁&lt;&#x2F;p&gt;
 &lt;p&gt;但是有一个问题，如果我有两个平底锅然后想要煎牛排煎鸡蛋煎牛仔骨煎鸡翅怎么办，那么我们在分配煎牛排煎鸡蛋煎牛仔骨煎鸡翅任务的时候，就要把锅一起分配给他。&lt;br &#x2F;&gt;
 比如我们随便分一下：煎鸡蛋煎牛排都用同一口锅，煎鸡蛋依赖煎牛排；煎牛仔骨和煎鸡翅用另一口锅，煎牛仔骨依赖煎鸡翅。&lt;br &#x2F;&gt;
 总而言之，就是在分配任务的时候要一起把资源也给分配了，从而保证资源不冲突&lt;&#x2F;p&gt;
@@ -38,14 +38,14 @@
 &lt;h2 id=&quot;tuo-bu-pai-xu&quot;&gt;拓扑排序&lt;&#x2F;h2&gt;
 &lt;p&gt;敏锐的同学应该已经发现了，任务的依赖关系必不能成环，于是这些依赖关系就是个DAG&lt;br &#x2F;&gt;
 说到DAG，那就是拓扑排序了&lt;&#x2F;p&gt;
-&lt;p&gt;说到拓扑排序，就又联想到差分约束。也就是说如果CPU有无限多个核心并且线程调度成本不计然后还知道每个任务的所需时间，我们可以通过查分约束算出在依赖关系下完成全部的任务需要的最小时间（但是并没有什么卵用）&lt;br &#x2F;&gt;
+&lt;p&gt;说到拓扑排序，就又联想到差分约束。也就是说如果 CPU 有无限多个核心并且线程调度成本不计然后还知道每个任务的所需时间，我们可以通过查分约束算出在依赖关系下完成全部的任务需要的最小时间（但是并没有什么卵用）&lt;br &#x2F;&gt;
 好了偏题了，我们继续科普&lt;&#x2F;p&gt;
 &lt;p&gt;就拿之前平底锅和胶囊咖啡机的例子来说，可以把每个任务想象成节点，而依赖关系就是边，而拓扑排序就是在满足依赖关系的条件下对所有任务进行排序&lt;&#x2F;p&gt;
 &lt;p&gt;简单说一下实现&lt;br &#x2F;&gt;
 首先维护一个目前可执行任务的队列，根据名字我们知道它里面存的任务都是依赖条件满足可以立刻执行的任务&lt;br &#x2F;&gt;
 那么一开始时所有入度为零的节点，也就是不依赖其他任务的任务，都可以放到这个队列里&lt;br &#x2F;&gt;
 然后每执行完一个任务，就可以更新依赖于这个任务的其他任务，也就是让依赖与这个任务的其他任务的入度减一，如果入度减到零了就意味着依赖条件满足，就把它也扔进队列里&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;tapde-tuo-pai-shi-xian&quot;&gt;TAP的拓排实现&lt;&#x2F;h2&gt;
+&lt;h2 id=&quot;tap-de-tuo-pai-shi-xian&quot;&gt;TAP 的拓排实现&lt;&#x2F;h2&gt;
 &lt;p&gt;其实看到上面说的这个队列，敏锐的同学就又发现了，写一个线程池从里面取任务出来执行，在某个任务完成的时候更新依赖它的其他任务的入度就完事啦&lt;&#x2F;p&gt;
 &lt;p&gt;注意给队列加个锁或者用原子操作写个无锁队列就行了&lt;&#x2F;p&gt;
 </content>
@@ -56,14 +56,14 @@
 		<updated>2020-04-21T21:39:49+00:00</updated>
 		<link href="https://paakmau.github.io/202004212139/" type="text/html"/>
 		<id>https://paakmau.github.io/202004212139/</id>
-		<content type="html">&lt;p&gt;讲真我从高中到现在就没有手写过一次快排（是sort不够好吗）&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;讲真我从高中到现在就没有手写过一次快排（是 sort 不够好吗）&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;然后最近看书的时候看到划分数据块并行优化的思路，发现快排和堆排都能多线程优化&lt;&#x2F;p&gt;
 &lt;p&gt;于是写一个试试&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;si-lu&quot;&gt;思路&lt;&#x2F;h2&gt;
 &lt;p&gt;注意到快排在每次迭代后原数组都会被分成没有交集的两块，那么他们就可以并行；堆排也同理&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;zhu-yi&quot;&gt;注意&lt;&#x2F;h2&gt;
-&lt;p&gt;有一个问题是不能每次迭代都新开线程（我CPU就四个核心线程多也没用）&lt;br &#x2F;&gt;
+&lt;p&gt;有一个问题是不能每次迭代都新开线程（我 CPU 就四个核心线程多也没用）&lt;br &#x2F;&gt;
 那就开一个线程池，把迭代后产生的排序任务放到队列里，有一点类似我们递归爆栈时会用到的手写栈&lt;&#x2F;p&gt;
 &lt;p&gt;还有一个问题是，在区间长度比较小的时候，由于多线程的调度成本，直接在本线程内递归的性能反而更好&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;xian-cheng-chi&quot;&gt;线程池&lt;&#x2F;h2&gt;
@@ -120,7 +120,7 @@
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span&gt;;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;he-xin-dai-ma&quot;&gt;核心代码&lt;&#x2F;h2&gt;
-&lt;p&gt;每一个SortFunc对象都是快排中的一次迭代，给他传一个区间就行&lt;&#x2F;p&gt;
+&lt;p&gt;每一个 SortFunc 对象都是快排中的一次迭代，给他传一个区间就行&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct &lt;&#x2F;span&gt;&lt;span&gt;SortFunc {
 &lt;&#x2F;span&gt;&lt;span&gt;    ThreadPool &amp;amp;pool;
 &lt;&#x2F;span&gt;&lt;span&gt;    vector&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt; &amp;amp;arr;
@@ -212,7 +212,7 @@ You are to write a program to determine the least number of stones to be picked 
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;ti-jie&quot;&gt;题解&lt;&#x2F;h2&gt;
 &lt;p&gt;树形DP&lt;br &#x2F;&gt;
-F(p)表示p节点最少需要的石子数&lt;&#x2F;p&gt;
+F(p)表示 p 节点最少需要的石子数&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;cstdio&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;cstring&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;using namespace&lt;&#x2F;span&gt;&lt;span&gt; std;
@@ -309,7 +309,7 @@ A bank goes bankrupt if it is robbed, and you may assume that all probabilities 
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;ti-jie&quot;&gt;题解&lt;&#x2F;h2&gt;
 &lt;p&gt;01背包&lt;br &#x2F;&gt;
-F(i, j)表示前i个银行取得j的钱而不被抓的最大概率&lt;&#x2F;p&gt;
+F(i, j)表示前 i 个银行取得j 的钱而不被抓的最大概率&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;algorithm&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;climits&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;cstdio&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
@@ -360,7 +360,7 @@ F(i, j)表示前i个银行取得j的钱而不被抓的最大概率&lt;&#x2F;p&gt
 &lt;p&gt;在一个圆形操场的四周摆放 N 堆石子，现要将石子有次序地合并成一堆。规定每次只能选相邻的2堆合并成新的一堆，并将新的一堆的石子数，记为该次合并的得分。&lt;&#x2F;p&gt;
 &lt;p&gt;试设计出一个算法,计算出将 N 堆石子合并成 1 堆的最小得分和最大得分。&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;shu-ru-ge-shi&quot;&gt;输入格式&lt;&#x2F;h2&gt;
-&lt;p&gt;数据的第 1 行是正整数 N，表示有N堆石子。&lt;br &#x2F;&gt;
+&lt;p&gt;数据的第 1 行是正整数 N，表示有 N 堆石子。&lt;br &#x2F;&gt;
 第 2 行有 N 个整数，第 i 个整数 ai​ 表示第 i 堆石子的个数。&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;shu-chu-ge-shi&quot;&gt;输出格式&lt;&#x2F;h2&gt;
 &lt;p&gt;输出共 2 行，第 1 行为最小得分，第 2 行为最大得分。&lt;&#x2F;p&gt;
@@ -375,7 +375,7 @@ F(i, j)表示前i个银行取得j的钱而不被抓的最大概率&lt;&#x2F;p&gt
 &lt;h2 id=&quot;hint&quot;&gt;Hint&lt;&#x2F;h2&gt;
 &lt;p&gt;1&amp;lt;=N&amp;lt;=100，0&amp;lt;=ai&amp;lt;=20&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;ti-jie&quot;&gt;题解&lt;&#x2F;h2&gt;
-&lt;p&gt;把环复制一遍变成链做dp就行了&lt;&#x2F;p&gt;
+&lt;p&gt;把环复制一遍变成链做 dp 就行了&lt;&#x2F;p&gt;
 &lt;p&gt;F(i, j)表示合并[i, j]的最大得分&lt;br &#x2F;&gt;
 F(i, j) = max { F(i, k) + F(k+1, j) + Sum(i, j), i&amp;lt;=k&amp;lt;j }&lt;br &#x2F;&gt;
 最小得分同理&lt;&#x2F;p&gt;

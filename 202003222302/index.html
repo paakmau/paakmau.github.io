@@ -59,7 +59,7 @@
 
 <article itemscope itemtype="http://schema.org/BlogPosting">
     <header>
-        <h1 itemprop="headline">C++ Lambda快速上手</h1>
+        <h1 itemprop="headline">C++ Lambda 快速上手</h1>
         <span class="muted">
     <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
          width="16" height="16" fill="none" stroke="currentcolor"
@@ -78,24 +78,24 @@
 </span>
     </header>
     <div itemprop="articleBody">
-      <p>Lambda听起来非常的牛逼，很容易就会联想到函数式编程或者Lambda演算这样的东西。但是在C++里，没那么复杂，就把它当匿名函数用就好了</p>
+      <p>Lambda 听起来非常的牛逼，很容易就会联想到函数式编程或者 Lambda 演算这样的东西。但是在C++里，没那么复杂，就把它当匿名函数用就好了</p>
 <span id="continue-reading"></span><h2 id="helloworld">HelloWorld</h2>
-<p>对于降序排序，我们可以这样写（难道greater不好吗）</p>
+<p>对于降序排序，我们可以这样写（难道 greater 不好吗）</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">int</span><span> arr[] = {</span><span style="color:#d08770;">2</span><span>, </span><span style="color:#d08770;">4</span><span>, </span><span style="color:#d08770;">5</span><span>, </span><span style="color:#d08770;">0</span><span>, </span><span style="color:#d08770;">3</span><span>, </span><span style="color:#d08770;">1</span><span>};
 </span><span style="color:#bf616a;">sort</span><span>(arr, arr + </span><span style="color:#d08770;">6</span><span>, [](</span><span style="color:#b48ead;">int</span><span> a, </span><span style="color:#b48ead;">int</span><span> b) { </span><span style="color:#b48ead;">return</span><span> a &gt; b; });
 </span></code></pre>
 <h2 id="an-zhi-bu-huo">按值捕获</h2>
-<p>在Lambda函数中，如果想要访问变量，就需要用到变量捕获</p>
-<p>我们把想要捕获的东西写在Lambda的中括号里，然后函数体里就能直接使用这些变量了</p>
+<p>在 Lambda 函数中，如果想要访问变量，就需要用到变量捕获</p>
+<p>我们把想要捕获的东西写在 Lambda 的中括号里，然后函数体里就能直接使用这些变量了</p>
 <p>下面给个示范代码</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">int</span><span> num = </span><span style="color:#d08770;">233</span><span>;
 </span><span style="color:#b48ead;">auto</span><span> func = [num]() { </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span>&quot;, num); };
 </span><span style="color:#bf616a;">func</span><span>();
 </span></code></pre>
 <p>执行后发现终端输出了233</p>
-<p>但需要注意的是，这里只是捕获了num的值，相当于拷贝了一份num<br />
-在Lambda里也无法对num进行修改，原本的num这个局部变量也不会变化</p>
-<p>如果想要在Lambda里修改num这个局部变量，就要捕获它的引用</p>
+<p>但需要注意的是，这里只是捕获了 num 的值，相当于拷贝了一份num<br />
+在 Lambda 里也无法对num 进行修改，原本的 num 这个局部变量也不会变化</p>
+<p>如果想要在 Lambda 里修改num 这个局部变量，就要捕获它的引用</p>
 <h2 id="an-yin-yong-bu-huo">按引用捕获</h2>
 <p>能够捕获到变量的引用</p>
 <p>看代码就完事了</p>
@@ -104,9 +104,9 @@
 </span><span style="color:#bf616a;">func</span><span>();
 </span><span style="color:#bf616a;">printf</span><span>(&quot;</span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span>&quot;, num);
 </span></code></pre>
-<p>看到终端里输出了234，num的值被修改了</p>
+<p>看到终端里输出了234，num 的值被修改了</p>
 <h2 id="xuan-kong-yin-yong">悬空引用</h2>
-<p>C++跟某些高级语言不一样，捕获引用的时候真的就只是捕获变量的引用。如果变量被销毁，Lambda里捕获到的引用就失效了</p>
+<p>C++跟某些高级语言不一样，捕获引用的时候真的就只是捕获变量的引用。如果变量被销毁，Lambda 里捕获到的引用就失效了</p>
 <p>举个例子（危险操作请勿效仿）</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">auto </span><span style="color:#8fa1b3;">getFunc</span><span>() {
 </span><span>    string str = &quot;</span><span style="color:#a3be8c;">Boomb!</span><span>&quot;;
@@ -121,7 +121,7 @@
 </span><span>    </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">0</span><span>;
 </span><span>}
 </span></code></pre>
-<p>这个字符串在函数退出之前都是正常的，第一次调用Lambda也是正常的，但是函数退出之后这个字符串就被销毁了，因此在main里调用这个Lambda函数会爆炸</p>
+<p>这个字符串在函数退出之前都是正常的，第一次调用 Lambda 也是正常的，但是函数退出之后这个字符串就被销毁了，因此在 main 里调用这个Lambda 函数会爆炸</p>
 <h2 id="chu-shi-hua-bu-huo">初始化捕获</h2>
 <p>C++14的特性，可以捕获经过处理的变量，捕获类型由编译器自动推断，能使代码更加简洁</p>
 <p>举个例子</p>
@@ -148,7 +148,7 @@
 </span><span>}
 </span></code></pre>
 <h2 id="bu-huo-quan-bu-bian-liang">捕获全部变量</h2>
-<p>Lambda函数有个蛇皮操作，可以捕获所有的变量。在捕获列表里用=和&amp;分别表示按值和按引用捕获全部变量</p>
+<p>Lambda 函数有个蛇皮操作，可以捕获所有的变量。在捕获列表里用=和&amp;分别表示按值和按引用捕获全部变量</p>
 <p>举个例子</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">int</span><span> a = </span><span style="color:#d08770;">1</span><span>, b = </span><span style="color:#d08770;">3</span><span>;
 </span><span style="color:#b48ead;">auto</span><span> func = [=]() { </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#d08770;">%d %d</span><span style="color:#96b5b4;">\n</span><span>&quot;, a, b); };

@@ -59,7 +59,7 @@
 
 <article itemscope itemtype="http://schema.org/BlogPosting">
     <header>
-        <h1 itemprop="headline">Docker部署.NET Core 3.0控制台项目</h1>
+        <h1 itemprop="headline">Docker 部署.NET Core 3.0控制台项目</h1>
         <span class="muted">
     <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
          width="16" height="16" fill="none" stroke="currentcolor"
@@ -78,21 +78,21 @@
 </span>
     </header>
     <div itemprop="articleBody">
-      <p>本文将光速创建一个HelloWorld，然后使用Docker进行部署</p>
-<span id="continue-reading"></span><h2 id="xin-jian-bing-fa-bu-net-corekong-zhi-tai-xiang-mu">新建并发布.NET Core控制台项目</h2>
-<p>首先新建一个.NET Core控制台项目，并直接运行<br />
+      <p>本文将光速创建一个HelloWorld，然后使用 Docker 进行部署</p>
+<span id="continue-reading"></span><h2 id="xin-jian-bing-fa-bu-net-core-kong-zhi-tai-xiang-mu">新建并发布.NET Core 控制台项目</h2>
+<p>首先新建一个.NET Core 控制台项目，并直接运行<br />
 控制台应该会输出“Hello World!”，如果没有可以自己写一个。</p>
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> dotnet new console</span><span style="color:#bf616a;"> --name</span><span> hello
 </span><span style="color:#bf616a;">$</span><span> cd hello
 </span><span style="color:#bf616a;">$</span><span> dotnet run
 </span></code></pre>
 <p>解释：<br />
-dotnet new用于创建新项目，console表示是控制台项目，--name指定项目名称为hello并在当前路径下创建hello文件夹，而项目在其中。</p>
+dotnet new 用于创建新项目，console 表示是控制台项目，--name 指定项目名称为 hello 并在当前路径下创建hello 文件夹，而项目在其中。</p>
 <p>于是直接发布</p>
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> dotnet publish</span><span style="color:#bf616a;"> -c</span><span> Release
 </span></code></pre>
-<p>解释：该命令会把项目发布到hello文件夹中的bin/Release/netcoreapp3.0/publish里</p>
-<p>然后在hello目录下编写Dockerfile文件用于生成镜像<br />
+<p>解释：该命令会把项目发布到 hello 文件夹中的bin/Release/netcoreapp3.0/publish 里</p>
+<p>然后在 hello 目录下编写Dockerfile 文件用于生成镜像<br />
 Dockerfile</p>
 <pre data-lang="dockerfile" style="background-color:#2b303b;color:#c0c5ce;" class="language-dockerfile "><code class="language-dockerfile" data-lang="dockerfile"><span style="color:#b48ead;">FROM</span><span> mcr.microsoft.com/dotnet/core/runtime
 </span><span style="color:#b48ead;">COPY</span><span> bin/Release/netcoreapp3.0/publish/ /publish
@@ -108,16 +108,16 @@ FROM<br />
 用于切换当前工作路径</p>
 <p>ENTRYPOINT<br />
 运行应用</p>
-<p>接下来利用这个Dockerfile构建镜像</p>
+<p>接下来利用这个 Dockerfile 构建镜像</p>
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> docker build</span><span style="color:#bf616a;"> -t</span><span> dotnet-hello .
 </span></code></pre>
-<p>解释：dotnet-hello是镜像的名称</p>
+<p>解释：dotnet-hello 是镜像的名称</p>
 <p>最后利用该镜像构建容器并运行</p>
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> docker run</span><span style="color:#bf616a;"> -t --name</span><span> hello dotnet-hello
 </span></code></pre>
 <p>解释：<br />
--t 表示虚拟终端，用于在Docker命令行工具中输出应用的控制台输出。但一般项目中不需要<br />
---name hello表示容器名为hello</p>
+-t 表示虚拟终端，用于在 Docker 命令行工具中输出应用的控制台输出。但一般项目中不需要<br />
+--name hello 表示容器名为hello</p>
 <p>最后看到终端输出“Hello World!”</p>
 
     </div>

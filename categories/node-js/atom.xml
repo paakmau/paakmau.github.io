@@ -8,14 +8,14 @@
 	<updated>2020-07-07T18:21:46+00:00</updated>
 	<id>https://paakmau.github.io/categories/node-js/atom.xml</id>
 	<entry xml:lang="zh">
-		<title>基于Vue.js和SpringBoot配置WebSocket</title>
+		<title>基于Vue.js 和 SpringBoot 配置WebSocket</title>
 		<published>2020-07-07T18:21:46+00:00</published>
 		<updated>2020-07-07T18:21:46+00:00</updated>
 		<link href="https://paakmau.github.io/202007071821/" type="text/html"/>
 		<id>https://paakmau.github.io/202007071821/</id>
-		<content type="html">&lt;p&gt;HTTP协议中的请求只能由客户端发起，如果需要服务端主动向客户端发送信息，就会用到WebSocket&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;HTTP 协议中的请求只能由客户端发起，如果需要服务端主动向客户端发送信息，就会用到WebSocket&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;hou-duan-bu-fen&quot;&gt;后端部分&lt;&#x2F;h2&gt;
-&lt;p&gt;首先需要一个配置类用于指定WebSocket的端口号&lt;&#x2F;p&gt;
+&lt;p&gt;首先需要一个配置类用于指定 WebSocket 的端口号&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;@&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Configuration
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;WebSocketConfig &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    @&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Bean
@@ -24,7 +24,7 @@
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;然后我们写一个类用来管理WebSocket连接，处理连接建立、收到消息、连接断开等的回调&lt;&#x2F;p&gt;
+&lt;p&gt;然后我们写一个类用来管理 WebSocket 连接，处理连接建立、收到消息、连接断开等的回调&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;@&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ServerEndpoint&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;value &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;wstest&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
 &lt;&#x2F;span&gt;&lt;span&gt;@&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Component
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;WebSocketTest &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
@@ -125,22 +125,22 @@
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Vuex完全学习笔记</title>
+		<title>Vuex 完全学习笔记</title>
 		<published>2020-01-20T23:38:17+00:00</published>
 		<updated>2020-01-20T23:38:17+00:00</updated>
 		<link href="https://paakmau.github.io/202001202338/" type="text/html"/>
 		<id>https://paakmau.github.io/202001202338/</id>
-		<content type="html">&lt;p&gt;官网说，Vuex是为Vue.js应用开发的状态管理模式。个人理解就是管理全局变量的单例，支持响应式，存储状态或数据&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;官网说，Vuex 是为Vue.js 应用开发的状态管理模式。个人理解就是管理全局变量的单例，支持响应式，存储状态或数据&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;可以用来处理多个页面数据共享，父子组件信息交互等麻烦的问题&lt;&#x2F;p&gt;
-&lt;p&gt;本文基于用Vue CLI创建的脚手架，包括State、Mutation、Action、Getter&lt;&#x2F;p&gt;
+&lt;p&gt;本文基于用Vue CLI 创建的脚手架，包括State、Mutation、Action、Getter&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;yin-ru-vuex&quot;&gt;引入Vuex&lt;&#x2F;h2&gt;
-&lt;p&gt;在使用Vue CLI创建项目的时候引入Vuex就行&lt;&#x2F;p&gt;
-&lt;p&gt;如果没有，需要安装vuex依赖，修改main.js，还可以新建一个目录用于存放Vuex相关的代码，初学避免踩坑不建议这么整&lt;&#x2F;p&gt;
+&lt;p&gt;在使用Vue CLI 创建项目的时候引入 Vuex 就行&lt;&#x2F;p&gt;
+&lt;p&gt;如果没有，需要安装 vuex 依赖，修改main.js，还可以新建一个目录用于存放 Vuex 相关的代码，初学避免踩坑不建议这么整&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;jiao-shou-jia-zhong-de-xiang-guan-wen-jian&quot;&gt;脚手架中的相关文件&lt;&#x2F;h2&gt;
-&lt;p&gt;介绍一下脚手架中与Vuex相关的部分&lt;&#x2F;p&gt;
+&lt;p&gt;介绍一下脚手架中与 Vuex 相关的部分&lt;&#x2F;p&gt;
 &lt;p&gt;src&#x2F;store&#x2F;index.js&lt;br &#x2F;&gt;
-用于配置Vuex的全局单例，贴一下代码&lt;&#x2F;p&gt;
+用于配置 Vuex 的全局单例，贴一下代码&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;js&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-js &quot;&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Vue &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;vue&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Vuex &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;vuex&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
 &lt;&#x2F;span&gt;&lt;span&gt;
@@ -154,7 +154,7 @@
 &lt;&#x2F;span&gt;&lt;span&gt;});
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;src&#x2F;main.js&lt;br &#x2F;&gt;
-它import了src&#x2F;store，并在Vue对象实例化时传入，没什么好说的，这里随便贴一个&lt;&#x2F;p&gt;
+它 import 了src&#x2F;store，并在 Vue 对象实例化时传入，没什么好说的，这里随便贴一个&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;js&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-js &quot;&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Vue &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;vue&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;App &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.&#x2F;App.vue&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;store &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.&#x2F;store&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
@@ -166,12 +166,12 @@
 &lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;render&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;h &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;=&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;h&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;App&lt;&#x2F;span&gt;&lt;span&gt;)
 &lt;&#x2F;span&gt;&lt;span&gt;}).&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;$mount&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;#app&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;h2 id=&quot;stateyu-mutation&quot;&gt;State与Mutation&lt;&#x2F;h2&gt;
-&lt;p&gt;简单说State就是全局变量，而且它发生变化时，其他与之关联的DOM也会更新&lt;&#x2F;p&gt;
-&lt;p&gt;然后Mutation是用于修改State的方法，并且他能提供回滚等功能&lt;br &#x2F;&gt;
-官方不允许直接修改State，虽然直接修改也能触发相应DOM的更新&lt;&#x2F;p&gt;
-&lt;p&gt;然后我们尝试使用State在父子组件之间共享状态&lt;&#x2F;p&gt;
-&lt;p&gt;首先在src&#x2F;store&#x2F;index.js中添加一个showChr状态以及用于修改这个状态的Mutation，代码如下&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;state-yu-mutation&quot;&gt;State 与Mutation&lt;&#x2F;h2&gt;
+&lt;p&gt;简单说 State 就是全局变量，而且它发生变化时，其他与之关联的 DOM 也会更新&lt;&#x2F;p&gt;
+&lt;p&gt;然后 Mutation 是用于修改State 的方法，并且他能提供回滚等功能&lt;br &#x2F;&gt;
+官方不允许直接修改State，虽然直接修改也能触发相应 DOM 的更新&lt;&#x2F;p&gt;
+&lt;p&gt;然后我们尝试使用 State 在父子组件之间共享状态&lt;&#x2F;p&gt;
+&lt;p&gt;首先在src&#x2F;store&#x2F;index.js 中添加一个 showChr 状态以及用于修改这个状态的Mutation，代码如下&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;js&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-js &quot;&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Vue &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;vue&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Vuex &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;vuex&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
 &lt;&#x2F;span&gt;&lt;span&gt;
@@ -188,7 +188,7 @@
 &lt;&#x2F;span&gt;&lt;span&gt;  }
 &lt;&#x2F;span&gt;&lt;span&gt;});
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;然后子组件Chr.vue的代码如下&lt;&#x2F;p&gt;
+&lt;p&gt;然后子组件Chr.vue 的代码如下&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;html&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-html &quot;&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;template&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;div &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;v-show&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;$store.state.showChr&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;h1&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;这里是Chr&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;h1&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
@@ -200,7 +200,7 @@
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;export default &lt;&#x2F;span&gt;&lt;span&gt;{};
 &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;script&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;最后父组件Prt.vue的代码如下&lt;&#x2F;p&gt;
+&lt;p&gt;最后父组件Prt.vue 的代码如下&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;html&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-html &quot;&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;template&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;div&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span&gt;      &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;button &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;@click&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;$store.commit(&amp;#39;changeShowChr&amp;#39;, true)&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&amp;gt;显示&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;button&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
@@ -217,18 +217,18 @@
 &lt;&#x2F;span&gt;&lt;span&gt;};
 &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;script&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;这样，子组件的显示与showChr关联，且父子组件都能修改它的值&lt;&#x2F;p&gt;
+&lt;p&gt;这样，子组件的显示与 showChr 关联，且父子组件都能修改它的值&lt;&#x2F;p&gt;
 &lt;p&gt;注意：&lt;br &#x2F;&gt;
-Mutation中不能包含异步操作&lt;br &#x2F;&gt;
-并且它也需要遵守Vue的响应规则，可以提前在store中初始化所有的属性或者使用Vue.set添加新的属性&lt;&#x2F;p&gt;
+Mutation 中不能包含异步操作&lt;br &#x2F;&gt;
+并且它也需要遵守 Vue 的响应规则，可以提前在 store 中初始化所有的属性或者使用Vue.set 添加新的属性&lt;&#x2F;p&gt;
 &lt;p&gt;另外再次强调：&lt;br &#x2F;&gt;
-虽然直接修改State也是响应式的，但官方明确说明必须使用Mutation&lt;&#x2F;p&gt;
+虽然直接修改 State 也是响应式的，但官方明确说明必须使用Mutation&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;action&quot;&gt;Action&lt;&#x2F;h2&gt;
-&lt;p&gt;上面提到Mutation不能包含异步操作，如果需要异步，那么可以使用Action&lt;&#x2F;p&gt;
-&lt;p&gt;在Action中，可以使用State与Getter只读地访问状态，也可以提交Mutation修改状态，在其中能自由进行异步操作&lt;&#x2F;p&gt;
-&lt;p&gt;调用Action时使用$store.dispatch方法&lt;&#x2F;p&gt;
+&lt;p&gt;上面提到 Mutation 不能包含异步操作，如果需要异步，那么可以使用Action&lt;&#x2F;p&gt;
+&lt;p&gt;在 Action 中，可以使用 State 与Getter 只读地访问状态，也可以提交 Mutation 修改状态，在其中能自由进行异步操作&lt;&#x2F;p&gt;
+&lt;p&gt;调用 Action 时使用$store.dispatch 方法&lt;&#x2F;p&gt;
 &lt;p&gt;上面的例子可修改成这样&lt;&#x2F;p&gt;
-&lt;p&gt;在src&#x2F;store&#x2F;index.js中添加Action，这个Action中做了异步操作后提交Mutation&lt;&#x2F;p&gt;
+&lt;p&gt;在src&#x2F;store&#x2F;index.js 中添加Action，这个 Action 中做了异步操作后提交Mutation&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;js&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-js &quot;&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Vue &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;vue&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Vuex &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;vuex&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
 &lt;&#x2F;span&gt;&lt;span&gt;
@@ -265,7 +265,7 @@ Mutation中不能包含异步操作&lt;br &#x2F;&gt;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;最后观察到点击隐藏，间隔一秒后子组件消失&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;module&quot;&gt;Module&lt;&#x2F;h2&gt;
-&lt;p&gt;把所有组件的状态或数据全部存储在$store.state中会很混乱且不好维护，可以把状态分割成多个模块（Module），每个模块都拥有自己的State，Getter，Mutation，Action，也可以嵌套子模块&lt;br &#x2F;&gt;
+&lt;p&gt;把所有组件的状态或数据全部存储在$store.state 中会很混乱且不好维护，可以把状态分割成多个模块（Module），每个模块都拥有自己的State，Getter，Mutation，Action，也可以嵌套子模块&lt;br &#x2F;&gt;
 比较简单，下面是示例&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;js&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-js &quot;&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Vue &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;vue&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Vuex &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;vuex&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
@@ -300,7 +300,7 @@ Mutation中不能包含异步操作&lt;br &#x2F;&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;store&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;state&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;b &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; -&amp;gt; moduleB 的状态
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;getter&quot;&gt;Getter&lt;&#x2F;h2&gt;
-&lt;p&gt;有时候，我们可以从store的state中派生出一些状态，例如对列表进行过滤然后计数。这种情况下我们可以在store中定义getter，下面贴一个简单的例子&lt;&#x2F;p&gt;
+&lt;p&gt;有时候，我们可以从 store 的state 中派生出一些状态，例如对列表进行过滤然后计数。这种情况下我们可以在 store 中定义getter，下面贴一个简单的例子&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;js&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-js &quot;&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Vue &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;vue&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Vuex &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;vuex&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
 &lt;&#x2F;span&gt;&lt;span&gt;
@@ -320,20 +320,20 @@ Mutation中不能包含异步操作&lt;br &#x2F;&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Vue Router入门学习笔记</title>
+		<title>Vue Router 入门学习笔记</title>
 		<published>2020-01-17T20:06:02+00:00</published>
 		<updated>2020-01-17T20:06:02+00:00</updated>
 		<link href="https://paakmau.github.io/202001172006/" type="text/html"/>
 		<id>https://paakmau.github.io/202001172006/</id>
-		<content type="html">&lt;p&gt;Vue Router是Vue.js官方提供的路由管理器，轻松构建单页应用&lt;br &#x2F;&gt;
-本文基于用Vue CLI创建的脚手架，包括动态路径参数、嵌套路由、命名视图、懒加载&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;Vue Router 是Vue.js 官方提供的路由管理器，轻松构建单页应用&lt;br &#x2F;&gt;
+本文基于用Vue CLI 创建的脚手架，包括动态路径参数、嵌套路由、命名视图、懒加载&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;yin-ru-vue-router&quot;&gt;引入Vue Router&lt;&#x2F;h2&gt;
-&lt;p&gt;在使用Vue CLI构建时需要引入Router&lt;&#x2F;p&gt;
-&lt;p&gt;如果没有，需要安装vue-router依赖，然后修改main.js等，但很麻烦就懒得写了&lt;&#x2F;p&gt;
+&lt;p&gt;在使用Vue CLI 构建时需要引入Router&lt;&#x2F;p&gt;
+&lt;p&gt;如果没有，需要安装vue-router 依赖，然后修改main.js 等，但很麻烦就懒得写了&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;jiao-shou-jia-zhong-de-xiang-guan-wen-jian&quot;&gt;脚手架中的相关文件&lt;&#x2F;h2&gt;
 &lt;p&gt;先介绍一下脚手架中与路由相关的文件&lt;&#x2F;p&gt;
 &lt;p&gt;src&#x2F;router&#x2F;index.js&lt;br &#x2F;&gt;
-router的配置文件，管理路由。这里展示一个简易版的&lt;&#x2F;p&gt;
+router 的配置文件，管理路由。这里展示一个简易版的&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;js&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-js &quot;&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Vue &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;vue&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VueRouter &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;vue-router&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Home &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;..&#x2F;views&#x2F;Home.vue&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
@@ -362,8 +362,8 @@ router的配置文件，管理路由。这里展示一个简易版的&lt;&#x2F;p
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;export default &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;router&lt;&#x2F;span&gt;&lt;span&gt;;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;解释：&lt;br &#x2F;&gt;
-routes规定了路由与组件之间的映射，页面可以import进来&lt;br &#x2F;&gt;
-router是路由管理器，这里有路由模式、基地址的配置，并把routes传入进来&lt;&#x2F;p&gt;
+routes 规定了路由与组件之间的映射，页面可以 import 进来&lt;br &#x2F;&gt;
+router 是路由管理器，这里有路由模式、基地址的配置，并把 routes 传入进来&lt;&#x2F;p&gt;
 &lt;p&gt;src&#x2F;App.vue&lt;br &#x2F;&gt;
 它是单页应用的入口（我不知道怎么形容，总之就是所有组件都会渲染在这个页面中），贴一下关键部分&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;html&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-html &quot;&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;template&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
@@ -377,10 +377,10 @@ router是路由管理器，这里有路由模式、基地址的配置，并把ro
 &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;template&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;解释：&lt;br &#x2F;&gt;
-router-link是类似超链接一样的东西&lt;br &#x2F;&gt;
-router-view是组件将会被渲染到的地方&lt;&#x2F;p&gt;
+router-link 是类似超链接一样的东西&lt;br &#x2F;&gt;
+router-view 是组件将会被渲染到的地方&lt;&#x2F;p&gt;
 &lt;p&gt;src&#x2F;main.js&lt;br &#x2F;&gt;
-它import了src&#x2F;router，并且在Vue对象实例化的时候传入，随便贴个大概代码&lt;&#x2F;p&gt;
+它 import 了src&#x2F;router，并且在 Vue 对象实例化的时候传入，随便贴个大概代码&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;js&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-js &quot;&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Vue &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;vue&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;App &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.&#x2F;App.vue&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;router &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.&#x2F;router&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
@@ -393,9 +393,9 @@ router-view是组件将会被渲染到的地方&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span&gt;}).&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;$mount&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;#app&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;dong-tai-lu-you-pi-pei&quot;&gt;动态路由匹配&lt;&#x2F;h2&gt;
-&lt;p&gt;很多时候，不同的URL可能会对应同一个页面，比如不同ID的用户页面都会使用同一个组件渲染&lt;br &#x2F;&gt;
+&lt;p&gt;很多时候，不同的 URL 可能会对应同一个页面，比如不同 ID 的用户页面都会使用同一个组件渲染&lt;br &#x2F;&gt;
 因此可以使用动态路径参数来解决这个问题&lt;&#x2F;p&gt;
-&lt;p&gt;例如，router的配置文件可以这样写&lt;&#x2F;p&gt;
+&lt;p&gt;例如，router 的配置文件可以这样写&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;js&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-js &quot;&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Vue &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;vue&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VueRouter &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;vue-router&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Home &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;..&#x2F;views&#x2F;Home.vue&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
@@ -424,20 +424,20 @@ router-view是组件将会被渲染到的地方&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;export default &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;router&lt;&#x2F;span&gt;&lt;span&gt;;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;然后User.vue长这样&lt;&#x2F;p&gt;
+&lt;p&gt;然后User.vue 长这样&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;html&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-html &quot;&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;template&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;div &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;class&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;user&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;h1&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;User ID: {{ $route.params.id }}&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;h1&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;div&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;template&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;这个东西使用path-to-regexp作为路径匹配引擎，支持正则匹配，这是它的GitHub链接&lt;br &#x2F;&gt;
+&lt;p&gt;这个东西使用path-to-regexp 作为路径匹配引擎，支持正则匹配，这是它的 GitHub 链接&lt;br &#x2F;&gt;
 &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;pillarjs&#x2F;path-to-regexp&quot;&gt;https:&#x2F;&#x2F;github.com&#x2F;pillarjs&#x2F;path-to-regexp&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;然后路由匹配是按照定义的顺序决定的，先定义的先匹配&lt;br &#x2F;&gt;
 因此可以在路由的最后配置404页面&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;qian-tao-lu-you&quot;&gt;嵌套路由&lt;&#x2F;h2&gt;
 &lt;p&gt;就是在子页面中使用路由&lt;&#x2F;p&gt;
-&lt;p&gt;我们在路由配置中为user添加profile子路由，具体如下&lt;&#x2F;p&gt;
+&lt;p&gt;我们在路由配置中为 user 添加profile 子路由，具体如下&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;js&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-js &quot;&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Vue &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;vue&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VueRouter &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;vue-router&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Home &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;..&#x2F;views&#x2F;Home.vue&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
@@ -521,7 +521,7 @@ router-view是组件将会被渲染到的地方&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span&gt;});
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;export default &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;router&lt;&#x2F;span&gt;&lt;span&gt;;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;User.vue如下&lt;&#x2F;p&gt;
+&lt;p&gt;User.vue 如下&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;html&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-html &quot;&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;template&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;div &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;class&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;user&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;h1&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;User ID: {{ $route.params.id }}&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;h1&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
@@ -532,7 +532,7 @@ router-view是组件将会被渲染到的地方&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;lu-you-lan-jia-zai&quot;&gt;路由懒加载&lt;&#x2F;h2&gt;
 &lt;p&gt;对于一个路由中的组件，可以在被访问的时候再加载&lt;br &#x2F;&gt;
-把import改成函数就行，比如下面这个&lt;&#x2F;p&gt;
+把 import 改成函数就行，比如下面这个&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;js&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-js &quot;&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Vue &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;vue&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VueRouter &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;vue-router&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Home &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;..&#x2F;views&#x2F;Home.vue&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;;
@@ -571,60 +571,60 @@ router-view是组件将会被渲染到的地方&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span&gt;});
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;export default &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;router&lt;&#x2F;span&gt;&lt;span&gt;;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;还可以把多个组件打包到一个chunk中，就能以chunk为单位异步加载，参考这个&lt;br &#x2F;&gt;
+&lt;p&gt;还可以把多个组件打包到一个 chunk 中，就能以 chunk 为单位异步加载，参考这个&lt;br &#x2F;&gt;
 &lt;a href=&quot;https:&#x2F;&#x2F;webpack.js.org&#x2F;guides&#x2F;code-splitting&#x2F;&quot;&gt;https:&#x2F;&#x2F;webpack.js.org&#x2F;guides&#x2F;code-splitting&#x2F;&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>使用Vue CLI快速搭建Vue.js脚手架</title>
+		<title>使用Vue CLI 快速搭建Vue.js 脚手架</title>
 		<published>2019-12-27T10:24:33+00:00</published>
 		<updated>2019-12-27T10:24:33+00:00</updated>
 		<link href="https://paakmau.github.io/201912271024/" type="text/html"/>
 		<id>https://paakmau.github.io/201912271024/</id>
-		<content type="html">&lt;p&gt;Vue CLI是Vue.js提供的命令行工具&lt;br &#x2F;&gt;
+		<content type="html">&lt;p&gt;Vue CLI 是Vue.js 提供的命令行工具&lt;br &#x2F;&gt;
 我们可以使用它来快速创建一个脚手架项目&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;本文基于&lt;br &#x2F;&gt;
 Vue CLI 4.1.2&lt;br &#x2F;&gt;
 Node.js v13.5.0&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;jian-dan-jie-shao&quot;&gt;简单介绍&lt;&#x2F;h2&gt;
-&lt;p&gt;在Vue框架中，我们可以通过数据驱动视图，实现数据与视图的分离&lt;br &#x2F;&gt;
+&lt;p&gt;在 Vue 框架中，我们可以通过数据驱动视图，实现数据与视图的分离&lt;br &#x2F;&gt;
 从而将关注点集中在逻辑上，让框架自动替我们完成麻烦的数据绑定&lt;&#x2F;p&gt;
 &lt;p&gt;同时它也是一个容易上手的渐进式框架&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;chuang-jian-vue-jsxiang-mu&quot;&gt;创建Vue.js项目&lt;&#x2F;h2&gt;
-&lt;p&gt;用npx命令运行Vue CLI&lt;br &#x2F;&gt;
+&lt;h2 id=&quot;chuang-jian-vue-js-xiang-mu&quot;&gt;创建Vue.js 项目&lt;&#x2F;h2&gt;
+&lt;p&gt;用 npx 命令运行Vue CLI&lt;br &#x2F;&gt;
 它能提供一些选项帮助我们建立脚手架项目&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; npx @vue&#x2F;cli create hello-world
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;这里npx会先下载再运行Vue CLI，不会污染全局依赖也不会在当前目录留下任何东西，十分干净&lt;&#x2F;p&gt;
+&lt;p&gt;这里 npx 会先下载再运行Vue CLI，不会污染全局依赖也不会在当前目录留下任何东西，十分干净&lt;&#x2F;p&gt;
 &lt;p&gt;本文选择的配置如下&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;01&#x2F;image-1024x221.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;Please pick a preset&lt;br &#x2F;&gt;
-我们选择Manually select features以手动选择需要的特性&lt;br &#x2F;&gt;
+我们选择Manually select features 以手动选择需要的特性&lt;br &#x2F;&gt;
 当然也可以使用自己定义的预设&lt;&#x2F;p&gt;
 &lt;p&gt;Check the features needed for your project&lt;br &#x2F;&gt;
 本文选了几个常用的&lt;br &#x2F;&gt;
-Babel：能够把ES6版本的代码转换为向后兼容的JavaScript语法&lt;br &#x2F;&gt;
+Babel：能够把ES6版本的代码转换为向后兼容的 JavaScript 语法&lt;br &#x2F;&gt;
 Router：官方提供的路由管理器，用于实现单页应用&lt;br &#x2F;&gt;
 Vuex：官方提供的状态管理器，用于解决组件之间传递数据，共享数据的问题&lt;br &#x2F;&gt;
-CSS Pre-processors：CSS预处理器，可以为CSS添加一些编程特性，方便CSS的编写，最后发布的时候再重新编译为浏览器可识别的CSS代码&lt;br &#x2F;&gt;
+CSS Pre-processors：CSS 预处理器，可以为 CSS 添加一些编程特性，方便 CSS 的编写，最后发布的时候再重新编译为浏览器可识别的 CSS 代码&lt;br &#x2F;&gt;
 Linter &#x2F; Formatter：用于语法和格式检查&lt;br &#x2F;&gt;
 Unit Testing：用于单元测试&lt;&#x2F;p&gt;
 &lt;p&gt;Use history mode for router&lt;br &#x2F;&gt;
-历史模式，这能把URL中的#去掉。不管它，开就完事了&lt;&#x2F;p&gt;
+历史模式，这能把 URL 中的#去掉。不管它，开就完事了&lt;&#x2F;p&gt;
 &lt;p&gt;Pick a CSS pre-processor&lt;br &#x2F;&gt;
-CSS预处理器，使用Less。哪个都行，与本文无关&lt;&#x2F;p&gt;
+CSS 预处理器，使用Less。哪个都行，与本文无关&lt;&#x2F;p&gt;
 &lt;p&gt;Pick a linter &#x2F; formatter config&lt;br &#x2F;&gt;
 看个人喜好，然后选择保存时检查&lt;&#x2F;p&gt;
 &lt;p&gt;Pick a unit testing solution&lt;br &#x2F;&gt;
 单元测试我们选Jest&lt;&#x2F;p&gt;
 &lt;p&gt;Where do you prefer placing config&lt;br &#x2F;&gt;
-插件配置我喜欢整合起来，统一放在package.json里&lt;&#x2F;p&gt;
+插件配置我喜欢整合起来，统一放在package.json 里&lt;&#x2F;p&gt;
 &lt;p&gt;Save this as a preset&lt;br &#x2F;&gt;
 不需要保存为预设&lt;&#x2F;p&gt;
 &lt;p&gt;Pick the package manger&lt;br &#x2F;&gt;
 我用的npm&lt;&#x2F;p&gt;
-&lt;p&gt;然后它会把项目生成在当前目录下的hello-world文件夹中&lt;&#x2F;p&gt;
+&lt;p&gt;然后它会把项目生成在当前目录下的hello-world 文件夹中&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;yun-xing&quot;&gt;运行&lt;&#x2F;h2&gt;
 &lt;p&gt;进入项目文件夹并在终端中输入&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; npm run serve
@@ -642,7 +642,7 @@ CSS预处理器，使用Less。哪个都行，与本文无关&lt;&#x2F;p&gt;
 &lt;p&gt;router&lt;br &#x2F;&gt;
 在这里为单页应用配置路由&lt;&#x2F;p&gt;
 &lt;p&gt;store&lt;br &#x2F;&gt;
-Vuex相关，用于全局的状态管理&lt;&#x2F;p&gt;
+Vuex 相关，用于全局的状态管理&lt;&#x2F;p&gt;
 &lt;p&gt;views&lt;br &#x2F;&gt;
 存放网站的所有页面&lt;&#x2F;p&gt;
 &lt;p&gt;tests&lt;br &#x2F;&gt;
@@ -650,27 +650,27 @@ Vuex相关，用于全局的状态管理&lt;&#x2F;p&gt;
 &lt;p&gt;main.js&lt;br &#x2F;&gt;
 这里初始化Vue.js，可以加载全局插件、全局组件&lt;&#x2F;p&gt;
 &lt;p&gt;package.json&lt;br &#x2F;&gt;
-用于配置Node.js项目。然后因为我们在CLI中的配置，所以ESLint、Jest这些东西的配置也在里面&lt;&#x2F;p&gt;
+用于配置Node.js 项目。然后因为我们在 CLI 中的配置，所以ESLint、Jest 这些东西的配置也在里面&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Express + MySQL + Session搭建Web后端脚手架</title>
+		<title>Express + MySQL + Session 搭建 Web 后端脚手架</title>
 		<published>2019-12-18T00:59:09+00:00</published>
 		<updated>2019-12-18T00:59:09+00:00</updated>
 		<link href="https://paakmau.github.io/201912180059/" type="text/html"/>
 		<id>https://paakmau.github.io/201912180059/</id>
-		<content type="html">&lt;p&gt;因为是我某门课的作业才顺便写的，因为感觉js后端偏向玩具所以不太感兴趣。但还是不得不说这玩具真好玩，贼牛逼。Express框架用几十行代码就能搭出几乎完整的后端脚手架&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;因为是我某门课的作业才顺便写的，因为感觉 js 后端偏向玩具所以不太感兴趣。但还是不得不说这玩具真好玩，贼牛逼。Express 框架用几十行代码就能搭出几乎完整的后端脚手架&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;本项目是一个近似完整的后端脚手&lt;br &#x2F;&gt;
-以Express框架为基础，以MySQL作为数据存储，有跨域处理，有Session。&lt;&#x2F;p&gt;
-&lt;p&gt;但是该脚手架缺少Express异常处理，感兴趣可以自行添加&lt;br &#x2F;&gt;
-而且用MySQL存Session感觉不太正常，应该换Redis，篇幅有限就不写了（虽然已经很长了）&lt;&#x2F;p&gt;
-&lt;p&gt;作为示例，本文还实现了基于Session的验证码认证、RESTful风格接口与MD5加密的登陆注册&lt;&#x2F;p&gt;
+以 Express 框架为基础，以 MySQL 作为数据存储，有跨域处理，有Session。&lt;&#x2F;p&gt;
+&lt;p&gt;但是该脚手架缺少 Express 异常处理，感兴趣可以自行添加&lt;br &#x2F;&gt;
+而且用 MySQL 存Session 感觉不太正常，应该换Redis，篇幅有限就不写了（虽然已经很长了）&lt;&#x2F;p&gt;
+&lt;p&gt;作为示例，本文还实现了基于 Session 的验证码认证、RESTful 风格接口与MD5加密的登陆注册&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;huan-jing&quot;&gt;环境&lt;&#x2F;h2&gt;
 &lt;p&gt;Node.js v13.3.0&lt;&#x2F;p&gt;
 &lt;p&gt;MySQL 8.0.18，监听3306端口，认证插件为mysql_native_password&lt;br &#x2F;&gt;
-root账户的密码为root&lt;&#x2F;p&gt;
-&lt;p&gt;在MySQL中执行以下脚本建立两个数据库，分别用于存储Session数据与用户数据&lt;&#x2F;p&gt;
+root 账户的密码为root&lt;&#x2F;p&gt;
+&lt;p&gt;在 MySQL 中执行以下脚本建立两个数据库，分别用于存储 Session 数据与用户数据&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;SQL&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-SQL &quot;&gt;&lt;code class=&quot;language-SQL&quot; data-lang=&quot;SQL&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;CREATE SCHEMA &lt;&#x2F;span&gt;&lt;span&gt;`&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;hello_session&lt;&#x2F;span&gt;&lt;span&gt;` ;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;CREATE SCHEMA &lt;&#x2F;span&gt;&lt;span&gt;`&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;hello&lt;&#x2F;span&gt;&lt;span&gt;` ;
 &lt;&#x2F;span&gt;&lt;span&gt;
@@ -681,23 +681,23 @@ root账户的密码为root&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span&gt;  `&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;password&lt;&#x2F;span&gt;&lt;span&gt;` &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;VARCHAR&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;45&lt;&#x2F;span&gt;&lt;span&gt;) NOT &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span&gt;,
 &lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;PRIMARY KEY&lt;&#x2F;span&gt;&lt;span&gt; (`&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;id&lt;&#x2F;span&gt;&lt;span&gt;`));
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;h2 id=&quot;xin-jian-node-jsxiang-mu&quot;&gt;新建Node.js项目&lt;&#x2F;h2&gt;
-&lt;p&gt;然后建立文件夹并初始化Node.js项目&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;xin-jian-node-js-xiang-mu&quot;&gt;新建Node.js 项目&lt;&#x2F;h2&gt;
+&lt;p&gt;然后建立文件夹并初始化Node.js 项目&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; mkdir hello-world
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; cd hello-world
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; npm init
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;然后一路回车即可&lt;br &#x2F;&gt;
 本文配置中入口点（entry point）使用了默认值，即index.js&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;expresskuang-jia-kuai-su-shang-shou&quot;&gt;Express框架快速上手&lt;&#x2F;h2&gt;
-&lt;p&gt;首先安装express依赖&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;express-kuang-jia-kuai-su-shang-shou&quot;&gt;Express 框架快速上手&lt;&#x2F;h2&gt;
+&lt;p&gt;首先安装 express 依赖&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; npm install express
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;然后修改入口点index.js代码如下&lt;&#x2F;p&gt;
+&lt;p&gt;然后修改入口点index.js 代码如下&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;js&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-js &quot;&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;express &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;require&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;express&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;app &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;express&lt;&#x2F;span&gt;&lt;span&gt;()
 &lt;&#x2F;span&gt;&lt;span&gt;
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 定义一个Get请求的回调
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 定义一个 Get 请求的回调
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;app&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;get&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;helloworld&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;req&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;res&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;=&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;res&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;send&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;hello world!&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;))
 &lt;&#x2F;span&gt;&lt;span&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 将后端开在8080端口
@@ -707,19 +707,19 @@ root账户的密码为root&lt;&#x2F;p&gt;
 在终端中输入如下命令即可运行index.js&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; node index.js
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;在Postman中对localhost:8080&#x2F;helloworld发送Get请求，得到如下结果&lt;&#x2F;p&gt;
+&lt;p&gt;在 Postman 中对localhost:8080&#x2F;helloworld 发送 Get 请求，得到如下结果&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191217-005416@2x.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
-&lt;p&gt;Express框架就搭建成功了&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;expresszhong-jian-jian&quot;&gt;Express中间件&lt;&#x2F;h2&gt;
-&lt;p&gt;Express每次处理Request都会经过所有的中间件，可以想像成流水线。因此可以利用它为Express添加新的功能&lt;&#x2F;p&gt;
-&lt;p&gt;而对于上文代码中的app，调用app.use方法就能为app添加中间件&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;yin-ru-body-parserzhong-jian-jian&quot;&gt;引入body-parser中间件&lt;&#x2F;h2&gt;
-&lt;p&gt;这个中间件能将HTTP请求体中的JSON转换为js对象属性&lt;&#x2F;p&gt;
-&lt;p&gt;首先安装body-parser依赖&lt;&#x2F;p&gt;
+&lt;p&gt;Express 框架就搭建成功了&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;express-zhong-jian-jian&quot;&gt;Express 中间件&lt;&#x2F;h2&gt;
+&lt;p&gt;Express 每次处理 Request 都会经过所有的中间件，可以想像成流水线。因此可以利用它为 Express 添加新的功能&lt;&#x2F;p&gt;
+&lt;p&gt;而对于上文代码中的app，调用app.use 方法就能为 app 添加中间件&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;yin-ru-body-parser-zhong-jian-jian&quot;&gt;引入body-parser 中间件&lt;&#x2F;h2&gt;
+&lt;p&gt;这个中间件能将 HTTP 请求体中的JSON 转换为 js 对象属性&lt;&#x2F;p&gt;
+&lt;p&gt;首先安装body-parser 依赖&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; npm install body-parser
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;接下来我们测试一下获取body的内容&lt;br &#x2F;&gt;
-修改index.js如下，并运行&lt;&#x2F;p&gt;
+&lt;p&gt;接下来我们测试一下获取 body 的内容&lt;br &#x2F;&gt;
+修改index.js 如下，并运行&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;js&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-js &quot;&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;express &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;require&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;express&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;app &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;express&lt;&#x2F;span&gt;&lt;span&gt;()
 &lt;&#x2F;span&gt;&lt;span&gt;
@@ -728,22 +728,22 @@ root账户的密码为root&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;app&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;use&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;bodyParser&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;json&lt;&#x2F;span&gt;&lt;span&gt;())
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;app&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;use&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;bodyParser&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;urlencoded&lt;&#x2F;span&gt;&lt;span&gt;({ extended: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;false &lt;&#x2F;span&gt;&lt;span&gt;}))
 &lt;&#x2F;span&gt;&lt;span&gt;
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 添加post请求并获取body的json数据
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 添加 post 请求并获取body 的 json 数据
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;app&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;post&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;helloworld&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;req&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;res&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;=&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;res&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;send&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;You msg is: &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; + &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;req&lt;&#x2F;span&gt;&lt;span&gt;.body.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;msg&lt;&#x2F;span&gt;&lt;span&gt;));
 &lt;&#x2F;span&gt;&lt;span&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;app&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;listen&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;8080&lt;&#x2F;span&gt;&lt;span&gt;)
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;Postman中发送post请求，并收到回应，见下图。&lt;&#x2F;p&gt;
+&lt;p&gt;Postman 中发送 post 请求，并收到回应，见下图。&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191217-011755@2x-1024x505.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;yin-ru-express-sessionzhong-jian-jian&quot;&gt;引入express-session中间件&lt;&#x2F;h2&gt;
-&lt;p&gt;Session是一种存储在后端的缓存数据，可以理解为以id索引的一块临时数据。前端将id存储在Cookie中，它把id传递给后端，后端就能根据id找到对应的Session。它的安全性相对Cookie高很多，一般用于登陆、验证码等。&lt;br &#x2F;&gt;
-Session可以简单存储在内存中，也可以存储在数据库中&lt;&#x2F;p&gt;
-&lt;p&gt;在express中可以通过express-session中间件实现Session功能&lt;&#x2F;p&gt;
-&lt;p&gt;为了方便我们选择mysql作为Session的存储方式（但一般使用redis数据库）&lt;&#x2F;p&gt;
-&lt;p&gt;它会使用我们最开始时建立的mysql数据库hello_session&lt;br &#x2F;&gt;
-（express-session会自动建表所以不用担心）&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;yin-ru-express-session-zhong-jian-jian&quot;&gt;引入express-session 中间件&lt;&#x2F;h2&gt;
+&lt;p&gt;Session 是一种存储在后端的缓存数据，可以理解为以 id 索引的一块临时数据。前端将 id 存储在Cookie 中，它把 id 传递给后端，后端就能根据 id 找到对应的Session。它的安全性相对 Cookie 高很多，一般用于登陆、验证码等。&lt;br &#x2F;&gt;
+Session 可以简单存储在内存中，也可以存储在数据库中&lt;&#x2F;p&gt;
+&lt;p&gt;在 express 中可以通过express-session 中间件实现 Session 功能&lt;&#x2F;p&gt;
+&lt;p&gt;为了方便我们选择 mysql 作为Session 的存储方式（但一般使用 redis 数据库）&lt;&#x2F;p&gt;
+&lt;p&gt;它会使用我们最开始时建立的 mysql 数据库hello_session&lt;br &#x2F;&gt;
+（express-session 会自动建表所以不用担心）&lt;&#x2F;p&gt;
 &lt;p&gt;然后测试一下看看&lt;br &#x2F;&gt;
-修改index.js如下，并运行&lt;&#x2F;p&gt;
+修改index.js 如下，并运行&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;js&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-js &quot;&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;express &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;require&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;express&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;app &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;express&lt;&#x2F;span&gt;&lt;span&gt;()
 &lt;&#x2F;span&gt;&lt;span&gt;
@@ -769,7 +769,7 @@ Session可以简单存储在内存中，也可以存储在数据库中&lt;&#x2F;
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;req&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;session&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;hello &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Hello!&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;res&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;send&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;session.hello has been set.&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
 &lt;&#x2F;span&gt;&lt;span&gt;})
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 获取session.hello的值
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 获取session.hello 的值
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;app&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;get&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;get-session&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;req&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;res&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;=&amp;gt; &lt;&#x2F;span&gt;&lt;span&gt;{
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;req&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;session&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;hello &lt;&#x2F;span&gt;&lt;span&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;undefined&lt;&#x2F;span&gt;&lt;span&gt;)
 &lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;res&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;send&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;session.hello is undefined.&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
@@ -780,18 +780,18 @@ Session可以简单存储在内存中，也可以存储在数据库中&lt;&#x2F;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;app&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;listen&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;8080&lt;&#x2F;span&gt;&lt;span&gt;)
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;解释：&lt;br &#x2F;&gt;
-对于同一个客户端，req.session是相同的，它其实是根据客户端持有的Session ID（如果没有，则会自动分配一个）找到的对应Session&lt;&#x2F;p&gt;
-&lt;p&gt;Postman中直接请求get-session会收到“session.hello is undefined.”，但是如果先请求set-session在get-session就会收到“Hello!”&lt;&#x2F;p&gt;
+对于同一个客户端，req.session 是相同的，它其实是根据客户端持有的Session ID（如果没有，则会自动分配一个）找到的对应Session&lt;&#x2F;p&gt;
+&lt;p&gt;Postman 中直接请求get-session 会收到“session.hello is undefined.”，但是如果先请求set-session 在get-session 就会收到“Hello!”&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;kua-yu-chu-li&quot;&gt;跨域处理&lt;&#x2F;h2&gt;
 &lt;p&gt;因为前后端分离，前端与后端会部署在不同的服务器或者同一台服务器的不同端口上，所以前端要访问后端接口就会产生跨域问题。&lt;&#x2F;p&gt;
-&lt;p&gt;而由于使用了Session，前端需要将Cookie的内容传递给后端，跨域配置的安全性要求也就更高&lt;&#x2F;p&gt;
+&lt;p&gt;而由于使用了Session，前端需要将 Cookie 的内容传递给后端，跨域配置的安全性要求也就更高&lt;&#x2F;p&gt;
 &lt;p&gt;可以参考后文代码中配置示例&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;sheng-cheng-yan-zheng-ma&quot;&gt;生成验证码&lt;&#x2F;h2&gt;
-&lt;p&gt;安装svg-captcha库&lt;&#x2F;p&gt;
+&lt;p&gt;安装svg-captcha 库&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; npm install svg-captcha
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;尝试生成验证码&lt;br &#x2F;&gt;
-修改index.js如下并运行&lt;&#x2F;p&gt;
+修改index.js 如下并运行&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;js&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-js &quot;&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;svgCaptcha &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;require&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;svg-captcha&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;captcha &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;svgCaptcha&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;create&lt;&#x2F;span&gt;&lt;span&gt;({
 &lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 翻转颜色
@@ -809,16 +809,16 @@ Session可以简单存储在内存中，也可以存储在数据库中&lt;&#x2F;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;console&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;log&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;captcha&lt;&#x2F;span&gt;&lt;span&gt;.data)
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;解释：&lt;br &#x2F;&gt;
-svg-captcha的create方法生成一个验证码对象&lt;br &#x2F;&gt;
-它的text属性是验证码文本，data属性是一个svg图像&lt;&#x2F;p&gt;
+svg-captcha 的 create 方法生成一个验证码对象&lt;br &#x2F;&gt;
+它的 text 属性是验证码文本，data 属性是一个 svg 图像&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;md5jia-mi&quot;&gt;MD5加密&lt;&#x2F;h2&gt;
 &lt;p&gt;MD5加密其实就是一个哈希函数，只是他的哈希值长的又丑又长，不可逆&lt;br &#x2F;&gt;
 因此把用户的密码用MD5算法哈希后存储，就可以通过哈希值比对用户密码实现登陆，也没有人能知道密码原文&lt;&#x2F;p&gt;
-&lt;p&gt;安装utility依赖&lt;&#x2F;p&gt;
+&lt;p&gt;安装 utility 依赖&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; npm install utility
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;尝试加密&lt;br &#x2F;&gt;
-修改index.js如下，并运行&lt;&#x2F;p&gt;
+修改index.js 如下，并运行&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;js&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-js &quot;&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;utility &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;require&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;utility&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;function &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;encodePassword&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;pwd&lt;&#x2F;span&gt;&lt;span&gt;) {
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;utility&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;md5&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;pwd &lt;&#x2F;span&gt;&lt;span&gt;+ &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;hello express md5&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
@@ -830,10 +830,10 @@ svg-captcha的create方法生成一个验证码对象&lt;br &#x2F;&gt;
 &lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;9c6481dbc7c568e6e0ed338c415db921
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;lian-jie-mysql&quot;&gt;连接MySQL&lt;&#x2F;h2&gt;
-&lt;p&gt;这部分与Express无关&lt;&#x2F;p&gt;
-&lt;p&gt;这里会使用到我们最初建立的hello数据库及其中的user表&lt;&#x2F;p&gt;
-&lt;p&gt;尝试连接MySQL服务器，并添加一条测试记录&lt;br &#x2F;&gt;
-编辑index.js脚本如下&lt;&#x2F;p&gt;
+&lt;p&gt;这部分与 Express 无关&lt;&#x2F;p&gt;
+&lt;p&gt;这里会使用到我们最初建立的 hello 数据库及其中的user 表&lt;&#x2F;p&gt;
+&lt;p&gt;尝试连接 MySQL 服务器，并添加一条测试记录&lt;br &#x2F;&gt;
+编辑index.js 脚本如下&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;js&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-js &quot;&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;mysql &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;require&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;mysql&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
 &lt;&#x2F;span&gt;&lt;span&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 建立连接
@@ -850,7 +850,7 @@ svg-captcha的create方法生成一个验证码对象&lt;br &#x2F;&gt;
 &lt;&#x2F;span&gt;&lt;span&gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;mysqlConnect&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;query&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;INSERT INTO `web_homework`.`user` (`username`, `password`) VALUES (?, ?);&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, [&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;test_username&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;test_password&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;], (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;err&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;result&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;field&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;=&amp;gt; &lt;&#x2F;span&gt;&lt;span&gt;{ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;err&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;console&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;log&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;err&lt;&#x2F;span&gt;&lt;span&gt;) })
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;gou-zao-wan-zheng-de-jiao-shou-jia&quot;&gt;构造完整的脚手架&lt;&#x2F;h2&gt;
-&lt;p&gt;编辑index.js如下并运行&lt;&#x2F;p&gt;
+&lt;p&gt;编辑index.js 如下并运行&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;js&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-js &quot;&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;express &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;require&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;express&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;app &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;express&lt;&#x2F;span&gt;&lt;span&gt;()
 &lt;&#x2F;span&gt;&lt;span&gt;
@@ -865,12 +865,12 @@ svg-captcha的create方法生成一个验证码对象&lt;br &#x2F;&gt;
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;next&lt;&#x2F;span&gt;&lt;span&gt;();
 &lt;&#x2F;span&gt;&lt;span&gt;});
 &lt;&#x2F;span&gt;&lt;span&gt;
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 添加body-parser中间件
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 添加body-parser 中间件
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;bodyParser &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;require&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;body-parser&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;app&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;use&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;bodyParser&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;json&lt;&#x2F;span&gt;&lt;span&gt;())
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;app&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;use&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;bodyParser&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;urlencoded&lt;&#x2F;span&gt;&lt;span&gt;({ extended: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;false &lt;&#x2F;span&gt;&lt;span&gt;}))
 &lt;&#x2F;span&gt;&lt;span&gt;
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 添加session中间件
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 添加 session 中间件
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;session &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;require&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;express-session&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;mysqlStore &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;require&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;express-mysql-session&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;app&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;use&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;session&lt;&#x2F;span&gt;&lt;span&gt;({
@@ -900,7 +900,7 @@ svg-captcha的create方法生成一个验证码对象&lt;br &#x2F;&gt;
 &lt;&#x2F;span&gt;&lt;span&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;console&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;log&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;encodePassword&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;test_password&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;))
 &lt;&#x2F;span&gt;&lt;span&gt;
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; mysql配置
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; mysql 配置
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;mysql &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;require&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;mysql&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;mysqlConnect &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;mysql&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;createConnection&lt;&#x2F;span&gt;&lt;span&gt;({
 &lt;&#x2F;span&gt;&lt;span&gt;    host: &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;localhost&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;,

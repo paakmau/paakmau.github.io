@@ -59,7 +59,7 @@
 
 <article itemscope itemtype="http://schema.org/BlogPosting">
     <header>
-        <h1 itemprop="headline">Vulkan画三角形「十四」渲染和展示</h1>
+        <h1 itemprop="headline">Vulkan 画三角形「十四」渲染和展示</h1>
         <span class="muted">
     <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
          width="16" height="16" fill="none" stroke="currentcolor"
@@ -80,7 +80,7 @@
     <div itemprop="articleBody">
       <p>本文中我们将会结合之前的东西，最后在屏幕上把三角形画出来</p>
 <span id="continue-reading"></span>
-<p>首先添加一个drawFrame函数，并在mainLoop的循环中调用它</p>
+<p>首先添加一个 drawFrame 函数，并在 mainLoop 的循环中调用它</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">mainLoop</span><span>() {
 </span><span>    </span><span style="color:#b48ead;">while </span><span>(!</span><span style="color:#bf616a;">glfwWindowShouldClose</span><span>(window)) {
 </span><span>        </span><span style="color:#bf616a;">glfwPollEvents</span><span>();
@@ -93,7 +93,7 @@
 </span><span>}
 </span></code></pre>
 <h2 id="tong-bu">同步</h2>
-<p>drawFrame函数将会执行如下几个操作</p>
+<p>drawFrame 函数将会执行如下几个操作</p>
 <ul>
 <li>向交换链请求一个图像</li>
 <li>执行命令缓冲区，并把这个图像作为它的帧缓冲区中的附着</li>
@@ -101,13 +101,13 @@
 </ul>
 <p>这些操作分别都是一次函数调用，但是它们其实是异步执行的。这些函数调用将会在操作实际完成之前就直接返回，执行的顺序就是未定义的。这非常不幸，因为我们希望每一个操作都要在之前的操作完成后才能执行</p>
 <p>有两种方式来同步这些交换链事件：屏障和信号量。它们都是能够用于协调操作的对象，通过这样的方式，一个操作等待信号量或屏障的释放，而另一个操作完成后释放信号量</p>
-<p>它们的不同之处在于，屏障可以被我们的程序使用诸如vkWaitForFences等的函数调用来访问，而信号量就不可以。屏障主要是用于同步应用本身与渲染操作的，然而信号量是用于同步命令队列之间或之内的操作。我们这里希望同步绘制命令和展示的队列操作，所以信号量最合适</p>
+<p>它们的不同之处在于，屏障可以被我们的程序使用诸如 vkWaitForFences 等的函数调用来访问，而信号量就不可以。屏障主要是用于同步应用本身与渲染操作的，然而信号量是用于同步命令队列之间或之内的操作。我们这里希望同步绘制命令和展示的队列操作，所以信号量最合适</p>
 <h2 id="xin-hao-liang">信号量</h2>
 <p>我们需要一个信号量来处理图像已经被交换链返回且已经能够用于渲染的事件，还需要另外一个来处理渲染已经结束且可以用于展示的事件。于是我们创建两个成员变量来存储这两个信号量对象</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkSemaphore imageAvailableSemaphore;
 </span><span>VkSemaphore renderFinishedSemaphore;
 </span></code></pre>
-<p>于是添加一个成员函数用于创建信号量并在initVulkan中调用它</p>
+<p>于是添加一个成员函数用于创建信号量并在 initVulkan 中调用它</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">initVulkan</span><span>() {
 </span><span>    </span><span style="color:#bf616a;">createInstance</span><span>();
 </span><span>    </span><span style="color:#bf616a;">createSurface</span><span>();
@@ -130,7 +130,7 @@
 </span><span>        </span><span style="color:#b48ead;">throw </span><span>std::</span><span style="color:#bf616a;">runtime_error</span><span>(&quot;</span><span style="color:#a3be8c;">faild to create semaphores!</span><span>&quot;);
 </span><span>}
 </span></code></pre>
-<p>最后在cleanup中销毁它们</p>
+<p>最后在 cleanup 中销毁它们</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">cleanup</span><span>() {
 </span><span>    </span><span style="color:#bf616a;">vkDestroySemaphore</span><span>(device, renderFinishedSemaphore, </span><span style="color:#d08770;">nullptr</span><span>);
 </span><span>    </span><span style="color:#bf616a;">vkDestroySemaphore</span><span>(device, imageAvailableSemaphore, </span><span style="color:#d08770;">nullptr</span><span>);
@@ -152,17 +152,17 @@
 </span><span>}
 </span></code></pre>
 <h2 id="xiang-jiao-huan-lian-qing-qiu-tu-xiang">向交换链请求图像</h2>
-<p>正如之前所说，在drawFrame函数中要做的第一件事就是向交换链请求一张图像。因为交换链是一个扩展特性，所以我们肯定会用到一个带有vk*KHR这样的命名规则的函数</p>
-<p>我们在drawFrame函数中继续填写</p>
+<p>正如之前所说，在 drawFrame 函数中要做的第一件事就是向交换链请求一张图像。因为交换链是一个扩展特性，所以我们肯定会用到一个带有vk*KHR 这样的命名规则的函数</p>
+<p>我们在 drawFrame 函数中继续填写</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>uint32_t imageIndex;
 </span><span style="color:#bf616a;">vkAcquireNextImageKHR</span><span>(device, swapchain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &amp;imageIndex);
 </span></code></pre>
 <p>前两个参数是逻辑设备和我们需要请求图像的交换链。第三个参数指定了等待图像请求的超时时间，以纳秒为单位。使用64位无符号整数的最大值来禁用超时。</p>
 <p>需要注意的是，我们把获取好的图像进行展示之后，它就会被归还到交换链中。我们还可以从交换链同时获取多张图像，但是交换链中没有被获取的图像数量总是会大于等于VkSurfaceCapabilitiesKHR::minImageCount - 1，所以如果在没有获取的图像数量为VkSurfaceCapabilitiesKHR::minImageCount - 1时尝试获取图像，那么只有在有展示结束的图像被归还后才能获取成功，信号量才会被释放。这就意味着如果我们之前设置的交换链图像总数与这个最小图像数相等，我们在获取一张图像之后就必须对它进行展示，否则将无法获取到下一张图像</p>
 <p>接下来两个参数指定了需要在请求图像完成后被释放的同步对象，图像在被用于展示之后会变成可用的状态。这个同步对象被释放的时候，我们就可以使用这个图像来进行绘制。我们可以指定一个信号量、屏障或者它们两者，当然我们这里只用了imageAvailableSemaphore</p>
-<p>最后一个参数指定了一个用于输出请求的图像索引的地址，当交换链图像变为可用状态时它的索引就会被输出到这里。这个索引其实是我们的成员变量swapChainImages数组中VkImage对象的索引。我们之后还可以使用这个索引来选取图像相对应的命令缓冲区</p>
+<p>最后一个参数指定了一个用于输出请求的图像索引的地址，当交换链图像变为可用状态时它的索引就会被输出到这里。这个索引其实是我们的成员变量 swapChainImages 数组中VkImage 对象的索引。我们之后还可以使用这个索引来选取图像相对应的命令缓冲区</p>
 <h2 id="ti-jiao-ming-ling-huan-chong-qu">提交命令缓冲区</h2>
-<p>队列提交与同步可以通过VkSubmitInfo结构体中的参数来进行配置</p>
+<p>队列提交与同步可以通过 VkSubmitInfo 结构体中的参数来进行配置</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkSubmitInfo submitInfo = {};
 </span><span>submitInfo.</span><span style="color:#bf616a;">sType </span><span>= VK_STRUCTURE_TYPE_SUBMIT_INFO;
 </span><span>VkSemaphore waitSemaphores[] = {imageAvailableSemaphore};
@@ -178,13 +178,13 @@
 </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">vkQueueSubmit</span><span>(graphicsAndPresentQueue, </span><span style="color:#d08770;">1</span><span>, &amp;submitInfo, VK_NULL_HANDLE) != VK_SUCCESS)
 </span><span>    </span><span style="color:#b48ead;">throw </span><span>std::</span><span style="color:#bf616a;">runtime_error</span><span>(&quot;</span><span style="color:#a3be8c;">failed to submit draw command buffer!</span><span>&quot;);
 </span></code></pre>
-<p>第一个参数是大部分Vulkan中的结构体都会有的sType</p>
-<p>接下来的三个参数指定了在执行前需要等待的信号量，以及在流水线中的哪个阶段中等待。我们希望在图像可用之后就把颜色数据写入进去，因此我们指定了图形流水线中写入颜色附着的阶段。理论上，这意味着这个实现可以在图像还没有准备好的情况下，就已经开始执行顶点着色器。注意到waitStages数组中的每一个记录都会与pWaitSemaphores数组中相同索引的记录相对应</p>
+<p>第一个参数是大部分 Vulkan 中的结构体都会有的sType</p>
+<p>接下来的三个参数指定了在执行前需要等待的信号量，以及在流水线中的哪个阶段中等待。我们希望在图像可用之后就把颜色数据写入进去，因此我们指定了图形流水线中写入颜色附着的阶段。理论上，这意味着这个实现可以在图像还没有准备好的情况下，就已经开始执行顶点着色器。注意到 waitStages 数组中的每一个记录都会与pWaitSemaphores 数组中相同索引的记录相对应</p>
 <p>再往后的两个参数指定了实际需要提交来执行的命令缓冲区。如上文所述，我们应当提交与从交换链中请求到的用作颜色附着的图像相对应的命令缓冲区</p>
-<p>signalSemaphoreCount和pSignalSemaphores参数指定了在命令缓冲区执行完毕后需要释放的信号量。这里我们将传入renderFinishedSemaphore这个信号量</p>
-<p>最后调用vkQueueSubmit函数提交命令缓冲区到图形队列。这个函数以一个VkSubmitInfo数组为参数，这可以在工作量更大的时候提高性能。最后一个参数是一个可选的屏障，当这些命令缓冲区都执行完毕时将会释放。这里我们使用信号量来进行同步，因此传入VK_NULL_HANDLE就行了</p>
+<p>signalSemaphoreCount 和 pSignalSemaphores 参数指定了在命令缓冲区执行完毕后需要释放的信号量。这里我们将传入 renderFinishedSemaphore 这个信号量</p>
+<p>最后调用 vkQueueSubmit 函数提交命令缓冲区到图形队列。这个函数以一个 VkSubmitInfo 数组为参数，这可以在工作量更大的时候提高性能。最后一个参数是一个可选的屏障，当这些命令缓冲区都执行完毕时将会释放。这里我们使用信号量来进行同步，因此传入VK_NULL_HANDLE 就行了</p>
 <h2 id="zhan-shi">展示</h2>
-<p>绘制一帧的最后一步就是把渲染结果提交给交换链，并使它最终展示到屏幕上。展示可以由VkPresentInfoKHR结构体进行配置</p>
+<p>绘制一帧的最后一步就是把渲染结果提交给交换链，并使它最终展示到屏幕上。展示可以由 VkPresentInfoKHR 结构体进行配置</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkPresentInfoKHR presentInfo = {};
 </span><span>presentInfo.</span><span style="color:#bf616a;">sType </span><span>= VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 </span><span>presentInfo.</span><span style="color:#bf616a;">waitSemaphoreCount </span><span>= </span><span style="color:#d08770;">1</span><span>;
@@ -196,14 +196,14 @@
 </span><span>presentInfo.</span><span style="color:#bf616a;">pResults </span><span>= </span><span style="color:#d08770;">nullptr</span><span>;
 </span><span style="color:#bf616a;">vkQueuePresentKHR</span><span>(graphicsAndPresentQueue, &amp;presentInfo);
 </span><span>
-</span><span>waitSemaphoreCount和pWaitSemaphores这两个参数非常显然，表示需要等待的信号量
+</span><span>waitSemaphoreCount 和 pWaitSemaphores 这两个参数非常显然，表示需要等待的信号量
 </span></code></pre>
-<p>随后的swapchainCount、pSwapchains、pImageIndices分别表示交换链数量、所有的交换链、以及每个交换链需要展示对应的图像索引。当然一般只会传入一个交换链</p>
-<p>最后一个pResults参数是可选的。它允许我们指定一个VkResult的数组来检查每一个交换链是否展示成功。当然使用一个交换链的时候这是不需要的，因为我们使用vkQueuePresentKHR这个函数调用的返回值就足够了</p>
+<p>随后的swapchainCount、pSwapchains、pImageIndices 分别表示交换链数量、所有的交换链、以及每个交换链需要展示对应的图像索引。当然一般只会传入一个交换链</p>
+<p>最后一个 pResults 参数是可选的。它允许我们指定一个 VkResult 的数组来检查每一个交换链是否展示成功。当然使用一个交换链的时候这是不需要的，因为我们使用 vkQueuePresentKHR 这个函数调用的返回值就足够了</p>
 <p>最后编译运行就能够看到这样的结果</p>
 <p><img src="https://hebomou.top/wp-content/uploads/2020/09/image-1.png" alt="" /></p>
-<p>但是在关闭窗体的时候会发现程序崩溃，这是因为在drawFrame中的所有操作都是异步的，这意味着我们退出主循环的时候，渲染和展示操作可能依旧在进行。于是我们就会在cleanup中销毁正在被使用的资源，于是引发错误</p>
-<p>于是为了解决这个问题，我们需要在退出主循环之前等待逻辑设备完成它当前的操作，修改mainLoop函数如下即可</p>
+<p>但是在关闭窗体的时候会发现程序崩溃，这是因为在 drawFrame 中的所有操作都是异步的，这意味着我们退出主循环的时候，渲染和展示操作可能依旧在进行。于是我们就会在 cleanup 中销毁正在被使用的资源，于是引发错误</p>
+<p>于是为了解决这个问题，我们需要在退出主循环之前等待逻辑设备完成它当前的操作，修改 mainLoop 函数如下即可</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">mainLoop</span><span>() {
 </span><span>    </span><span style="color:#b48ead;">while </span><span>(!</span><span style="color:#bf616a;">glfwWindowShouldClose</span><span>(window)) {
 </span><span>        </span><span style="color:#bf616a;">glfwPollEvents</span><span>();

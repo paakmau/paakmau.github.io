@@ -8,13 +8,13 @@
 	<updated>2020-03-30T20:30:55+00:00</updated>
 	<id>https://paakmau.github.io/tags/mockito/atom.xml</id>
 	<entry xml:lang="zh">
-		<title>使用Mockito对SpringBoot项目单元测试</title>
+		<title>使用 Mockito 对SpringBoot 项目单元测试</title>
 		<published>2020-03-30T20:30:55+00:00</published>
 		<updated>2020-03-30T20:30:55+00:00</updated>
 		<link href="https://paakmau.github.io/202003302030/" type="text/html"/>
 		<id>https://paakmau.github.io/202003302030/</id>
-		<content type="html">&lt;p&gt;使用Mockito可以用来给模块打桩，实现单元测试&lt;&#x2F;p&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;zai-pom-xmlli-yin-ru-yi-lai&quot;&gt;在pom.xml里引入依赖&lt;&#x2F;h2&gt;
+		<content type="html">&lt;p&gt;使用 Mockito 可以用来给模块打桩，实现单元测试&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;zai-pom-xml-li-yin-ru-yi-lai&quot;&gt;在pom.xml 里引入依赖&lt;&#x2F;h2&gt;
 &lt;pre data-lang=&quot;xml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-xml &quot;&gt;&lt;code class=&quot;language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;dependency&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;groupId&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;org.springframework.boot&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;groupId&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;artifactId&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;spring-boot-starter-test&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;artifactId&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
@@ -40,7 +40,7 @@
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;其中Book实体大概长这样&lt;&#x2F;p&gt;
+&lt;p&gt;其中 Book 实体大概长这样&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Book &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Long &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;id;
@@ -48,8 +48,8 @@
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;da-zhuang-bing-ce-shi&quot;&gt;打桩并测试&lt;&#x2F;h2&gt;
-&lt;p&gt;其中MockBean表示把Spring注入的Bean改为注入由Mockito生成的桩&lt;&#x2F;p&gt;
-&lt;p&gt;然后对save方法打桩，对于一个输入设置对应的输出&lt;br &#x2F;&gt;
+&lt;p&gt;其中 MockBean 表示把Spring 注入的 Bean 改为注入由Mockito 生成的桩&lt;&#x2F;p&gt;
+&lt;p&gt;然后对 save 方法打桩，对于一个输入设置对应的输出&lt;br &#x2F;&gt;
 并断言该方法会被调用及调用时传入的参数&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;@&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;SpringBootTest
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;BookServiceTests &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{

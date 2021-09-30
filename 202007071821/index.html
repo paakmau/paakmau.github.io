@@ -59,7 +59,7 @@
 
 <article itemscope itemtype="http://schema.org/BlogPosting">
     <header>
-        <h1 itemprop="headline">基于Vue.js和SpringBoot配置WebSocket</h1>
+        <h1 itemprop="headline">基于Vue.js 和 SpringBoot 配置WebSocket</h1>
         <span class="muted">
     <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
          width="16" height="16" fill="none" stroke="currentcolor"
@@ -78,9 +78,9 @@
 </span>
     </header>
     <div itemprop="articleBody">
-      <p>HTTP协议中的请求只能由客户端发起，如果需要服务端主动向客户端发送信息，就会用到WebSocket</p>
+      <p>HTTP 协议中的请求只能由客户端发起，如果需要服务端主动向客户端发送信息，就会用到WebSocket</p>
 <span id="continue-reading"></span><h2 id="hou-duan-bu-fen">后端部分</h2>
-<p>首先需要一个配置类用于指定WebSocket的端口号</p>
+<p>首先需要一个配置类用于指定 WebSocket 的端口号</p>
 <pre data-lang="java" style="background-color:#2b303b;color:#c0c5ce;" class="language-java "><code class="language-java" data-lang="java"><span>@</span><span style="color:#bf616a;">Configuration
 </span><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">WebSocketConfig </span><span style="color:#eff1f5;">{
 </span><span style="color:#eff1f5;">    @</span><span style="color:#bf616a;">Bean
@@ -89,7 +89,7 @@
 </span><span style="color:#eff1f5;">    }
 </span><span style="color:#eff1f5;">}
 </span></code></pre>
-<p>然后我们写一个类用来管理WebSocket连接，处理连接建立、收到消息、连接断开等的回调</p>
+<p>然后我们写一个类用来管理 WebSocket 连接，处理连接建立、收到消息、连接断开等的回调</p>
 <pre data-lang="java" style="background-color:#2b303b;color:#c0c5ce;" class="language-java "><code class="language-java" data-lang="java"><span>@</span><span style="color:#bf616a;">ServerEndpoint</span><span>(</span><span style="color:#bf616a;">value </span><span>= &quot;</span><span style="color:#a3be8c;">/wstest</span><span>&quot;)
 </span><span>@</span><span style="color:#bf616a;">Component
 </span><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">WebSocketTest </span><span style="color:#eff1f5;">{

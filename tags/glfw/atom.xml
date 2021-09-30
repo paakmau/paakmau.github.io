@@ -8,20 +8,20 @@
 	<updated>2020-09-05T23:02:56+00:00</updated>
 	<id>https://paakmau.github.io/tags/glfw/atom.xml</id>
 	<entry xml:lang="zh">
-		<title>Vulkan画三角形「三」 创建窗体表面</title>
+		<title>Vulkan 画三角形「三」 创建窗体表面</title>
 		<published>2020-09-05T23:02:56+00:00</published>
 		<updated>2020-09-05T23:02:56+00:00</updated>
 		<link href="https://paakmau.github.io/202009052302/" type="text/html"/>
 		<id>https://paakmau.github.io/202009052302/</id>
-		<content type="html">&lt;p&gt;Vulkan是一个跨平台的API，它不能够直接与不同平台的窗体系统进行交互。为了在Vulkan与窗体系统之间建立连接来把渲染结果展示到屏幕上，我们需要使用一些WSI扩展。本文将会介绍VK_KHR_surface扩展。它暴露一个VkSurfaceKHR对象，这个对象代表一个我们可以把图像渲染上去的抽象表面&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;Vulkan 是一个跨平台的API，它不能够直接与不同平台的窗体系统进行交互。为了在 Vulkan 与窗体系统之间建立连接来把渲染结果展示到屏幕上，我们需要使用一些 WSI 扩展。本文将会介绍VK_KHR_surface 扩展。它暴露一个 VkSurfaceKHR 对象，这个对象代表一个我们可以把图像渲染上去的抽象表面&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;这个VK_KHR_surface是一个实例等级的扩展，并且我们其实在上一篇文章中就已经启用了它，因为它已经被包含在前文所用到的glfwGetRequiredInstanceExtensions所返回的列表中。这个列表同时还包含一些其他的WSI扩展，不过我们可以先不管这些&lt;&#x2F;p&gt;
+&lt;p&gt;这个VK_KHR_surface 是一个实例等级的扩展，并且我们其实在上一篇文章中就已经启用了它，因为它已经被包含在前文所用到的 glfwGetRequiredInstanceExtensions 所返回的列表中。这个列表同时还包含一些其他的 WSI 扩展，不过我们可以先不管这些&lt;&#x2F;p&gt;
 &lt;p&gt;另外需要注意的是，窗体表面其实并不一定需要创建，因为你可能只是要离屏渲染而不用把结果显示到屏幕上&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;chuang-jian-chuang-ti-biao-mian&quot;&gt;创建窗体表面&lt;&#x2F;h2&gt;
 &lt;p&gt;首先跟上一篇文章一样，我们先添加一个私有成员变量用于保存创建好的窗体表面&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span&gt;VkSurfaceKHR surface;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;然后添加一个createSurface成员函数，并在initVulkan中调用它&lt;&#x2F;p&gt;
+&lt;p&gt;然后添加一个 createSurface 成员函数，并在 initVulkan 中调用它&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;initVulkan&lt;&#x2F;span&gt;&lt;span&gt;() {
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;createInstance&lt;&#x2F;span&gt;&lt;span&gt;();
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;createSurface&lt;&#x2F;span&gt;&lt;span&gt;();
@@ -33,9 +33,9 @@
 &lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;throw &lt;&#x2F;span&gt;&lt;span&gt;std::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;runtime_error&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;failed to create window surface!&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
 &lt;&#x2F;span&gt;&lt;span&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;可以看到非常简单，而且是调了GLFW的API来实现的，说明GLFW对Vulkan有一定的支持。需要注意的是vulkan&#x2F;vulkan.h这个头文件一定要写在GLFW&#x2F;glfw3.h之前，因为GLFW会根据Vulkan的宏进行条件编译，头文件顺序不对的话将会无法使用glfwCreateWindowSurface这个函数&lt;&#x2F;p&gt;
+&lt;p&gt;可以看到非常简单，而且是调了 GLFW 的API 来实现的，说明 GLFW 对Vulkan 有一定的支持。需要注意的是vulkan&#x2F;vulkan.h 这个头文件一定要写在GLFW&#x2F;glfw3.h 之前，因为 GLFW 会根据Vulkan 的宏进行条件编译，头文件顺序不对的话将会无法使用 glfwCreateWindowSurface 这个函数&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;xiao-hui-chuang-ti-biao-mian&quot;&gt;销毁窗体表面&lt;&#x2F;h2&gt;
-&lt;p&gt;最后我们要在cleanup中销毁掉窗体表面&lt;&#x2F;p&gt;
+&lt;p&gt;最后我们要在 cleanup 中销毁掉窗体表面&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;cleanup&lt;&#x2F;span&gt;&lt;span&gt;() {
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;vkDestroySurfaceKHR&lt;&#x2F;span&gt;&lt;span&gt;(instance, surface, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;nullptr&lt;&#x2F;span&gt;&lt;span&gt;);
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;vkDestroyInstance&lt;&#x2F;span&gt;&lt;span&gt;(instance, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;nullptr&lt;&#x2F;span&gt;&lt;span&gt;);
@@ -48,21 +48,21 @@
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Vulkan画三角形「二」 创建Vulkan实例</title>
+		<title>Vulkan 画三角形「二」 创建 Vulkan 实例</title>
 		<published>2020-09-04T20:49:09+00:00</published>
 		<updated>2020-09-04T20:49:09+00:00</updated>
 		<link href="https://paakmau.github.io/202009042049/" type="text/html"/>
 		<id>https://paakmau.github.io/202009042049/</id>
-		<content type="html">&lt;p&gt;开始一切之前，我们先引入Vulkan的头文件&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;开始一切之前，我们先引入 Vulkan 的头文件&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;vulkan&#x2F;vulkan.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;注意这行代码要写在包含GLFW之前，因为GLFW可以通过条件编译来为Vulkan提供一些支持&lt;&#x2F;p&gt;
+&lt;p&gt;注意这行代码要写在包含 GLFW 之前，因为 GLFW 可以通过条件编译来为Vulkan 提供一些支持&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;chuang-jian-shi-li&quot;&gt;创建实例&lt;&#x2F;h2&gt;
-&lt;p&gt;然后要做的事情就是创建Vulkan实例。实例可以把你的应用程序跟Vulkan类库连接起来，创建实例需要指定一些信息&lt;&#x2F;p&gt;
+&lt;p&gt;然后要做的事情就是创建 Vulkan 实例。实例可以把你的应用程序跟 Vulkan 类库连接起来，创建实例需要指定一些信息&lt;&#x2F;p&gt;
 &lt;p&gt;首先添加一个成员变量用来保存和处理实例&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span&gt;VkInstance instance;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;然后添加一个成员函数createInstance用于创建实例，并在initVulkan中调用它&lt;&#x2F;p&gt;
+&lt;p&gt;然后添加一个成员函数 createInstance 用于创建实例，并在 initVulkan 中调用它&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;initVulkan&lt;&#x2F;span&gt;&lt;span&gt;() {
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;createInstance&lt;&#x2F;span&gt;&lt;span&gt;();
 &lt;&#x2F;span&gt;&lt;span&gt;}
@@ -80,15 +80,15 @@
 &lt;&#x2F;span&gt;&lt;span&gt;    appInfo.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;apiVersion &lt;&#x2F;span&gt;&lt;span&gt;= VK_API_VERSION_1_0;
 &lt;&#x2F;span&gt;&lt;span&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;对于这个结构体，我们在sType中明确地指定了它的类型，并且Vulkan中大部分的其他结构体也都是一样&lt;&#x2F;p&gt;
-&lt;p&gt;接下来我们需要填充另一个结构体，这个结构体存储着创建实例所需要的信息，并作会在创建实例时直接把这个结构体作为参数传递过去。需要注意的是，Vulkan中的大部分方法调用也都是直接传递一个结构体，而不是拆开为一个一个的参数&lt;&#x2F;p&gt;
-&lt;p&gt;我们在createInstance方法的末端添加以下代码&lt;&#x2F;p&gt;
+&lt;p&gt;对于这个结构体，我们在 sType 中明确地指定了它的类型，并且 Vulkan 中大部分的其他结构体也都是一样&lt;&#x2F;p&gt;
+&lt;p&gt;接下来我们需要填充另一个结构体，这个结构体存储着创建实例所需要的信息，并作会在创建实例时直接把这个结构体作为参数传递过去。需要注意的是，Vulkan 中的大部分方法调用也都是直接传递一个结构体，而不是拆开为一个一个的参数&lt;&#x2F;p&gt;
+&lt;p&gt;我们在 createInstance 方法的末端添加以下代码&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 实例创建信息
 &lt;&#x2F;span&gt;&lt;span&gt;VkInstanceCreateInfo createInfo = {};
 &lt;&#x2F;span&gt;&lt;span&gt;createInfo.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sType &lt;&#x2F;span&gt;&lt;span&gt;= VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 &lt;&#x2F;span&gt;&lt;span&gt;createInfo.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;pApplicationInfo &lt;&#x2F;span&gt;&lt;span&gt;= &amp;amp;appInfo;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;这两行代码的作用显而易见，然后我们来指定扩展。Vulkan是一个跨平台的API，这就意味着你需要一些扩展来跟窗体系统交互。而GLFW提供了方便的内建函数来获取所需要的扩展，于是我们只需要把它们存入结构体中就行了&lt;&#x2F;p&gt;
+&lt;p&gt;这两行代码的作用显而易见，然后我们来指定扩展。Vulkan 是一个跨平台的API，这就意味着你需要一些扩展来跟窗体系统交互。而 GLFW 提供了方便的内建函数来获取所需要的扩展，于是我们只需要把它们存入结构体中就行了&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span&gt;uint32_t glfwExtensionCount = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const char &lt;&#x2F;span&gt;&lt;span&gt;**glfwExtensions;
 &lt;&#x2F;span&gt;&lt;span&gt;glfwExtensions = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;glfwGetRequiredInstanceExtensions&lt;&#x2F;span&gt;&lt;span&gt;(&amp;amp;glfwExtensionCount);
@@ -103,7 +103,7 @@
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;vkCreateInstance&lt;&#x2F;span&gt;&lt;span&gt;(&amp;amp;createInfo, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;nullptr&lt;&#x2F;span&gt;&lt;span&gt;, &amp;amp;instance) != VK_SUCCESS)
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;throw &lt;&#x2F;span&gt;&lt;span&gt;std::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;runtime_error&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;failed to create instance!&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;贴一下createInstance的完整代码，但其实就是把上面的代码片段按顺序拼接到createInstance函数里，为了方便，后面的文章就不贴完整代码了&lt;&#x2F;p&gt;
+&lt;p&gt;贴一下 createInstance 的完整代码，但其实就是把上面的代码片段按顺序拼接到 createInstance 函数里，为了方便，后面的文章就不贴完整代码了&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;createInstance&lt;&#x2F;span&gt;&lt;span&gt;() {
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 应用程序信息
 &lt;&#x2F;span&gt;&lt;span&gt;    VkApplicationInfo &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;appInfo&lt;&#x2F;span&gt;&lt;span&gt;{};
@@ -129,7 +129,7 @@
 &lt;&#x2F;span&gt;&lt;span&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;xiao-hui-shi-li&quot;&gt;销毁实例&lt;&#x2F;h2&gt;
-&lt;p&gt;另外，需要在cleanup函数中销毁实例&lt;&#x2F;p&gt;
+&lt;p&gt;另外，需要在 cleanup 函数中销毁实例&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;cleanup&lt;&#x2F;span&gt;&lt;span&gt;() {
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;vkDestroyInstance&lt;&#x2F;span&gt;&lt;span&gt;(instance, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;nullptr&lt;&#x2F;span&gt;&lt;span&gt;);
 &lt;&#x2F;span&gt;&lt;span&gt;
@@ -141,16 +141,16 @@
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Vulkan画三角形「一」 概要与环境配置</title>
+		<title>Vulkan 画三角形「一」 概要与环境配置</title>
 		<published>2020-09-03T20:23:56+00:00</published>
 		<updated>2020-09-03T20:23:56+00:00</updated>
 		<link href="https://paakmau.github.io/202009032023/" type="text/html"/>
 		<id>https://paakmau.github.io/202009032023/</id>
-		<content type="html">&lt;p&gt;Vulkan是一个跨平台的图形与计算API，本系列文章将使用Vulkan绘制一个三角形，旨在为上手Vulkan提供帮助&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;Vulkan 是一个跨平台的图形与计算API，本系列文章将使用 Vulkan 绘制一个三角形，旨在为上手 Vulkan 提供帮助&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;使用CMake管理项目&lt;br &#x2F;&gt;
-使用VS Code编辑代码&lt;br &#x2F;&gt;
-使用GLFW管理窗体&lt;&#x2F;p&gt;
+&lt;p&gt;使用 CMake 管理项目&lt;br &#x2F;&gt;
+使用VS Code 编辑代码&lt;br &#x2F;&gt;
+使用 GLFW 管理窗体&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;09&#x2F;image-1.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;本系列文章主要是下面这个教程的翻译，但是做了一些修改&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;vulkan-tutorial.com&#x2F;&quot;&gt;https:&#x2F;&#x2F;vulkan-&lt;&#x2F;a&gt;&lt;a href=&quot;https:&#x2F;&#x2F;vulkan-tutorial.com&#x2F;&quot;&gt;tutorial&lt;&#x2F;a&gt;&lt;a href=&quot;https:&#x2F;&#x2F;vulkan-tutorial.com&#x2F;&quot;&gt;.com&#x2F;&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
@@ -158,38 +158,38 @@
 &lt;p&gt;前往官网下载安装包直接安装&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;vulkan.lunarg.com&#x2F;&quot;&gt;https:&#x2F;&#x2F;vulkan.lunarg.com&#x2F;&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;an-zhuang-glfw&quot;&gt;安装GLFW&lt;&#x2F;h2&gt;
-&lt;p&gt;Vulkan只是一个图形API，无法管理窗体。为了方便，我们引入跨平台的GLFW库&lt;&#x2F;p&gt;
+&lt;p&gt;Vulkan 只是一个图形API，无法管理窗体。为了方便，我们引入跨平台的 GLFW 库&lt;&#x2F;p&gt;
 &lt;h3 id=&quot;macos&quot;&gt;macOS&lt;&#x2F;h3&gt;
-&lt;p&gt;可以用brew安装&lt;&#x2F;p&gt;
+&lt;p&gt;可以用 brew 安装&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; brew install glfw
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h3 id=&quot;windows&quot;&gt;Windows&lt;&#x2F;h3&gt;
-&lt;p&gt;稍微麻烦一点，可以用MinGW-w64编译GLFW的源码并安装，最后添加环境变量&lt;&#x2F;p&gt;
+&lt;p&gt;稍微麻烦一点，可以用MinGW-w64编译 GLFW 的源码并安装，最后添加环境变量&lt;&#x2F;p&gt;
 &lt;p&gt;先去官网下载源码&lt;br &#x2F;&gt;
 &lt;a href=&quot;https:&#x2F;&#x2F;www.glfw.org&#x2F;&quot;&gt;https:&#x2F;&#x2F;www.glfw.org&#x2F;&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
-&lt;p&gt;然后以管理员身份运行PowerShell，cd到GLFW源码项目文件夹下，输入以下命令&lt;&#x2F;p&gt;
+&lt;p&gt;然后以管理员身份运行PowerShell，cd 到 GLFW 源码项目文件夹下，输入以下命令&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS mkdir build
 &lt;&#x2F;span&gt;&lt;span&gt;PS cd build
 &lt;&#x2F;span&gt;&lt;span&gt;PS cmake -G &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;MinGW Makefiles&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; ..
 &lt;&#x2F;span&gt;&lt;span&gt;PS mingw32-make install
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;这样GLFW默认会被安装在C:&#x2F;Program Files (x86)&#x2F;GLFW文件夹中，如果想装在别的地方可以修改CMAKE_INSTALL_PREFIX环境变量，当然也可以直接下载预编译的二进制文件，但是可能它不会提供配置GLFW所需的CMake模块&lt;&#x2F;p&gt;
-&lt;p&gt;最后需要添加一个glfw3_DIR环境变量，指向存放配置GLFW的CMake模块的路径，值是C:\Program Files (x86)\GLFW\lib\cmake\glfw3，如果你使用了不同的安装路径，请做相应修改，这样后续find_package才能找到glfw3的头文件和依赖库&lt;&#x2F;p&gt;
+&lt;p&gt;这样 GLFW 默认会被安装在C:&#x2F;Program Files (x86)&#x2F;GLFW 文件夹中，如果想装在别的地方可以修改CMAKE_INSTALL_PREFIX 环境变量，当然也可以直接下载预编译的二进制文件，但是可能它不会提供配置 GLFW 所需的CMake 模块&lt;&#x2F;p&gt;
+&lt;p&gt;最后需要添加一个glfw3_DIR 环境变量，指向存放配置 GLFW 的CMake 模块的路径，值是C:\Program Files (x86)\GLFW\lib\cmake\glfw3，如果你使用了不同的安装路径，请做相应修改，这样后续find_package 才能找到glfw3的头文件和依赖库&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;an-zhuang-cmake&quot;&gt;安装CMake&lt;&#x2F;h2&gt;
-&lt;p&gt;考虑到跨平台，我们用CMake配合VS Code会很方便&lt;&#x2F;p&gt;
-&lt;p&gt;mac下同样可以用brew安装&lt;&#x2F;p&gt;
+&lt;p&gt;考虑到跨平台，我们用 CMake 配合VS Code 会很方便&lt;&#x2F;p&gt;
+&lt;p&gt;mac 下同样可以用 brew 安装&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; brew install cmake
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;Windows下使用官网安装包安装就行了&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;an-zhuang-vs-codecha-jian&quot;&gt;安装VS Code插件&lt;&#x2F;h2&gt;
+&lt;p&gt;Windows 下使用官网安装包安装就行了&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;an-zhuang-vs-code-cha-jian&quot;&gt;安装VS Code 插件&lt;&#x2F;h2&gt;
 &lt;ul&gt;
 &lt;li&gt;C&#x2F;C++&lt;&#x2F;li&gt;
 &lt;li&gt;CMake&lt;&#x2F;li&gt;
 &lt;li&gt;CMake Tools&lt;&#x2F;li&gt;
 &lt;&#x2F;ul&gt;
-&lt;h2 id=&quot;chuang-jian-cmakexiang-mu&quot;&gt;创建CMake项目&lt;&#x2F;h2&gt;
-&lt;p&gt;直接新建一个文件夹，用VS Code打开它&lt;&#x2F;p&gt;
-&lt;p&gt;在其中创建CMakeList.txt文件，内容如下&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;chuang-jian-cmake-xiang-mu&quot;&gt;创建 CMake 项目&lt;&#x2F;h2&gt;
+&lt;p&gt;直接新建一个文件夹，用VS Code 打开它&lt;&#x2F;p&gt;
+&lt;p&gt;在其中创建CMakeList.txt 文件，内容如下&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cmake&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cmake &quot;&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;cmake_minimum_required&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VERSION &lt;&#x2F;span&gt;&lt;span&gt;3.0.0)
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;project&lt;&#x2F;span&gt;&lt;span&gt;(VulkanTest &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VERSION &lt;&#x2F;span&gt;&lt;span&gt;0.1.0)
 &lt;&#x2F;span&gt;&lt;span&gt;
@@ -204,9 +204,9 @@
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;target_include_directories&lt;&#x2F;span&gt;&lt;span&gt;(VulkanTest &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;PRIVATE &lt;&#x2F;span&gt;&lt;span&gt;${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Vulkan_INCLUDE_DIRS&lt;&#x2F;span&gt;&lt;span&gt;})
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;target_link_libraries&lt;&#x2F;span&gt;&lt;span&gt;(VulkanTest ${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Vulkan_LIBRARIES&lt;&#x2F;span&gt;&lt;span&gt;})
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;简单说就是这个项目只有main.cpp一个文件，然后寻找Vulkan和glfw3这两个库，并链接到我们的项目中&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;yong-glfwchuang-jian-chuang-ti&quot;&gt;用GLFW创建窗体&lt;&#x2F;h2&gt;
-&lt;p&gt;接下来我们创建main.cpp文件&lt;&#x2F;p&gt;
+&lt;p&gt;简单说就是这个项目只有main.cpp 一个文件，然后寻找 Vulkan 和glfw3这两个库，并链接到我们的项目中&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;yong-glfw-chuang-jian-chuang-ti&quot;&gt;用 GLFW 创建窗体&lt;&#x2F;h2&gt;
+&lt;p&gt;接下来我们创建main.cpp 文件&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;GLFW&#x2F;glfw3.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span&gt;uint32_t WIDTH = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;800&lt;&#x2F;span&gt;&lt;span&gt;;
@@ -249,39 +249,39 @@
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;
 &lt;&#x2F;span&gt;&lt;span&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;这段代码主要是用GLFW处理窗体创建、主循环、窗体销毁等事情&lt;br &#x2F;&gt;
-因为GLFW不是本系列的主要内容，因此只是简单解释一下&lt;&#x2F;p&gt;
+&lt;p&gt;这段代码主要是用 GLFW 处理窗体创建、主循环、窗体销毁等事情&lt;br &#x2F;&gt;
+因为 GLFW 不是本系列的主要内容，因此只是简单解释一下&lt;&#x2F;p&gt;
 &lt;p&gt;glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);&lt;br &#x2F;&gt;
-GLFW原本设计就是要为OpenGL创建上下文，而这里我们只用它管理窗体，因此使用这行代码防止他为OpenGL创建上下文&lt;&#x2F;p&gt;
+GLFW 原本设计就是要为 OpenGL 创建上下文，而这里我们只用它管理窗体，因此使用这行代码防止他为 OpenGL 创建上下文&lt;&#x2F;p&gt;
 &lt;p&gt;glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);&lt;br &#x2F;&gt;
 处理可变大小窗体很麻烦，因此我们直接禁用它&lt;&#x2F;p&gt;
-&lt;p&gt;在VS Code中键入cmd + shift + p呼出命令面板，在其中输入CMake: Debug选项并回车调试项目，就能看到它创建了一个空窗体&lt;&#x2F;p&gt;
+&lt;p&gt;在VS Code 中键入cmd + shift + p 呼出命令面板，在其中输入CMake: Debug 选项并回车调试项目，就能看到它创建了一个空窗体&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;09&#x2F;image-2.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;在接下来的文章中我们会不断填充这段代码，最终在屏幕中渲染出一个三角形&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Mac下使用Makefile基于GLFW配置Dear ImGui</title>
+		<title>Mac 下使用 Makefile 基于GLFW 配置Dear ImGui</title>
 		<published>2020-03-31T23:47:45+00:00</published>
 		<updated>2020-03-31T23:47:45+00:00</updated>
 		<link href="https://paakmau.github.io/202003312347/" type="text/html"/>
 		<id>https://paakmau.github.io/202003312347/</id>
-		<content type="html">&lt;p&gt;用Xcode配置起来很简单，但是OpenGL.framework被弃用了，会爆不少警告（其实是因为我习惯了VSC改不过来）&lt;&#x2F;p&gt;
-&lt;p&gt;于是尝试用Makefile搞一搞&lt;&#x2F;p&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;an-zhuang-glewhe-glfw&quot;&gt;安装GLEW和GLFW&lt;&#x2F;h2&gt;
-&lt;p&gt;使用brew安装就行，它会把对应的库和头文放在在&#x2F;usr&#x2F;local&#x2F;lib和&#x2F;usr&#x2F;local&#x2F;include下&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;用 Xcode 配置起来很简单，但是OpenGL.framework 被弃用了，会爆不少警告（其实是因为我习惯了 VSC 改不过来）&lt;&#x2F;p&gt;
+&lt;p&gt;于是尝试用 Makefile 搞一搞&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;an-zhuang-glew-he-glfw&quot;&gt;安装 GLEW 和GLFW&lt;&#x2F;h2&gt;
+&lt;p&gt;使用 brew 安装就行，它会把对应的库和头文放在在&#x2F;usr&#x2F;local&#x2F;lib 和&#x2F;usr&#x2F;local&#x2F;include 下&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; brew install glew
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; brew install glfw
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;h2 id=&quot;huo-qu-dear-imguiyuan-ma&quot;&gt;获取Dear ImGui源码&lt;&#x2F;h2&gt;
-&lt;p&gt;我们可以直接把它的源码Clone下来&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;huo-qu-dear-imgui-yuan-ma&quot;&gt;获取Dear ImGui 源码&lt;&#x2F;h2&gt;
+&lt;p&gt;我们可以直接把它的源码 Clone 下来&lt;&#x2F;p&gt;
 &lt;p&gt;仓库地址在这里&lt;br &#x2F;&gt;
 &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;ocornut&#x2F;imgui&quot;&gt;https:&#x2F;&#x2F;github.com&#x2F;ocornut&#x2F;imgui&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
-&lt;p&gt;然后其实看看examples里的例子抄抄就完事了（本文也是靠着它写的）&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;yin-ru-dear-imguiku&quot;&gt;引入Dear ImGui库&lt;&#x2F;h2&gt;
-&lt;p&gt;首先建一个libs&#x2F;imgui文件夹用于存放这个外部库&lt;&#x2F;p&gt;
+&lt;p&gt;然后其实看看 examples 里的例子抄抄就完事了（本文也是靠着它写的）&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;yin-ru-dear-imgui-ku&quot;&gt;引入Dear ImGui 库&lt;&#x2F;h2&gt;
+&lt;p&gt;首先建一个libs&#x2F;imgui 文件夹用于存放这个外部库&lt;&#x2F;p&gt;
 &lt;p&gt;然后把项目源码根目录下的源文件跟头文件都拷贝进去&lt;br &#x2F;&gt;
-还有examples下的imgui_impl_glfw.cpp、imgui_impl_glfw.h、imgui_impl_opengl3.cpp、imgui_impl_opengl3.h&lt;&#x2F;p&gt;
+还有 examples 下的imgui_impl_glfw.cpp、imgui_impl_glfw.h、imgui_impl_opengl3.cpp、imgui_impl_opengl3.h&lt;&#x2F;p&gt;
 &lt;p&gt;最后给个图&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;03&#x2F;image-1.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;makefile&quot;&gt;Makefile&lt;&#x2F;h2&gt;

@@ -59,7 +59,7 @@
 
 <article itemscope itemtype="http://schema.org/BlogPosting">
     <header>
-        <h1 itemprop="headline">Unity ECS框架摸索 第二章 HelloWorld</h1>
+        <h1 itemprop="headline">Unity ECS 框架摸索 第二章 HelloWorld</h1>
         <span class="muted">
     <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
          width="16" height="16" fill="none" stroke="currentcolor"
@@ -78,7 +78,7 @@
 </span>
     </header>
     <div itemprop="articleBody">
-      <p>跟随本文，创建一个立方体Entity，利用一个System控制它不断旋转。</p>
+      <p>跟随本文，创建一个立方体Entity，利用一个 System 控制它不断旋转。</p>
 <span id="continue-reading"></span><h2 id="zui-zhong-xiao-guo">最终效果</h2>
 <p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191210-142039-HD.gif" alt="" /></p>
 <h2 id="bu-zou">步骤</h2>
@@ -90,13 +90,13 @@ RotationSpeed.cs</p>
 </span><span>    </span><span style="color:#b48ead;">public float </span><span style="color:#bf616a;">RadiansPerSecond</span><span>;
 </span><span>}
 </span></code></pre>
-<p>然后在Unity编辑器中创建一个Cube的GameObject，挂载ConvertToEntity与刚刚写好的RotationSpeed，并设置RotationSpeed的初始值。具体如下图。</p>
+<p>然后在 Unity 编辑器中创建一个Cube 的GameObject，挂载 ConvertToEntity 与刚刚写好的RotationSpeed，并设置 RotationSpeed 的初始值。具体如下图。</p>
 <p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191210-143136@2x.png" alt="" /></p>
 <p>解释：<br />
-这个Cube本身是一个GameObject，但是挂上ConvertToEntity脚本之后，他会被转化为Entity，他的Transform与Mesh信息也会被转化为相应的Component。<br />
-其中ConversionMode选择ConvertAndDestroy代表转化为Entity之后原本的GameObject会被删除。</p>
-<p>此外，我们挂载的RotationSpeed同样也会成为这个Entity的组件。</p>
-<p>至此，我们添加了一个具有RotationSpeed组件的Cube实体</p>
+这个 Cube 本身是一个GameObject，但是挂上 ConvertToEntity 脚本之后，他会被转化为Entity，他的 Transform 与Mesh 信息也会被转化为相应的Component。<br />
+其中 ConversionMode 选择ConvertAndDestroy 代表转化为 Entity 之后原本的GameObject 会被删除。</p>
+<p>此外，我们挂载的 RotationSpeed 同样也会成为这个Entity 的组件。</p>
+<p>至此，我们添加了一个具有 RotationSpeed 组件的Cube 实体</p>
 <p>接下来写一个控制旋转的系统<br />
 RotationSpeedSystem.cs</p>
 <pre data-lang="cs" style="background-color:#2b303b;color:#c0c5ce;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">RotationSpeedSystem </span><span style="color:#eff1f5;">: </span><span style="color:#a3be8c;">JobComponentSystem </span><span style="color:#eff1f5;">{
@@ -116,9 +116,9 @@ RotationSpeedSystem.cs</p>
 </span><span style="color:#eff1f5;">    }
 </span><span style="color:#eff1f5;">}
 </span></code></pre>
-<p>解释：JobComponentSystem的抽象方法OnUpdate会在每帧调用，重载该方法并在其中规划Job就能实现对相应Component的并行读写。</p>
-<p>上面的代码中利用ForEach传入一个Lambda函数，这个函数筛选拥有Rotation（Unity自带）与RotationSpeed（我们刚刚写的）组件的Entity，然后根据RotationSpeed的信息修改Rotation，从而实现旋转</p>
-<p>然后直接在Unity编辑器中运行即可</p>
+<p>解释：JobComponentSystem 的抽象方法 OnUpdate 会在每帧调用，重载该方法并在其中规划 Job 就能实现对相应Component 的并行读写。</p>
+<p>上面的代码中利用 ForEach 传入一个Lambda 函数，这个函数筛选拥有Rotation（Unity 自带）与RotationSpeed（我们刚刚写的）组件的Entity，然后根据 RotationSpeed 的信息修改Rotation，从而实现旋转</p>
+<p>然后直接在 Unity 编辑器中运行即可</p>
 <p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191210-142039-HD.gif" alt="" /></p>
 
     </div>

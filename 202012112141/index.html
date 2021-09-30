@@ -59,7 +59,7 @@
 
 <article itemscope itemtype="http://schema.org/BlogPosting">
     <header>
-        <h1 itemprop="headline">VS Code写一切 CMake</h1>
+        <h1 itemprop="headline">VS Code 写一切 CMake</h1>
         <span class="muted">
     <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
          width="16" height="16" fill="none" stroke="currentcolor"
@@ -78,11 +78,11 @@
 </span>
     </header>
     <div itemprop="articleBody">
-      <p>VS Code写CMake感觉十分舒适，比VS爽多了</p>
+      <p>VS Code 写 CMake 感觉十分舒适，比 VS 爽多了</p>
 <span id="continue-reading"></span><h2 id="huan-jing-pei-zhi">环境配置</h2>
-<p>安装C++编译器、C++调试器和CMake，并确保它们在PATH中</p>
+<p>安装C++编译器、C++调试器和CMake，并确保它们在 PATH 中</p>
 <h3 id="macos">macOS</h3>
-<p>安装Xcode命令行工具使用它的Clang，然后用brew安装CMake</p>
+<p>安装 Xcode 命令行工具使用它的Clang，然后用 brew 安装CMake</p>
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> xcode-select</span><span style="color:#bf616a;"> --install
 </span><span style="color:#bf616a;">$</span><span> brew install cmake
 </span></code></pre>
@@ -91,39 +91,39 @@
 </span><span style="color:#bf616a;">$</span><span> cmake</span><span style="color:#bf616a;"> --version
 </span></code></pre>
 <h3 id="windows">Windows</h3>
-<p>使用MSYS2安装mingw-w64集成的Clang和CMake，并把它们所在的目录添加的环境变量，如果你使用的是64位Windows且使用默认路径安装了MSYS2，那么这个目录应该是C:\msys64\mingw32\bin</p>
+<p>使用MSYS2安装mingw-w64集成的 Clang 和CMake，并把它们所在的目录添加的环境变量，如果你使用的是64位 Windows 且使用默认路径安装了MSYS2，那么这个目录应该是C:\msys64\mingw32\bin</p>
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> pacman</span><span style="color:#bf616a;"> -S</span><span> mingw-w64-x86_64-clang
 </span><span style="color:#bf616a;">$</span><span> pacman</span><span style="color:#bf616a;"> -S</span><span> mingw-w64-x86_64_cmake
 </span></code></pre>
-<p>然后打开PowerShell验证是否安装成功，如果环境变量没有生效需要重启</p>
+<p>然后打开 PowerShell 验证是否安装成功，如果环境变量没有生效需要重启</p>
 <pre data-lang="ps1" style="background-color:#2b303b;color:#c0c5ce;" class="language-ps1 "><code class="language-ps1" data-lang="ps1"><span>PS </span><span style="color:#96b5b4;">clang.exe </span><span>--version
 </span><span>PS </span><span style="color:#96b5b4;">cmake.exe </span><span>--version
 </span></code></pre>
-<h2 id="xu-yao-an-zhuang-de-vs-codecha-jian">需要安装的VS Code插件</h2>
+<h2 id="xu-yao-an-zhuang-de-vs-code-cha-jian">需要安装的VS Code 插件</h2>
 <ul>
 <li>
 <p>C/C++插件</p>
 </li>
 <li>
-<p>CMake插件用于CMakeLists.txt的语法高亮</p>
+<p>CMake 插件用于CMakeLists.txt 的语法高亮</p>
 </li>
 <li>
-<p>CMake Tools插件用于CMake项目的构建、安装、调试等</p>
+<p>CMake Tools 插件用于 CMake 项目的构建、安装、调试等</p>
 </li>
 </ul>
-<h2 id="cmakexiang-mu-chuang-jian">CMake项目创建</h2>
-<p>创建一个文件夹HelloWorld，用VS Code打开</p>
-<p>在macOS下键入Cmd + Shift + P，或者在Windows下键入Ctrl + Shift + P，呼出命令面板</p>
-<p>搜索CMake: Quick Start命令，找到后回车</p>
+<h2 id="cmake-xiang-mu-chuang-jian">CMake 项目创建</h2>
+<p>创建一个文件夹HelloWorld，用VS Code 打开</p>
+<p>在 macOS 下键入Cmd + Shift + P，或者在 Windows 下键入Ctrl + Shift + P，呼出命令面板</p>
+<p>搜索CMake: Quick Start 命令，找到后回车</p>
 <p><img src="https://hebomou.top/wp-content/uploads/2020/12/cmake_quick_start.jpg" alt="" /></p>
 <p>输入项目名为HelloWorld</p>
 <p><img src="https://hebomou.top/wp-content/uploads/2020/12/cmake_project_name.jpg" alt="" /></p>
-<p>然后选择Executable创建可执行文件</p>
+<p>然后选择 Executable 创建可执行文件</p>
 <p><img src="https://hebomou.top/wp-content/uploads/2020/12/cmake_target.png" alt="" /></p>
-<p>然后就会看到CMake Tools插件在目录下生成了main.cpp和CMakeLists.txt，打开可以看到它的代码就是输出一个字符串</p>
+<p>然后就会看到CMake Tools 插件在目录下生成了main.cpp 和CMakeLists.txt，打开可以看到它的代码就是输出一个字符串</p>
 <h2 id="diao-shi-yun-xing">调试运行</h2>
 <p>按下Ctrl + F5就行了</p>
-<p>比较折磨的是，CMake Tools插件一开始就没有集成到launch.json和tasks.json，所以需要使用它自己定的快捷键来构建和调试，但是最近已经有人提了issue并且受到了重视所以应该也快了吧</p>
+<p>比较折磨的是，CMake Tools 插件一开始就没有集成到launch.json 和tasks.json，所以需要使用它自己定的快捷键来构建和调试，但是最近已经有人提了 issue 并且受到了重视所以应该也快了吧</p>
 
     </div>
 

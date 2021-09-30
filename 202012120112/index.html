@@ -59,7 +59,7 @@
 
 <article itemscope itemtype="http://schema.org/BlogPosting">
     <header>
-        <h1 itemprop="headline">CMake项目结构的设计</h1>
+        <h1 itemprop="headline">CMake 项目结构的设计</h1>
         <span class="muted">
     <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
          width="16" height="16" fill="none" stroke="currentcolor"
@@ -78,14 +78,14 @@
 </span>
     </header>
     <div itemprop="articleBody">
-      <p>CMake是一种比较灵活的构建工具，正因如此导致很多CMake项目的结构混乱不堪，甚至包括国外某知名大厂的高star项目，本文将介绍一种目前广泛使用的比较合理的CMake项目结构</p>
+      <p>CMake 是一种比较灵活的构建工具，正因如此导致很多 CMake 项目的结构混乱不堪，甚至包括国外某知名大厂的高 star 项目，本文将介绍一种目前广泛使用的比较合理的 CMake 项目结构</p>
 <span id="continue-reading"></span>
-<p>一般来说，项目中会有src文件夹、include文件夹和external文件夹</p>
-<p>src文件夹中存放项目源文件和私有的头文件，私有的头文件是指仅供目标内部使用的头文件，其他目标不应当有权访问这些头文件，出于简洁考虑，就跟源文件堆在一起好了</p>
-<p>include文件夹存放公有的头文件，可以提供给链接了本目标的其他目标使用，把本目标的API暴露给其他目标，一般安装类库后就直接把里面的东西都扔进类似/usr/include的路径下</p>
-<p>external文件夹存放项目所依赖的外部开源库，也有人喜欢命名为third_party</p>
-<p>需要注意一个问题是C++20提出的Modules，它允许我们使用代码来指定暴露给外部的API，这样的话也许根本就不需要区分公有跟私有头文件，并且头文件分开两个路径放也非常的难受，但是按照目前编译器对Modules的支持来看，还是一两年后再说吧<br />
-等Modules都能普及了说不定CMake早就凉透了本文也没用了哈哈没想到吧</p>
+<p>一般来说，项目中会有 src 文件夹、include 文件夹和 external 文件夹</p>
+<p>src 文件夹中存放项目源文件和私有的头文件，私有的头文件是指仅供目标内部使用的头文件，其他目标不应当有权访问这些头文件，出于简洁考虑，就跟源文件堆在一起好了</p>
+<p>include 文件夹存放公有的头文件，可以提供给链接了本目标的其他目标使用，把本目标的 API 暴露给其他目标，一般安装类库后就直接把里面的东西都扔进类似/usr/include 的路径下</p>
+<p>external 文件夹存放项目所依赖的外部开源库，也有人喜欢命名为third_party</p>
+<p>需要注意一个问题是C++20提出的Modules，它允许我们使用代码来指定暴露给外部的API，这样的话也许根本就不需要区分公有跟私有头文件，并且头文件分开两个路径放也非常的难受，但是按照目前编译器对 Modules 的支持来看，还是一两年后再说吧<br />
+等 Modules 都能普及了说不定CMake 早就凉透了本文也没用了哈哈没想到吧</p>
 <h2 id="dan-lei-ku-xiang-mu">单类库项目</h2>
 <p>于是我们直接来看一个单类库项目的例子，单类库就是指项目只包含一个库目标，其他项目中的目标链接这个单独的目标就能访问该单类库项目提供的所有API</p>
 <h3 id="xiang-mu-de-mu-lu-jie-gou">项目的目录结构</h3>
@@ -102,7 +102,7 @@
 </span></code></pre>
 <h3 id="example-library-cmakelists-txt">example_library/CMakeLists.txt</h3>
 <p>稍微解释一下这段代码<br />
-添加external子目录，注意external子目录下的CMakeLists.txt可以直接为空文件，因为我们项目里没有外部库；添加一个库目标example_library，它的源文件只有example_library/src/example_library.cpp；把example_library/include/example_library中的头文件提供给外部目标使用；而example_library/src为私有头文件目录，仅供目标example_library内部使用</p>
+添加 external 子目录，注意 external 子目录下的CMakeLists.txt 可以直接为空文件，因为我们项目里没有外部库；添加一个库目标example_library，它的源文件只有example_library/src/example_library.cpp；把example_library/include/example_library 中的头文件提供给外部目标使用；而example_library/src 为私有头文件目录，仅供目标example_library 内部使用</p>
 <pre data-lang="cmake" style="background-color:#2b303b;color:#c0c5ce;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span style="color:#96b5b4;">cmake_minimum_required</span><span>(</span><span style="color:#bf616a;">VERSION </span><span>3.0.0)
 </span><span style="color:#96b5b4;">project</span><span>(example_library)
 </span><span>
@@ -136,7 +136,7 @@
 </span><span style="color:#b48ead;">#endif  </span><span style="color:#65737e;">// EXAMPLE_LIBRARY_H
 </span></code></pre>
 <h3 id="example-library-src-example-library-cpp">example_library/src/example_library.cpp</h3>
-<p>定义刚刚声明的函数，并使用utils.h中提供的内联函数</p>
+<p>定义刚刚声明的函数，并使用utils.h 中提供的内联函数</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">example_library/example_library.h</span><span>&gt;
 </span><span>
 </span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">utils.h</span><span>&gt;
@@ -146,13 +146,13 @@
 </span><span>}
 </span></code></pre>
 <h3 id="chan-shu">阐述</h3>
-<p>这样对于其他目标而言，可以使用target_link_libraries链接example_library，然后在代码里添加一个#include &lt;example_library/example_library.h&gt;，就能调用这个单类库项目提供的print方法了<br />
-然后utils.h只能example_library内部使用，对于其他目标来说是不可见的</p>
-<p>注意到一个问题是example_library/include里面没有直接存放头文件，而是多套了一个example_library文件夹，这样设计看起来非常冗余，但是其实它的目的是避免头文件重名而造成冲突<br />
-另外的考量在于，安装项目的时候，example_library/include目录下的东西应当被扔进系统安装路径的include文件夹里，这样设计会比较清晰</p>
+<p>这样对于其他目标而言，可以使用target_link_libraries 链接example_library，然后在代码里添加一个#include &lt;example_library/example_library.h&gt;，就能调用这个单类库项目提供的 print 方法了<br />
+然后utils.h 只能example_library 内部使用，对于其他目标来说是不可见的</p>
+<p>注意到一个问题是example_library/include 里面没有直接存放头文件，而是多套了一个example_library 文件夹，这样设计看起来非常冗余，但是其实它的目的是避免头文件重名而造成冲突<br />
+另外的考量在于，安装项目的时候，example_library/include 目录下的东西应当被扔进系统安装路径的 include 文件夹里，这样设计会比较清晰</p>
 <h2 id="dan-ying-yong-xiang-mu">单应用项目</h2>
 <p>单应用项目构建后只会生成一个可执行程序，用于构建一个应用程序</p>
-<p>相比于单类库项目，它不会被别的目标链接，所以不需要暴露头文件，因此不需要include文件夹</p>
+<p>相比于单类库项目，它不会被别的目标链接，所以不需要暴露头文件，因此不需要 include 文件夹</p>
 <p>目录结构如下，具体代码就不贴了</p>
 <pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>- example_application
 </span><span>  - CMakeLists.txt
@@ -179,7 +179,7 @@
 </span><span>    - src
 </span></code></pre>
 <h2 id="duo-lei-ku-dan-ying-yong-xiang-mu">多类库单应用项目</h2>
-<p>比较复杂的项目，类库需要拆分成多个，所以所有的具体类库目录都扔进一个libs目录下保持项目的整洁</p>
+<p>比较复杂的项目，类库需要拆分成多个，所以所有的具体类库目录都扔进一个 libs 目录下保持项目的整洁</p>
 <pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>- your_project_name
 </span><span>  - app
 </span><span>    - CMakeLists.txt
@@ -201,15 +201,15 @@
 </span><span>      - src
 </span></code></pre>
 <h2 id="qi-ta-qing-kuang">其他情况</h2>
-<p>如果是多应用的情况可以建一个apps目录，把各个具体的应用目录扔进去</p>
-<p>如果是多类库带多个使用例子的情况可以参考多应用的情况，把apps目录改成examples目录</p>
+<p>如果是多应用的情况可以建一个 apps 目录，把各个具体的应用目录扔进去</p>
+<p>如果是多类库带多个使用例子的情况可以参考多应用的情况，把 apps 目录改成examples 目录</p>
 <p>实际情况中可以做类似的修改，保证项目目录结构的整齐简洁就行了</p>
 <h2 id="guan-yu-tuo-feng-ming-ming-fa">关于驼峰命名法</h2>
 <p>没错，很关键，虽然C++标准库用的是全小写的下划线命名法，C++标准委员会也推荐下划线，但是下划线随随便便一个变量就会长长一坨，不用驼峰这能忍吗，这不能忍</p>
 <p>如果使用驼峰，首先就是源文件头文件内的变量、函数和类都使用驼峰命名法</p>
-<p>然后是CMakeLists.txt中的目标名和项目名都应当使用驼峰命名</p>
+<p>然后是CMakeLists.txt 中的目标名和项目名都应当使用驼峰命名</p>
 <p>最后到了目录结构，项目根目录、具体类库目录、具体应用目录、头文件和源文件都应当使用首字母大写的驼峰，其他目录仍然保持下划线命名法<br />
-因为include目录最好跟系统的include路径保持一致，并且兼容旧有项目，所以都是用下划线命名法；而头文件和源文件应当与类名保持一致，具体类库和具体应用与CMakeLists.txt中的目标名保持一致，项目根目录跟CMakeLists.txt中的项目名保持一致，所以统一使用驼峰命名法</p>
+因为 include 目录最好跟系统的include 路径保持一致，并且兼容旧有项目，所以都是用下划线命名法；而头文件和源文件应当与类名保持一致，具体类库和具体应用与CMakeLists.txt 中的目标名保持一致，项目根目录跟CMakeLists.txt 中的项目名保持一致，所以统一使用驼峰命名法</p>
 <p>不过混用有一点丑，激进一点的可以直接全部换成驼峰</p>
 <p>比如多类库单应用项目的目录结构就可以长这样</p>
 <pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>- YourProjectName

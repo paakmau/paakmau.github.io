@@ -78,14 +78,14 @@
 </span>
     </header>
     <div itemprop="articleBody">
-      <p>讲真我从高中到现在就没有手写过一次快排（是sort不够好吗）</p>
+      <p>讲真我从高中到现在就没有手写过一次快排（是 sort 不够好吗）</p>
 <span id="continue-reading"></span>
 <p>然后最近看书的时候看到划分数据块并行优化的思路，发现快排和堆排都能多线程优化</p>
 <p>于是写一个试试</p>
 <h2 id="si-lu">思路</h2>
 <p>注意到快排在每次迭代后原数组都会被分成没有交集的两块，那么他们就可以并行；堆排也同理</p>
 <h2 id="zhu-yi">注意</h2>
-<p>有一个问题是不能每次迭代都新开线程（我CPU就四个核心线程多也没用）<br />
+<p>有一个问题是不能每次迭代都新开线程（我 CPU 就四个核心线程多也没用）<br />
 那就开一个线程池，把迭代后产生的排序任务放到队列里，有一点类似我们递归爆栈时会用到的手写栈</p>
 <p>还有一个问题是，在区间长度比较小的时候，由于多线程的调度成本，直接在本线程内递归的性能反而更好</p>
 <h2 id="xian-cheng-chi">线程池</h2>
@@ -142,7 +142,7 @@
 </span><span style="color:#eff1f5;">}</span><span>;
 </span></code></pre>
 <h2 id="he-xin-dai-ma">核心代码</h2>
-<p>每一个SortFunc对象都是快排中的一次迭代，给他传一个区间就行</p>
+<p>每一个 SortFunc 对象都是快排中的一次迭代，给他传一个区间就行</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">struct </span><span>SortFunc {
 </span><span>    ThreadPool &amp;pool;
 </span><span>    vector&lt;</span><span style="color:#b48ead;">int</span><span>&gt; &amp;arr;

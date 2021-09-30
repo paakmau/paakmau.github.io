@@ -59,7 +59,7 @@
 
 <article itemscope itemtype="http://schema.org/BlogPosting">
     <header>
-        <h1 itemprop="headline">Vulkan画三角形「六」 创建交换链</h1>
+        <h1 itemprop="headline">Vulkan 画三角形「六」 创建交换链</h1>
         <span class="muted">
     <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
          width="16" height="16" fill="none" stroke="currentcolor"
@@ -84,7 +84,7 @@
 <p>还是先创建一个成员变量</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkSwapchainKHR swapchain;
 </span></code></pre>
-<p>然后添加一个成员函数并在initVulkan中调用它</p>
+<p>然后添加一个成员函数并在 initVulkan 中调用它</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">initVulkan</span><span>() {
 </span><span>    </span><span style="color:#bf616a;">createInstance</span><span>();
 </span><span>    </span><span style="color:#bf616a;">createSurface</span><span>();
@@ -120,11 +120,11 @@
 </span><span>    }
 </span><span>}
 </span></code></pre>
-<p>稍微说明一下，VkSurfaceFormatKHR结构体包含format和colorSpace两个成员。format成员表示颜色通道和类型，例如最常见的VK_FORMAT_B8G8R8A8_SRGB格式就意味着每个像素由B、G、R、A四个通道组成，每个通道各占8位，总共32位。而colorSpace通过VK_COLOR_SPACE_SRGB_NONLINEAR_KHR标记来是否支持SRGB的颜色空间</p>
-<p>然后上面的代码中，我们优先选择颜色空间为SRGB且格式为VK_FORMAT_B8G8R8A8_SRGB的表面格式，如果没有就直接使用数组中的第一个格式</p>
+<p>稍微说明一下，VkSurfaceFormatKHR 结构体包含 format 和colorSpace 两个成员。format 成员表示颜色通道和类型，例如最常见的VK_FORMAT_B8G8R8A8_SRGB 格式就意味着每个像素由B、G、R、A 四个通道组成，每个通道各占8位，总共32位。而 colorSpace 通过VK_COLOR_SPACE_SRGB_NONLINEAR_KHR 标记来是否支持 SRGB 的颜色空间</p>
+<p>然后上面的代码中，我们优先选择颜色空间为 SRGB 且格式为VK_FORMAT_B8G8R8A8_SRGB 的表面格式，如果没有就直接使用数组中的第一个格式</p>
 <h3 id="xuan-qu-zhan-shi-mo-shi">选取展示模式</h3>
 <p>接下来我们选择展示模式</p>
-<p>展示模式是交换链的最重要的配置，因为它代表了把图片显示到屏幕上的实际条件。Vulkan中有四种可选的展示模式</p>
+<p>展示模式是交换链的最重要的配置，因为它代表了把图片显示到屏幕上的实际条件。Vulkan 中有四种可选的展示模式</p>
 <ul>
 <li>VK_PRESENT_MODE_IMMEDIATE_KHR<br />
 应用程序提交的图像会被立刻传递到屏幕上，这可能会造成撕裂现象</li>
@@ -135,13 +135,13 @@
 <li>VK_PRESENT_MODE_MAILBOX_KHR<br />
 这又是第二个模式的另一个变种。不同之处在于，队列满的时候不会阻塞应用程序，而是把队列中的旧图像直接替换为应用程序新渲染好的图像。这个模式可以用于实现三重缓冲，比起垂直同步的双重缓冲，它能够减少很多的延迟问题，且也能避免撕裂现象</li>
 </ul>
-<p>不过只有VK_PRESENT_MODE_FIFO_KHR模式是确保能够可用的，为了方便，我们可以直接使用这个模式</p>
+<p>不过只有VK_PRESENT_MODE_FIFO_KHR 模式是确保能够可用的，为了方便，我们可以直接使用这个模式</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#65737e;">// 选取展示模式
 </span><span>VkPresentModeKHR presentModeChosen = VK_PRESENT_MODE_FIFO_KHR;
 </span></code></pre>
 <h3 id="xuan-qu-jiao-huan-fan-wei">选取交换范围</h3>
-<p>这个就比较简单了，就是通过窗体的分辨率来指定交换链中图像的宽和高。我们可以通过获取VkSurfaceCapabilitiesKHR结构体来得到窗体的当前分辨率</p>
-<p>但是有的窗体管理器可能不太一样，它们允许我们指定不同的值。这种情况下，表示当前窗体分辨率的成员currentExtent中的高和宽都是uint32_t的最大值，我们需要通过minImageExtent和maxImageExtent来选择一个合适的交换范围。下面的代码就处理了这种情况</p>
+<p>这个就比较简单了，就是通过窗体的分辨率来指定交换链中图像的宽和高。我们可以通过获取 VkSurfaceCapabilitiesKHR 结构体来得到窗体的当前分辨率</p>
+<p>但是有的窗体管理器可能不太一样，它们允许我们指定不同的值。这种情况下，表示当前窗体分辨率的成员 currentExtent 中的高和宽都是uint32_t 的最大值，我们需要通过 minImageExtent 和maxImageExtent 来选择一个合适的交换范围。下面的代码就处理了这种情况</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#65737e;">// 选择交换范围
 </span><span>VkSurfaceCapabilitiesKHR capabilities;
 </span><span style="color:#bf616a;">vkGetPhysicalDeviceSurfaceCapabilitiesKHR</span><span>(physicalDevice, surface, &amp;capabilities);
@@ -165,8 +165,8 @@
 </span><span>createInfo.</span><span style="color:#bf616a;">imageUsage </span><span>= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 </span></code></pre>
 <p>上面这段代码大部分内容只是把之前选取好的配置填进去<br />
-后面的imageArrayLayers表示每张图像由多少层组成，如果不是要开发立体三维应用，填一就行了<br />
-最后的imageUsage是一个位域，用于指定我们会使用交换链中的图像来做什么类型的操作。我们只是需要直接渲染到图像上，这意味着交换链中的图像只是被当作颜色附着来使用，所以使用了VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT的标志位</p>
+后面的 imageArrayLayers 表示每张图像由多少层组成，如果不是要开发立体三维应用，填一就行了<br />
+最后的 imageUsage 是一个位域，用于指定我们会使用交换链中的图像来做什么类型的操作。我们只是需要直接渲染到图像上，这意味着交换链中的图像只是被当作颜色附着来使用，所以使用了VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT 的标志位</p>
 <p>接下来需要指定图像的共享模式</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>createInfo.</span><span style="color:#bf616a;">imageSharingMode </span><span>= VK_SHARING_MODE_EXCLUSIVE;
 </span></code></pre>
@@ -178,18 +178,18 @@
 <li>VK_SHARING_MODE_CONCURRENT<br />
 图像能被用于多个不同的队列族，不需要显式的所有权传递</li>
 </ul>
-<p>不过对于大多数硬件而言，图形队列族和展示队列族都可以是同一个队列族，并且前文中我们所选择的队列族也同时支持图形与展示，图像不会在不同队列族之间共享。因此我们使用VK_SHARING_MODE_EXCLUSIVE就行了<br />
-另外，如果是VK_SHARING_MODE_CONCURRENT的话，还需要在结构体中指定哪些队列族之间需要共享图像</p>
+<p>不过对于大多数硬件而言，图形队列族和展示队列族都可以是同一个队列族，并且前文中我们所选择的队列族也同时支持图形与展示，图像不会在不同队列族之间共享。因此我们使用VK_SHARING_MODE_EXCLUSIVE 就行了<br />
+另外，如果是VK_SHARING_MODE_CONCURRENT 的话，还需要在结构体中指定哪些队列族之间需要共享图像</p>
 <p>然后指定交换链中图像的变换，比如旋转90度或者垂直翻转这些。我们不需要这样的功能，因此使用当前变换即可</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>createInfo.</span><span style="color:#bf616a;">preTransform </span><span>= capabilities.</span><span style="color:#bf616a;">currentTransform</span><span>;
 </span></code></pre>
-<p>接着指定一下混合透明度，compositeAlpha成员用于指定Alpha通道是否用于跟窗体系统中的其他窗体进行混合，我们几乎不需要考虑这种情况，因此使用VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR</p>
+<p>接着指定一下混合透明度，compositeAlpha 成员用于指定 Alpha 通道是否用于跟窗体系统中的其他窗体进行混合，我们几乎不需要考虑这种情况，因此使用VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>createInfo.</span><span style="color:#bf616a;">compositeAlpha </span><span>= VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
 </span></code></pre>
 <p>接下来传入presentMode</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>createInfo.</span><span style="color:#bf616a;">presentMode </span><span>= presentModeChosen;
 </span></code></pre>
-<p>然后是指定剪裁，把clipped设为VK_TRUE意味着我们不考虑被遮挡的像素的颜色，比如它前面可能有一别的窗体。除非真的有回读这些像素的需要，为了最佳的性能，我们还是启用剪裁</p>
+<p>然后是指定剪裁，把 clipped 设为VK_TRUE 意味着我们不考虑被遮挡的像素的颜色，比如它前面可能有一别的窗体。除非真的有回读这些像素的需要，为了最佳的性能，我们还是启用剪裁</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>createInfo.</span><span style="color:#bf616a;">clipped </span><span>= VK_TRUE;
 </span></code></pre>
 <p>下一个是oldSwapchain。在运行过程中，你的交换链可能会失效或者失去优化，比如窗体的尺寸被用户调整的时候。这种情况下我们需要重新从头开始创建交换链，之前的交换链就必须在这里被传入。这是一个非常复杂的话题，我们先暂时假设我们只会创建一个交换链</p>
@@ -200,7 +200,7 @@
 </span><span>    </span><span style="color:#b48ead;">throw </span><span>std::</span><span style="color:#bf616a;">runtime_error</span><span>(&quot;</span><span style="color:#a3be8c;">failed to create swapchain!</span><span>&quot;);
 </span></code></pre>
 <h2 id="xiao-hui-jiao-huan-lian">销毁交换链</h2>
-<p>修改cleanup函数如下</p>
+<p>修改 cleanup 函数如下</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">cleanup</span><span>() {
 </span><span>    </span><span style="color:#bf616a;">vkDestroySwapchainKHR</span><span>(device, swapchain, </span><span style="color:#d08770;">nullptr</span><span>);
 </span><span>    </span><span style="color:#bf616a;">vkDestroyDevice</span><span>(device, </span><span style="color:#d08770;">nullptr</span><span>);
@@ -216,7 +216,7 @@
 <p>添加一个成员变量用于保存它们的句柄</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>std::vector&lt;VkImage&gt; swapchainImages;
 </span></code></pre>
-<p>然后在createSwapchain函数的末尾添加如下代码</p>
+<p>然后在 createSwapchain 函数的末尾添加如下代码</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>uint32_t imageCount;
 </span><span style="color:#bf616a;">vkGetSwapchainImagesKHR</span><span>(device, swapchain, &amp;imageCount, </span><span style="color:#d08770;">nullptr</span><span>);
 </span><span>swapchainImages.</span><span style="color:#bf616a;">resize</span><span>(imageCount);
@@ -227,7 +227,7 @@
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkFormat swapchainImageFormat;
 </span><span>VkExtent2D swapchainExtent;
 </span></code></pre>
-<p>再在createSwapchain函数的末尾添加如下代码</p>
+<p>再在 createSwapchain 函数的末尾添加如下代码</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>swapchainImageFormat = formatChosen.</span><span style="color:#bf616a;">format</span><span>;
 </span><span>swapchainExtent = actualExtent;
 </span></code></pre>

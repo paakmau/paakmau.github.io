@@ -31,7 +31,7 @@
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span&gt;;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;然后发现一个问题是如果str没有初始化，此时有多个线程同时访问GetStr方法，它们可能会同时把这个str初始化多次。虽然这里用的是string类型，问题不大，但如果是其他类型就很可能会爆炸&lt;&#x2F;p&gt;
+&lt;p&gt;然后发现一个问题是如果 str 没有初始化，此时有多个线程同时访问 GetStr 方法，它们可能会同时把这个 str 初始化多次。虽然这里用的是 string 类型，问题不大，但如果是其他类型就很可能会爆炸&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;jian-dan-jia-suo&quot;&gt;简单加锁&lt;&#x2F;h2&gt;
 &lt;p&gt;解决并发访问问题，可以加个锁&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Test
@@ -49,10 +49,10 @@
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span&gt;;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;然而这样写也有问题，假设对于str的访问（除了初始化）都是只读的，那么在str初始化之后其实各个线程访问str都是不会产生竞争条件的，根本不需要上锁，因此这样写会造成巨大的性能浪费&lt;&#x2F;p&gt;
+&lt;p&gt;然而这样写也有问题，假设对于 str 的访问（除了初始化）都是只读的，那么在 str 初始化之后其实各个线程访问str 都是不会产生竞争条件的，根本不需要上锁，因此这样写会造成巨大的性能浪费&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;double-check&quot;&gt;Double check&lt;&#x2F;h2&gt;
 &lt;p&gt;简单地说就是在上锁之前检查一下是否已经初始化，如果已经初始化了，就不用上锁。其实很简单，就是写起来不怎么高雅&lt;&#x2F;p&gt;
-&lt;p&gt;为什么叫做Double check呢，因为上锁之后还要检查一下初始化情况，所以总共检查两次&lt;&#x2F;p&gt;
+&lt;p&gt;为什么叫做Double check 呢，因为上锁之后还要检查一下初始化情况，所以总共检查两次&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Test
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    shared_ptr&amp;lt;string&amp;gt; str;
@@ -71,7 +71,7 @@
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span&gt;;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;然而这样写还是有风险。在某一个线程拿到了锁，初始化到一半的时候，也就是str的指针非空且分配了内存但是它内部数据没有初始化；而此时另一个线程却可以直接拿到str，且str内部的数据是爆炸的，就会产生未定义行为。这种情况的原因可能是编译器指令重排或者处理器乱序执行&lt;&#x2F;p&gt;
+&lt;p&gt;然而这样写还是有风险。在某一个线程拿到了锁，初始化到一半的时候，也就是 str 的指针非空且分配了内存但是它内部数据没有初始化；而此时另一个线程却可以直接拿到str，且 str 内部的数据是爆炸的，就会产生未定义行为。这种情况的原因可能是编译器指令重排或者处理器乱序执行&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;std-call-once&quot;&gt;std::call_once&lt;&#x2F;h2&gt;
 &lt;p&gt;C++钦定的只执行一次，看代码就行了&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Test
@@ -114,31 +114,31 @@
 		<link href="https://paakmau.github.io/202004201618/" type="text/html"/>
 		<id>https://paakmau.github.io/202004201618/</id>
 		<content type="html">&lt;p&gt;这两个东西都是并行程序设计中必须考虑的问题&lt;br &#x2F;&gt;
-他跟多核CPU的缓存机制有关&lt;&#x2F;p&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;cpuhuan-cun&quot;&gt;CPU缓存&lt;&#x2F;h2&gt;
-&lt;p&gt;因为CPU处理的速度远大于内存读写，因此在CPU的每个核心都会有小容量的高速缓存用于保存内存中的数据，CPU的处理都会直接基于缓存而不是内存&lt;&#x2F;p&gt;
+他跟多核 CPU 的缓存机制有关&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;cpu-huan-cun&quot;&gt;CPU 缓存&lt;&#x2F;h2&gt;
+&lt;p&gt;因为 CPU 处理的速度远大于内存读写，因此在 CPU 的每个核心都会有小容量的高速缓存用于保存内存中的数据，CPU 的处理都会直接基于缓存而不是内存&lt;&#x2F;p&gt;
 &lt;p&gt;把内存的东西搬到缓存里开销是比较大的，因此每次缓存的时候会把一块比较大的连续内存区域搬进去，这块区域就是一条Cache Line&lt;br &#x2F;&gt;
 整块内存就会被划分为一条一条的Cache Line&lt;&#x2F;p&gt;
-&lt;p&gt;所以一个核心如果要访问某块内存，他必须要把这个块内存所在的Cache Line搬进自己的缓存里&lt;&#x2F;p&gt;
+&lt;p&gt;所以一个核心如果要访问某块内存，他必须要把这个块内存所在的Cache Line 搬进自己的缓存里&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;ping-pang-huan-cun&quot;&gt;乒乓缓存&lt;&#x2F;h2&gt;
 &lt;p&gt;如果两个在跑在不同核心上的线程同时访问同一块内存，比如访问同一个全局的原子变量&lt;br &#x2F;&gt;
 那么这两个核心的缓存中就都会有包含该变量的Cache Line&lt;&#x2F;p&gt;
-&lt;p&gt;然后一个线程使用原子操作修改了这个原子变量，那么另一个线程所在的核心就应该修改这个变量所在的Cache Line，来让这两个核心上的这条Cache Line保持一致&lt;&#x2F;p&gt;
+&lt;p&gt;然后一个线程使用原子操作修改了这个原子变量，那么另一个线程所在的核心就应该修改这个变量所在的Cache Line，来让这两个核心上的这条Cache Line 保持一致&lt;&#x2F;p&gt;
 &lt;p&gt;于是另一个线程不得不等待缓存更新后才能继续处理&lt;br &#x2F;&gt;
-如果这样的线程很多，就会导致这条Cache Line在多个CPU核心之间传来传去，这就是乒乓缓存&lt;&#x2F;p&gt;
-&lt;p&gt;这样的话，多个线程对同一个原子变量的原子操作，由于需要等待Cache Line反复传递，就会非常缓慢，即使这些线程是并行的&lt;&#x2F;p&gt;
+如果这样的线程很多，就会导致这条Cache Line 在多个 CPU 核心之间传来传去，这就是乒乓缓存&lt;&#x2F;p&gt;
+&lt;p&gt;这样的话，多个线程对同一个原子变量的原子操作，由于需要等待Cache Line 反复传递，就会非常缓慢，即使这些线程是并行的&lt;&#x2F;p&gt;
 &lt;p&gt;互斥锁也同理&lt;br &#x2F;&gt;
 但是有一个区别，互斥锁一般是操作系统级别，而原子操作一般是处理器级别&lt;br &#x2F;&gt;
 那么在等待缓存更新时，使用互斥锁的情况下，操作系统可以安排别的线程先执行；而如果使用原子操作，处理器只能继续当前的线程，也就是只能等待缓存的更新&lt;&#x2F;p&gt;
-&lt;p&gt;另外，除了原子操作和互斥锁，java中的volatile变量以及C++中的内存屏障也都可能引发乒乓缓存&lt;&#x2F;p&gt;
+&lt;p&gt;另外，除了原子操作和互斥锁，java 中的 volatile 变量以及C++中的内存屏障也都可能引发乒乓缓存&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;wei-gong-xiang&quot;&gt;伪共享&lt;&#x2F;h2&gt;
-&lt;p&gt;跟乒乓缓存相类似，如果两个核心访问的不是同一原子变量，但是这两个原子变量在同一个Cache Line里，那么一旦产生修改这条Cache Line还是会被传来传去&lt;&#x2F;p&gt;
-&lt;p&gt;举个简单的例子，一个处理器的四个核心各跑一个线程，分别处理一个长度为四的数组的四个原子变量（假设它们都在同一个Cache Line中）&lt;br &#x2F;&gt;
-看起来这四个核心互不影响，但一旦出现写操作，Cache Line就还是会传来传去&lt;&#x2F;p&gt;
+&lt;p&gt;跟乒乓缓存相类似，如果两个核心访问的不是同一原子变量，但是这两个原子变量在同一个Cache Line 里，那么一旦产生修改这条Cache Line 还是会被传来传去&lt;&#x2F;p&gt;
+&lt;p&gt;举个简单的例子，一个处理器的四个核心各跑一个线程，分别处理一个长度为四的数组的四个原子变量（假设它们都在同一个Cache Line 中）&lt;br &#x2F;&gt;
+看起来这四个核心互不影响，但一旦出现写操作，Cache Line 就还是会传来传去&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Lock-free数据结构设计</title>
+		<title>Lock-free 数据结构设计</title>
 		<published>2020-04-06T00:19:29+00:00</published>
 		<updated>2020-04-06T00:19:29+00:00</updated>
 		<link href="https://paakmau.github.io/202004060019/" type="text/html"/>
@@ -149,14 +149,14 @@
 大多数情况下，无锁数据结构看起来像使用了一个自旋锁，但可以避免产生死锁&lt;&#x2F;p&gt;
 &lt;p&gt;不需要等待的数据结构称为无等待数据结构（废话）&lt;br &#x2F;&gt;
 无等待数据结构首先是一个无锁数据结构，然后就是访问资源时候不会有冲突，也不需要等待，通常需要很精巧的设计，比较难以实现&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;casyuan-yu&quot;&gt;CAS原语&lt;&#x2F;h2&gt;
+&lt;h2 id=&quot;cas-yuan-yu&quot;&gt;CAS 原语&lt;&#x2F;h2&gt;
 &lt;p&gt;Compare and swap，比较并交换的原语&lt;br &#x2F;&gt;
 描述起来比较绕，我们直接看看怎么用&lt;&#x2F;p&gt;
 &lt;p&gt;如果希望修改某个变量，我们首先对它进行备份，然后这个备份上进行修改&lt;br &#x2F;&gt;
 最后把原变量用备份的指针替换掉&lt;&#x2F;p&gt;
 &lt;p&gt;在最后一步的时候如果检测到这个变量已经被其他线程修改了，那就要重新对新的变量执行上述的修改，然后再检测修改尝试替换，不断重复&lt;&#x2F;p&gt;
-&lt;p&gt;这个检测并替换的步骤就是用CAS原语来实现的&lt;&#x2F;p&gt;
-&lt;p&gt;另外，如果多个线程同时访问同一个资源，就可能因为资源被修改而陷入重新修改资源再CAS的循环。这种情况被称为活锁，也就是上文中所说的「等待」&lt;br &#x2F;&gt;
+&lt;p&gt;这个检测并替换的步骤就是用 CAS 原语来实现的&lt;&#x2F;p&gt;
+&lt;p&gt;另外，如果多个线程同时访问同一个资源，就可能因为资源被修改而陷入重新修改资源再 CAS 的循环。这种情况被称为活锁，也就是上文中所说的「等待」&lt;br &#x2F;&gt;
 只要线程赶在其他线程修改资源之前，完成了修改，并且成功CAS，他就解开了活锁&lt;br &#x2F;&gt;
 活锁的解开是随机的，看起来一个线程永远陷入活锁是可能的，但是一般来说线程之间竞争不会这么激烈（如果会的话那可以考虑重写了）&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;wu-suo-de-you-xu-shu-zu&quot;&gt;无锁的有序数组&lt;&#x2F;h2&gt;
@@ -203,8 +203,8 @@
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;wu-suo-de-zhan&quot;&gt;无锁的栈&lt;&#x2F;h2&gt;
 &lt;p&gt;我们可以用邻接链表来实现&lt;&#x2F;p&gt;
-&lt;p&gt;读的时候xjb读&lt;br &#x2F;&gt;
-写的时候生成一个新的head，然后用CAS不停的尝试把当前的head替换掉，同时注意保证新的head指向当前的head&lt;&#x2F;p&gt;
+&lt;p&gt;读的时候 xjb 读&lt;br &#x2F;&gt;
+写的时候生成一个新的head，然后用 CAS 不停的尝试把当前的head 替换掉，同时注意保证新的 head 指向当前的head&lt;&#x2F;p&gt;
 &lt;p&gt;下面是代码&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;template &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;typename&lt;&#x2F;span&gt;&lt;span&gt; T&amp;gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;LockFreeStack &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
@@ -238,9 +238,9 @@
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span&gt;;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;yi-xie-xu-yao-zhu-yi-de-di-fang&quot;&gt;一些需要注意的地方&lt;&#x2F;h2&gt;
-&lt;p&gt;上面代码中操作shared_ptr的原语内部可能不是无锁的&lt;br &#x2F;&gt;
-因为shared_ptr的内部存了两个指针，而目前在硬件层面上对两个指针进行CAS操作还不太能实现（据说TSX指令集支持但是效率不高）&lt;&#x2F;p&gt;
-&lt;p&gt;另外操作shared_ptr的atomic模版方法在C++20中已经弃用，以后应当用atomic模板类（然而国内普及C++20可能要等到2200年）&lt;&#x2F;p&gt;
+&lt;p&gt;上面代码中操作shared_ptr 的原语内部可能不是无锁的&lt;br &#x2F;&gt;
+因为shared_ptr 的内部存了两个指针，而目前在硬件层面上对两个指针进行 CAS 操作还不太能实现（据说 TSX 指令集支持但是效率不高）&lt;&#x2F;p&gt;
+&lt;p&gt;另外操作shared_ptr 的 atomic 模版方法在C++20中已经弃用，以后应当用 atomic 模板类（然而国内普及C++20可能要等到2200年）&lt;&#x2F;p&gt;
 </content>
 	</entry>
 </feed>

@@ -59,7 +59,7 @@
 
 <article itemscope itemtype="http://schema.org/BlogPosting">
     <header>
-        <h1 itemprop="headline">Unity Physics学习笔记「三」 刚体的运动状态</h1>
+        <h1 itemprop="headline">Unity Physics 学习笔记「三」 刚体的运动状态</h1>
         <span class="muted">
     <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
          width="16" height="16" fill="none" stroke="currentcolor"
@@ -90,8 +90,8 @@
 </span><span>    </span><span style="color:#b48ead;">public </span><span>float2 </span><span style="color:#bf616a;">direction</span><span>;
 </span><span>}
 </span></code></pre>
-<p>解释：这里把random放进去是为了保证随机数生成的均匀性</p>
-<p>然后写一个Authoring用来把这个组件添加到Entity上</p>
+<p>解释：这里把 random 放进去是为了保证随机数生成的均匀性</p>
+<p>然后写一个 Authoring 用来把这个组件添加到Entity 上</p>
 <p>RandomMoveCubeAuthoring.cs</p>
 <pre data-lang="cs" style="background-color:#2b303b;color:#c0c5ce;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">RandomMoveCubeAuthoring </span><span style="color:#eff1f5;">: </span><span style="color:#a3be8c;">MonoBehaviour</span><span style="color:#eff1f5;">, </span><span style="color:#a3be8c;">IConvertGameObjectToEntity </span><span style="color:#eff1f5;">{
 </span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">public void </span><span style="color:#8fa1b3;">Convert </span><span style="color:#eff1f5;">(Entity </span><span style="color:#bf616a;">entity</span><span style="color:#eff1f5;">, EntityManager </span><span style="color:#bf616a;">dstManager</span><span style="color:#eff1f5;">, GameObjectConversionSystem </span><span style="color:#bf616a;">conversionSystem</span><span style="color:#eff1f5;">) {
@@ -105,11 +105,11 @@
 </span><span style="color:#eff1f5;">}
 </span></code></pre>
 <h2 id="pei-zhi-entity">配置Entity</h2>
-<p>新建一个立方体GameObject，移除Box Collider，添加Convert To Entity、Physics Shape、Physics Body以及我们写的RandomMoveCubeAuthoring脚本<br />
-在Physics Body中把重力系数设为0，线性阻尼设为0.5。其他的用默认值就行</p>
-<p>这样这个GameObject在启动后会被自动转化为Entity并具有物理相关的组件以及MoveDirection组件</p>
+<p>新建一个立方体GameObject，移除Box Collider，添加Convert To Entity、Physics Shape、Physics Body 以及我们写的 RandomMoveCubeAuthoring 脚本<br />
+在Physics Body 中把重力系数设为0，线性阻尼设为0.5。其他的用默认值就行</p>
+<p>这样这个 GameObject 在启动后会被自动转化为Entity 并具有物理相关的组件以及 MoveDirection 组件</p>
 <h2 id="kong-zhi-yun-dong-zhuang-tai">控制运动状态</h2>
-<p>显然，写一个System生成随机方向，然后修改这个立方体的速度就行了</p>
+<p>显然，写一个 System 生成随机方向，然后修改这个立方体的速度就行了</p>
 <p>下面有匀速运动和添加冲量两个版本，区别在于匀速运动每一帧都把速度修改为指定值，而添加冲量只需要在方向改变的那一帧修改速度</p>
 <p>这个是匀速版本的</p>
 <pre data-lang="cs" style="background-color:#2b303b;color:#c0c5ce;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">RandomMoveSystem </span><span style="color:#eff1f5;">: </span><span style="color:#a3be8c;">JobComponentSystem </span><span style="color:#eff1f5;">{

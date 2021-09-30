@@ -57,7 +57,7 @@ You are to write a program to determine the least number of stones to be picked 
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;ti-jie&quot;&gt;题解&lt;&#x2F;h2&gt;
 &lt;p&gt;树形DP&lt;br &#x2F;&gt;
-F(p)表示p节点最少需要的石子数&lt;&#x2F;p&gt;
+F(p)表示 p 节点最少需要的石子数&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;cstdio&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;cstring&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;using namespace&lt;&#x2F;span&gt;&lt;span&gt; std;
@@ -154,7 +154,7 @@ A bank goes bankrupt if it is robbed, and you may assume that all probabilities 
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;ti-jie&quot;&gt;题解&lt;&#x2F;h2&gt;
 &lt;p&gt;01背包&lt;br &#x2F;&gt;
-F(i, j)表示前i个银行取得j的钱而不被抓的最大概率&lt;&#x2F;p&gt;
+F(i, j)表示前 i 个银行取得j 的钱而不被抓的最大概率&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;algorithm&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;climits&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;cstdio&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
@@ -205,7 +205,7 @@ F(i, j)表示前i个银行取得j的钱而不被抓的最大概率&lt;&#x2F;p&gt
 &lt;p&gt;在一个圆形操场的四周摆放 N 堆石子，现要将石子有次序地合并成一堆。规定每次只能选相邻的2堆合并成新的一堆，并将新的一堆的石子数，记为该次合并的得分。&lt;&#x2F;p&gt;
 &lt;p&gt;试设计出一个算法,计算出将 N 堆石子合并成 1 堆的最小得分和最大得分。&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;shu-ru-ge-shi&quot;&gt;输入格式&lt;&#x2F;h2&gt;
-&lt;p&gt;数据的第 1 行是正整数 N，表示有N堆石子。&lt;br &#x2F;&gt;
+&lt;p&gt;数据的第 1 行是正整数 N，表示有 N 堆石子。&lt;br &#x2F;&gt;
 第 2 行有 N 个整数，第 i 个整数 ai​ 表示第 i 堆石子的个数。&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;shu-chu-ge-shi&quot;&gt;输出格式&lt;&#x2F;h2&gt;
 &lt;p&gt;输出共 2 行，第 1 行为最小得分，第 2 行为最大得分。&lt;&#x2F;p&gt;
@@ -220,7 +220,7 @@ F(i, j)表示前i个银行取得j的钱而不被抓的最大概率&lt;&#x2F;p&gt
 &lt;h2 id=&quot;hint&quot;&gt;Hint&lt;&#x2F;h2&gt;
 &lt;p&gt;1&amp;lt;=N&amp;lt;=100，0&amp;lt;=ai&amp;lt;=20&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;ti-jie&quot;&gt;题解&lt;&#x2F;h2&gt;
-&lt;p&gt;把环复制一遍变成链做dp就行了&lt;&#x2F;p&gt;
+&lt;p&gt;把环复制一遍变成链做 dp 就行了&lt;&#x2F;p&gt;
 &lt;p&gt;F(i, j)表示合并[i, j]的最大得分&lt;br &#x2F;&gt;
 F(i, j) = max { F(i, k) + F(k+1, j) + Sum(i, j), i&amp;lt;=k&amp;lt;j }&lt;br &#x2F;&gt;
 最小得分同理&lt;&#x2F;p&gt;

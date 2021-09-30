@@ -59,7 +59,7 @@
 
 <article itemscope itemtype="http://schema.org/BlogPosting">
     <header>
-        <h1 itemprop="headline">Docker部署WordPress与数据备份</h1>
+        <h1 itemprop="headline">Docker 部署 WordPress 与数据备份</h1>
         <span class="muted">
     <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
          width="16" height="16" fill="none" stroke="currentcolor"
@@ -78,19 +78,19 @@
 </span>
     </header>
     <div itemprop="articleBody">
-      <p>阅读本文了解Docker上的WordPress快速部署，及其数据备份获取</p>
+      <p>阅读本文了解 Docker 上的WordPress 快速部署，及其数据备份获取</p>
 <span id="continue-reading"></span><h2 id="da-zhi-bu-zou">大致步骤</h2>
-<p>先创建Volume用于备份<br />
-然后运行MySQL容器<br />
-最后运行WordPress容器</p>
+<p>先创建 Volume 用于备份<br />
+然后运行 MySQL 容器<br />
+最后运行 WordPress 容器</p>
 <h2 id="chuang-jian-volume">创建Volume</h2>
-<p>创建分别用于MySQL和WordPress的volume</p>
+<p>创建分别用于 MySQL 和WordPress 的volume</p>
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> docker volume create data_mysql_wordpress
 </span><span style="color:#bf616a;">$</span><span> docker volume create data_wordpress
 </span></code></pre>
-<h2 id="yun-xing-mysqlrong-qi">运行MySQL容器</h2>
-<p>先拉取mysql镜像（如果需要）<br />
-然后创建并运行mysql容器</p>
+<h2 id="yun-xing-mysql-rong-qi">运行 MySQL 容器</h2>
+<p>先拉取 mysql 镜像（如果需要）<br />
+然后创建并运行 mysql 容器</p>
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> docker pull mysql
 </span><span>
 </span><span style="color:#bf616a;">$</span><span> docker run</span><span style="color:#bf616a;"> -d --name</span><span> mysql_wordpress \
@@ -104,13 +104,13 @@
 -v 映射数据卷<br />
 -e 设置环境变量<br />
 mysql --default-authentication-plugin=mysql_native_password<br />
-设置mysql的默认加密插件</p>
+设置 mysql 的默认加密插件</p>
 <p>加密插件问题<br />
-因为这里使用了MySQL 8.0，它的默认认证插件是caching_sha2_password，WordPress连接比较麻烦，改回mysql_native_password省事一点。<br />
+因为这里使用了MySQL 8.0，它的默认认证插件是caching_sha2_password，WordPress 连接比较麻烦，改回mysql_native_password 省事一点。<br />
 或者可以直接使用mysql:5.7镜像</p>
-<h2 id="yun-xing-wordpressrong-qi-bing-lian-jie-mysql">运行WordPress容器并链接MySQL</h2>
-<p>先拉取wordpress镜像（如果需要）<br />
-然后创建并运行wordpress容器</p>
+<h2 id="yun-xing-wordpress-rong-qi-bing-lian-jie-mysql">运行 WordPress 容器并链接MySQL</h2>
+<p>先拉取 wordpress 镜像（如果需要）<br />
+然后创建并运行 wordpress 容器</p>
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> docker pull wordpress
 </span><span>
 </span><span style="color:#bf616a;">$</span><span> docker run</span><span style="color:#bf616a;"> -d --name</span><span> wordpress \
@@ -124,8 +124,8 @@ mysql --default-authentication-plugin=mysql_native_password<br />
 -v 映射数据卷<br />
 --link 链接MySQL</p>
 <h2 id="huo-qu-bei-fen">获取备份</h2>
-<p>使用docker volume inspect命令获取mysql和wordpress的数据存储路径<br />
-输出里的Mountpoint即是数据存储路径</p>
+<p>使用docker volume inspect 命令获取 mysql 和wordpress 的数据存储路径<br />
+输出里的 Mountpoint 即是数据存储路径</p>
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> docker volume inspect data_mysql_wordpress
 </span><span style="color:#96b5b4;">[
 </span><span>    {

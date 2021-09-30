@@ -59,7 +59,7 @@
 
 <article itemscope itemtype="http://schema.org/BlogPosting">
     <header>
-        <h1 itemprop="headline">VS Code写一切 C与C++单文件</h1>
+        <h1 itemprop="headline">VS Code 写一切 C 与C++单文件</h1>
         <span class="muted">
     <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
          width="16" height="16" fill="none" stroke="currentcolor"
@@ -79,13 +79,13 @@
     </header>
     <div itemprop="articleBody">
       <p>配置很简单，刷题贼方便<br />
-这里以C++为例，C同理</p>
+这里以C++为例，C 同理</p>
 <span id="continue-reading"></span><h2 id="c-c-huan-jing-pei-zhi">C/C++环境配置</h2>
-<p>跟VS Code无关，但还是提一下</p>
-<p>Win下可以装MinGW<br />
-Max下装Xcode自带Clang<br />
+<p>跟VS Code 无关，但还是提一下</p>
+<p>Win 下可以装MinGW<br />
+Max 下装 Xcode 自带Clang<br />
 只要环境变量中有C/C++的编译器就行了</p>
-<h2 id="xu-yao-an-zhuang-de-vs-codecha-jian">需要安装的VS Code插件</h2>
+<h2 id="xu-yao-an-zhuang-de-vs-code-cha-jian">需要安装的VS Code 插件</h2>
 <ul>
 <li>C/C++</li>
 </ul>
@@ -101,11 +101,11 @@ Max下装Xcode自带Clang<br />
 </span><span>}
 </span></code></pre>
 <p>按F5直接运行<br />
-VS Code提示选择环境，这里选择C++</p>
+VS Code 提示选择环境，这里选择C++</p>
 <p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191220-161845@2x-1024x447.png" alt="" /></p>
 <p>选择配置，随便一个C++编译器都行，我选了第一个clang++</p>
 <p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191220-161916@2x-1024x351.png" alt="" /></p>
-<p>接下来VS Code自动生成了一个launch.json文件，我贴一下Mac下的</p>
+<p>接下来VS Code 自动生成了一个launch.json 文件，我贴一下 Mac 下的</p>
 <pre data-lang="json" style="background-color:#2b303b;color:#c0c5ce;" class="language-json "><code class="language-json" data-lang="json"><span>{
 </span><span>    </span><span style="color:#65737e;">// Use IntelliSense to learn about possible attributes.
 </span><span>    </span><span style="color:#65737e;">// Hover to view descriptions of existing attributes.
@@ -129,16 +129,16 @@ VS Code提示选择环境，这里选择C++</p>
 </span><span>}
 </span></code></pre>
 <p>解释：启动类型为cppdbg，有各种参数，其中<br />
-externalConsole表示是否使用外部终端，如果需要用标准输入，这里要改成true<br />
-MIMode为调试器，Mac下用lldb，Win下用gdb<br />
-preLaunchTask表示launch之前执行的task</p>
-<p>这个launch其实只配置了调试器，它需要先执行preLaunchTask中配置的task用于编译，而这个task我们现在还没有请往后看</p>
+externalConsole 表示是否使用外部终端，如果需要用标准输入，这里要改成true<br />
+MIMode 为调试器，Mac 下用lldb，Win 下用gdb<br />
+preLaunchTask 表示 launch 之前执行的task</p>
+<p>这个 launch 其实只配置了调试器，它需要先执行 preLaunchTask 中配置的task 用于编译，而这个 task 我们现在还没有请往后看</p>
 <p>切回之前的hello.cpp，再次按下F5<br />
 提示我们还没有配置task，于是点击Configure Task</p>
 <p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191220-162852@2x-1024x302.png" alt="" /></p>
-<p>选与之前launch一样的，所以我选择clang++</p>
+<p>选与之前 launch 一样的，所以我选择clang++</p>
 <p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191220-163513@2x-1024x345.png" alt="" /></p>
-<p>他生成了一个tasks.json文件，可以看到里面有个任务配置了编译器与编译命令等</p>
+<p>他生成了一个tasks.json 文件，可以看到里面有个任务配置了编译器与编译命令等</p>
 <pre data-lang="json" style="background-color:#2b303b;color:#c0c5ce;" class="language-json "><code class="language-json" data-lang="json"><span>{
 </span><span>    </span><span style="color:#65737e;">// See https://go.microsoft.com/fwlink/?LinkId=733558 
 </span><span>    </span><span style="color:#65737e;">// for the documentation about the tasks.json format
@@ -167,10 +167,10 @@ preLaunchTask表示launch之前执行的task</p>
 </span></code></pre>
 <p>切回hello.cpp，F5，这次可以运行了</p>
 <p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191220-163937@2x-1024x215.png" alt="" /></p>
-<h2 id="codelldbcha-jian">CodeLLDB插件</h2>
+<h2 id="codelldb-cha-jian">CodeLLDB 插件</h2>
 <p>也可以使用这个插件调试C/C++程序，它能在集成终端中进行输入<br />
-但调试控制台使用的是lldb命令就比较蛋疼</p>
-<p>另外升级macOS Catalina之后似乎C/C++插件出了点问题暂时不能调试，换成这个插件就行</p>
+但调试控制台使用的是 lldb 命令就比较蛋疼</p>
+<p>另外升级macOS Catalina 之后似乎C/C++插件出了点问题暂时不能调试，换成这个插件就行</p>
 
     </div>
 

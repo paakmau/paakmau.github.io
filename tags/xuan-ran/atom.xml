@@ -8,19 +8,19 @@
 	<updated>2020-05-11T21:50:26+00:00</updated>
 	<id>https://paakmau.github.io/tags/xuan-ran/atom.xml</id>
 	<entry xml:lang="zh">
-		<title>UE4材质结点生成HLSL代码 源码浅析</title>
+		<title>UE4材质结点生成 HLSL 代码 源码浅析</title>
 		<published>2020-05-11T21:50:26+00:00</published>
 		<updated>2020-05-11T21:50:26+00:00</updated>
 		<link href="https://paakmau.github.io/202005112150/" type="text/html"/>
 		<id>https://paakmau.github.io/202005112150/</id>
 		<content type="html">&lt;p&gt;使用UE4的材质编辑器的时候我们可以为材质的颜色、粗糙度、金属度等连接一个常量或者纹理结点，如果要实现复杂效果可能还会用到混合结点，最后就可能看到一个完整的材质其实是由一堆结点和它们之间的连线组成&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;然后每一个结点可以理解为一段HLSL代码，然后结点之间的连线则是变量的传递&lt;&#x2F;p&gt;
+&lt;p&gt;然后每一个结点可以理解为一段 HLSL 代码，然后结点之间的连线则是变量的传递&lt;&#x2F;p&gt;
 &lt;p&gt;比如说我们有一个材质长这样&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;05&#x2F;image-1024x763.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
-&lt;p&gt;然后我们查看生成的HLSL代码，发现里面有这几行，基本上跟上图的材质结点对应&lt;&#x2F;p&gt;
-&lt;p&gt;如果要查看HLSL代码，依次点击&lt;br &#x2F;&gt;
-窗口-&amp;gt;着色器代码-&amp;gt;HLSL代码&lt;&#x2F;p&gt;
+&lt;p&gt;然后我们查看生成的 HLSL 代码，发现里面有这几行，基本上跟上图的材质结点对应&lt;&#x2F;p&gt;
+&lt;p&gt;如果要查看 HLSL 代码，依次点击&lt;br &#x2F;&gt;
+窗口-&amp;gt;着色器代码-&amp;gt;HLSL 代码&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;c&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-c &quot;&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Now the rest of the inputs
 &lt;&#x2F;span&gt;&lt;span&gt;MaterialFloat3 Local0 = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;lerp&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;MaterialFloat3&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0.00000000&lt;&#x2F;span&gt;&lt;span&gt;,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0.00000000&lt;&#x2F;span&gt;&lt;span&gt;,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0.00000000&lt;&#x2F;span&gt;&lt;span&gt;),Material.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VectorExpressions&lt;&#x2F;span&gt;&lt;span&gt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;].&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;rgb&lt;&#x2F;span&gt;&lt;span&gt;,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;MaterialFloat&lt;&#x2F;span&gt;&lt;span&gt;(Material.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ScalarExpressions&lt;&#x2F;span&gt;&lt;span&gt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;].&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;x&lt;&#x2F;span&gt;&lt;span&gt;));
 &lt;&#x2F;span&gt;&lt;span&gt;MaterialFloat4 Local1 = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ProcessMaterialColorTextureLookup&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Texture2DSampleBias&lt;&#x2F;span&gt;&lt;span&gt;(Material.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Texture2D_0&lt;&#x2F;span&gt;&lt;span&gt;, Material.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Texture2D_0Sampler&lt;&#x2F;span&gt;&lt;span&gt;,Parameters.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;TexCoords&lt;&#x2F;span&gt;&lt;span&gt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;].&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;xy&lt;&#x2F;span&gt;&lt;span&gt;,View.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;MaterialTextureMipBias&lt;&#x2F;span&gt;&lt;span&gt;));
@@ -29,11 +29,11 @@
 &lt;&#x2F;span&gt;&lt;span&gt;MaterialFloat3 Local4 = (Local2 + Local3.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;r&lt;&#x2F;span&gt;&lt;span&gt;);
 &lt;&#x2F;span&gt;&lt;span&gt;MaterialFloat3 Local5 = (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1.00000000 &lt;&#x2F;span&gt;&lt;span&gt;- Local4);
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;我们容易发现，要把材质结点翻译成HLSL代码，可以从左边出发拓扑排序，也可以从右边的材质结果结点出发递归往左（显然递归比拓排好写）&lt;br &#x2F;&gt;
+&lt;p&gt;我们容易发现，要把材质结点翻译成 HLSL 代码，可以从左边出发拓扑排序，也可以从右边的材质结果结点出发递归往左（显然递归比拓排好写）&lt;br &#x2F;&gt;
 然后UE4是用递归的&lt;&#x2F;p&gt;
 &lt;p&gt;接下来我们结合源码看一下UE4是怎么实现的&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;bian-yi-guo-cheng&quot;&gt;编译过程&lt;&#x2F;h2&gt;
-&lt;p&gt;我们从FMaterial的一个成员函数开始&lt;&#x2F;p&gt;
+&lt;p&gt;我们从 FMaterial 的一个成员函数开始&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;**
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;* Compiles this material for Platform, storing the result in OutShaderMap if the compile was synchronous
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;*&#x2F;
@@ -44,11 +44,11 @@
 &lt;&#x2F;span&gt;&lt;span&gt;TRefCountPtr&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class&lt;&#x2F;span&gt;&lt;span&gt; FMaterialShaderMap&amp;gt;&amp;amp; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;OutShaderMap&lt;&#x2F;span&gt;&lt;span&gt;, 
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const&lt;&#x2F;span&gt;&lt;span&gt; ITargetPlatform* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;TargetPlatform &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;nullptr&lt;&#x2F;span&gt;&lt;span&gt;);
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;这个函数会把材质的编译结果放到OutShaderMap里&lt;br &#x2F;&gt;
-并且每个材质ShaderMapId都是唯一的&lt;&#x2F;p&gt;
-&lt;p&gt;它会先创建一个FMaterialShaderMap对象&lt;br &#x2F;&gt;
-接下来创建FHLSLMaterialTranslator对象并用它生成着色器的HLSL代码&lt;br &#x2F;&gt;
-最后调用FMaterialShaderMap的Compile方法编译这段代码并保存结果&lt;&#x2F;p&gt;
+&lt;p&gt;这个函数会把材质的编译结果放到 OutShaderMap 里&lt;br &#x2F;&gt;
+并且每个材质 ShaderMapId 都是唯一的&lt;&#x2F;p&gt;
+&lt;p&gt;它会先创建一个 FMaterialShaderMap 对象&lt;br &#x2F;&gt;
+接下来创建 FHLSLMaterialTranslator 对象并用它生成着色器的HLSL 代码&lt;br &#x2F;&gt;
+最后调用 FMaterialShaderMap 的Compile 方法编译这段代码并保存结果&lt;&#x2F;p&gt;
 &lt;p&gt;节选关键代码如下&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; ...
 &lt;&#x2F;span&gt;&lt;span&gt;
@@ -66,7 +66,7 @@
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 为材质编译着色器
 &lt;&#x2F;span&gt;&lt;span&gt;NewShaderMap-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Compile&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;this&lt;&#x2F;span&gt;&lt;span&gt;, ShaderMapId, MaterialEnvironment, NewCompilationOutput, Platform, bSynchronousCompile);
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;接下来，我们着重看FHLSLMaterialTranslator的Translate方法，在里面会发现一个很显眼的东西，没错这个就是材质结果结点的各个输入插槽&lt;&#x2F;p&gt;
+&lt;p&gt;接下来，我们着重看 FHLSLMaterialTranslator 的Translate 方法，在里面会发现一个很显眼的东西，没错这个就是材质结果结点的各个输入插槽&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Rest of properties
 &lt;&#x2F;span&gt;&lt;span&gt;Chunk[MP_EmissiveColor]= Material-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompilePropertyAndSetMaterialProperty&lt;&#x2F;span&gt;&lt;span&gt;(MP_EmissiveColor,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;this&lt;&#x2F;span&gt;&lt;span&gt;);
 &lt;&#x2F;span&gt;&lt;span&gt;Chunk[MP_DiffuseColor]= Material-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompilePropertyAndSetMaterialProperty&lt;&#x2F;span&gt;&lt;span&gt;(MP_DiffuseColor,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;this&lt;&#x2F;span&gt;&lt;span&gt;);
@@ -81,10 +81,10 @@
 &lt;&#x2F;span&gt;&lt;span&gt;Chunk[MP_WorldDisplacement]= Material-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompilePropertyAndSetMaterialProperty&lt;&#x2F;span&gt;&lt;span&gt;(MP_WorldDisplacement,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;this&lt;&#x2F;span&gt;&lt;span&gt;);
 &lt;&#x2F;span&gt;&lt;span&gt;Chunk[MP_TessellationMultiplier]= Material-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompilePropertyAndSetMaterialProperty&lt;&#x2F;span&gt;&lt;span&gt;(MP_TessellationMultiplier,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;this&lt;&#x2F;span&gt;&lt;span&gt;);
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;于是我们去看FMaterialResource的CompilePropertyAndSetMaterialProperty方法&lt;&#x2F;p&gt;
-&lt;p&gt;注意一下FMaterialResource是FMaterial接口的一个实现，它里面会存一个UMaterial实例或者UMaterialInstance实例，这两种实例都是继承自UMaterialInterface接口&lt;&#x2F;p&gt;
-&lt;p&gt;这个方法里面有一个switch，对于不同类型的输入插槽（或者说EMaterialProperty），它有不同的处理，不过基本都是调用UMaterialInterface的CompileProperty方法，代码太乱就不贴了&lt;&#x2F;p&gt;
-&lt;p&gt;我们直接去看UMaterialInterface的CompileProperty方法，它调用了CompilePropertyEx方法，这个方法是个虚函数，发现UMaterial和UMaterialInterface都有自己的实现，但是UMaterialInterface是基于UMaterial的因此我们直接看UMaterial的CompilePropertyEx方法就行&lt;&#x2F;p&gt;
+&lt;p&gt;于是我们去看 FMaterialResource 的CompilePropertyAndSetMaterialProperty 方法&lt;&#x2F;p&gt;
+&lt;p&gt;注意一下 FMaterialResource 是FMaterial 接口的一个实现，它里面会存一个 UMaterial 实例或者UMaterialInstance 实例，这两种实例都是继承自 UMaterialInterface 接口&lt;&#x2F;p&gt;
+&lt;p&gt;这个方法里面有一个switch，对于不同类型的输入插槽（或者说EMaterialProperty），它有不同的处理，不过基本都是调用 UMaterialInterface 的CompileProperty 方法，代码太乱就不贴了&lt;&#x2F;p&gt;
+&lt;p&gt;我们直接去看 UMaterialInterface 的CompileProperty 方法，它调用了 CompilePropertyEx 方法，这个方法是个虚函数，发现 UMaterial 和UMaterialInterface 都有自己的实现，但是 UMaterialInterface 是基于UMaterial 的因此我们直接看 UMaterial 的CompilePropertyEx 方法就行&lt;&#x2F;p&gt;
 &lt;p&gt;发现里面又是一个switch&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span&gt;int32 UMaterial::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;CompilePropertyEx&lt;&#x2F;span&gt;&lt;span&gt;( FMaterialCompiler* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Compiler&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const&lt;&#x2F;span&gt;&lt;span&gt; FGuid&amp;amp; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;AttributeID &lt;&#x2F;span&gt;&lt;span&gt;)
 &lt;&#x2F;span&gt;&lt;span&gt;{
@@ -138,7 +138,7 @@
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; INDEX_NONE;
 &lt;&#x2F;span&gt;&lt;span&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;于是我们随便看一个插槽的CompileWithDefault方法，比如说BaseColor，BaseColor变量是一个FColorMaterialInput类型的插槽&lt;&#x2F;p&gt;
+&lt;p&gt;于是我们随便看一个插槽的 CompileWithDefault 方法，比如说BaseColor，BaseColor 变量是一个 FColorMaterialInput 类型的插槽&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span&gt;int32 FColorMaterialInput::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;CompileWithDefault&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class&lt;&#x2F;span&gt;&lt;span&gt; FMaterialCompiler* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Compiler&lt;&#x2F;span&gt;&lt;span&gt;, EMaterialProperty &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Property&lt;&#x2F;span&gt;&lt;span&gt;)
 &lt;&#x2F;span&gt;&lt;span&gt;{
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(UseConstant)
@@ -159,7 +159,7 @@
 &lt;&#x2F;span&gt;&lt;span&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;发现有常量和表达式两种情况，常量就是一个常量的颜色结点，表达式就是使用了混合结点或者纹理结点等等复杂的结点&lt;&#x2F;p&gt;
-&lt;p&gt;对于表达式我们看到它调用了基类FExpressionInput的Compile方法&lt;&#x2F;p&gt;
+&lt;p&gt;对于表达式我们看到它调用了基类 FExpressionInput 的Compile 方法&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span&gt;int32 FExpressionInput::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;Compile&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class&lt;&#x2F;span&gt;&lt;span&gt; FMaterialCompiler* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Compiler&lt;&#x2F;span&gt;&lt;span&gt;)
 &lt;&#x2F;span&gt;&lt;span&gt;{
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span&gt;(Expression)
@@ -184,10 +184,10 @@
 &lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; INDEX_NONE;
 &lt;&#x2F;span&gt;&lt;span&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;又调用了FMaterialCompiler的CallExpression方法，而且把表达式传过去了&lt;&#x2F;p&gt;
-&lt;p&gt;在CallExpression方法里，它会调用表达式ExpressionKey.Expression的Compile方法&lt;&#x2F;p&gt;
-&lt;p&gt;然后我们可以看到Expression是一个UMaterialExpression接口的实例，它有多种实现&lt;&#x2F;p&gt;
-&lt;p&gt;稍微看一下加法表达式的Compile实现&lt;&#x2F;p&gt;
+&lt;p&gt;又调用了 FMaterialCompiler 的CallExpression 方法，而且把表达式传过去了&lt;&#x2F;p&gt;
+&lt;p&gt;在 CallExpression 方法里，它会调用表达式ExpressionKey.Expression 的 Compile 方法&lt;&#x2F;p&gt;
+&lt;p&gt;然后我们可以看到 Expression 是一个UMaterialExpression 接口的实例，它有多种实现&lt;&#x2F;p&gt;
+&lt;p&gt;稍微看一下加法表达式的 Compile 实现&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span&gt;int32 UMaterialExpressionAdd::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;Compile&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class&lt;&#x2F;span&gt;&lt;span&gt; FMaterialCompiler* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Compiler&lt;&#x2F;span&gt;&lt;span&gt;, int32 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;OutputIndex&lt;&#x2F;span&gt;&lt;span&gt;)
 &lt;&#x2F;span&gt;&lt;span&gt;{
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; if the input is hooked up, use it, otherwise use the internal constant
@@ -198,9 +198,9 @@
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; Compiler-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Add&lt;&#x2F;span&gt;&lt;span&gt;(Arg1, Arg2);
 &lt;&#x2F;span&gt;&lt;span&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;可以看到递归是在这里实现的，然后最后一行Complier的Add方法是由FHLSLMaterialTranslator提供的&lt;br &#x2F;&gt;
+&lt;p&gt;可以看到递归是在这里实现的，然后最后一行 Complier 的Add 方法是由 FHLSLMaterialTranslator 提供的&lt;br &#x2F;&gt;
 返回值是这个表达式的唯一索引值，可以通过索引找到表达式&lt;&#x2F;p&gt;
-&lt;p&gt;生成HLSL代码的逻辑就在FHLSLMaterialTranslator的Add方法里，我们也可以看一下&lt;&#x2F;p&gt;
+&lt;p&gt;生成 HLSL 代码的逻辑就在FHLSLMaterialTranslator 的 Add 方法里，我们也可以看一下&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;virtual&lt;&#x2F;span&gt;&lt;span&gt; int32 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;Add&lt;&#x2F;span&gt;&lt;span&gt;(int32 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;A&lt;&#x2F;span&gt;&lt;span&gt;,int32 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;B&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;override
 &lt;&#x2F;span&gt;&lt;span&gt;{
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span&gt;(A == INDEX_NONE  B == INDEX_NONE)
@@ -221,8 +221,8 @@
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;lei-de-guan-xi-zheng-li&quot;&gt;类的关系整理&lt;&#x2F;h2&gt;
 &lt;p&gt;最后我整理了一下上面提到的各个类之间的关系，总的来说还是比较清晰的&lt;&#x2F;p&gt;
-&lt;p&gt;FMaterial和FMaterialResource是逻辑上的材质类，一个FMaterialResource对象可以管理一个UMaterial实例或UMaterialInstance实例，UMaterial上挂着不同类型的FExpressionInput插槽，这些FExpressionInput实现类又包含UMaterialExpression表达式，表达式会层层嵌套形成一张有向无环图&lt;br &#x2F;&gt;
-最后FMaterialCompiler的实现类FHLSLMaterialTranslator主要用于生成HLSL代码&lt;&#x2F;p&gt;
+&lt;p&gt;FMaterial 和 FMaterialResource 是逻辑上的材质类，一个 FMaterialResource 对象可以管理一个UMaterial 实例或 UMaterialInstance 实例，UMaterial 上挂着不同类型的 FExpressionInput 插槽，这些 FExpressionInput 实现类又包含UMaterialExpression 表达式，表达式会层层嵌套形成一张有向无环图&lt;br &#x2F;&gt;
+最后 FMaterialCompiler 的实现类FHLSLMaterialTranslator 主要用于生成 HLSL 代码&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
@@ -236,7 +236,7 @@
 &lt;p&gt;大致上，渲染管线有数据预处理、顶点着色器、图元组装、光栅化和片元着色器这几个阶段&lt;br &#x2F;&gt;
 不过不同的游戏引擎可能阶段划分不尽相同也没有统一的说法，另外也可能会增加其他阶段以实现更好的效果&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;shu-ju-yu-chu-li&quot;&gt;数据预处理&lt;&#x2F;h2&gt;
-&lt;p&gt;由CPU负责完成，假设要渲染一堆模型，就需要准备好这些模型的所有点、三角面、法向量、材质、变换矩阵等信息&lt;&#x2F;p&gt;
+&lt;p&gt;由 CPU 负责完成，假设要渲染一堆模型，就需要准备好这些模型的所有点、三角面、法向量、材质、变换矩阵等信息&lt;&#x2F;p&gt;
 &lt;p&gt;然后可以做一些简单的剔除，把不可能被渲染的模型直接排除掉，比如排除掉远处模型的距离剔除、根据摄像机剔除不可能看见的模型的视锥剔除等等&lt;br &#x2F;&gt;
 需要注意的是一般只能剔除整个模型，而不会具体到模型的点和面&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;ding-dian-zhao-se-qi&quot;&gt;顶点着色器&lt;&#x2F;h2&gt;
@@ -244,28 +244,28 @@
 其中，模型的顶点坐标是相对于模型原点的，也就是局部空间；而我们能在屏幕上看到的模型被拍扁成了二维图像，甚至可以有透视效果，这个叫做屏幕空间；从局部空间到屏幕空间的过程中会先转换为裁剪空间以方便视锥外的点的剔除&lt;br &#x2F;&gt;
 把模型的信息从局部空间转换到裁剪空间，就是这一阶段需要做的事情&lt;&#x2F;p&gt;
 &lt;p&gt;具体说的话，有以下三个步骤&lt;&#x2F;p&gt;
-&lt;p&gt;Model变换，从局部空间转换到世界空间&lt;br &#x2F;&gt;
-一个模型的transform会有translation、rotation、scale这三个东西，经过这样的transform，模型中的顶点和法向量就能转移到世界坐标&lt;&#x2F;p&gt;
-&lt;p&gt;View变换，从世界空间转换到视角空间&lt;br &#x2F;&gt;
+&lt;p&gt;Model 变换，从局部空间转换到世界空间&lt;br &#x2F;&gt;
+一个模型的 transform 会有translation、rotation、scale 这三个东西，经过这样的transform，模型中的顶点和法向量就能转移到世界坐标&lt;&#x2F;p&gt;
+&lt;p&gt;View 变换，从世界空间转换到视角空间&lt;br &#x2F;&gt;
 简单地说，就是通过旋转平移场景中的所有物体，把摄像机挪到原点，并且面向某个轴。其实跟第一个步骤很像&lt;br &#x2F;&gt;
 这个步骤是为了方便接下来的投影&lt;&#x2F;p&gt;
-&lt;p&gt;Projection变换，从视角空间转换到裁剪空间&lt;br &#x2F;&gt;
+&lt;p&gt;Projection 变换，从视角空间转换到裁剪空间&lt;br &#x2F;&gt;
 这个比较关键，有透视投影和正交投影两种，透视投影会有近大远小的效果而正交投影不会&lt;&#x2F;p&gt;
 &lt;p&gt;这三个步骤其实就是对所有的点依次做三个矩阵乘法，根据结合律可以直接先把它们乘起来（也就是上一个阶段中传入进来的变换矩阵）&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;tu-yuan-zu-zhuang&quot;&gt;图元组装&lt;&#x2F;h2&gt;
 &lt;p&gt;总的说就是把视锥外的点和面剔除掉，然后得到屏幕空间上的坐标&lt;&#x2F;p&gt;
 &lt;p&gt;具体来说要做下面几件事情&lt;&#x2F;p&gt;
 &lt;p&gt;剪裁&lt;br &#x2F;&gt;
-经过了上一个阶段，可以通过点的z和w坐标判断某个点是否在视锥内部&lt;br &#x2F;&gt;
-如果不在就进行剪裁，可以用Sutherland-Hodgeman算法来生成新的边界&lt;&#x2F;p&gt;
+经过了上一个阶段，可以通过点的 z 和w 坐标判断某个点是否在视锥内部&lt;br &#x2F;&gt;
+如果不在就进行剪裁，可以用Sutherland-Hodgeman 算法来生成新的边界&lt;&#x2F;p&gt;
 &lt;p&gt;背面剔除&lt;br &#x2F;&gt;
 根据三角面的环绕顺序可以判断面向摄像机的是正面还是背面&lt;br &#x2F;&gt;
 使用行列式（或者说二维向量的叉乘）的结果看正负号就行了&lt;&#x2F;p&gt;
 &lt;p&gt;齐次除法&lt;br &#x2F;&gt;
-向量除以它的w坐标，得到NDC坐标&lt;br &#x2F;&gt;
-（只有透视投影才需要做齐次除法，因为正交投影后点的w坐标都是1）&lt;&#x2F;p&gt;
+向量除以它的 w 坐标，得到 NDC 坐标&lt;br &#x2F;&gt;
+（只有透视投影才需要做齐次除法，因为正交投影后点的 w 坐标都是1）&lt;&#x2F;p&gt;
 &lt;p&gt;视口变换&lt;br &#x2F;&gt;
-把NDC坐标映射到屏幕上，只是简单的平移和缩放&lt;&#x2F;p&gt;
+把 NDC 坐标映射到屏幕上，只是简单的平移和缩放&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;guang-zha-hua&quot;&gt;光栅化&lt;&#x2F;h2&gt;
 &lt;p&gt;简单来说，我们上一阶段的点和面这些都是连续的，而电脑屏幕上的像素点是离散的，要把一个面或者一条边都变成一堆像素&lt;br &#x2F;&gt;
 所以光栅化也就是离散化&lt;&#x2F;p&gt;
@@ -275,7 +275,7 @@
 &lt;p&gt;一个片元也就是光栅化中得到的一个像素&lt;br &#x2F;&gt;
 在这个阶段中，需要根据环境中的光源和每一个片元或者说像素的贴图、颜色、法向量、位置等计算出片元的最终颜色&lt;&#x2F;p&gt;
 &lt;p&gt;光照的计算&lt;br &#x2F;&gt;
-比较经典的就是Phong光照模型，最终颜色=环境光+漫反射+镜面反射&lt;br &#x2F;&gt;
+比较经典的就是 Phong 光照模型，最终颜色=环境光+漫反射+镜面反射&lt;br &#x2F;&gt;
 材质信息需要提供环境光、漫反射和镜面反射的颜色或者贴图，另外还可以带上系数和透明度&lt;br &#x2F;&gt;
 其中环境光是常量；漫反射用光线与法向量夹角的余弦值乘上片元本身的颜色来近似模拟，因为余弦随着夹角增大而减小，可以很好的模拟漫反射；镜面反射则是需要根据光线与法向量得到光线的反射向量，再跟摄像机视线的方向求余弦&lt;&#x2F;p&gt;
 &lt;p&gt;贴图&lt;br &#x2F;&gt;
@@ -285,15 +285,15 @@
 &lt;h2 id=&quot;bing-xing-xing&quot;&gt;并行性&lt;&#x2F;h2&gt;
 &lt;p&gt;渲染是一个高度并行的东西&lt;br &#x2F;&gt;
 渲染管线中主要的计算都集中在显卡上&lt;&#x2F;p&gt;
-&lt;p&gt;显卡的结构我们知道它的核心数远远大于CPU，比如目前千元级的N卡就能有大约一千五百个CUDA核心&lt;br &#x2F;&gt;
-并且渲染过程中的运算主要是对一堆向量做相同的运算（尤其是矩阵乘法），也就是会在每个GPU核心上都运行同样的逻辑&lt;&#x2F;p&gt;
+&lt;p&gt;显卡的结构我们知道它的核心数远远大于CPU，比如目前千元级的 N 卡就能有大约一千五百个CUDA 核心&lt;br &#x2F;&gt;
+并且渲染过程中的运算主要是对一堆向量做相同的运算（尤其是矩阵乘法），也就是会在每个 GPU 核心上都运行同样的逻辑&lt;&#x2F;p&gt;
 &lt;p&gt;因此渲染计算在硬件层面上本身就能并行，而且由于模型中点的数量一般都远大于显卡核心数量，所以并行也非常充分&lt;&#x2F;p&gt;
-&lt;p&gt;另外提一下流水线，我们很容易联想到CPU指令的流水线技术&lt;br &#x2F;&gt;
-于是我们就可以做类似的优化，比如说游戏主线程、CPU上的渲染线程、GPU上的渲染计算这三个阶段就有一点类似CPU指令的流水线技术&lt;&#x2F;p&gt;
+&lt;p&gt;另外提一下流水线，我们很容易联想到 CPU 指令的流水线技术&lt;br &#x2F;&gt;
+于是我们就可以做类似的优化，比如说游戏主线程、CPU 上的渲染线程、GPU 上的渲染计算这三个阶段就有一点类似 CPU 指令的流水线技术&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;draw-call&quot;&gt;Draw call&lt;&#x2F;h2&gt;
-&lt;p&gt;由CPU发起，把需要渲染的原始数据扔给显卡，让显卡计算并输出到屏幕上&lt;&#x2F;p&gt;
-&lt;p&gt;需要注意的一个问题是CPU需要为渲染准备数据，比如材质、点、法线等等，而在显卡上计算通常会很快，因此如果频繁的发起draw call可能会导致性能瓶颈被卡在CPU准备数据上&lt;&#x2F;p&gt;
-&lt;p&gt;优化的思路主要是把多次draw call合并为一次；或者多次draw call可以共享相同的数据，比如静态网格或者共享材质&lt;&#x2F;p&gt;
+&lt;p&gt;由 CPU 发起，把需要渲染的原始数据扔给显卡，让显卡计算并输出到屏幕上&lt;&#x2F;p&gt;
+&lt;p&gt;需要注意的一个问题是 CPU 需要为渲染准备数据，比如材质、点、法线等等，而在显卡上计算通常会很快，因此如果频繁的发起draw call 可能会导致性能瓶颈被卡在 CPU 准备数据上&lt;&#x2F;p&gt;
+&lt;p&gt;优化的思路主要是把多次draw call 合并为一次；或者多次draw call 可以共享相同的数据，比如静态网格或者共享材质&lt;&#x2F;p&gt;
 </content>
 	</entry>
 </feed>

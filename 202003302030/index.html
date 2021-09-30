@@ -59,7 +59,7 @@
 
 <article itemscope itemtype="http://schema.org/BlogPosting">
     <header>
-        <h1 itemprop="headline">使用Mockito对SpringBoot项目单元测试</h1>
+        <h1 itemprop="headline">使用 Mockito 对SpringBoot 项目单元测试</h1>
         <span class="muted">
     <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
          width="16" height="16" fill="none" stroke="currentcolor"
@@ -78,8 +78,8 @@
 </span>
     </header>
     <div itemprop="articleBody">
-      <p>使用Mockito可以用来给模块打桩，实现单元测试</p>
-<span id="continue-reading"></span><h2 id="zai-pom-xmlli-yin-ru-yi-lai">在pom.xml里引入依赖</h2>
+      <p>使用 Mockito 可以用来给模块打桩，实现单元测试</p>
+<span id="continue-reading"></span><h2 id="zai-pom-xml-li-yin-ru-yi-lai">在pom.xml 里引入依赖</h2>
 <pre data-lang="xml" style="background-color:#2b303b;color:#c0c5ce;" class="language-xml "><code class="language-xml" data-lang="xml"><span>&lt;</span><span style="color:#bf616a;">dependency</span><span>&gt;
 </span><span>    &lt;</span><span style="color:#bf616a;">groupId</span><span>&gt;org.springframework.boot&lt;/</span><span style="color:#bf616a;">groupId</span><span>&gt;
 </span><span>    &lt;</span><span style="color:#bf616a;">artifactId</span><span>&gt;spring-boot-starter-test&lt;/</span><span style="color:#bf616a;">artifactId</span><span>&gt;
@@ -105,7 +105,7 @@
 </span><span style="color:#eff1f5;">    }
 </span><span style="color:#eff1f5;">}
 </span></code></pre>
-<p>其中Book实体大概长这样</p>
+<p>其中 Book 实体大概长这样</p>
 <pre data-lang="java" style="background-color:#2b303b;color:#c0c5ce;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">Book </span><span style="color:#eff1f5;">{
 </span><span style="color:#eff1f5;">
 </span><span style="color:#eff1f5;">    </span><span style="color:#ebcb8b;">Long </span><span style="color:#eff1f5;">id;
@@ -113,8 +113,8 @@
 </span><span style="color:#eff1f5;">}
 </span></code></pre>
 <h2 id="da-zhuang-bing-ce-shi">打桩并测试</h2>
-<p>其中MockBean表示把Spring注入的Bean改为注入由Mockito生成的桩</p>
-<p>然后对save方法打桩，对于一个输入设置对应的输出<br />
+<p>其中 MockBean 表示把Spring 注入的 Bean 改为注入由Mockito 生成的桩</p>
+<p>然后对 save 方法打桩，对于一个输入设置对应的输出<br />
 并断言该方法会被调用及调用时传入的参数</p>
 <pre data-lang="java" style="background-color:#2b303b;color:#c0c5ce;" class="language-java "><code class="language-java" data-lang="java"><span>@</span><span style="color:#bf616a;">SpringBootTest
 </span><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">BookServiceTests </span><span style="color:#eff1f5;">{

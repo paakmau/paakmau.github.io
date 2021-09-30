@@ -59,7 +59,7 @@
 
 <article itemscope itemtype="http://schema.org/BlogPosting">
     <header>
-        <h1 itemprop="headline">Unity ECS框架摸索 第七章 评价Unity目前版本的ECS框架</h1>
+        <h1 itemprop="headline">Unity ECS 框架摸索 第七章 评价 Unity 目前版本的ECS 框架</h1>
         <span class="muted">
     <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
          width="16" height="16" fill="none" stroke="currentcolor"
@@ -78,33 +78,33 @@
 </span>
     </header>
     <div itemprop="articleBody">
-      <p>虽然还是预览版，但我感觉它已经完整地发挥了ECS架构的优点，上手也很快</p>
+      <p>虽然还是预览版，但我感觉它已经完整地发挥了 ECS 架构的优点，上手也很快</p>
 <span id="continue-reading"></span>
 <p>就是坑多，文档不齐，官方例子也有一些小问题</p>
 <h2 id="jie-ou">解藕</h2>
-<p>写了一下发现System之间耦合度真的低，通常可以把一连串的依赖调用拆成互不干涉的System分别独立进行，比如「子弹命中掉血」与「血量为零死亡」可以拆成两个无关联的系统</p>
-<p>我在合并两个项目的时候就直接把Component与System的代码拷贝过来，两边也互不影响（当然也不能瞎几把玩）</p>
+<p>写了一下发现 System 之间耦合度真的低，通常可以把一连串的依赖调用拆成互不干涉的 System 分别独立进行，比如「子弹命中掉血」与「血量为零死亡」可以拆成两个无关联的系统</p>
+<p>我在合并两个项目的时候就直接把 Component 与System 的代码拷贝过来，两边也互不影响（当然也不能瞎几把玩）</p>
 <p>但是有个问题是系统的调用顺序可能会对最终处理结果有影响，比如物理引擎还有网络同步<br />
-手动处理调用顺序的感觉有点像在DAG上做拓排<br />
+手动处理调用顺序的感觉有点像在 DAG 上做拓排<br />
 讲真我甚至觉得有一点面向过程</p>
 <h2 id="nei-cun-you-hao">内存友好</h2>
-<p>Unity的Chunk管理机制能够兼顾顺序访问与组件增删</p>
+<p>Unity 的 Chunk 管理机制能够兼顾顺序访问与组件增删</p>
 <p>并且具有比较完整的筛选功能</p>
 <h2 id="bing-xing">并行</h2>
-<p>使用Job就能轻松处理并行</p>
+<p>使用 Job 就能轻松处理并行</p>
 <p>而且居然还支持Lambda</p>
 <h2 id="geng-xin-hen-kuai">更新很快</h2>
 <p>我感觉每隔十几天就更新一次，速度飞快</p>
-<p>而且其实去年就在写这个系列了，然后磨蹭了几个月发现两个大更新，我吐了。API变了一点，于是代码只能全部重跑一遍</p>
+<p>而且其实去年就在写这个系列了，然后磨蹭了几个月发现两个大更新，我吐了。API 变了一点，于是代码只能全部重跑一遍</p>
 <h2 id="huan-bu-neng-chun-ecs">还不能纯ECS</h2>
-<p>目前Mesh和Camera都没有ECS版的，Prefab也只能将就一下</p>
-<p>需要写一些临时代码把GameObject转化为Entity与Component</p>
+<p>目前 Mesh 和Camera 都没有 ECS 版的，Prefab 也只能将就一下</p>
+<p>需要写一些临时代码把 GameObject 转化为Entity 与Component</p>
 <h2 id="shi-yao-shi-hou-neng-yong-yu-production">什么时候能用于Production</h2>
-<p>物理引擎跟微软合作，已经能在Package Manager中安装了，说明API应该也稳定了吧</p>
+<p>物理引擎跟微软合作，已经能在Package Manager 中安装了，说明 API 应该也稳定了吧</p>
 <p>官方还说今年会有1.0版本</p>
-<p>Production可能要等个两年</p>
+<p>Production 可能要等个两年</p>
 <h2 id="xiang-mu-an-li">项目案例</h2>
-<p>基于Unity DOTS写的坦克大乱斗游戏，很大程度上参考了Unity官方文档和示例，可以作为一个学习的简单例子</p>
+<p>基于Unity DOTS 写的坦克大乱斗游戏，很大程度上参考了 Unity 官方文档和示例，可以作为一个学习的简单例子</p>
 <p><a href="https://github.com/paakmau/JustFight">https://github.com/paakmau/JustFight</a></p>
 
     </div>

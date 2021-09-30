@@ -59,7 +59,7 @@
 
 <article itemscope itemtype="http://schema.org/BlogPosting">
     <header>
-        <h1 itemprop="headline">Win10下Perforce命令行快速上手</h1>
+        <h1 itemprop="headline">Win10下 Perforce 命令行快速上手</h1>
         <span class="muted">
     <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
          width="16" height="16" fill="none" stroke="currentcolor"
@@ -78,53 +78,53 @@
 </span>
     </header>
     <div itemprop="articleBody">
-      <p>相对于Git和SVN，Perforce在管理二进制文件上更方便</p>
+      <p>相对于 Git 和SVN，Perforce 在管理二进制文件上更方便</p>
 <span id="continue-reading"></span>
 <p>本文参考了官网教程</p>
 <p><a href="https://www.perforce.com/manuals/p4guide/Content/P4Guide/tutorial.readmefirst.html">https://www.perforce.com/manuals/p4guide/Content/P4Guide/tutorial.readmefirst.html</a></p>
-<h2 id="gityong-hu-kan-zhe-li">Git用户看这里</h2>
-<p>Stream Depot大概可以理解为一个Git项目，然后Stream就是Git里的分支</p>
-<p>其中Stream必须要依赖于Stream Depot存在</p>
+<h2 id="git-yong-hu-kan-zhe-li">Git 用户看这里</h2>
+<p>Stream Depot 大概可以理解为一个 Git 项目，然后 Stream 就是Git 里的分支</p>
+<p>其中 Stream 必须要依赖于Stream Depot 存在</p>
 <h2 id="an-zhuang">安装</h2>
 <p><a href="https://www.perforce.com/downloads">https://www.perforce.com/downloads</a></p>
 <p>把服务端和命令行客户端都装上就行了，也可以整图形化界面</p>
-<p>Windows下安装包会自动配置环境变量；并且服务端装完后会自动启动，如果没有的话就用p4d命令启动服务端</p>
-<p>我们可以在PowerShell里输入下面的命令测试一下服务端是否正常</p>
+<p>Windows 下安装包会自动配置环境变量；并且服务端装完后会自动启动，如果没有的话就用p4d 命令启动服务端</p>
+<p>我们可以在 PowerShell 里输入下面的命令测试一下服务端是否正常</p>
 <pre data-lang="ps1" style="background-color:#2b303b;color:#c0c5ce;" class="language-ps1 "><code class="language-ps1" data-lang="ps1"><span>PS p4 info
 </span></code></pre>
 <h2 id="chuang-jian-stream-depot">创建Stream Depot</h2>
 <pre data-lang="ps1" style="background-color:#2b303b;color:#c0c5ce;" class="language-ps1 "><code class="language-ps1" data-lang="ps1"><span>PS p4 depot -t stream TestDepot
 </span></code></pre>
-<p>解释一下，这行命令创建了一个名为TestDepot的Stream Depot，-t stream用于指定这个Depot的类型</p>
+<p>解释一下，这行命令创建了一个名为 TestDepot 的Stream Depot，-t stream 用于指定这个 Depot 的类型</p>
 <h2 id="chuang-jian-stream">创建Stream</h2>
-<p>Git中我们通常会开master和dev分支</p>
-<p>在Perforce里我们也可以做同样的操作，使用下面两行命令创建main和dev两个Stream</p>
+<p>Git 中我们通常会开 master 和dev 分支</p>
+<p>在 Perforce 里我们也可以做同样的操作，使用下面两行命令创建 main 和dev 两个Stream</p>
 <pre data-lang="ps1" style="background-color:#2b303b;color:#c0c5ce;" class="language-ps1 "><code class="language-ps1" data-lang="ps1"><span>PS p4 stream -t mainline //TestDepot/main
 </span><span>PS p4 stream -t development -P //TestDepot/main //TestDepot/dev
 </span></code></pre>
-<p>解释一下，-t参数用于指定Stream的类型，-P参数用于指定父Stream；上面的例子里main这个Stream是dev的父Stream</p>
-<p>需要注意mainline类型的Stream不能有父Stream</p>
+<p>解释一下，-t 参数用于指定 Stream 的类型，-P 参数用于指定父Stream；上面的例子里 main 这个Stream 是 dev 的父Stream</p>
+<p>需要注意 mainline 类型的Stream 不能有父Stream</p>
 <p>我们可以使用下面的命令来查看所有的Stream</p>
 <pre data-lang="ps1" style="background-color:#2b303b;color:#c0c5ce;" class="language-ps1 "><code class="language-ps1" data-lang="ps1"><span>PS p4 streams
 </span></code></pre>
 <h2 id="chuang-jian-workspace">创建Workspace</h2>
-<p>之前Stream相关的操作都是作用在服务端上的</p>
+<p>之前 Stream 相关的操作都是作用在服务端上的</p>
 <p>这里我们在本地创建Workspace</p>
-<p>首先设置环境变量P4CLIENT，这个是PowerShell的写法<br />
+<p>首先设置环境变量P4CLIENT，这个是 PowerShell 的写法<br />
 配环境变量这种操作其实我是觉得挺离谱的</p>
 <pre data-lang="ps1" style="background-color:#2b303b;color:#c0c5ce;" class="language-ps1 "><code class="language-ps1" data-lang="ps1"><span>PS $</span><span style="color:#bf616a;">env:P4CLIENT</span><span>=&#39;</span><span style="color:#a3be8c;">hello_client</span><span>&#39;
 </span></code></pre>
-<p>然后cd到一个空的文件夹，输入以下命令</p>
+<p>然后 cd 到一个空的文件夹，输入以下命令</p>
 <pre data-lang="ps1" style="background-color:#2b303b;color:#c0c5ce;" class="language-ps1 "><code class="language-ps1" data-lang="ps1"><span>PS p4 client -S //TestDepot/main
 </span></code></pre>
-<p>这样这个文件夹就跟main这个Stream绑定起来了</p>
+<p>这样这个文件夹就跟 main 这个Stream 绑定起来了</p>
 <h2 id="tian-jia-wen-jian">添加文件</h2>
 <p>在这个文件夹里新建一个文件test_file.txt</p>
 <pre data-lang="ps1" style="background-color:#2b303b;color:#c0c5ce;" class="language-ps1 "><code class="language-ps1" data-lang="ps1"><span>PS p4 add .\test_file.txt
 </span><span>PS p4 submit -d &#39;</span><span style="color:#a3be8c;">Add a test file</span><span>&#39;
 </span></code></pre>
 <h2 id="xiu-gai-wen-jian">修改文件</h2>
-<p>Workspace里已有的文件通常都是只读的，我们使用下面这行命令修改test_file.txt的读写权限</p>
+<p>Workspace 里已有的文件通常都是只读的，我们使用下面这行命令修改test_file.txt 的读写权限</p>
 <pre data-lang="ps1" style="background-color:#2b303b;color:#c0c5ce;" class="language-ps1 "><code class="language-ps1" data-lang="ps1"><span>PS p4 edit .\test_file.txt
 </span></code></pre>
 <p>然后用编辑器改一下里面的内容</p>
@@ -134,9 +134,9 @@
 <pre data-lang="ps1" style="background-color:#2b303b;color:#c0c5ce;" class="language-ps1 "><code class="language-ps1" data-lang="ps1"><span>PS p4 delete .\test_file.txt
 </span><span>PS p4 submit -d &#39;</span><span style="color:#a3be8c;">Delete a test file</span><span>&#39;
 </span></code></pre>
-<p>需要注意这个只是从服务端把该文件删除，Workspace里这个文件依然存在</p>
+<p>需要注意这个只是从服务端把该文件删除，Workspace 里这个文件依然存在</p>
 <h2 id="yu-fu-wu-duan-tong-bu">与服务端同步</h2>
-<p>如果其他人对Stream进行了修改并提交到了服务端，我们可以把这些修改同步到本地的Workspace里</p>
+<p>如果其他人对 Stream 进行了修改并提交到了服务端，我们可以把这些修改同步到本地的 Workspace 里</p>
 <pre data-lang="ps1" style="background-color:#2b303b;color:#c0c5ce;" class="language-ps1 "><code class="language-ps1" data-lang="ps1"><span>PS p4 sync
 </span></code></pre>
 <h2 id="qie-huan-stream">切换Stream</h2>
@@ -147,13 +147,13 @@
 <pre data-lang="ps1" style="background-color:#2b303b;color:#c0c5ce;" class="language-ps1 "><code class="language-ps1" data-lang="ps1"><span>PS p4 </span><span style="color:#b48ead;">switch </span><span>-r dev
 </span></code></pre>
 <h2 id="he-bing-stream">合并Stream</h2>
-<p>merge命令只能以父Stream为源，子Stream为目标</p>
-<p>首先switch到子Stream，然后执行下面的命令，会自动从父Stream上合并过来</p>
+<p>merge 命令只能以父 Stream 为源，子 Stream 为目标</p>
+<p>首先 switch 到子Stream，然后执行下面的命令，会自动从父 Stream 上合并过来</p>
 <pre data-lang="ps1" style="background-color:#2b303b;color:#c0c5ce;" class="language-ps1 "><code class="language-ps1" data-lang="ps1"><span>PS p4 merge
 </span><span>PS p4 resolve
 </span></code></pre>
-<p>后面的resolve命令是解决两个Stream的冲突，不同于Git的自动合并，手动合并非常原始，建议使用图形化界面或者编辑器插件</p>
-<p>resolve完了之后记得submit</p>
+<p>后面的 resolve 命令是解决两个Stream 的冲突，不同于 Git 的自动合并，手动合并非常原始，建议使用图形化界面或者编辑器插件</p>
+<p>resolve 完了之后记得submit</p>
 <pre data-lang="ps1" style="background-color:#2b303b;color:#c0c5ce;" class="language-ps1 "><code class="language-ps1" data-lang="ps1"><span>PS p4 submit -d &quot;</span><span style="color:#a3be8c;">Merge</span><span>&quot;
 </span></code></pre>
 

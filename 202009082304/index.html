@@ -59,7 +59,7 @@
 
 <article itemscope itemtype="http://schema.org/BlogPosting">
     <header>
-        <h1 itemprop="headline">Vulkan画三角形「七」 创建图像视图</h1>
+        <h1 itemprop="headline">Vulkan 画三角形「七」 创建图像视图</h1>
         <span class="muted">
     <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
          width="16" height="16" fill="none" stroke="currentcolor"
@@ -78,12 +78,12 @@
 </span>
     </header>
     <div itemprop="articleBody">
-      <p>为了能够使用VkImage，包括交换链中的在内，我们需要在渲染管线中创建VkImageView。一个图像视图真的就是字面意思的图像的视图。它描述了如何访问这个图像以及访问这个图像的哪个部分，例如图像可能被当作不需要Mipmap的二维深度贴图</p>
+      <p>为了能够使用VkImage，包括交换链中的在内，我们需要在渲染管线中创建VkImageView。一个图像视图真的就是字面意思的图像的视图。它描述了如何访问这个图像以及访问这个图像的哪个部分，例如图像可能被当作不需要 Mipmap 的二维深度贴图</p>
 <span id="continue-reading"></span><h2 id="chuang-jian-tu-xiang-shi-tu">创建图像视图</h2>
 <p>首先还是先定义一个成员变量用于保存图像视图</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>std::vector&lt;VkImageView&gt; swapchainImageViews;
 </span></code></pre>
-<p>添加一个成员函数用于创建图像视图，并在initVulkan中调用它</p>
+<p>添加一个成员函数用于创建图像视图，并在 initVulkan 中调用它</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">initVulkan</span><span>() {
 </span><span>    </span><span style="color:#bf616a;">createInstance</span><span>();
 </span><span>    </span><span style="color:#bf616a;">createSurface</span><span>();
@@ -122,11 +122,11 @@
 </span><span>}
 </span></code></pre>
 <p>稍微解释一下创建信息的成员</p>
-<p>viewType和format指定了图像数据应当如何被解释</p>
-<p>components允许我们进行颜色通道的映射，比如把红色通道映射到所有的通道来实现黑白纹理，也可以为一个通道映射一个常量，当然我们这里使用了默认映射</p>
-<p>subresourceRange描述了图像的目的以及应当访问图像的哪一个部分，我们的图像将会被用于不需要Mipmap也不需要多层的颜色目标。但如果需要开发立体三维应用，我们应当创建一个多层的交换链，并为图像创建多层图像视图，通过访问不同的层来代表左眼和右眼</p>
+<p>viewType 和 format 指定了图像数据应当如何被解释</p>
+<p>components 允许我们进行颜色通道的映射，比如把红色通道映射到所有的通道来实现黑白纹理，也可以为一个通道映射一个常量，当然我们这里使用了默认映射</p>
+<p>subresourceRange 描述了图像的目的以及应当访问图像的哪一个部分，我们的图像将会被用于不需要 Mipmap 也不需要多层的颜色目标。但如果需要开发立体三维应用，我们应当创建一个多层的交换链，并为图像创建多层图像视图，通过访问不同的层来代表左眼和右眼</p>
 <h2 id="xiao-hui-tu-xiang-shi-tu">销毁图像视图</h2>
-<p>编辑cleanup函数</p>
+<p>编辑 cleanup 函数</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">cleanup</span><span>() {
 </span><span>    </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">auto</span><span> imageView : swapchainImageViews)
 </span><span>        </span><span style="color:#bf616a;">vkDestroyImageView</span><span>(device, imageView, </span><span style="color:#d08770;">nullptr</span><span>);

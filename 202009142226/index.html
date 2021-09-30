@@ -59,7 +59,7 @@
 
 <article itemscope itemtype="http://schema.org/BlogPosting">
     <header>
-        <h1 itemprop="headline">Vulkan画三角形「十二」 创建帧缓冲区</h1>
+        <h1 itemprop="headline">Vulkan 画三角形「十二」 创建帧缓冲区</h1>
         <span class="muted">
     <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
          width="16" height="16" fill="none" stroke="currentcolor"
@@ -80,11 +80,11 @@
     <div itemprop="articleBody">
       <p>在之前的文章中已经讨论了很多帧缓冲区相关的东西，并且我们已经配置了渲染路径，渲染路径基于一个单独的与交换链图像具有相同格式的帧缓冲区，但我们实际上还没有创建它</p>
 <span id="continue-reading"></span>
-<p>在渲染路径创建时指定的附着通过封装为VkFramebuffer对象进行绑定。一个帧缓冲区对象引用了代表这些附着的所有VkImageView对象。当然我们这里只有一个，也就是颜色附着。然而，我们需要用于附着的图像取决于我们在展示时交换链提供的图像。这意味这我们必须对交换链中所有的图像都创建一个帧缓冲区，并且在渲染的时候使用与交换链提供的图像相对应的那个帧缓冲区</p>
+<p>在渲染路径创建时指定的附着通过封装为 VkFramebuffer 对象进行绑定。一个帧缓冲区对象引用了代表这些附着的所有 VkImageView 对象。当然我们这里只有一个，也就是颜色附着。然而，我们需要用于附着的图像取决于我们在展示时交换链提供的图像。这意味这我们必须对交换链中所有的图像都创建一个帧缓冲区，并且在渲染的时候使用与交换链提供的图像相对应的那个帧缓冲区</p>
 <p>首先添加一个成员变量用来持有这些帧缓冲区</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>std::vector&lt;VkFramebuffer&gt; swapchainFramebuffers;
 </span></code></pre>
-<p>接下来添加一个成员函数来为这个数组创建对象，并在initVulkan中调用它</p>
+<p>接下来添加一个成员函数来为这个数组创建对象，并在 initVulkan 中调用它</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">initVulkan</span><span>() {
 </span><span>    </span><span style="color:#bf616a;">createInstance</span><span>();
 </span><span>    </span><span style="color:#bf616a;">createSurface</span><span>();
@@ -121,10 +121,10 @@
 </span><span>}
 </span></code></pre>
 <p>首先第一步是调整数组的长度来持有所有的缓冲区</p>
-<p>之后的创建过程十分显然。先通过创建信息的renderPass成员指定与帧缓冲区兼容的渲染路径。我们只能选择兼容的渲染路径，这大致上意味着它们都要使用相同数量和相同类型的附着</p>
-<p>attachmentCount和pAttachments参数指定了帧缓冲区对应的图像视图对象，它需要与渲染路径创建信息中的pAttachment数组中的附着描述相匹配</p>
-<p>width和height参数非常显然，layers指的是图像的层数，我们使用的交换链图像都是单层的，因此层数为一</p>
-<p>最后需要在cleanup中销毁所有的帧缓冲区</p>
+<p>之后的创建过程十分显然。先通过创建信息的 renderPass 成员指定与帧缓冲区兼容的渲染路径。我们只能选择兼容的渲染路径，这大致上意味着它们都要使用相同数量和相同类型的附着</p>
+<p>attachmentCount 和 pAttachments 参数指定了帧缓冲区对应的图像视图对象，它需要与渲染路径创建信息中的 pAttachment 数组中的附着描述相匹配</p>
+<p>width 和 height 参数非常显然，layers 指的是图像的层数，我们使用的交换链图像都是单层的，因此层数为一</p>
+<p>最后需要在 cleanup 中销毁所有的帧缓冲区</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">cleanup</span><span>() {
 </span><span>    </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">auto</span><span> framebuffer : swapchainFramebuffers)
 </span><span>        </span><span style="color:#bf616a;">vkDestroyFramebuffer</span><span>(device, framebuffer, </span><span style="color:#d08770;">nullptr</span><span>);

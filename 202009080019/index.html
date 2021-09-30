@@ -59,7 +59,7 @@
 
 <article itemscope itemtype="http://schema.org/BlogPosting">
     <header>
-        <h1 itemprop="headline">Vulkan画三角形「五」 创建逻辑设备</h1>
+        <h1 itemprop="headline">Vulkan 画三角形「五」 创建逻辑设备</h1>
         <span class="muted">
     <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
          width="16" height="16" fill="none" stroke="currentcolor"
@@ -83,7 +83,7 @@
 <p>同样的，让我们添加一个成员变量</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkDevice device;
 </span></code></pre>
-<p>然后添加一个createLogicalDevice成员函数，在initVulkan里调用它</p>
+<p>然后添加一个 createLogicalDevice 成员函数，在 initVulkan 里调用它</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">initVulkan</span><span>() {
 </span><span>    </span><span style="color:#bf616a;">createInstance</span><span>();
 </span><span>    </span><span style="color:#bf616a;">createSurface</span><span>();
@@ -106,8 +106,8 @@
 </span><span>queueCreateInfo.</span><span style="color:#bf616a;">pQueuePriorities </span><span>= &amp;queuePriority;
 </span></code></pre>
 <p>对于一个队列族，目前可用的驱动只允许我们创建少量的队列，并且我们也不会真的遇到多于一个的情况。因为我们可以为每个线程创建命令缓冲区，然后在主线程中用一个低开销的调用把它们全部提交</p>
-<p>Vulkan允许我们为队列指定优先级，这会影响命令缓冲区执行规划，优先级由一个零到一的浮点数指定。即使只有一个队列我们也需要为它指定优先级</p>
-<p>接下来我们需要指定设备的特性。我们可以通过vkGetPhysicalDeviceFeatures来查询物理设备的特性支持，比如几何着色器。但现在我们不需要任何特性，所以我们就直接简单定义它并把所有的值设为零</p>
+<p>Vulkan 允许我们为队列指定优先级，这会影响命令缓冲区执行规划，优先级由一个零到一的浮点数指定。即使只有一个队列我们也需要为它指定优先级</p>
+<p>接下来我们需要指定设备的特性。我们可以通过 vkGetPhysicalDeviceFeatures 来查询物理设备的特性支持，比如几何着色器。但现在我们不需要任何特性，所以我们就直接简单定义它并把所有的值设为零</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkPhysicalDeviceFeatures deviceFeatures = {};
 </span></code></pre>
 <p>然后我们就可以开始填充逻辑设备的创建信息并通过它来创建逻辑设备了</p>
@@ -124,7 +124,7 @@
 </span><span>    </span><span style="color:#b48ead;">throw </span><span>std::</span><span style="color:#bf616a;">runtime_error</span><span>(&quot;</span><span style="color:#a3be8c;">failed to create logical device</span><span>&quot;);
 </span><span style="background-color:#bf616a;color:#2b303b;">}</span><span>
 </span></code></pre>
-<p>可以看到创建逻辑设备主要是把上面的队列创建信息和设备特性传进去，最后指定一下逻辑设备需要启用的扩展，这里传入了VK_KHR_swapchain来让我们能够使用交换链，交换链将会在后面的文章中介绍</p>
+<p>可以看到创建逻辑设备主要是把上面的队列创建信息和设备特性传进去，最后指定一下逻辑设备需要启用的扩展，这里传入了VK_KHR_swapchain 来让我们能够使用交换链，交换链将会在后面的文章中介绍</p>
 <h2 id="qu-hui-dui-lie-ju-bing">取回队列句柄</h2>
 <p>创建逻辑设备的同时会根据传入的队列创建信息创建相应的队列，所以我们需要取回对队列句柄</p>
 <p>还是先添加一个成员变量</p>
@@ -133,7 +133,7 @@
 <p>然后在创建逻辑设备之后添加如下代码</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#bf616a;">vkGetDeviceQueue</span><span>(device, queueFamilyIndex, </span><span style="color:#d08770;">0</span><span>, &amp;graphicsAndPresentQueue)
 </span></code></pre>
-<p>可以使用vkGetDeviceQueue函数对每个队列族取回队列句柄，参数依次分别是逻辑设备、队列族索引、队列索引、用于存储队列句柄的变量的指针，然后因为我们的这个队列族只有一个队列，所以直接使用零作为队列索引</p>
+<p>可以使用 vkGetDeviceQueue 函数对每个队列族取回队列句柄，参数依次分别是逻辑设备、队列族索引、队列索引、用于存储队列句柄的变量的指针，然后因为我们的这个队列族只有一个队列，所以直接使用零作为队列索引</p>
 <h2 id="xiao-hui-luo-ji-she-bei">销毁逻辑设备</h2>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">cleanup</span><span>() {
 </span><span>    </span><span style="color:#bf616a;">vkDestroyDevice</span><span>(device, </span><span style="color:#d08770;">nullptr</span><span>);

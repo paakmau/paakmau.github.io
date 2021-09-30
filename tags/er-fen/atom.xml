@@ -13,14 +13,14 @@
 		<updated>2020-04-21T21:39:49+00:00</updated>
 		<link href="https://paakmau.github.io/202004212139/" type="text/html"/>
 		<id>https://paakmau.github.io/202004212139/</id>
-		<content type="html">&lt;p&gt;讲真我从高中到现在就没有手写过一次快排（是sort不够好吗）&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;讲真我从高中到现在就没有手写过一次快排（是 sort 不够好吗）&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;然后最近看书的时候看到划分数据块并行优化的思路，发现快排和堆排都能多线程优化&lt;&#x2F;p&gt;
 &lt;p&gt;于是写一个试试&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;si-lu&quot;&gt;思路&lt;&#x2F;h2&gt;
 &lt;p&gt;注意到快排在每次迭代后原数组都会被分成没有交集的两块，那么他们就可以并行；堆排也同理&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;zhu-yi&quot;&gt;注意&lt;&#x2F;h2&gt;
-&lt;p&gt;有一个问题是不能每次迭代都新开线程（我CPU就四个核心线程多也没用）&lt;br &#x2F;&gt;
+&lt;p&gt;有一个问题是不能每次迭代都新开线程（我 CPU 就四个核心线程多也没用）&lt;br &#x2F;&gt;
 那就开一个线程池，把迭代后产生的排序任务放到队列里，有一点类似我们递归爆栈时会用到的手写栈&lt;&#x2F;p&gt;
 &lt;p&gt;还有一个问题是，在区间长度比较小的时候，由于多线程的调度成本，直接在本线程内递归的性能反而更好&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;xian-cheng-chi&quot;&gt;线程池&lt;&#x2F;h2&gt;
@@ -77,7 +77,7 @@
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span&gt;;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;he-xin-dai-ma&quot;&gt;核心代码&lt;&#x2F;h2&gt;
-&lt;p&gt;每一个SortFunc对象都是快排中的一次迭代，给他传一个区间就行&lt;&#x2F;p&gt;
+&lt;p&gt;每一个 SortFunc 对象都是快排中的一次迭代，给他传一个区间就行&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct &lt;&#x2F;span&gt;&lt;span&gt;SortFunc {
 &lt;&#x2F;span&gt;&lt;span&gt;    ThreadPool &amp;amp;pool;
 &lt;&#x2F;span&gt;&lt;span&gt;    vector&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt; &amp;amp;arr;

@@ -1,5 +1,5 @@
 +++
-title = "Docker简明介绍与安装"
+title = "Docker 简明介绍与安装"
 date = 2019-12-11 20:16:43
 slug = "201912112016"
 
@@ -8,25 +8,25 @@ tags = ["Docker"]
 categories = ["Docker"]
 +++
 
-本文将基于Debian介绍Docker的安装
+本文将基于 Debian 介绍 Docker 的安装
 
 <!-- more -->
 
 ## 简介
 
-根据官方文档，Docker是一个以容器形式构建、分享、运行应用的平台。
+根据官方文档，Docker 是一个以容器形式构建、分享、运行应用的平台。
 
-民间说法，Docker是一个虚拟机，只要制作了应用的虚拟机镜像，就能在几乎任何平台上一键部署我们的应用。而且这个虚拟机的性能非常好。
+民间说法，Docker 是一个虚拟机，只要制作了应用的虚拟机镜像，就能在几乎任何平台上一键部署我们的应用。而且这个虚拟机的性能非常好。
 
-举个部署后端的例子说明Docker部署流程  
+举个部署后端的例子说明 Docker 部署流程  
   
-首先制作一个镜像，这个镜像的内容是一个配置了JRE然后还存放着我们写的Spring Boot后端的Ubuntu  
-然后把镜像交给Docker，Docker就能根据镜像生成容器并运行它。  
+首先制作一个镜像，这个镜像的内容是一个配置了 JRE 然后还存放着我们写的 Spring Boot 后端的 Ubuntu  
+然后把镜像交给 Docker，Docker 就能根据镜像生成容器并运行它。  
 这样我们的后端就部署成功了。
 
 ## 容器
 
-是一个虚拟环境。这个环境可以是带了JRE和Java后端的Ubuntu，也可以只是一个JRE与Java后端，甚至可以自己从零开始编写。
+是一个虚拟环境。这个环境可以是带了 JRE 和 Java 后端的 Ubuntu，也可以只是一个 JRE 与 Java 后端，甚至可以自己从零开始编写。
 
 总之就是容器中运行着我们的应用。
 
@@ -34,24 +34,24 @@ categories = ["Docker"]
 
 可以理解为容器的模板，可以用一个镜像生成很多个一模一样的容器。
 
-一个镜像可以作为另一个镜像的基础。比如我们可以基于“Ubuntu”镜像制作一个“带JRE的Ubuntu”镜像。
+一个镜像可以作为另一个镜像的基础。比如我们可以基于“Ubuntu”镜像制作一个“带 JRE 的 Ubuntu”镜像。
 
-而Docker提供了许多的基础镜像，比如包括Ubuntu在内的各种Linux发行版、DotNet、MySQL等等。我们可以基于这些镜像快速的构建我们的应用镜像。
+而 Docker 提供了许多的基础镜像，比如包括 Ubuntu 在内的各种 Linux 发行版、DotNet、MySQL 等等。我们可以基于这些镜像快速的构建我们的应用镜像。
 
 ## Docker Compose
 
-在项目部署的时候，我们可能会用到多个容器，逐个配置就会很麻烦。可以使用Docker Compose同时配置管理多个容器
+在项目部署的时候，我们可能会用到多个容器，逐个配置就会很麻烦。可以使用 Docker Compose 同时配置管理多个容器
 
-## Docker安装
+## Docker 安装
 
-这里以Debian 10为例
+这里以 Debian 10为例
 
-使用apt安装，首先根据处理器架构添加合适的apt仓库，然后直接apt install即可。
+使用 apt 安装，首先根据处理器架构添加合适的 apt 仓库，然后直接 `apt install` 即可。
 
 官网链接在这里  
 <https://docs.docker.com/install/linux/docker-ce/debian/>
 
-注意：如果已有旧版的Docker，请移步上述官网教程按步骤卸载
+注意：如果已有旧版的 Docker，请移步上述官网教程按步骤卸载
 
 首先安装依赖
 
@@ -61,13 +61,13 @@ $ sudo apt install apt-transport-https ca-certificates
 $ sudo apt install curl gnupg2 software-properties-common
 ```
 
-然后添加Docker提供的GPGKey
+然后添加 Docker 提供的 GPGKey
 
 ```sh
 $ curl -fsSL https://download.docker.com/linux/debian/gpg  sudo apt-key add -
 ```
 
-接下来根据服务器的CPU架构，添加Docker的apt仓库
+接下来根据服务器的 CPU 架构，添加 Docker 的 apt 仓库
 
 x86\_64 / amd64
 
@@ -141,7 +141,7 @@ For more examples and ideas, visit:
  https://docs.docker.com/get-started/
 ```
 
-## 使用Snap安装Docker
+## 使用 Snap 安装Docker
 
 喜闻乐见，在沙箱中运行沙箱
 
@@ -149,20 +149,20 @@ For more examples and ideas, visit:
 $ sudo snap install docker
 ```
 
-## Docker Compose安装
+## Docker Compose 安装
 
 官网在这里  
 <https://docs.docker.com/compose/install/#alternative-install-options>
 
 普通方式  
-直接curl下载预编译的可执行文件然后改个权限就好了
+直接 curl 下载预编译的可执行文件然后改个权限就好了
 
 ```sh
 $ sudo curl -L "https://github.com/docker/compose/releases/download/1.25.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 $ sudo chmod +x /usr/local/bin/docker-compose
 ```
 
-然后发现Compose也能在容器中运行，Docker官方提供了脚本封装。因此还可以执行下面的命令安装（多此一举）
+然后发现 Compose 也能在容器中运行，Docker 官方提供了脚本封装。因此还可以执行下面的命令安装（多此一举）
 
 ```sh
 $ sudo curl -L --fail https://github.com/docker/compose/releases/download/1.25.0/run.sh -o /usr/local/bin/docker-compose

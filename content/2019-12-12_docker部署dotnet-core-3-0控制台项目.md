@@ -1,5 +1,5 @@
 +++
-title = "Docker部署.NET Core 3.0控制台项目"
+title = "Docker 部署.NET Core 3.0控制台项目"
 date = 2019-12-12 17:24:24
 slug = "201912121724"
 
@@ -8,13 +8,13 @@ tags = [".NET Core", "Docker"]
 categories = [".NET Core", "Docker"]
 +++
 
-本文将光速创建一个HelloWorld，然后使用Docker进行部署
+本文将光速创建一个HelloWorld，然后使用 Docker 进行部署
 
 <!-- more -->
 
-## 新建并发布.NET Core控制台项目
+## 新建并发布.NET Core 控制台项目
 
-首先新建一个.NET Core控制台项目，并直接运行  
+首先新建一个.NET Core 控制台项目，并直接运行  
 控制台应该会输出“Hello World!”，如果没有可以自己写一个。
 
 ```sh
@@ -24,7 +24,7 @@ $ dotnet run
 ```
 
 解释：  
-dotnet new用于创建新项目，console表示是控制台项目，--name指定项目名称为hello并在当前路径下创建hello文件夹，而项目在其中。
+dotnet new 用于创建新项目，console 表示是控制台项目，--name 指定项目名称为 hello 并在当前路径下创建hello 文件夹，而项目在其中。
 
 于是直接发布
 
@@ -32,9 +32,9 @@ dotnet new用于创建新项目，console表示是控制台项目，--name指定
 $ dotnet publish -c Release
 ```
 
-解释：该命令会把项目发布到hello文件夹中的bin/Release/netcoreapp3.0/publish里
+解释：该命令会把项目发布到 hello 文件夹中的bin/Release/netcoreapp3.0/publish 里
 
-然后在hello目录下编写Dockerfile文件用于生成镜像  
+然后在 hello 目录下编写Dockerfile 文件用于生成镜像  
 Dockerfile
 
 ```dockerfile
@@ -57,13 +57,13 @@ WORKDIR
 ENTRYPOINT  
 运行应用
 
-接下来利用这个Dockerfile构建镜像
+接下来利用这个 Dockerfile 构建镜像
 
 ```sh
 $ docker build -t dotnet-hello .
 ```
 
-解释：dotnet-hello是镜像的名称
+解释：dotnet-hello 是镜像的名称
 
 最后利用该镜像构建容器并运行
 
@@ -72,7 +72,7 @@ $ docker run -t --name hello dotnet-hello
 ```
 
 解释：  
-\-t 表示虚拟终端，用于在Docker命令行工具中输出应用的控制台输出。但一般项目中不需要  
-\--name hello表示容器名为hello
+\-t 表示虚拟终端，用于在 Docker 命令行工具中输出应用的控制台输出。但一般项目中不需要  
+\--name hello 表示容器名为hello
 
 最后看到终端输出“Hello World!”

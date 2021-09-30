@@ -5,7 +5,7 @@ slug = "201912191751"
 
 [taxonomies]
 tags = ["动态规划", "树形DP"]
-categories = ["算法", "OJ刷题"]
+categories = ["算法", "OJ 刷题"]
 +++
 
 一题简单的树形DP
@@ -68,7 +68,7 @@ One line for each input tree showing the minimum number of stones to be picked i
 ## 题解
 
 树形DP  
-F(p)表示p节点最少需要的石子数
+F(p)表示 p 节点最少需要的石子数
 
 ```cpp
 #include <cstdio>

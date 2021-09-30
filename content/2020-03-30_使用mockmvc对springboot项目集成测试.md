@@ -1,5 +1,5 @@
 +++
-title = "使用MockMvc对SpringBoot项目集成测试"
+title = "使用 MockMvc 对SpringBoot 项目集成测试"
 date = 2020-03-30 20:12:40
 slug = "202003302012"
 
@@ -8,11 +8,11 @@ tags = ["MockMvc", "Spring Boot"]
 categories = ["Spring Boot"]
 +++
 
-对后端进行集成测试的时候，我们一般都希望从发送HTTP请求开始对后端进行完整的测试，可能会考虑用Postman或者Postwoman这类东西，但是直觉告诉我们应该也可以把集成测试写在代码里
+对后端进行集成测试的时候，我们一般都希望从发送 HTTP 请求开始对后端进行完整的测试，可能会考虑用 Postman 或者Postwoman 这类东西，但是直觉告诉我们应该也可以把集成测试写在代码里
 
 <!-- more -->
 
-## 在pom.xml里引入依赖
+## 在pom.xml 里引入依赖
 
 ```xml
 <dependency>
@@ -29,7 +29,7 @@ categories = ["Spring Boot"]
 
 ## 准备随便一个项目用于测试
 
-BookVo如下
+BookVo 如下
 
 ```java
 @Data
@@ -42,9 +42,9 @@ public class BookVo {
 }
 ```
 
-这里使用了Lombok插件自动生成Getter、Setter和构造函数，并重写了equals方法
+这里使用了 Lombok 插件自动生成Getter、Setter 和构造函数，并重写了 equals 方法
 
-BookController如下
+BookController 如下
 
 ```java
 @RestController
@@ -75,8 +75,8 @@ public class BookController {
 
 ## 集成测试
 
-我们可以使用MockMvc指定HTTP请求的类型、PathVariable、RequestParam、RequestBody等，并能使用断言验证返回的状态码、结果等  
-请求返回的JSON数据也能使用Fastjson方便的转换为对象
+我们可以使用 MockMvc 指定HTTP 请求的类型、PathVariable、RequestParam、RequestBody 等，并能使用断言验证返回的状态码、结果等  
+请求返回的 JSON 数据也能使用Fastjson 方便的转换为对象
 
 不多逼逼，看代码
 
@@ -119,6 +119,6 @@ class BookTests {
 }
 ```
 
-需要注意的是使用RequestBody接收的参数需要使用Fastjson转换为字符串，并指定类型为APPLICATION_JSON  
-并且请求的返回值也可以使用Fastjson转换成简单的对象，比如上面代码就转成了BookVo  
-另外@Data注解会为BookVo重写equals方法，因此可以直接用assertEquals断言
+需要注意的是使用 RequestBody 接收的参数需要使用Fastjson 转换为字符串，并指定类型为APPLICATION_JSON  
+并且请求的返回值也可以使用 Fastjson 转换成简单的对象，比如上面代码就转成了BookVo  
+另外@Data 注解会为 BookVo 重写equals 方法，因此可以直接用 assertEquals 断言

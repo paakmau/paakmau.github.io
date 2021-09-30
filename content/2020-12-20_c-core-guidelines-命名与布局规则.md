@@ -318,7 +318,7 @@ int main(int argc, char* argv[])
 - 普通函数
 - 数据成员
 
-使用 public 到 protected 再到 private的顺序。
+使用 public 到 protected 再到 private 的顺序。
 
 这只是在你没有限制或者更好的想法的情况的一种推荐。这条规则是在对于指导方针的多次请求后才添加的。
 

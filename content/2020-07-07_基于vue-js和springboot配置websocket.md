@@ -1,5 +1,5 @@
 +++
-title = "基于Vue.js和SpringBoot配置WebSocket"
+title = "基于Vue.js 和 SpringBoot 配置WebSocket"
 date = 2020-07-07 18:21:46
 slug = "202007071821"
 
@@ -8,13 +8,13 @@ tags = ["Spring Boot", "Vue.js", "WebSocket"]
 categories = ["Node.js", "WebSocket"]
 +++
 
-HTTP协议中的请求只能由客户端发起，如果需要服务端主动向客户端发送信息，就会用到WebSocket
+HTTP 协议中的请求只能由客户端发起，如果需要服务端主动向客户端发送信息，就会用到WebSocket
 
 <!-- more -->
 
 ## 后端部分
 
-首先需要一个配置类用于指定WebSocket的端口号
+首先需要一个配置类用于指定 WebSocket 的端口号
 
 ```java
 @Configuration
@@ -26,7 +26,7 @@ public class WebSocketConfig {
 }
 ```
 
-然后我们写一个类用来管理WebSocket连接，处理连接建立、收到消息、连接断开等的回调
+然后我们写一个类用来管理 WebSocket 连接，处理连接建立、收到消息、连接断开等的回调
 
 ```java
 @ServerEndpoint(value = "/wstest")

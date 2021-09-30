@@ -1,5 +1,5 @@
 +++
-title = "VS Code写一切 Java单文件"
+title = "VS Code 写一切 Java 单文件"
 date = 2019-12-11 00:44:50
 slug = "201912110044"
 
@@ -8,15 +8,15 @@ tags = ["Java", "VS Code"]
 categories = ["VS Code"]
 +++
 
-VSC可以直接编译调试单个Java源文件（虽然没什么用）
+VSC 可以直接编译调试单个 Java 源文件（虽然没什么用）
 
 <!-- more -->
 
-## Java环境配置
+## Java 环境配置
 
-与VSC无关，但提一下mac的配置
+与 VSC 无关，但提一下 mac 的配置
 
-macOS下用brew装OpenJDK
+macOS 下用 brew 装OpenJDK
 
 ```sh
 $ brew install openjdk
@@ -29,7 +29,7 @@ $ sudo ln -sfn /usr/local/opt/openjdk/libexec/openjdk.jdk \
    /Library/Java/JavaVirtualMachines/openjdk.jdk
 ```
 
-## 需要安装的VS Code插件
+## 需要安装的VS Code 插件
 
 - Java Extension Pack
 
@@ -45,7 +45,7 @@ public class Hello {
 }
 ```
 
-按F5直接运行，VSC自动生成launch.json，有时候会失败，可以重试几遍  
+按F5直接运行，VSC 自动生成launch.json，有时候会失败，可以重试几遍  
 内容大概如下
 
 ```json
@@ -72,8 +72,8 @@ public class Hello {
 }
 ```
 
-解释：它配置了两个launch，一个是以当前打开的Java源文件作为主类调试，一个是以Hello.java作为主类进行调试
+解释：它配置了两个launch，一个是以当前打开的 Java 源文件作为主类调试，一个是以Hello.java 作为主类进行调试
 
-切回Hello.java按F5，得到如下输出
+切回Hello.java 按F5，得到如下输出
 
 ![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191221-004354@2x.png)

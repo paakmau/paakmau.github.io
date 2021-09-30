@@ -1,5 +1,5 @@
 +++
-title = "Vue Router入门学习笔记"
+title = "Vue Router 入门学习笔记"
 date = 2020-01-17 20:06:02
 slug = "202001172006"
 
@@ -8,23 +8,23 @@ tags = ["Vue.js"]
 categories = ["Node.js"]
 +++
 
-Vue Router是Vue.js官方提供的路由管理器，轻松构建单页应用  
-本文基于用Vue CLI创建的脚手架，包括动态路径参数、嵌套路由、命名视图、懒加载
+Vue Router 是Vue.js 官方提供的路由管理器，轻松构建单页应用  
+本文基于用Vue CLI 创建的脚手架，包括动态路径参数、嵌套路由、命名视图、懒加载
 
 <!-- more -->
 
 ## 引入Vue Router
 
-在使用Vue CLI构建时需要引入Router
+在使用Vue CLI 构建时需要引入Router
 
-如果没有，需要安装vue-router依赖，然后修改main.js等，但很麻烦就懒得写了
+如果没有，需要安装vue-router 依赖，然后修改main.js 等，但很麻烦就懒得写了
 
 ## 脚手架中的相关文件
 
 先介绍一下脚手架中与路由相关的文件
 
 src/router/index.js  
-router的配置文件，管理路由。这里展示一个简易版的
+router 的配置文件，管理路由。这里展示一个简易版的
 
 ```js
 import Vue from "vue";
@@ -56,8 +56,8 @@ export default router;
 ```
 
 解释：  
-routes规定了路由与组件之间的映射，页面可以import进来  
-router是路由管理器，这里有路由模式、基地址的配置，并把routes传入进来
+routes 规定了路由与组件之间的映射，页面可以 import 进来  
+router 是路由管理器，这里有路由模式、基地址的配置，并把 routes 传入进来
 
 src/App.vue  
 它是单页应用的入口（我不知道怎么形容，总之就是所有组件都会渲染在这个页面中），贴一下关键部分
@@ -75,11 +75,11 @@ src/App.vue
 ```
 
 解释：  
-router-link是类似超链接一样的东西  
-router-view是组件将会被渲染到的地方
+router-link 是类似超链接一样的东西  
+router-view 是组件将会被渲染到的地方
 
 src/main.js  
-它import了src/router，并且在Vue对象实例化的时候传入，随便贴个大概代码
+它 import 了src/router，并且在 Vue 对象实例化的时候传入，随便贴个大概代码
 
 ```js
 import Vue from "vue";
@@ -96,10 +96,10 @@ new Vue({
 
 ## 动态路由匹配
 
-很多时候，不同的URL可能会对应同一个页面，比如不同ID的用户页面都会使用同一个组件渲染  
+很多时候，不同的 URL 可能会对应同一个页面，比如不同 ID 的用户页面都会使用同一个组件渲染  
 因此可以使用动态路径参数来解决这个问题
 
-例如，router的配置文件可以这样写
+例如，router 的配置文件可以这样写
 
 ```js
 import Vue from "vue";
@@ -131,7 +131,7 @@ const router = new VueRouter({
 export default router;
 ```
 
-然后User.vue长这样
+然后User.vue 长这样
 
 ```html
 <template>
@@ -141,7 +141,7 @@ export default router;
 </template>
 ```
 
-这个东西使用path-to-regexp作为路径匹配引擎，支持正则匹配，这是它的GitHub链接  
+这个东西使用path-to-regexp 作为路径匹配引擎，支持正则匹配，这是它的 GitHub 链接  
 <https://github.com/pillarjs/path-to-regexp>
 
 然后路由匹配是按照定义的顺序决定的，先定义的先匹配  
@@ -151,7 +151,7 @@ export default router;
 
 就是在子页面中使用路由
 
-我们在路由配置中为user添加profile子路由，具体如下
+我们在路由配置中为 user 添加profile 子路由，具体如下
 
 ```js
 import Vue from "vue";
@@ -246,7 +246,7 @@ const router = new VueRouter({
 export default router;
 ```
 
-User.vue如下
+User.vue 如下
 
 ```html
 <template>
@@ -261,7 +261,7 @@ User.vue如下
 ## 路由懒加载
 
 对于一个路由中的组件，可以在被访问的时候再加载  
-把import改成函数就行，比如下面这个
+把 import 改成函数就行，比如下面这个
 
 ```js
 import Vue from "vue";
@@ -303,5 +303,5 @@ const router = new VueRouter({
 export default router;
 ```
 
-还可以把多个组件打包到一个chunk中，就能以chunk为单位异步加载，参考这个  
+还可以把多个组件打包到一个 chunk 中，就能以 chunk 为单位异步加载，参考这个  
 <https://webpack.js.org/guides/code-splitting/>

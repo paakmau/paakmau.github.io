@@ -1,5 +1,5 @@
 +++
-title = "使用Mockito对SpringBoot项目单元测试"
+title = "使用 Mockito 对SpringBoot 项目单元测试"
 date = 2020-03-30 20:30:55
 slug = "202003302030"
 
@@ -8,11 +8,11 @@ tags = ["Mockito", "Spring Boot"]
 categories = ["Spring Boot"]
 +++
 
-使用Mockito可以用来给模块打桩，实现单元测试
+使用 Mockito 可以用来给模块打桩，实现单元测试
 
 <!-- more -->
 
-## 在pom.xml里引入依赖
+## 在pom.xml 里引入依赖
 
 ```xml
 <dependency>
@@ -44,7 +44,7 @@ public class BookService {
 }
 ```
 
-其中Book实体大概长这样
+其中 Book 实体大概长这样
 
 ```java
 public class Book {
@@ -56,9 +56,9 @@ public class Book {
 
 ## 打桩并测试
 
-其中MockBean表示把Spring注入的Bean改为注入由Mockito生成的桩
+其中 MockBean 表示把Spring 注入的 Bean 改为注入由Mockito 生成的桩
 
-然后对save方法打桩，对于一个输入设置对应的输出  
+然后对 save 方法打桩，对于一个输入设置对应的输出  
 并断言该方法会被调用及调用时传入的参数
 
 ```java

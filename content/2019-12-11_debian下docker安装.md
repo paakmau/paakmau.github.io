@@ -26,7 +26,7 @@ categories = ["Docker"]
 
 ## 容器
 
-是一个虚拟环境。这个环境可以是带了 JRE 和 Java 后端的 Ubuntu，也可以只是一个 JRE 与 Java 后端，甚至可以自己从零开始编写。
+是一个虚拟环境。这个环境可以是带了 JRE 和 Spring 后端的 Ubuntu，也可以是一个带了 Nginx 与 静态页面的 Alpine，甚至可以自己从零开始编写。
 
 总之就是容器中运行着我们的应用。
 

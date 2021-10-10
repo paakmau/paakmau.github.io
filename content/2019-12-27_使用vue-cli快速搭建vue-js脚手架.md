@@ -1,5 +1,5 @@
 +++
-title = "使用Vue CLI 快速搭建Vue.js 脚手架"
+title = "使用 Vue CLI 快速搭建 Vue.js 脚手架"
 date = 2019-12-27 10:24:33
 slug = "201912271024"
 
@@ -8,7 +8,7 @@ tags = ["Vue.js"]
 categories = ["Node.js"]
 +++
 
-Vue CLI 是Vue.js 提供的命令行工具  
+Vue CLI 是 Vue.js 提供的命令行工具  
 我们可以使用它来快速创建一个脚手架项目
 
 <!-- more -->
@@ -24,28 +24,28 @@ Node.js v13.5.0
 
 同时它也是一个容易上手的渐进式框架
 
-## 创建Vue.js 项目
+## 创建 Vue.js 项目
 
-用 npx 命令运行Vue CLI  
+用 npx 命令运行 Vue CLI  
 它能提供一些选项帮助我们建立脚手架项目
 
 ```sh
 $ npx @vue/cli create hello-world
 ```
 
-这里 npx 会先下载再运行Vue CLI，不会污染全局依赖也不会在当前目录留下任何东西，十分干净
+这里 npx 会先下载再运行 Vue CLI，不会污染全局依赖也不会在当前目录留下任何东西，十分干净
 
 本文选择的配置如下
 
 ![](https://hebomou.top/wp-content/uploads/2020/01/image-1024x221.png)
 
 Please pick a preset  
-我们选择Manually select features 以手动选择需要的特性  
+我们选择 Manually select features 以手动选择需要的特性  
 当然也可以使用自己定义的预设
 
 Check the features needed for your project  
 本文选了几个常用的  
-Babel：能够把ES6版本的代码转换为向后兼容的 JavaScript 语法  
+Babel：能够把 ES6版本的代码转换为向后兼容的 JavaScript 语法  
 Router：官方提供的路由管理器，用于实现单页应用  
 Vuex：官方提供的状态管理器，用于解决组件之间传递数据，共享数据的问题  
 CSS Pre-processors：CSS 预处理器，可以为 CSS 添加一些编程特性，方便 CSS 的编写，最后发布的时候再重新编译为浏览器可识别的 CSS 代码  
@@ -56,24 +56,24 @@ Use history mode for router
 历史模式，这能把 URL 中的#去掉。不管它，开就完事了
 
 Pick a CSS pre-processor  
-CSS 预处理器，使用Less。哪个都行，与本文无关
+CSS 预处理器，使用 Less。哪个都行，与本文无关
 
 Pick a linter / formatter config  
 看个人喜好，然后选择保存时检查
 
 Pick a unit testing solution  
-单元测试我们选Jest
+单元测试我们选 Jest
 
 Where do you prefer placing config  
-插件配置我喜欢整合起来，统一放在package.json 里
+插件配置我喜欢整合起来，统一放在 package.json 里
 
 Save this as a preset  
 不需要保存为预设
 
 Pick the package manger  
-我用的npm
+我用的 npm
 
-然后它会把项目生成在当前目录下的hello-world 文件夹中
+然后它会把项目生成在当前目录下的 hello-world 文件夹中
 
 ## 运行
 
@@ -114,7 +114,7 @@ tests
 单元测试
 
 main.js  
-这里初始化Vue.js，可以加载全局插件、全局组件
+这里初始化 Vue.js，可以加载全局插件、全局组件
 
 package.json  
-用于配置Node.js 项目。然后因为我们在 CLI 中的配置，所以ESLint、Jest 这些东西的配置也在里面
+用于配置 Node.js 项目。然后因为我们在 CLI 中的配置，所以 ESLint、Jest 这些东西的配置也在里面

@@ -1,5 +1,5 @@
 +++
-title = "VS Code 写一切 .NET Core 与C#"
+title = "VS Code 写一切 .NET Core 与 C#"
 date = 2019-12-11 19:37:00
 slug = "201912111937"
 
@@ -21,25 +21,25 @@ categories = ["VS Code"]
 $ brew install dotnet
 ```
 
-## 需要安装的VS Code 插件
+## 需要安装的 VS Code 插件
 
 - C#
 
 ## .NET Core 项目创建
 
-新建一个文件夹 hello 并打开它，按下快捷键ctrl+\`呼出终端并输入如下命令创建控制台项目
+新建一个文件夹 hello 并打开它，按下快捷键 ctrl+\`呼出终端并输入如下命令创建控制台项目
 
 ```sh
 $ dotnet new console
 ```
 
 看到目录中生成了一些文件，其中  
-Program.cs 是入口函数所在的文件，打开发现里面已经写好了HelloWorld，所以就不改了  
+Program.cs 是入口函数所在的文件，打开发现里面已经写好了 HelloWorld，所以就不改了  
 hello.csproj 是项目配置
 
 ## 调试运行
 
-直接按F5，选择.NET Core，再按F5就行了
+直接按 F5，选择.NET Core，再按 F5就行了
 
 ![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191221-193323@2x-1024x410.png)
 

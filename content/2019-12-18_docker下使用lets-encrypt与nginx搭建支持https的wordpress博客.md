@@ -1,5 +1,5 @@
 +++
-title = "Docker 下使用Let's Encrypt 与 nginx 搭建支持HTTPS 的 WordPress 博客"
+title = "Docker 下使用 Let's Encrypt 与 nginx 搭建支持 HTTPS 的 WordPress 博客"
 date = 2019-12-18 19:16:13
 slug = "201912181916"
 
@@ -8,13 +8,13 @@ tags = ["Docker"]
 categories = ["Docker"]
 +++
 
-Let's Encrypt 提供免费 SSL 证书的自动签发续签服务，我们可以用它来为博客启用HTTPS
+Let's Encrypt 提供免费 SSL 证书的自动签发续签服务，我们可以用它来为博客启用 HTTPS
 
 <!-- more -->
 
 ## 签发证书
 
-我们使用certbot/certbot 镜像构建一次性容器签发证书
+我们使用 certbot/certbot 镜像构建一次性容器签发证书
 
 ```sh
 $ docker volume create data_letsencrypt
@@ -28,11 +28,11 @@ $ docker run --rm -p 80:80 -p 443:443 \
 解释：  
 \--rm 表示容器结束后就自动删除  
   
-其中yourname@email.com 为你的邮箱  
+其中 yourname@email.com 为你的邮箱  
 example.com 为博客的域名  
-证书会被生成在data\_letsencrypt 数据卷下的live/example.com 目录中
+证书会被生成在 data\_letsencrypt 数据卷下的 live/example.com 目录中
 
-## 部署 MySQL 与WordPress
+## 部署 MySQL 与 WordPress
 
 基本正常部署  
 但由于我们使用 nginx 反向代理，所以 WordPress 不需要做端口映射
@@ -61,11 +61,11 @@ $ docker run -d --name nginx \
 ```
 
 解释：  
-nginx 的配置文件会被放在data\_nginx\_conf 数据卷中  
-映射data\_letsencrypt 数据卷以获取证书  
+nginx 的配置文件会被放在 data\_nginx\_conf 数据卷中  
+映射 data\_letsencrypt 数据卷以获取证书  
 链接 wordpress 容器用于代理转发
 
-进入data\_nginx\_conf 数据卷并修改default.conf 如下
+进入 data\_nginx\_conf 数据卷并修改 default.conf 如下
 
 ```conf
 server {
@@ -93,9 +93,9 @@ server {
 ```
 
 解释：  
-其中ssl\_certificate 与ssl\_certificate\_key 设定了证书的路径，需要把example.com 替换为你博客的域名  
+其中 ssl\_certificate 与 ssl\_certificate\_key 设定了证书的路径，需要把 example.com 替换为你博客的域名  
 proxy\_pass 用于转发 wordpress 容器的80端口  
-最后监听本容器的80端口把 HTTP 重定向到HTTPS
+最后监听本容器的80端口把 HTTP 重定向到 HTTPS
 
 然后重启 nginx 容器就完成了
 
@@ -113,7 +113,7 @@ $ docker restart nginx
 $ docker stop nginx
 ```
 
-然后再次使用certbot/certbot 进行续签
+然后再次使用 certbot/certbot 进行续签
 
 ```sh
 $ docker run --rm -p 80:80 -p 443:443 \

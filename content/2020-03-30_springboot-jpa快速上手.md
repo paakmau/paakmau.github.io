@@ -8,13 +8,13 @@ tags = ["JPA", "Spring Boot"]
 categories = ["Spring Boot"]
 +++
 
-现在 SpringBoot 上比较主流的持久层ORM 框架应该就是 MyBatis 和JPA 了。JPA 对于简单查询（特别是作业）非常方便，可以说开箱即用，但是面对复杂查询就要稍微多学一点；而 MyBatis 写起来虽然没那么简洁，但在复杂查询的时候直接上 SQL 语句就完事了
+现在 SpringBoot 上比较主流的持久层 ORM 框架应该就是 MyBatis 和 JPA 了。JPA 对于简单查询（特别是作业）非常方便，可以说开箱即用，但是面对复杂查询就要稍微多学一点；而 MyBatis 写起来虽然没那么简洁，但在复杂查询的时候直接上 SQL 语句就完事了
 
 <!-- more -->
 
-## 引入 JPA 与MySQL 依赖
+## 引入 JPA 与 MySQL 依赖
 
-在pom.xml 中添加如下两条
+在 pom.xml 中添加如下两条
 
 ```xml
 <dependency>
@@ -29,9 +29,9 @@ categories = ["Spring Boot"]
 </dependency>
 ```
 
-## 配置application.yml
+## 配置 application.yml
 
-提醒一下，URL 中的数据库要提前建好，比如下面示例中的数据库是library
+提醒一下，URL 中的数据库要提前建好，比如下面示例中的数据库是 library
 
 然后用户名和密码也在这里配置
 
@@ -68,9 +68,9 @@ public class Book {
 }
 ```
 
-注意：对于实体，本文都省略了Getter、Setter 和构造函数
+注意：对于实体，本文都省略了 Getter、Setter 和构造函数
 
-然后对于一个Entity，需要写一个继承自 JpaRepository 的接口供逻辑层调用，不需要写实现类
+然后对于一个 Entity，需要写一个继承自 JpaRepository 的接口供逻辑层调用，不需要写实现类
 
 ```java
 public interface BookRepo extends JpaRepository<Book, Long> {
@@ -107,12 +107,12 @@ class BookRepoTests {
 }
 ```
 
-需要注意的是 JPA 的save 方法，如果实体的 ID 为空或零，他会INSERT，否则UPDATE  
+需要注意的是 JPA 的 save 方法，如果实体的 ID 为空或零，他会 INSERT，否则 UPDATE  
 并且 save 方法的返回值才能作为最终有效的实体，作为参数传入的实体 JPA 不保证有效
 
 ## 自定义查询
 
-根据语法提示我们发现 JpaRepository 提供了跟ID 有关的很多访问数据库的方法，但是对于其他查询就要自己写，比如使用 ID 之外的字段来查询记录
+根据语法提示我们发现 JpaRepository 提供了跟 ID 有关的很多访问数据库的方法，但是对于其他查询就要自己写，比如使用 ID 之外的字段来查询记录
 
 直接在方法名中写查询语句就行了，不过要注意字段名的大小写
 
@@ -148,7 +148,7 @@ public class Author {
 }
 ```
 
-并添加一个Repo
+并添加一个 Repo
 
 ```java
 public interface AuthorRepo extends JpaRepository<Author, Long> {
@@ -157,7 +157,7 @@ public interface AuthorRepo extends JpaRepository<Author, Long> {
 
 然后修改 Book 如下
 
-这里的 ManyToOne 表示多个Book 对应同一个Author，此外还有OneToMany、ManyToMany 等
+这里的 ManyToOne 表示多个 Book 对应同一个 Author，此外还有 OneToMany、ManyToMany 等
 
 ```java
 @Entity

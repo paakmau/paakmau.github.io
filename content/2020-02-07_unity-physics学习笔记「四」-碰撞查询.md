@@ -12,9 +12,9 @@ categories = ["Unity"]
 
 <!-- more -->
 
-目前Unity Physics 中的碰撞查询有以下几种  
+目前 Unity Physics 中的碰撞查询有以下几种  
 射线检测、碰撞体投射检测、碰撞体距离检测、点距离检测、重叠检测  
-当然它们都支持Collision Filter
+当然它们都支持 Collision Filter
 
 接下来我会制作一个示例项目并进行全面的介绍
 
@@ -26,15 +26,15 @@ categories = ["Unity"]
 这个示例项目大概是这样  
 我们可以控制一个球体移动，然后场景中有一些用于检测碰撞的立方体。当我们控制的球体移动到一个立方体的检测范围之内时，这个立方体就会作出反应以表示检测到碰撞
 
-另外，为了方便，我规定所有 Entity 都在z=0平面上，球体也只能在这个平面上运动，下面的代码也依赖这个规定  
-因此请保证所有 Entitiy 的z 坐标都为0
+另外，为了方便，我规定所有 Entity 都在 z=0平面上，球体也只能在这个平面上运动，下面的代码也依赖这个规定  
+因此请保证所有 Entitiy 的 z 坐标都为0
 
 ![](https://hebomou.top/wp-content/uploads/2020/02/2020-02-08-03-04-16.2020-02-08-03_05_22.gif)
 
 ## 控制球体运动
 
 先写一个受我们控制的球体  
-这个球体持有 PlayerInput 组件，一个 FetchInputSystem 获取键盘输入，并写入这个组件，然后 MoveSystem 根据PlayerInput 的值修改Translation（作为示例其实可以把这两个 System 整成一个）
+这个球体持有 PlayerInput 组件，一个 FetchInputSystem 获取键盘输入，并写入这个组件，然后 MoveSystem 根据 PlayerInput 的值修改 Translation（作为示例其实可以把这两个 System 整成一个）
 
 PlayerInput.cs
 
@@ -97,14 +97,14 @@ public class MoveSphereAuthoring : MonoBehaviour, IConvertGameObjectToEntity {
 ```
 
 接下来是喜闻乐见的 Entity 配置环节  
-创建一个 Sphere 的GameObject，移除Sphere Collider，添加Convert To Entity，添加Physics Shape 并修改Shape Type 为Sphere，添加Physics Body 并把Gravity Factor 设为0，添加上面的 MoveSphereAuthoring 脚本  
+创建一个 Sphere 的 GameObject，移除 Sphere Collider，添加 Convert To Entity，添加 Physics Shape 并修改 Shape Type 为 Sphere，添加 Physics Body 并把 Gravity Factor 设为0，添加上面的 MoveSphereAuthoring 脚本  
 注意把球体的 z 坐标设为0
 
-启动后按下WASD，小球能相应运动
+启动后按下 WASD，小球能相应运动
 
 ## 准备用于检测的立方体
 
-这些立方体只是普通的立方体，为它添加一个用于标记的组件CollisionChecker，这样就能在 System 中识别并遍历它们
+这些立方体只是普通的立方体，为它添加一个用于标记的组件 CollisionChecker，这样就能在 System 中识别并遍历它们
 
 CollisionChecker.cs
 
@@ -124,9 +124,9 @@ public class CollisionCheckerAuthoring : MonoBehaviour, IConvertGameObjectToEnti
 }
 ```
 
-配置Entity  
-创建 Cube 的GameObject，移除Box Collider，添加Convert To Entitiy，Physics Shape，以及上面的CollisionCheckerAuthoring  
-可以复制多个，但要注意分散放置以免立方体之间互相检测到（也可以用Collision Filter 解决这个问题）
+配置 Entity  
+创建 Cube 的 GameObject，移除 Box Collider，添加 Convert To Entitiy，Physics Shape，以及上面的 CollisionCheckerAuthoring  
+可以复制多个，但要注意分散放置以免立方体之间互相检测到（也可以用 Collision Filter 解决这个问题）
 
 ## 碰撞查询
 
@@ -134,14 +134,14 @@ public class CollisionCheckerAuthoring : MonoBehaviour, IConvertGameObjectToEnti
 
 我们在立方体附近进行不同类型的碰撞查询，如果检测到碰撞体就控制立方体自旋
 
-除了包围盒的重叠检测之外，这些查询都可以获取碰撞检测得到的第一个或者全部刚体，并获得RigidBodyIndex（通过它可以拿到Entity），碰撞位置，碰撞到的面的法向量，碰撞到网格的哪个面，还有碰撞点的位置  
+除了包围盒的重叠检测之外，这些查询都可以获取碰撞检测得到的第一个或者全部刚体，并获得 RigidBodyIndex（通过它可以拿到 Entity），碰撞位置，碰撞到的面的法向量，碰撞到网格的哪个面，还有碰撞点的位置  
 可以根据需要查文档或者看接口瞎猜就完事了奥利给  
   
 
 ### Ray cast
 
 射线检测。  
-在立方体附近发射一条射线用于检测射线碰到的碰撞体。注意，如果没有修改Collision Filter，请不要让这条射线碰到立方体本身
+在立方体附近发射一条射线用于检测射线碰到的碰撞体。注意，如果没有修改 Collision Filter，请不要让这条射线碰到立方体本身
 
 下面的示例代码在立方体上面向上发送了一条长度为1的射线
 
@@ -185,7 +185,7 @@ public class CollisionQuerySystem : JobComponentSystem {
 在立方体附近使用碰撞体扫过一条线段，检测碰撞到的碰撞体，同样注意不要让这个发射出去的碰撞体碰到立方体本身
 
 下面示例代码在立方体上方向上发射了一个球体  
-注意需要在 Player 设置里允许unsafe 代码
+注意需要在 Player 设置里允许 unsafe 代码
 
 CollisionQuerySystem.cs
 
@@ -311,16 +311,16 @@ public class CollisionQuerySystem : JobComponentSystem {
 
 ### Overlap query
 
-使用 AABB 检测重叠，性能比Collider Distance 好  
+使用 AABB 检测重叠，性能比 Collider Distance 好  
 但是只能检测碰撞是否发生，无法获取碰撞点的具体信息
 
 注意两点
 
-第一是立方体的包围盒会与立方体本身重叠，所以必须修改默认的Collision Filter  
-我们需要在立方体的Physics Shape 组件的Collision Filter 里把Belongs To 修改为只有0，这样代码里就能使用Collision Filter 避免检测到立方体本身
+第一是立方体的包围盒会与立方体本身重叠，所以必须修改默认的 Collision Filter  
+我们需要在立方体的 Physics Shape 组件的 Collision Filter 里把 Belongs To 修改为只有0，这样代码里就能使用 Collision Filter 避免检测到立方体本身
 
 第二是如果不对默认创建的立方体做旋转操作，它的 AABB 就是它本身  
-我们可以把立方体随意旋转一个角度或者把Physics Shape 里的Shape Type 改成别的形状以获得更明显的效果
+我们可以把立方体随意旋转一个角度或者把 Physics Shape 里的 Shape Type 改成别的形状以获得更明显的效果
 
 ```cs
 public class CollisionQuerySystem : JobComponentSystem {

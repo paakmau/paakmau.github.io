@@ -16,26 +16,26 @@ VSC 可以直接编译调试单个 Java 源文件（虽然没什么用）
 
 与 VSC 无关，但提一下 mac 的配置
 
-macOS 下用 brew 装OpenJDK
+macOS 下用 brew 装 OpenJDK
 
 ```sh
 $ brew install openjdk
 ```
 
-然后根据提示创建符号链接以便系统找到JDK
+然后根据提示创建符号链接以便系统找到 JDK
 
 ```sh
 $ sudo ln -sfn /usr/local/opt/openjdk/libexec/openjdk.jdk \
    /Library/Java/JavaVirtualMachines/openjdk.jdk
 ```
 
-## 需要安装的VS Code 插件
+## 需要安装的 VS Code 插件
 
 - Java Extension Pack
 
 ## 工作区配置
 
-打开一个空文件夹，在其中创建一个文件Hello.java，编辑内容如下
+打开一个空文件夹，在其中创建一个文件 Hello.java，编辑内容如下
 
 ```java
 public class Hello {
@@ -45,7 +45,7 @@ public class Hello {
 }
 ```
 
-按F5直接运行，VSC 自动生成launch.json，有时候会失败，可以重试几遍  
+按 F5直接运行，VSC 自动生成 launch.json，有时候会失败，可以重试几遍  
 内容大概如下
 
 ```json
@@ -72,8 +72,8 @@ public class Hello {
 }
 ```
 
-解释：它配置了两个launch，一个是以当前打开的 Java 源文件作为主类调试，一个是以Hello.java 作为主类进行调试
+解释：它配置了两个 launch，一个是以当前打开的 Java 源文件作为主类调试，一个是以 Hello.java 作为主类进行调试
 
-切回Hello.java 按F5，得到如下输出
+切回 Hello.java 按 F5，得到如下输出
 
 ![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191221-004354@2x.png)

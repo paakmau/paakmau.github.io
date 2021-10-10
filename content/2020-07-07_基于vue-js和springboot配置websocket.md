@@ -1,5 +1,5 @@
 +++
-title = "基于Vue.js 和 SpringBoot 配置WebSocket"
+title = "基于 Vue.js 和 SpringBoot 配置 WebSocket"
 date = 2020-07-07 18:21:46
 slug = "202007071821"
 
@@ -8,7 +8,7 @@ tags = ["Spring Boot", "Vue.js", "WebSocket"]
 categories = ["Node.js", "WebSocket"]
 +++
 
-HTTP 协议中的请求只能由客户端发起，如果需要服务端主动向客户端发送信息，就会用到WebSocket
+HTTP 协议中的请求只能由客户端发起，如果需要服务端主动向客户端发送信息，就会用到 WebSocket
 
 <!-- more -->
 

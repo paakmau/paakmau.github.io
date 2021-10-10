@@ -30,7 +30,7 @@ public struct MoveDirection : IComponentData {
 
 解释：这里把 random 放进去是为了保证随机数生成的均匀性
 
-然后写一个 Authoring 用来把这个组件添加到Entity 上
+然后写一个 Authoring 用来把这个组件添加到 Entity 上
 
 RandomMoveCubeAuthoring.cs
 
@@ -47,12 +47,12 @@ public class RandomMoveCubeAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 }
 ```
 
-## 配置Entity
+## 配置 Entity
 
-新建一个立方体GameObject，移除Box Collider，添加Convert To Entity、Physics Shape、Physics Body 以及我们写的 RandomMoveCubeAuthoring 脚本  
-在Physics Body 中把重力系数设为0，线性阻尼设为0.5。其他的用默认值就行
+新建一个立方体 GameObject，移除 Box Collider，添加 Convert To Entity、Physics Shape、Physics Body 以及我们写的 RandomMoveCubeAuthoring 脚本  
+在 Physics Body 中把重力系数设为0，线性阻尼设为0.5。其他的用默认值就行
 
-这样这个 GameObject 在启动后会被自动转化为Entity 并具有物理相关的组件以及 MoveDirection 组件
+这样这个 GameObject 在启动后会被自动转化为 Entity 并具有物理相关的组件以及 MoveDirection 组件
 
 ## 控制运动状态
 

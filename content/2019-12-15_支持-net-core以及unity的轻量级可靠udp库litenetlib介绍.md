@@ -1,5 +1,5 @@
 +++
-title = "支持.NET Core 以及 Unity 的轻量级可靠UDP 库 LiteNetLib 介绍"
+title = "支持.NET Core 以及 Unity 的轻量级可靠 UDP 库 LiteNetLib 介绍"
 date = 2019-12-15 20:20:31
 slug = "201912152020"
 
@@ -8,7 +8,7 @@ tags = [".NET Core", "Unity ECS"]
 categories = [".NET Core"]
 +++
 
-之前做 Unity 网络游戏开发的时候，想着后端也用C#就很方便，于是看上了开源跨平台的.NET Core，当时网络模块就是用了 LiteNetLib 实现的。
+之前做 Unity 网络游戏开发的时候，想着后端也用 C#就很方便，于是看上了开源跨平台的.NET Core，当时网络模块就是用了 LiteNetLib 实现的。
 
 <!-- more -->
 
@@ -28,11 +28,11 @@ Unity 的.NET 版本为.NET Framework 4.x，后端为.NET Core 3.1，LiteNetLib 
 
 ## Unity 前端
 
-注意：Unity 里应当用源码而不是预编译的 DLL 文件，因为源码中使用了条件编译以避开 Unity 的Bug。
+注意：Unity 里应当用源码而不是预编译的 DLL 文件，因为源码中使用了条件编译以避开 Unity 的 Bug。
 
-直接从 GitHub 上Clone 下来，把其中的 LiteNetLib 拷贝到Unity 项目里就能使用了。
+直接从 GitHub 上 Clone 下来，把其中的 LiteNetLib 拷贝到 Unity 项目里就能使用了。
 
-为了方便，我们简单写一个实现 INetEventListener 接口的MonoBehaviour 就好，注释比较详细。
+为了方便，我们简单写一个实现 INetEventListener 接口的 MonoBehaviour 就好，注释比较详细。
 
 LiteNetLibHello.cs
 
@@ -43,7 +43,7 @@ using LiteNetLib;
 using LiteNetLib.Utils;
 using UnityEngine;
 
-/// <summary> 作为MonoBehaviour，该类也是监听器 </summary>
+/// <summary> 作为 MonoBehaviour，该类也是监听器 </summary>
 public class LiteNetLibHello : MonoBehaviour, INetEventListener {
 
     /// <summary> server 的监听端口 </summary>
@@ -61,7 +61,7 @@ public class LiteNetLibHello : MonoBehaviour, INetEventListener {
     /// <summary> LiteNetLib 核心的网络管理器，用来主动连接、断开、触发事件回调等 </summary>
     private NetManager m_clientManager;
 
-    /// <summary> 服务器Peer </summary>
+    /// <summary> 服务器 Peer </summary>
     private NetPeer m_server;
 
     /// <summary> Writer </summary>
@@ -90,7 +90,7 @@ public class LiteNetLibHello : MonoBehaviour, INetEventListener {
             m_helloTimer = c_helloInterval;
 
             var peer = m_clientManager.FirstPeer;
-            if (peer != null && peer.ConnectionState == ConnectionState.Connected) { // 若已连接到 Server 则发送HelloWorld
+            if (peer != null && peer.ConnectionState == ConnectionState.Connected) { // 若已连接到 Server 则发送 HelloWorld
                 m_writer.Put ("Hello, I'm client.");
                 // 不可靠 UDP 方式直接发送消息
                 peer.Send (m_writer, DeliveryMethod.Unreliable);
@@ -217,7 +217,7 @@ public class HelloLiteNetLib : INetEventListener {
   
 首先，这个网络库使用事件监听的思路来把网络消息传递给上游模块。他会把网络消息转化为连接、断开、数据传输、网络错误等事件并适时调用上游的事件监听器的相应接口。  
   
-然后，它开一个线程监听端口，接收消息并把转换为事件储存在队列里。上游模块需要定时PollEvent，让他一次性地访问整个队列（当然队列会被清空），根据每个事件调用监听器相应的接口。  
+然后，它开一个线程监听端口，接收消息并把转换为事件储存在队列里。上游模块需要定时 PollEvent，让他一次性地访问整个队列（当然队列会被清空），根据每个事件调用监听器相应的接口。  
   
 因此，虽然消息的获取是异步的，但事件监听是同步的，使用时不必担心线程问题。
 

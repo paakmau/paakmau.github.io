@@ -14,7 +14,7 @@ categories = ["Docker"]
 
 <!-- more -->
 
-## 项目Clone
+## 项目 Clone
 
 ```sh
 $ git clone https://github.com/mathielo/dst-dedicated-server.git
@@ -22,7 +22,7 @@ $ git clone https://github.com/mathielo/dst-dedicated-server.git
 
 ## Token 配置
 
-游戏中可以在控制台里输入如下命令生成Token
+游戏中可以在控制台里输入如下命令生成 Token
 
 ```
 TheNet:GenerateClusterToken()
@@ -42,10 +42,10 @@ cluster\_description 房间描述
 cluster\_password 密码
 
 DSTClusterConfig/mods/dedicated\_server\_mods\_setup.lua  
-用于安装Mod，同目录下有个示例，照着写就行
+用于安装 Mod，同目录下有个示例，照着写就行
 
 DSTClusterConfig/mods/modoverrides.lua  
-用于配置Mod，同目录下有个示例，还是照着写就行
+用于配置 Mod，同目录下有个示例，还是照着写就行
 
 ## 服务器启动
 
@@ -57,7 +57,7 @@ $ sudo docker-compose up -d
 
 ## 服务器暂停
 
-如果需要停止服务器，需要 attach 到dst\_master 容器中手动停止
+如果需要停止服务器，需要 attach 到 dst\_master 容器中手动停止
 
 ```sh
 $ sudo docker attach dst_master

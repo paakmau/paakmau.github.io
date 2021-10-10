@@ -8,7 +8,7 @@ tags = ["图论", "并发", "拓扑排序"]
 categories = ["UE4"]
 +++
 
-这个东西跟 Unity 中的Job 很相似，都是基于任务的并行程序设计，可以处理资源竞争与执行顺序问题
+这个东西跟 Unity 中的 Job 很相似，都是基于任务的并行程序设计，可以处理资源竞争与执行顺序问题
 
 <!-- more -->
 
@@ -17,15 +17,15 @@ categories = ["UE4"]
 简单说就是一张有向无环图，每一个任务是节点，任务的依赖关系是边，根据拓扑排序规划任务的执行。如果一个节点的入度为零就可以并行，并且执行完成后删掉自己的出边；否则等待入边的节点执行完成
 
 - 节点是 TGraphTask 模版类，我们需要自己实现任务类满足它的要求。重点是实现 DoTask 方法
-- 边是FGraphEventRef，可以在 CreateTask 之后得到，可以理解为任务完成的事件；同时在 CreateTask 的时候可以把其他任务的FGraphEventRef 以 FGraphEventArray 的形式传入以表示依赖（入边）
+- 边是 FGraphEventRef，可以在 CreateTask 之后得到，可以理解为任务完成的事件；同时在 CreateTask 的时候可以把其他任务的 FGraphEventRef 以 FGraphEventArray 的形式传入以表示依赖（入边）
 
-另外，任务类的 DoTask 方法参数中有一个const FGraphEventRef &MyCompletionGraphEvent，根据变量名我们知道它是任务自身的完成事件。于是我们还可以在这个东西上进行蛇皮操作，比如在本任务完成之前再等待另一个任务完成，但是写起来很乱
+另外，任务类的 DoTask 方法参数中有一个 const FGraphEventRef &MyCompletionGraphEvent，根据变量名我们知道它是任务自身的完成事件。于是我们还可以在这个东西上进行蛇皮操作，比如在本任务完成之前再等待另一个任务完成，但是写起来很乱
 
 ## HelloWorld
 
 跟随下面的指引建立两个任务类，然后通过 FGraphEventRef 指定他们的执行顺序
 
-准备两个任务类 TestTaskA 和TestTaskB  
+准备两个任务类 TestTaskA 和 TestTaskB  
 TestTaskA 的代码如下，另外一个可以仿照着写
 
 ```cpp
@@ -59,7 +59,7 @@ public:
 };
 ```
 
-创建一个Actor，并修改 BeginPlay 方法如下
+创建一个 Actor，并修改 BeginPlay 方法如下
 
 ```cpp
 void AMyActor::BeginPlay()
@@ -77,7 +77,7 @@ void AMyActor::BeginPlay()
 
 ## ParallelFor
 
-UE4有一个ParallelFor，是对于简单遍历的并行处理，基于TaskGraph，具体去看Runtime/Core/Public/Async/ParallelFor.h  
+UE4有一个 ParallelFor，是对于简单遍历的并行处理，基于 TaskGraph，具体去看 Runtime/Core/Public/Async/ParallelFor.h  
 下面给个简单的例子
 
 ```cpp
@@ -88,10 +88,10 @@ ParallelFor(100, [](int32 CurrIdx) {
 });
 ```
 
-## 对比Unity C# Job System
+## 对比 Unity C# Job System
 
 如果抽象成一张 DAG 来看，这两个本质上其实就是同一个东西。简单说就是通过建立依赖关系避免资源竞争实现易于管理的并行
 
-但是Job System 相对于 TaskGraph 在用户代码中出现频率要高得多。因为Unity DOTS 天生就能很好的设计并行，甚至 Job 其实是嵌入在SystemBase 里的，对于游戏主逻辑都能被频繁使用；而UE4是OOP，个人理解的话应该主要用于耗时长的计算或者I/O 任务等，但是把游戏主逻辑放到 TaskGraph 里是比较困难的
+但是 Job System 相对于 TaskGraph 在用户代码中出现频率要高得多。因为 Unity DOTS 天生就能很好的设计并行，甚至 Job 其实是嵌入在 SystemBase 里的，对于游戏主逻辑都能被频繁使用；而 UE4是 OOP，个人理解的话应该主要用于耗时长的计算或者 I/O 任务等，但是把游戏主逻辑放到 TaskGraph 里是比较困难的
 
-另外有一个小区别，UE4的 ParallerFor 与Unity 里的 ScheduleParallel 是不一样的。UE4的 ParallelFor 其实是基于TaskGraph 的顶层；而 Unity 的ScheduleParallel 是 Job 本身自带的方法
+另外有一个小区别，UE4的 ParallerFor 与 Unity 里的 ScheduleParallel 是不一样的。UE4的 ParallelFor 其实是基于 TaskGraph 的顶层；而 Unity 的 ScheduleParallel 是 Job 本身自带的方法

@@ -14,13 +14,13 @@ categories = ["Unity"]
 
 ## 遇到的问题
 
-前文和手册中都有介绍过CollisionFilter，但是这个东西是跟 Collider 绑在一起扔进Blob 里的。而 Blob 是一种类似引用的东西，因此由同一个带有 Collider 的Prefab 实例化出的Entity，他们的 CollisionFilter 也是相同的。如果想要改变，必须要为每个实例化的 Entity 单独创建一个Collider 的 Blob 资源来让他们的CollisionFilter 不同。这就非常蛋疼
+前文和手册中都有介绍过 CollisionFilter，但是这个东西是跟 Collider 绑在一起扔进 Blob 里的。而 Blob 是一种类似引用的东西，因此由同一个带有 Collider 的 Prefab 实例化出的 Entity，他们的 CollisionFilter 也是相同的。如果想要改变，必须要为每个实例化的 Entity 单独创建一个 Collider 的 Blob 资源来让他们的 CollisionFilter 不同。这就非常蛋疼
 
 ## 简单高效但是不正常也不一定高效的解决方案
 
-最简单的一种思路，为每一个实例化的 Entity 单独创建一个Collider 的 Blob 资源
+最简单的一种思路，为每一个实例化的 Entity 单独创建一个 Collider 的 Blob 资源
 
-例如网格碰撞体，可以把 Prefab 上碰撞体中存着点和面的NativeArray 的引用偷出来，重新定个 CollisionFilter 就行了，因为点和面都是共用的，所以内存上其实不亏
+例如网格碰撞体，可以把 Prefab 上碰撞体中存着点和面的 NativeArray 的引用偷出来，重新定个 CollisionFilter 就行了，因为点和面都是共用的，所以内存上其实不亏
 
 而且使用 CollisionFilter 的效率很高，因此在碰撞处理时的性能上也不亏
 
@@ -28,8 +28,8 @@ categories = ["Unity"]
 
 ## 正常的解决方案
 
-根据手册的指示，使用IBodyPairsJob  
-具体来说，我们写一个 Struct 实现IBodyPairsJob 接口，并把它注入到 StepPhysicsWorld 中，把需要屏蔽的碰撞 Disable 掉。这样就能对碰撞为所欲为了
+根据手册的指示，使用 IBodyPairsJob  
+具体来说，我们写一个 Struct 实现 IBodyPairsJob 接口，并把它注入到 StepPhysicsWorld 中，把需要屏蔽的碰撞 Disable 掉。这样就能对碰撞为所欲为了
 
 下面是个简单的代码，他禁用了所有拥有 NonUniformScale 组件的碰撞体的碰撞
 
@@ -61,5 +61,5 @@ class DisableCollisionSystem : SystemBase {
 
 但是需要注意几个点
 
-1.  使用 CollisionFilter 来实现的话，碰撞处理过程中的性能要注入 IBodyPairsJob 好；但是使用 IBodyPairsJob 不需要考虑上述CollisionFilter 的诸多问题，也避免了销毁与创建的开销；
-2.  上面的代码使用了lambda，却没有用 Burst 优化，因此会产生GC，可以暂时用蛇皮方法自己搞搞；但Unity Physic 之后的版本应该会自己解决这个问题，不用我们操心
+1.  使用 CollisionFilter 来实现的话，碰撞处理过程中的性能要注入 IBodyPairsJob 好；但是使用 IBodyPairsJob 不需要考虑上述 CollisionFilter 的诸多问题，也避免了销毁与创建的开销；
+2.  上面的代码使用了 lambda，却没有用 Burst 优化，因此会产生 GC，可以暂时用蛇皮方法自己搞搞；但 Unity Physic 之后的版本应该会自己解决这个问题，不用我们操心

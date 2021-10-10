@@ -14,7 +14,7 @@ categories = ["VS Code"]
 
 ## Jupyter 环境配置
 
-安装 Python 与Jupyter  
+安装 Python 与 Jupyter  
 Mac 下用 brew 安装即可
 
 ```sh
@@ -29,13 +29,13 @@ $ brew install python jupyter
 ## Notebook 创建与运行
 
 打开一个空文件夹，cmd+shift+p 呼出命令面板  
-输入python create 进行搜索，选择Python: Create New Blank Jupyter Notebook
+输入 python create 进行搜索，选择 Python: Create New Blank Jupyter Notebook
 
 ![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191222-011543@2x-1024x199.png)
 
-在当前目录保存为hello.ipynb  
-然后编辑内容如下并按ctrl+enter 运行（为什么不是cmd+enter）
+在当前目录保存为 hello.ipynb  
+然后编辑内容如下并按 ctrl+enter 运行（为什么不是 cmd+enter）
 
 ![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191222-013041@2x.png)
 
-操作跟 web 版的差不多但是Mac 下快捷键很蛋疼就这样吧
+操作跟 web 版的差不多但是 Mac 下快捷键很蛋疼就这样吧

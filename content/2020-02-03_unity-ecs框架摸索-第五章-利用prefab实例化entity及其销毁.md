@@ -1,5 +1,5 @@
 +++
-title = "Unity ECS 框架摸索 第五章 利用 Prefab 实例化Entity 及其销毁"
+title = "Unity ECS 框架摸索 第五章 利用 Prefab 实例化 Entity 及其销毁"
 date = 2020-02-03 14:05:00
 slug = "202002031405"
 
@@ -21,7 +21,7 @@ categories = ["Unity"]
 放置一个生成器实体在场景中，让一个 SpawnerSystem 根据它创建立方体方阵。  
 旋转与销毁的思路都与前文相同，让旋转系统筛选旋转速度组件并控制旋转，让销毁系统筛选销毁时间组件并控制销毁即可。
 
-## 制作旋转立方体的Prefab
+## 制作旋转立方体的 Prefab
 
 其实跟 HelloWorld 中基本一致，但是为了表述清晰这里还是写一下。
 
@@ -53,7 +53,7 @@ public struct DestroyTime : IComponentData
 }
 ```
 
-接下来则是用于添加上面两个组件的Authoring  
+接下来则是用于添加上面两个组件的 Authoring  
 RotatingCubeAuthoring.cs
 
 ```cs
@@ -74,17 +74,17 @@ public class RotatingCubeAuthoring : MonoBehaviour, IConvertGameObjectToEntity {
 }
 ```
 
-最后创建一个基于 Cube 的Prefab，移除Collider，挂载 ConvertToEntity 与RotatingCubeAuthoring 脚本。如下图所示。
+最后创建一个基于 Cube 的 Prefab，移除 Collider，挂载 ConvertToEntity 与 RotatingCubeAuthoring 脚本。如下图所示。
 
 ![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191212-014200@2x-357x1024.png)
 
-至此，就能使用该 Prefab 批量生成旋转立方体的Entity 实例。
+至此，就能使用该 Prefab 批量生成旋转立方体的 Entity 实例。
 
 ## 编写旋转系统
 
 与 HelloWorld 完全一致
 
-控制方块旋转的System  
+控制方块旋转的 System  
 RotateSpeedSystem.cs
 
 ```cs
@@ -115,7 +115,7 @@ public class RotateSpeedSystem : JobComponentSystem {
 
 ## 编写销毁 Entity 的系统
 
-筛选 DestroyTime 组件，让 TimeBeforeDestroy 不断随时间减少，在它归零的时候销毁它所属的Entity。
+筛选 DestroyTime 组件，让 TimeBeforeDestroy 不断随时间减少，在它归零的时候销毁它所属的 Entity。
 
 下面是销毁系统的具体代码  
 DestroySystem.cs
@@ -151,15 +151,15 @@ public class DestroySystem : JobComponentSystem {
 ```
 
 解释：  
-在一个 System 遍历Entity 的时候，如果直接将某个 Entity 销毁，会导致遍历出现错乱。因此需要将销毁操作放入一个命令缓冲区，只要在下次 Tick 该系统运行之前执行这个命令缓冲区中的所有操作，就能安全地销毁Entity。  
+在一个 System 遍历 Entity 的时候，如果直接将某个 Entity 销毁，会导致遍历出现错乱。因此需要将销毁操作放入一个命令缓冲区，只要在下次 Tick 该系统运行之前执行这个命令缓冲区中的所有操作，就能安全地销毁 Entity。  
   
-然后每一个 Tick 里系统是有执行顺序的，我们找到所有系统中第一个执行的系统BeginInitializationEntityCommandBufferSystem。然后调用它的接口创建命令缓冲区，写入销毁命令，在下次 Tick 的时候这个系统就会执行我们写入的销毁命令。  
+然后每一个 Tick 里系统是有执行顺序的，我们找到所有系统中第一个执行的系统 BeginInitializationEntityCommandBufferSystem。然后调用它的接口创建命令缓冲区，写入销毁命令，在下次 Tick 的时候这个系统就会执行我们写入的销毁命令。  
   
-另外，IJobForEachWithEntity 跟前文的 IJobForEach 基本一致，但是使用它遍历可以拿到Entity。这里我们需要拿到 Entity 以便销毁它。
+另外，IJobForEachWithEntity 跟前文的 IJobForEach 基本一致，但是使用它遍历可以拿到 Entity。这里我们需要拿到 Entity 以便销毁它。
 
-## 编写并放置Spawner
+## 编写并放置 Spawner
 
-首先是 Spawner 组件用于记录Prefab 与生成数量信息  
+首先是 Spawner 组件用于记录 Prefab 与生成数量信息  
 生成的实体会形成一个方阵，CountX、CountY 分别表示方阵横纵方向上实体的数量  
 Spawner.cs
 
@@ -205,16 +205,16 @@ public class SpawnerAuthoring : MonoBehaviour, IConvertGameObjectToEntity, IDecl
 ```
 
 解释：  
-它不仅把CountX、CountY 传入组件，还使用 GameObjectConversionSystem 把GameObject 类型的 Prefab 转化为Entity。  
+它不仅把 CountX、CountY 传入组件，还使用 GameObjectConversionSystem 把 GameObject 类型的 Prefab 转化为 Entity。  
 具体为什么这样写不用管，当作咒语记下来就好。（反正 api 还会改不少）
 
-然后在 Scene 中新建一个空的GameObject 命名为Spawner，挂载 ConvertToEntity 与SpawnerAuthoring 脚本
+然后在 Scene 中新建一个空的 GameObject 命名为 Spawner，挂载 ConvertToEntity 与 SpawnerAuthoring 脚本
 
-## 编写SpawnerSystem
+## 编写 SpawnerSystem
 
 现在场景中已经存在一个生成器实体了，我们只需要写一个系统读取该实体储存的 Prefab 信息，就能实例化任意多个 Prefab 了。
 
-当然，为了防止反复访问这个生成器实体而重复实例化Prefab，需要在实例化 Prefab 之后就立刻销毁该实体
+当然，为了防止反复访问这个生成器实体而重复实例化 Prefab，需要在实例化 Prefab 之后就立刻销毁该实体
 
 代码如下  
 SpawnerSystem.cs
@@ -262,10 +262,10 @@ public class SpawnerSystem : JobComponentSystem {
 
 ## 运行流程
 
-首先 SpawnerSystem 筛选出了一个拥有Spawner 组件的实体，根据该组件中的 Prefab 与方阵信息创建了整个方阵的旋转方块实体，最后销毁这个拥有 Spawner 组件的实体防止重复实例化Prefab。
+首先 SpawnerSystem 筛选出了一个拥有 Spawner 组件的实体，根据该组件中的 Prefab 与方阵信息创建了整个方阵的旋转方块实体，最后销毁这个拥有 Spawner 组件的实体防止重复实例化 Prefab。
 
-然后 RotateSpeedSystem 控制拥有RotationSpeed 组件的方块旋转
+然后 RotateSpeedSystem 控制拥有 RotationSpeed 组件的方块旋转
 
-还有 DestroySystem 筛选出拥有DestroyTime 组件的实体，每个 Tick 都让TimeBeforeDestroy 这个计时器减去DeltaTime，并把计时器已经归零的 Entity 销毁。
+还有 DestroySystem 筛选出拥有 DestroyTime 组件的实体，每个 Tick 都让 TimeBeforeDestroy 这个计时器减去 DeltaTime，并把计时器已经归零的 Entity 销毁。
 
 ![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191212-030831-HD.gif)

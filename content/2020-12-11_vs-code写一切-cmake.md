@@ -14,11 +14,11 @@ VS Code 写 CMake 感觉十分舒适，比 VS 爽多了
 
 ## 环境配置
 
-安装C++编译器、C++调试器和CMake，并确保它们在 PATH 中
+安装 C++编译器、C++调试器和 CMake，并确保它们在 PATH 中
 
 ### macOS
 
-安装 Xcode 命令行工具使用它的Clang，然后用 brew 安装CMake
+安装 Xcode 命令行工具使用它的 Clang，然后用 brew 安装 CMake
 
 ```sh
 $ xcode-select --install
@@ -34,7 +34,7 @@ $ cmake --version
 
 ### Windows
 
-使用MSYS2安装mingw-w64集成的 Clang 和CMake，并把它们所在的目录添加的环境变量，如果你使用的是64位 Windows 且使用默认路径安装了MSYS2，那么这个目录应该是C:\\msys64\\mingw32\\bin
+使用 MSYS2安装 mingw-w64集成的 Clang 和 CMake，并把它们所在的目录添加的环境变量，如果你使用的是64位 Windows 且使用默认路径安装了 MSYS2，那么这个目录应该是 C:\\msys64\\mingw32\\bin
 
 ```sh
 $ pacman -S mingw-w64-x86_64-clang
@@ -48,25 +48,25 @@ PS clang.exe --version
 PS cmake.exe --version
 ```
 
-## 需要安装的VS Code 插件
+## 需要安装的 VS Code 插件
 
 - C/C++插件
 
-- CMake 插件用于CMakeLists.txt 的语法高亮
+- CMake 插件用于 CMakeLists.txt 的语法高亮
 
 - CMake Tools 插件用于 CMake 项目的构建、安装、调试等
 
 ## CMake 项目创建
 
-创建一个文件夹HelloWorld，用VS Code 打开
+创建一个文件夹 HelloWorld，用 VS Code 打开
 
-在 macOS 下键入Cmd + Shift + P，或者在 Windows 下键入Ctrl + Shift + P，呼出命令面板
+在 macOS 下键入 Cmd + Shift + P，或者在 Windows 下键入 Ctrl + Shift + P，呼出命令面板
 
-搜索CMake: Quick Start 命令，找到后回车
+搜索 CMake: Quick Start 命令，找到后回车
 
 ![](https://hebomou.top/wp-content/uploads/2020/12/cmake_quick_start.jpg)
 
-输入项目名为HelloWorld
+输入项目名为 HelloWorld
 
 ![](https://hebomou.top/wp-content/uploads/2020/12/cmake_project_name.jpg)
 
@@ -74,10 +74,10 @@ PS cmake.exe --version
 
 ![](https://hebomou.top/wp-content/uploads/2020/12/cmake_target.png)
 
-然后就会看到CMake Tools 插件在目录下生成了main.cpp 和CMakeLists.txt，打开可以看到它的代码就是输出一个字符串
+然后就会看到 CMake Tools 插件在目录下生成了 main.cpp 和 CMakeLists.txt，打开可以看到它的代码就是输出一个字符串
 
 ## 调试运行
 
-按下Ctrl + F5就行了
+按下 Ctrl + F5就行了
 
-比较折磨的是，CMake Tools 插件一开始就没有集成到launch.json 和tasks.json，所以需要使用它自己定的快捷键来构建和调试，但是最近已经有人提了 issue 并且受到了重视所以应该也快了吧
+比较折磨的是，CMake Tools 插件一开始就没有集成到 launch.json 和 tasks.json，所以需要使用它自己定的快捷键来构建和调试，但是最近已经有人提了 issue 并且受到了重视所以应该也快了吧

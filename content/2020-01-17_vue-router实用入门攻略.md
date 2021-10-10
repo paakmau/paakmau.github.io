@@ -8,16 +8,16 @@ tags = ["Vue.js"]
 categories = ["Node.js"]
 +++
 
-Vue Router 是Vue.js 官方提供的路由管理器，轻松构建单页应用  
-本文基于用Vue CLI 创建的脚手架，包括动态路径参数、嵌套路由、命名视图、懒加载
+Vue Router 是 Vue.js 官方提供的路由管理器，轻松构建单页应用  
+本文基于用 Vue CLI 创建的脚手架，包括动态路径参数、嵌套路由、命名视图、懒加载
 
 <!-- more -->
 
-## 引入Vue Router
+## 引入 Vue Router
 
-在使用Vue CLI 构建时需要引入Router
+在使用 Vue CLI 构建时需要引入 Router
 
-如果没有，需要安装vue-router 依赖，然后修改main.js 等，但很麻烦就懒得写了
+如果没有，需要安装 vue-router 依赖，然后修改 main.js 等，但很麻烦就懒得写了
 
 ## 脚手架中的相关文件
 
@@ -79,7 +79,7 @@ router-link 是类似超链接一样的东西
 router-view 是组件将会被渲染到的地方
 
 src/main.js  
-它 import 了src/router，并且在 Vue 对象实例化的时候传入，随便贴个大概代码
+它 import 了 src/router，并且在 Vue 对象实例化的时候传入，随便贴个大概代码
 
 ```js
 import Vue from "vue";
@@ -131,7 +131,7 @@ const router = new VueRouter({
 export default router;
 ```
 
-然后User.vue 长这样
+然后 User.vue 长这样
 
 ```html
 <template>
@@ -141,7 +141,7 @@ export default router;
 </template>
 ```
 
-这个东西使用path-to-regexp 作为路径匹配引擎，支持正则匹配，这是它的 GitHub 链接  
+这个东西使用 path-to-regexp 作为路径匹配引擎，支持正则匹配，这是它的 GitHub 链接  
 <https://github.com/pillarjs/path-to-regexp>
 
 然后路由匹配是按照定义的顺序决定的，先定义的先匹配  
@@ -151,7 +151,7 @@ export default router;
 
 就是在子页面中使用路由
 
-我们在路由配置中为 user 添加profile 子路由，具体如下
+我们在路由配置中为 user 添加 profile 子路由，具体如下
 
 ```js
 import Vue from "vue";
@@ -189,7 +189,7 @@ const router = new VueRouter({
 export default router;
 ```
 
-同时修改User.vue，为它添加router-view
+同时修改 User.vue，为它添加 router-view
 
 ```html
 <template>
@@ -202,7 +202,7 @@ export default router;
 
 ## 命名视图
 
-有时候同一个页面中会有多个router-view，我们希望在不同的视图中显示不同的东西
+有时候同一个页面中会有多个 router-view，我们希望在不同的视图中显示不同的东西
 
 路由配置如下
 

@@ -16,7 +16,7 @@ categories = ["Vulkan"]
 #include <vulkan/vulkan.h>
 ```
 
-注意这行代码要写在包含 GLFW 之前，因为 GLFW 可以通过条件编译来为Vulkan 提供一些支持
+注意这行代码要写在包含 GLFW 之前，因为 GLFW 可以通过条件编译来为 Vulkan 提供一些支持
 
 ## 创建实例
 
@@ -66,7 +66,7 @@ createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 createInfo.pApplicationInfo = &appInfo;
 ```
 
-这两行代码的作用显而易见，然后我们来指定扩展。Vulkan 是一个跨平台的API，这就意味着你需要一些扩展来跟窗体系统交互。而 GLFW 提供了方便的内建函数来获取所需要的扩展，于是我们只需要把它们存入结构体中就行了
+这两行代码的作用显而易见，然后我们来指定扩展。Vulkan 是一个跨平台的 API，这就意味着你需要一些扩展来跟窗体系统交互。而 GLFW 提供了方便的内建函数来获取所需要的扩展，于是我们只需要把它们存入结构体中就行了
 
 ```cpp
 uint32_t glfwExtensionCount = 0;

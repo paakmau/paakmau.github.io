@@ -14,9 +14,9 @@ categories = ["Unity"]
 
 ## 添加 Component 的技巧
 
-第二章中为 Entity 添加Component 的方式是直接在 GameObject 上挂载脚本，但是 Unity 编辑器目前并非为ECS 设计，如果为每一个 Component 都挂载一个脚本会很麻烦，所以考虑使用代码添加组件。
+第二章中为 Entity 添加 Component 的方式是直接在 GameObject 上挂载脚本，但是 Unity 编辑器目前并非为 ECS 设计，如果为每一个 Component 都挂载一个脚本会很麻烦，所以考虑使用代码添加组件。
 
-我们编写如下脚本，把它挂载在 Cube 上，它就能为 Cube 生成的Entity 添加 RotationSpeed 组件。  
+我们编写如下脚本，把它挂载在 Cube 上，它就能为 Cube 生成的 Entity 添加 RotationSpeed 组件。  
 RotatingCubeAuthoring.cs
 
 ```cs
@@ -31,8 +31,8 @@ public class RotatingCubeAuthoring : MonoBehaviour, IConvertGameObjectToEntity {
 }
 ```
 
-解释：IConvertGameObjectToEntity 接口的 Convert 方法会在GameObject 转换的过程中被调用，可以在其中直接用 EntityManager 为Entity 添加任意Component，并能对其赋值，更加灵活。  
-在该段代码中我们就把直观的 Degree 转换成了Radian。
+解释：IConvertGameObjectToEntity 接口的 Convert 方法会在 GameObject 转换的过程中被调用，可以在其中直接用 EntityManager 为 Entity 添加任意 Component，并能对其赋值，更加灵活。  
+在该段代码中我们就把直观的 Degree 转换成了 Radian。
 
 再把之前的 RotationSpeed 组件修改一下  
 RotationSpeed.cs
@@ -53,15 +53,15 @@ public struct RotationSpeed : IComponentData
 }
 ```
 
-解释：原本的 GenerateAuthoringComponent 特性被改成了Serializable。GenerateAuthoringComponent 的作用是允许 ECS 的组件直接挂载在GameObject 上，但是使用代码添加组件时不需要这个特性，因此只需要 Serializable 即可。
+解释：原本的 GenerateAuthoringComponent 特性被改成了 Serializable。GenerateAuthoringComponent 的作用是允许 ECS 的组件直接挂载在 GameObject 上，但是使用代码添加组件时不需要这个特性，因此只需要 Serializable 即可。
 
-在编辑器中修改 Cube 的RotatingCubeAuthoring 的旋转速度为每秒180度，如下
+在编辑器中修改 Cube 的 RotatingCubeAuthoring 的旋转速度为每秒180度，如下
 
 ![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191210-160141@2x.png)
 
 ## IJobForEach
 
-上一章中，我们使用 Lambda 对Entity 进行了遍历，写法很简洁。但是这样的写法会产生GC，为了更好的性能，可以使用 IJobForEach 接口进行遍历。
+上一章中，我们使用 Lambda 对 Entity 进行了遍历，写法很简洁。但是这样的写法会产生 GC，为了更好的性能，可以使用 IJobForEach 接口进行遍历。
 
 修改 RotationSpeedSystem 为如下代码
 
@@ -83,4 +83,4 @@ public class RotateSpeedSystem : JobComponentSystem {
 }
 ```
 
-解释：原本使用 Lambda 对Job 进行规划。修改后使用一个结构体实现 IJobForEach 接口。在其中规定了 Entity 的筛选条件为拥有Rotation 和 RotationSpeed 组件，并实现 Execute 方法规划Job。有效避免了GC。
+解释：原本使用 Lambda 对 Job 进行规划。修改后使用一个结构体实现 IJobForEach 接口。在其中规定了 Entity 的筛选条件为拥有 Rotation 和 RotationSpeed 组件，并实现 Execute 方法规划 Job。有效避免了 GC。

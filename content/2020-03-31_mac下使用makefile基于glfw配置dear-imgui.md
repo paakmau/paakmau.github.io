@@ -1,5 +1,5 @@
 +++
-title = "Mac 下使用 Makefile 基于GLFW 配置Dear ImGui"
+title = "Mac 下使用 Makefile 基于 GLFW 配置 Dear ImGui"
 date = 2020-03-31 23:47:45
 slug = "202003312347"
 
@@ -8,13 +8,13 @@ tags = ["C++", "GLFW", "ImGui", "OpenGL"]
 categories = ["C++"]
 +++
 
-用 Xcode 配置起来很简单，但是OpenGL.framework 被弃用了，会爆不少警告（其实是因为我习惯了 VSC 改不过来）  
+用 Xcode 配置起来很简单，但是 OpenGL.framework 被弃用了，会爆不少警告（其实是因为我习惯了 VSC 改不过来）  
 
 于是尝试用 Makefile 搞一搞
 
 <!-- more -->
 
-## 安装 GLEW 和GLFW
+## 安装 GLEW 和 GLFW
 
 使用 brew 安装就行，它会把对应的库和头文放在在/usr/local/lib 和/usr/local/include 下
 
@@ -23,7 +23,7 @@ $ brew install glew
 $ brew install glfw
 ```
 
-## 获取Dear ImGui 源码
+## 获取 Dear ImGui 源码
 
 我们可以直接把它的源码 Clone 下来
 
@@ -32,12 +32,12 @@ $ brew install glfw
 
 然后其实看看 examples 里的例子抄抄就完事了（本文也是靠着它写的）
 
-## 引入Dear ImGui 库
+## 引入 Dear ImGui 库
 
-首先建一个libs/imgui 文件夹用于存放这个外部库
+首先建一个 libs/imgui 文件夹用于存放这个外部库
 
 然后把项目源码根目录下的源文件跟头文件都拷贝进去  
-还有 examples 下的imgui\_impl\_glfw.cpp、imgui\_impl\_glfw.h、imgui\_impl\_opengl3.cpp、imgui\_impl\_opengl3.h
+还有 examples 下的 imgui\_impl\_glfw.cpp、imgui\_impl\_glfw.h、imgui\_impl\_opengl3.cpp、imgui\_impl\_opengl3.h
 
 最后给个图
 

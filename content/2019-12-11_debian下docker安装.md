@@ -96,19 +96,19 @@ $ sudo add-apt-repository \
    stable"
 ```
 
-接下来更新apt
+接下来更新 apt
 
 ```sh
 $ sudo apt update
 ```
 
-安装Docker
+安装 Docker
 
 ```sh
 $ sudo apt install docker-ce docker-ce-cli containerd.io
 ```
 
-尝试HelloWorld  
+尝试 HelloWorld  
 观察到类似以下输出的东西就安装成功了
 
 ```sh
@@ -141,7 +141,7 @@ For more examples and ideas, visit:
  https://docs.docker.com/get-started/
 ```
 
-## 使用 Snap 安装Docker
+## 使用 Snap 安装 Docker
 
 喜闻乐见，在沙箱中运行沙箱
 

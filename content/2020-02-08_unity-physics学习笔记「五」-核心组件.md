@@ -8,7 +8,7 @@ tags = ["Unity ECS", "Unity Physics"]
 categories = ["Unity"]
 +++
 
-在编辑器为 GameObject 挂载Physics Body 和Physics Shape 这两个 Authoring 脚本会为转化出的Entity 添加很多个组件
+在编辑器为 GameObject 挂载 Physics Body 和 Physics Shape 这两个 Authoring 脚本会为转化出的 Entity 添加很多个组件
 
 <!-- more -->
 
@@ -20,15 +20,15 @@ categories = ["Unity"]
 
 储存的是指针，在物体运动导致的碰撞或者碰撞查询时会用到
 
-除了碰撞体的形状大小之外，它还包括摩擦系数与恢复系数等材质信息，Is Trigger 与Raises Collision Events，MassProperties，当然还有Collision Filter
+除了碰撞体的形状大小之外，它还包括摩擦系数与恢复系数等材质信息，Is Trigger 与 Raises Collision Events，MassProperties，当然还有 Collision Filter
 
-另外，如果被设为空指针，引擎依然会模拟它的Physics Body，但它将不会触发任何碰撞。可以特殊用途，比如把空指针的碰撞体用关节连起来以模拟蒙皮
+另外，如果被设为空指针，引擎依然会模拟它的 Physics Body，但它将不会触发任何碰撞。可以特殊用途，比如把空指针的碰撞体用关节连起来以模拟蒙皮
 
 ## PhysicsVelocity
 
 包括线速度和角速度
 
-每一帧，引擎会根据重力以及来自其他碰撞体或关节的力计算新的速度，然后根据速度计算新的Transform
+每一帧，引擎会根据重力以及来自其他碰撞体或关节的力计算新的速度，然后根据速度计算新的 Transform
 
 而我们也可以使用代码修改这个组件，覆盖掉引擎计算的速度。可以实现匀速运动或施加冲量等效果
 
@@ -40,7 +40,7 @@ categories = ["Unity"]
 
 值得注意的是，部分属性会以逆元的形式存储，这可以加速内部物理计算。另外可以通过将部分属性值设为0以表示无穷大
 
-而且可以不需要对它手工赋值，因为碰撞体的 ICollider 接口有一个MassProperties 属性，可以根据它进行缩放近似地实现想要的效果
+而且可以不需要对它手工赋值，因为碰撞体的 ICollider 接口有一个 MassProperties 属性，可以根据它进行缩放近似地实现想要的效果
 
 ## PhysicsGravityFactor
 
@@ -64,7 +64,7 @@ SolverIterationCount，求解迭代次数。如果关节震荡或行为怪异，
 
 ## PhysicsJoint
 
-这个组件是关节，属性包括关节连接的两个Entity，关节类型与参数，以及这两个 Entity 是否会发生碰撞
+这个组件是关节，属性包括关节连接的两个 Entity，关节类型与参数，以及这两个 Entity 是否会发生碰撞
 
 然后与 PhysicsCollider 类似，关节的类型与参数以指针形式存储，可能因为内部有 Constraint 的动态数组
 

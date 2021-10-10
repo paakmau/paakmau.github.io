@@ -8,7 +8,7 @@ tags = [".NET Core", "Docker"]
 categories = [".NET Core", "Docker"]
 +++
 
-本文将光速创建一个HelloWorld，然后使用 Docker 进行部署
+本文将光速创建一个 HelloWorld，然后使用 Docker 进行部署
 
 <!-- more -->
 
@@ -24,7 +24,7 @@ $ dotnet run
 ```
 
 解释：  
-dotnet new 用于创建新项目，console 表示是控制台项目，--name 指定项目名称为 hello 并在当前路径下创建hello 文件夹，而项目在其中。
+dotnet new 用于创建新项目，console 表示是控制台项目，--name 指定项目名称为 hello 并在当前路径下创建 hello 文件夹，而项目在其中。
 
 于是直接发布
 
@@ -32,9 +32,9 @@ dotnet new 用于创建新项目，console 表示是控制台项目，--name 指
 $ dotnet publish -c Release
 ```
 
-解释：该命令会把项目发布到 hello 文件夹中的bin/Release/netcoreapp3.0/publish 里
+解释：该命令会把项目发布到 hello 文件夹中的 bin/Release/netcoreapp3.0/publish 里
 
-然后在 hello 目录下编写Dockerfile 文件用于生成镜像  
+然后在 hello 目录下编写 Dockerfile 文件用于生成镜像  
 Dockerfile
 
 ```dockerfile
@@ -46,7 +46,7 @@ ENTRYPOINT ["dotnet", "hello.dll"]
 
 解释：  
 FROM  
-表示我们的镜像基于dotnet core runtime  
+表示我们的镜像基于 dotnet core runtime  
   
 COPY  
 用于拷贝我们打包好的应用，这里第一个参数的路径应该替换为应用的发布路径  
@@ -73,6 +73,6 @@ $ docker run -t --name hello dotnet-hello
 
 解释：  
 \-t 表示虚拟终端，用于在 Docker 命令行工具中输出应用的控制台输出。但一般项目中不需要  
-\--name hello 表示容器名为hello
+\--name hello 表示容器名为 hello
 
 最后看到终端输出“Hello World!”

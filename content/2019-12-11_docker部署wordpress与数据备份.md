@@ -8,7 +8,7 @@ tags = ["Docker"]
 categories = ["Docker"]
 +++
 
-阅读本文了解 Docker 上的WordPress 快速部署，及其数据备份获取
+阅读本文了解 Docker 上的 WordPress 快速部署，及其数据备份获取
 
 <!-- more -->
 
@@ -18,9 +18,9 @@ categories = ["Docker"]
 然后运行 MySQL 容器  
 最后运行 WordPress 容器
 
-## 创建Volume
+## 创建 Volume
 
-创建分别用于 MySQL 和WordPress 的volume
+创建分别用于 MySQL 和 WordPress 的 volume
 
 ```sh
 $ docker volume create data_mysql_wordpress
@@ -43,17 +43,17 @@ $ docker run -d --name mysql_wordpress \
 
 参数解释：  
 \-d 后台运行  
-\--name 设置容器的name  
+\--name 设置容器的 name  
 \-v 映射数据卷  
 \-e 设置环境变量  
 mysql --default-authentication-plugin=mysql\_native\_password  
 设置 mysql 的默认加密插件  
   
 加密插件问题  
-因为这里使用了MySQL 8.0，它的默认认证插件是caching\_sha2\_password，WordPress 连接比较麻烦，改回mysql\_native\_password 省事一点。  
-或者可以直接使用mysql:5.7镜像
+因为这里使用了 MySQL 8.0，它的默认认证插件是 caching\_sha2\_password，WordPress 连接比较麻烦，改回 mysql\_native\_password 省事一点。  
+或者可以直接使用 mysql:5.7镜像
 
-## 运行 WordPress 容器并链接MySQL
+## 运行 WordPress 容器并链接 MySQL
 
 先拉取 wordpress 镜像（如果需要）  
 然后创建并运行 wordpress 容器
@@ -68,14 +68,14 @@ $ docker run -d --name wordpress \
 
 参数解释：  
 \-d 后台运行  
-\--name 设置容器的name  
+\--name 设置容器的 name  
 \-p 映射容器80端口到本机的80端口  
 \-v 映射数据卷  
-\--link 链接MySQL
+\--link 链接 MySQL
 
 ## 获取备份
 
-使用docker volume inspect 命令获取 mysql 和wordpress 的数据存储路径  
+使用 docker volume inspect 命令获取 mysql 和 wordpress 的数据存储路径  
 输出里的 Mountpoint 即是数据存储路径
 
 ```sh

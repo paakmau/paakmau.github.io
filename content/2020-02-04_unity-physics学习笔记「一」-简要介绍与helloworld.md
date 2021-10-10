@@ -54,7 +54,7 @@ com.havok.physics 是微软写的，是 Havok 引擎在 Unity 上的发行版，
 
 然后把 CubeA 移到 CubeB 的正上方，运行就会看到 CubeA 落下砸到 CubeB 上并发生碰撞
 
-![](https://hebomou.top/wp-content/uploads/2020/02/image-258x300.png)
+![Result](https://hebomou.top/wp-content/uploads/2020/02/image-258x300.png)
 
 ## Debug Display
 

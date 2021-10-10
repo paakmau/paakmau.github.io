@@ -41,7 +41,7 @@ $ brew install glfw
 
 最后给个图
 
-![](https://hebomou.top/wp-content/uploads/2020/03/image-1.png)
+![Layout](https://hebomou.top/wp-content/uploads/2020/03/image-1.png)
 
 ## Makefile
 

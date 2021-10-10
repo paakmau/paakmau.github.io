@@ -76,4 +76,4 @@ public class Hello {
 
 切回 Hello.java 按 F5，得到如下输出
 
-![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191221-004354@2x.png)
+![Result](https://hebomou.top/wp-content/uploads/2019/12/QQ20191221-004354@2x.png)

@@ -64,15 +64,15 @@ PS cmake.exe --version
 
 搜索 CMake: Quick Start 命令，找到后回车
 
-![](https://hebomou.top/wp-content/uploads/2020/12/cmake_quick_start.jpg)
+![CMake Quick Start](https://hebomou.top/wp-content/uploads/2020/12/cmake_quick_start.jpg)
 
 输入项目名为 HelloWorld
 
-![](https://hebomou.top/wp-content/uploads/2020/12/cmake_project_name.jpg)
+![Input project name](https://hebomou.top/wp-content/uploads/2020/12/cmake_project_name.jpg)
 
 然后选择 Executable 创建可执行文件
 
-![](https://hebomou.top/wp-content/uploads/2020/12/cmake_target.png)
+![Create executable](https://hebomou.top/wp-content/uploads/2020/12/cmake_target.png)
 
 然后就会看到 CMake Tools 插件在目录下生成了 main.cpp 和 CMakeLists.txt，打开可以看到它的代码就是输出一个字符串
 

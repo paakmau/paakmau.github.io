@@ -31,6 +31,6 @@ print("Hello World")
 
 按 F5 运行，配置选 Python
 
-![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191221-194755@2x.png)
+![Result](https://hebomou.top/wp-content/uploads/2019/12/QQ20191221-194755@2x.png)
 
 另外，可以根据提示装一下语法提示器

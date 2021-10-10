@@ -41,6 +41,6 @@ hello.csproj 是项目配置
 
 直接按 F5，选择.NET Core，再按 F5 就行了
 
-![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191221-193323@2x-1024x410.png)
+![Select env](https://hebomou.top/wp-content/uploads/2019/12/QQ20191221-193323@2x-1024x410.png)
 
-![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191221-193406@2x.png)
+![Result](https://hebomou.top/wp-content/uploads/2019/12/QQ20191221-193406@2x.png)

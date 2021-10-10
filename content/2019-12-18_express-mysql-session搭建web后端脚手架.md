@@ -84,7 +84,7 @@ $ node index.js
 
 在 Postman 中对 localhost:8080/helloworld 发送 Get 请求，得到如下结果
 
-![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191217-005416@2x.png)
+![Send GET request](https://hebomou.top/wp-content/uploads/2019/12/QQ20191217-005416@2x.png)
 
 Express 框架就搭建成功了
 
@@ -124,7 +124,7 @@ app.listen(8080)
 
 Postman 中发送 post 请求，并收到回应，见下图。
 
-![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191217-011755@2x-1024x505.png)
+![Send POST request](https://hebomou.top/wp-content/uploads/2019/12/QQ20191217-011755@2x-1024x505.png)
 
 ## 引入 express-session 中间件
 

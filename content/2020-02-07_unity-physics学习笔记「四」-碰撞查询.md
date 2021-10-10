@@ -29,7 +29,7 @@ categories = ["Unity"]
 另外，为了方便，我规定所有 Entity 都在 z=0 平面上，球体也只能在这个平面上运动，下面的代码也依赖这个规定  
 因此请保证所有 Entitiy 的 z 坐标都为 0
 
-![](https://hebomou.top/wp-content/uploads/2020/02/2020-02-08-03-04-16.2020-02-08-03_05_22.gif)
+![Result](https://hebomou.top/wp-content/uploads/2020/02/2020-02-08-03-04-16.2020-02-08-03_05_22.gif)
 
 ## 控制球体运动
 

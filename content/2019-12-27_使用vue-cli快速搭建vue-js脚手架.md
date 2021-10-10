@@ -37,7 +37,7 @@ $ npx @vue/cli create hello-world
 
 本文选择的配置如下
 
-![](https://hebomou.top/wp-content/uploads/2020/01/image-1024x221.png)
+![Config](https://hebomou.top/wp-content/uploads/2020/01/image-1024x221.png)
 
 Please pick a preset  
 我们选择 Manually select features 以手动选择需要的特性  
@@ -85,7 +85,7 @@ $ npm run serve
 
 得到这样的输出
 
-![](https://hebomou.top/wp-content/uploads/2020/01/image-2.png)
+![Result](https://hebomou.top/wp-content/uploads/2020/01/image-2.png)
 
 然后在浏览器中打开就行了
 
@@ -93,7 +93,7 @@ $ npm run serve
 
 这个项目大概长这样
 
-![](https://hebomou.top/wp-content/uploads/2020/01/image-1-351x1024.png)
+![Project layout](https://hebomou.top/wp-content/uploads/2020/01/image-1-351x1024.png)
 
 assets  
 放些图片什么的

@@ -73,7 +73,7 @@ void AMyActor::BeginPlay()
 
 最后在输出里看到这样的结果
 
-![](https://hebomou.top/wp-content/uploads/2020/03/image.png)
+![Result](https://hebomou.top/wp-content/uploads/2020/03/image.png)
 
 ## ParallelFor
 

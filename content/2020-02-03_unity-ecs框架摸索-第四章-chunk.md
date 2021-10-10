@@ -18,7 +18,7 @@ categories = ["Unity"]
 
 Unity 会把属于同种 Archetype 的 Entity 归成同一类，同一类实体的组件会被集中存储。首先他们被划分为若干个 Chunk，一个 Chunk 内部的同种组件会存储在连续的内存中；然后同类的 Chunk 之间可能用链表或指针数组相连，从而能够遍历这个 Archetype 所有实体的所有组件。如下图所示。
 
-![](https://hebomou.top/wp-content/uploads/2019/12/ArchetypeChunkDiagram.jpg)
+![ArchetypeChunkDiagram](https://hebomou.top/wp-content/uploads/2019/12/ArchetypeChunkDiagram.jpg)
 
 同种颜色的方块为同种组件，Chunk 中的每列方块都是一个实体
 

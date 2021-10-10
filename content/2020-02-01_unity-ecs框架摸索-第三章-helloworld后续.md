@@ -57,7 +57,7 @@ public struct RotationSpeed : IComponentData
 
 在编辑器中修改 Cube 的 RotatingCubeAuthoring 的旋转速度为每秒 180 度，如下
 
-![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191210-160141@2x.png)
+![Components of Cube](https://hebomou.top/wp-content/uploads/2019/12/QQ20191210-160141@2x.png)
 
 ## IJobForEach
 

@@ -14,7 +14,7 @@ categories = ["Unity"]
 
 ## 最终效果
 
-![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191210-142039-HD.gif)
+![Result](https://hebomou.top/wp-content/uploads/2019/12/QQ20191210-142039-HD.gif)
 
 ## 步骤
 
@@ -31,7 +31,7 @@ public struct RotationSpeed : IComponentData
 
 然后在 Unity 编辑器中创建一个 Cube 的 GameObject，挂载 ConvertToEntity 与刚刚写好的 RotationSpeed，并设置 RotationSpeed 的初始值。具体如下图。
 
-![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191210-143136@2x.png)
+![Components of Cube](https://hebomou.top/wp-content/uploads/2019/12/QQ20191210-143136@2x.png)
 
 解释：  
 这个 Cube 本身是一个 GameObject，但是挂上 ConvertToEntity 脚本之后，他会被转化为 Entity，他的 Transform 与 Mesh 信息也会被转化为相应的 Component。  
@@ -69,4 +69,4 @@ public class RotationSpeedSystem : JobComponentSystem {
 
 然后直接在 Unity 编辑器中运行即可
 
-![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191210-142039-HD.gif)
+![Result](https://hebomou.top/wp-content/uploads/2019/12/QQ20191210-142039-HD.gif)

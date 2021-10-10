@@ -22,7 +22,7 @@ categories = ["Unity"]
 Unity Physics 中，刚体可以通过 Trigger 或者 Collision 触发事件，需要勾选 Physics Shape 中的 Is Trigger 或 Raises Collision Events  
 它们的区别在于 Trigger 不会引起物理上的碰撞，只产生事件
 
-![](https://hebomou.top/wp-content/uploads/2020/02/image-1.png)
+![Config Physics Shape](https://hebomou.top/wp-content/uploads/2020/02/image-1.png)
 
 对于产生的 Trigger 事件或 Collision 事件，我们可以通过 ITriggerEventsJob 或 ICollisionEventsJob 来获取并处理
 

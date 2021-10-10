@@ -14,7 +14,7 @@ categories = ["Unity"]
 
 <!-- more -->
 
-![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191212-030831-HD.gif)
+![Result](https://hebomou.top/wp-content/uploads/2019/12/QQ20191212-030831-HD.gif)
 
 ## 基本思路
 
@@ -76,7 +76,7 @@ public class RotatingCubeAuthoring : MonoBehaviour, IConvertGameObjectToEntity {
 
 最后创建一个基于 Cube 的 Prefab，移除 Collider，挂载 ConvertToEntity 与 RotatingCubeAuthoring 脚本。如下图所示。
 
-![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191212-014200@2x-357x1024.png)
+![Components of Cube](https://hebomou.top/wp-content/uploads/2019/12/QQ20191212-014200@2x-357x1024.png)
 
 至此，就能使用该 Prefab 批量生成旋转立方体的 Entity 实例。
 
@@ -268,4 +268,4 @@ public class SpawnerSystem : JobComponentSystem {
 
 还有 DestroySystem 筛选出拥有 DestroyTime 组件的实体，每个 Tick 都让 TimeBeforeDestroy 这个计时器减去 DeltaTime，并把计时器已经归零的 Entity 销毁。
 
-![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191212-030831-HD.gif)
+![Result](https://hebomou.top/wp-content/uploads/2019/12/QQ20191212-030831-HD.gif)

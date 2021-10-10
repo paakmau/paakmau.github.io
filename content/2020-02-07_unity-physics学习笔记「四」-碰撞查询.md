@@ -136,7 +136,6 @@ public class CollisionCheckerAuthoring : MonoBehaviour, IConvertGameObjectToEnti
 
 除了包围盒的重叠检测之外，这些查询都可以获取碰撞检测得到的第一个或者全部刚体，并获得 RigidBodyIndex（通过它可以拿到 Entity），碰撞位置，碰撞到的面的法向量，碰撞到网格的哪个面，还有碰撞点的位置  
 可以根据需要查文档或者看接口瞎猜就完事了奥利给  
-  
 
 ### Ray cast
 

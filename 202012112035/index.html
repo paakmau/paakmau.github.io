@@ -91,11 +91,11 @@
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> brew install cmake
 </span></code></pre>
 <h3 id="windows">Windows</h3>
-<p>推荐使用 MSYS2直接安装集成到 mingw-w64上的 CMake 和 Clang，打开 MSYS2 Shell 输入以下命令，当然你最好要把放着 CMake 和 Clang 的 bin 文件夹扔到 PATH 环境变量里</p>
+<p>推荐使用 MSYS2 直接安装集成到 mingw-w64 上的 CMake 和 Clang，打开 MSYS2 Shell 输入以下命令，当然你最好要把放着 CMake 和 Clang 的 bin 文件夹扔到 PATH 环境变量里</p>
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> pacman</span><span style="color:#bf616a;"> -S</span><span> mingw-w64-x86_64-cmake
 </span><span style="color:#bf616a;">$</span><span> pacman</span><span style="color:#bf616a;"> -S</span><span> mingw-w64-x86_64-clang
 </span></code></pre>
-<p>当然也可以直接到 CMake 官网下载安装包，再去装 mingw-w64的编译器集成，甚至可以装个 Visual Studio 来使用微软提供的 C++编译器，但是很麻烦</p>
+<p>当然也可以直接到 CMake 官网下载安装包，再去装 mingw-w64 的编译器集成，甚至可以装个 Visual Studio 来使用微软提供的 C++编译器，但是很麻烦</p>
 <h2 id="helllo-world">Helllo World</h2>
 <h3 id="xiang-mu-de-mu-lu-jie-gou">项目的目录结构</h3>
 <p>创建一个文件夹命名为 HelloWorld，在其中创建一个 CMakeLists.txt 文件，build 和 src 这两个文件夹把 Hello.cpp 放 src 文件夹里，项目结构大概长这样</p>
@@ -137,11 +137,11 @@
 </span><span style="color:#bf616a;">$</span><span> ./Hello
 </span></code></pre>
 <h4 id="windows-1">Windows</h4>
-<p>Windows 上不知道默认会生成什么，CMake 文档中没说，Windows 也不会自带 VS 或者 mingw32-make 这样的东西，而且不同 VS 版本的项目还不怎么兼容，因此我们最好使用-G 参数来手动指定，比如在 PowerShell 中输入下面的命令会在 build 目录下生成 VS 2019项目</p>
+<p>Windows 上不知道默认会生成什么，CMake 文档中没说，Windows 也不会自带 VS 或者 mingw32-make 这样的东西，而且不同 VS 版本的项目还不怎么兼容，因此我们最好使用-G 参数来手动指定，比如在 PowerShell 中输入下面的命令会在 build 目录下生成 VS 2019 项目</p>
 <pre data-lang="ps1" style="background-color:#2b303b;color:#c0c5ce;" class="language-ps1 "><code class="language-ps1" data-lang="ps1"><span>PS cd build
 </span><span>PS </span><span style="color:#96b5b4;">cmake.exe</span><span> .. -G &quot;</span><span style="color:#a3be8c;">Visual Studio 16 2019</span><span>&quot;
 </span></code></pre>
-<p>build 目录下应该会有一个 HelloWorld.sln，接下来就直接用 VS 2019打开它，正常构建就行了</p>
+<p>build 目录下应该会有一个 HelloWorld.sln，接下来就直接用 VS 2019 打开它，正常构建就行了</p>
 <p>你也可以安装一个 mingw32-make，然后选择对应的生成器来生成中间文件，这样就能用类似 make 的方式来构建项目</p>
 <p>在 MSYS2 Shell 中安装 mingw32-make</p>
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> pacman</span><span style="color:#bf616a;"> -S</span><span> mingw-w64-x86_64-make

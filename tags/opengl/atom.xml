@@ -30,7 +30,7 @@
 &lt;p&gt;然后把项目源码根目录下的源文件跟头文件都拷贝进去&lt;br &#x2F;&gt;
 还有 examples 下的 imgui_impl_glfw.cpp、imgui_impl_glfw.h、imgui_impl_opengl3.cpp、imgui_impl_opengl3.h&lt;&#x2F;p&gt;
 &lt;p&gt;最后给个图&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;03&#x2F;image-1.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;03&#x2F;image-1.png&quot; alt=&quot;Layout&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;makefile&quot;&gt;Makefile&lt;&#x2F;h2&gt;
 &lt;pre data-lang=&quot;makefile&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-makefile &quot;&gt;&lt;code class=&quot;language-makefile&quot; data-lang=&quot;makefile&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;EXE &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;imgui_test
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;SOURCES &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;main.cpp

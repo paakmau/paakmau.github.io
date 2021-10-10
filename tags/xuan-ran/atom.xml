@@ -8,16 +8,16 @@
 	<updated>2020-05-11T21:50:26+00:00</updated>
 	<id>https://paakmau.github.io/tags/xuan-ran/atom.xml</id>
 	<entry xml:lang="zh">
-		<title>UE4材质结点生成 HLSL 代码 源码浅析</title>
+		<title>UE4 材质结点生成 HLSL 代码 源码浅析</title>
 		<published>2020-05-11T21:50:26+00:00</published>
 		<updated>2020-05-11T21:50:26+00:00</updated>
 		<link href="https://paakmau.github.io/202005112150/" type="text/html"/>
 		<id>https://paakmau.github.io/202005112150/</id>
-		<content type="html">&lt;p&gt;使用 UE4的材质编辑器的时候我们可以为材质的颜色、粗糙度、金属度等连接一个常量或者纹理结点，如果要实现复杂效果可能还会用到混合结点，最后就可能看到一个完整的材质其实是由一堆结点和它们之间的连线组成&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;使用 UE4 的材质编辑器的时候我们可以为材质的颜色、粗糙度、金属度等连接一个常量或者纹理结点，如果要实现复杂效果可能还会用到混合结点，最后就可能看到一个完整的材质其实是由一堆结点和它们之间的连线组成&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;然后每一个结点可以理解为一段 HLSL 代码，然后结点之间的连线则是变量的传递&lt;&#x2F;p&gt;
 &lt;p&gt;比如说我们有一个材质长这样&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;05&#x2F;image-1024x763.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;05&#x2F;image-1024x763.png&quot; alt=&quot;Material&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;然后我们查看生成的 HLSL 代码，发现里面有这几行，基本上跟上图的材质结点对应&lt;&#x2F;p&gt;
 &lt;p&gt;如果要查看 HLSL 代码，依次点击&lt;br &#x2F;&gt;
 窗口-&amp;gt;着色器代码-&amp;gt;HLSL 代码&lt;&#x2F;p&gt;
@@ -30,8 +30,8 @@
 &lt;&#x2F;span&gt;&lt;span&gt;MaterialFloat3 Local5 = (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1.00000000 &lt;&#x2F;span&gt;&lt;span&gt;- Local4);
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;我们容易发现，要把材质结点翻译成 HLSL 代码，可以从左边出发拓扑排序，也可以从右边的材质结果结点出发递归往左（显然递归比拓排好写）&lt;br &#x2F;&gt;
-然后 UE4是用递归的&lt;&#x2F;p&gt;
-&lt;p&gt;接下来我们结合源码看一下 UE4是怎么实现的&lt;&#x2F;p&gt;
+然后 UE4 是用递归的&lt;&#x2F;p&gt;
+&lt;p&gt;接下来我们结合源码看一下 UE4 是怎么实现的&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;bian-yi-guo-cheng&quot;&gt;编译过程&lt;&#x2F;h2&gt;
 &lt;p&gt;我们从 FMaterial 的一个成员函数开始&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;**
@@ -263,7 +263,7 @@
 使用行列式（或者说二维向量的叉乘）的结果看正负号就行了&lt;&#x2F;p&gt;
 &lt;p&gt;齐次除法&lt;br &#x2F;&gt;
 向量除以它的 w 坐标，得到 NDC 坐标&lt;br &#x2F;&gt;
-（只有透视投影才需要做齐次除法，因为正交投影后点的 w 坐标都是1）&lt;&#x2F;p&gt;
+（只有透视投影才需要做齐次除法，因为正交投影后点的 w 坐标都是 1）&lt;&#x2F;p&gt;
 &lt;p&gt;视口变换&lt;br &#x2F;&gt;
 把 NDC 坐标映射到屏幕上，只是简单的平移和缩放&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;guang-zha-hua&quot;&gt;光栅化&lt;&#x2F;h2&gt;

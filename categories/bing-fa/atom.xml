@@ -93,7 +93,7 @@
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;ju-bu-jing-tai-bian-liang&quot;&gt;局部静态变量&lt;&#x2F;h2&gt;
 &lt;p&gt;如果需要懒加载的对象是一个单例，可以考虑使用局部静态变量&lt;&#x2F;p&gt;
-&lt;p&gt;局部静态变量只有在被用到的时候才会分配内存并初始化。当然看起来还是存在竞争条件，但是在 C++11标准中，规定了静态局部变量要线程安全，所以还是可以放心食用&lt;&#x2F;p&gt;
+&lt;p&gt;局部静态变量只有在被用到的时候才会分配内存并初始化。当然看起来还是存在竞争条件，但是在 C++11 标准中，规定了静态局部变量要线程安全，所以还是可以放心食用&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Test
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;:
@@ -240,7 +240,7 @@
 &lt;h2 id=&quot;yi-xie-xu-yao-zhu-yi-de-di-fang&quot;&gt;一些需要注意的地方&lt;&#x2F;h2&gt;
 &lt;p&gt;上面代码中操作 shared_ptr 的原语内部可能不是无锁的&lt;br &#x2F;&gt;
 因为 shared_ptr 的内部存了两个指针，而目前在硬件层面上对两个指针进行 CAS 操作还不太能实现（据说 TSX 指令集支持但是效率不高）&lt;&#x2F;p&gt;
-&lt;p&gt;另外操作 shared_ptr 的 atomic 模版方法在 C++20中已经弃用，以后应当用 atomic 模板类（然而国内普及 C++20可能要等到2200年）&lt;&#x2F;p&gt;
+&lt;p&gt;另外操作 shared_ptr 的 atomic 模版方法在 C++20 中已经弃用，以后应当用 atomic 模板类（然而国内普及 C++20 可能要等到 2200 年）&lt;&#x2F;p&gt;
 </content>
 	</entry>
 </feed>

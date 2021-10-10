@@ -120,7 +120,7 @@
 </span><span>    }
 </span><span>}
 </span></code></pre>
-<p>稍微说明一下，VkSurfaceFormatKHR 结构体包含 format 和 colorSpace 两个成员。format 成员表示颜色通道和类型，例如最常见的 VK_FORMAT_B8G8R8A8_SRGB 格式就意味着每个像素由 B、G、R、A 四个通道组成，每个通道各占8位，总共32位。而 colorSpace 通过 VK_COLOR_SPACE_SRGB_NONLINEAR_KHR 标记来是否支持 SRGB 的颜色空间</p>
+<p>稍微说明一下，VkSurfaceFormatKHR 结构体包含 format 和 colorSpace 两个成员。format 成员表示颜色通道和类型，例如最常见的 VK_FORMAT_B8G8R8A8_SRGB 格式就意味着每个像素由 B、G、R、A 四个通道组成，每个通道各占 8 位，总共 32 位。而 colorSpace 通过 VK_COLOR_SPACE_SRGB_NONLINEAR_KHR 标记来是否支持 SRGB 的颜色空间</p>
 <p>然后上面的代码中，我们优先选择颜色空间为 SRGB 且格式为 VK_FORMAT_B8G8R8A8_SRGB 的表面格式，如果没有就直接使用数组中的第一个格式</p>
 <h3 id="xuan-qu-zhan-shi-mo-shi">选取展示模式</h3>
 <p>接下来我们选择展示模式</p>
@@ -180,7 +180,7 @@
 </ul>
 <p>不过对于大多数硬件而言，图形队列族和展示队列族都可以是同一个队列族，并且前文中我们所选择的队列族也同时支持图形与展示，图像不会在不同队列族之间共享。因此我们使用 VK_SHARING_MODE_EXCLUSIVE 就行了<br />
 另外，如果是 VK_SHARING_MODE_CONCURRENT 的话，还需要在结构体中指定哪些队列族之间需要共享图像</p>
-<p>然后指定交换链中图像的变换，比如旋转90度或者垂直翻转这些。我们不需要这样的功能，因此使用当前变换即可</p>
+<p>然后指定交换链中图像的变换，比如旋转 90 度或者垂直翻转这些。我们不需要这样的功能，因此使用当前变换即可</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>createInfo.</span><span style="color:#bf616a;">preTransform </span><span>= capabilities.</span><span style="color:#bf616a;">currentTransform</span><span>;
 </span></code></pre>
 <p>接着指定一下混合透明度，compositeAlpha 成员用于指定 Alpha 通道是否用于跟窗体系统中的其他窗体进行混合，我们几乎不需要考虑这种情况，因此使用 VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR</p>

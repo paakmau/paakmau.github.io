@@ -107,7 +107,7 @@ mysql --default-authentication-plugin=mysql_native_password<br />
 设置 mysql 的默认加密插件</p>
 <p>加密插件问题<br />
 因为这里使用了 MySQL 8.0，它的默认认证插件是 caching_sha2_password，WordPress 连接比较麻烦，改回 mysql_native_password 省事一点。<br />
-或者可以直接使用 mysql:5.7镜像</p>
+或者可以直接使用 mysql:5.7 镜像</p>
 <h2 id="yun-xing-wordpress-rong-qi-bing-lian-jie-mysql">运行 WordPress 容器并链接 MySQL</h2>
 <p>先拉取 wordpress 镜像（如果需要）<br />
 然后创建并运行 wordpress 容器</p>
@@ -120,7 +120,7 @@ mysql --default-authentication-plugin=mysql_native_password<br />
 <p>参数解释：<br />
 -d 后台运行<br />
 --name 设置容器的 name<br />
--p 映射容器80端口到本机的80端口<br />
+-p 映射容器 80 端口到本机的 80 端口<br />
 -v 映射数据卷<br />
 --link 链接 MySQL</p>
 <h2 id="huo-qu-bei-fen">获取备份</h2>

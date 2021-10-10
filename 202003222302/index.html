@@ -92,7 +92,7 @@
 </span><span style="color:#b48ead;">auto</span><span> func = [num]() { </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span>&quot;, num); };
 </span><span style="color:#bf616a;">func</span><span>();
 </span></code></pre>
-<p>执行后发现终端输出了233</p>
+<p>执行后发现终端输出了 233</p>
 <p>但需要注意的是，这里只是捕获了 num 的值，相当于拷贝了一份 num<br />
 在 Lambda 里也无法对 num 进行修改，原本的 num 这个局部变量也不会变化</p>
 <p>如果想要在 Lambda 里修改 num 这个局部变量，就要捕获它的引用</p>
@@ -104,7 +104,7 @@
 </span><span style="color:#bf616a;">func</span><span>();
 </span><span style="color:#bf616a;">printf</span><span>(&quot;</span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span>&quot;, num);
 </span></code></pre>
-<p>看到终端里输出了234，num 的值被修改了</p>
+<p>看到终端里输出了 234，num 的值被修改了</p>
 <h2 id="xuan-kong-yin-yong">悬空引用</h2>
 <p>C++跟某些高级语言不一样，捕获引用的时候真的就只是捕获变量的引用。如果变量被销毁，Lambda 里捕获到的引用就失效了</p>
 <p>举个例子（危险操作请勿效仿）</p>
@@ -123,7 +123,7 @@
 </span></code></pre>
 <p>这个字符串在函数退出之前都是正常的，第一次调用 Lambda 也是正常的，但是函数退出之后这个字符串就被销毁了，因此在 main 里调用这个 Lambda 函数会爆炸</p>
 <h2 id="chu-shi-hua-bu-huo">初始化捕获</h2>
-<p>C++14的特性，可以捕获经过处理的变量，捕获类型由编译器自动推断，能使代码更加简洁</p>
+<p>C++14 的特性，可以捕获经过处理的变量，捕获类型由编译器自动推断，能使代码更加简洁</p>
 <p>举个例子</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">int</span><span> a = </span><span style="color:#d08770;">1</span><span>, b = </span><span style="color:#d08770;">3</span><span>;
 </span><span style="color:#b48ead;">auto</span><span> func = [sum = a + b]() { </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span>&quot;, sum); };

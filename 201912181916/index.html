@@ -144,13 +144,13 @@ nginx 的配置文件会被放在 data_nginx_conf 数据卷中<br />
 </span></code></pre>
 <p>解释：<br />
 其中 ssl_certificate 与 ssl_certificate_key 设定了证书的路径，需要把 example.com 替换为你博客的域名<br />
-proxy_pass 用于转发 wordpress 容器的80端口<br />
-最后监听本容器的80端口把 HTTP 重定向到 HTTPS</p>
+proxy_pass 用于转发 wordpress 容器的 80 端口<br />
+最后监听本容器的 80 端口把 HTTP 重定向到 HTTPS</p>
 <p>然后重启 nginx 容器就完成了</p>
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> docker restart nginx
 </span></code></pre>
 <h2 id="zheng-shu-xu-qian">证书续签</h2>
-<p>证书有效期只有90天，因此需要续签</p>
+<p>证书有效期只有 90 天，因此需要续签</p>
 <p>我们先把 nginx 停了，把端口让出来</p>
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> docker stop nginx
 </span></code></pre>

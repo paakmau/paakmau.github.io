@@ -8,12 +8,12 @@
 	<updated>2020-05-15T23:47:36+00:00</updated>
 	<id>https://paakmau.github.io/categories/ue4/atom.xml</id>
 	<entry xml:lang="zh">
-		<title>UE4材质编辑器中材质结点的数据结构 源码浅析</title>
+		<title>UE4 材质编辑器中材质结点的数据结构 源码浅析</title>
 		<published>2020-05-15T23:47:36+00:00</published>
 		<updated>2020-05-15T23:47:36+00:00</updated>
 		<link href="https://paakmau.github.io/202005152347/" type="text/html"/>
 		<id>https://paakmau.github.io/202005152347/</id>
-		<content type="html">&lt;p&gt;UE4的材质编辑器中我们可以创建材质结点然后给它们连线来创建材质&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;UE4 的材质编辑器中我们可以创建材质结点然后给它们连线来创建材质&lt;&#x2F;p&gt;
 &lt;p&gt;本文将根据源码解析材质结点在内存中的数据结构&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;uedgraph&quot;&gt;UEdGraph&lt;&#x2F;h2&gt;
 &lt;p&gt;先简单提一下 UEdGraph&lt;&#x2F;p&gt;
@@ -74,16 +74,16 @@
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>UE4材质结点生成 HLSL 代码 源码浅析</title>
+		<title>UE4 材质结点生成 HLSL 代码 源码浅析</title>
 		<published>2020-05-11T21:50:26+00:00</published>
 		<updated>2020-05-11T21:50:26+00:00</updated>
 		<link href="https://paakmau.github.io/202005112150/" type="text/html"/>
 		<id>https://paakmau.github.io/202005112150/</id>
-		<content type="html">&lt;p&gt;使用 UE4的材质编辑器的时候我们可以为材质的颜色、粗糙度、金属度等连接一个常量或者纹理结点，如果要实现复杂效果可能还会用到混合结点，最后就可能看到一个完整的材质其实是由一堆结点和它们之间的连线组成&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;使用 UE4 的材质编辑器的时候我们可以为材质的颜色、粗糙度、金属度等连接一个常量或者纹理结点，如果要实现复杂效果可能还会用到混合结点，最后就可能看到一个完整的材质其实是由一堆结点和它们之间的连线组成&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;然后每一个结点可以理解为一段 HLSL 代码，然后结点之间的连线则是变量的传递&lt;&#x2F;p&gt;
 &lt;p&gt;比如说我们有一个材质长这样&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;05&#x2F;image-1024x763.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;05&#x2F;image-1024x763.png&quot; alt=&quot;Material&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;然后我们查看生成的 HLSL 代码，发现里面有这几行，基本上跟上图的材质结点对应&lt;&#x2F;p&gt;
 &lt;p&gt;如果要查看 HLSL 代码，依次点击&lt;br &#x2F;&gt;
 窗口-&amp;gt;着色器代码-&amp;gt;HLSL 代码&lt;&#x2F;p&gt;
@@ -96,8 +96,8 @@
 &lt;&#x2F;span&gt;&lt;span&gt;MaterialFloat3 Local5 = (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1.00000000 &lt;&#x2F;span&gt;&lt;span&gt;- Local4);
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;我们容易发现，要把材质结点翻译成 HLSL 代码，可以从左边出发拓扑排序，也可以从右边的材质结果结点出发递归往左（显然递归比拓排好写）&lt;br &#x2F;&gt;
-然后 UE4是用递归的&lt;&#x2F;p&gt;
-&lt;p&gt;接下来我们结合源码看一下 UE4是怎么实现的&lt;&#x2F;p&gt;
+然后 UE4 是用递归的&lt;&#x2F;p&gt;
+&lt;p&gt;接下来我们结合源码看一下 UE4 是怎么实现的&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;bian-yi-guo-cheng&quot;&gt;编译过程&lt;&#x2F;h2&gt;
 &lt;p&gt;我们从 FMaterial 的一个成员函数开始&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;**
@@ -366,7 +366,7 @@
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;jie-yu&quot;&gt;结语&lt;&#x2F;h2&gt;
 &lt;p&gt;源码终于啃完了，感觉很多写法非常的牛逼&lt;br &#x2F;&gt;
-发现自己 C++的高 she 级 pi 用 cao 法 zuo 还不是很熟悉，可能也是太久没碰 UE4了，有空就去把改填的坑填了&lt;&#x2F;p&gt;
+发现自己 C++的高 she 级 pi 用 cao 法 zuo 还不是很熟悉，可能也是太久没碰 UE4 了，有空就去把改填的坑填了&lt;&#x2F;p&gt;
 &lt;p&gt;但是实现的思路感觉还是很好理解，甚至有一种随 xia 心 ji 所 ba 欲 xie 的感觉（比如 FTaskThreadAnyThread 的公共任务队列就直接扔在 FTaskGraphImplementation 单例里）&lt;&#x2F;p&gt;
 &lt;p&gt;结合了 Runnable 的 TaskGraph 是很好的跨平台基于任务的多线程实现方案，如果要自己写引擎的话这个很好用（抄就完事了）&lt;&#x2F;p&gt;
 </content>
@@ -428,9 +428,9 @@ TestTaskA 的代码如下，另外一个可以仿照着写&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;最后在输出里看到这样的结果&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;03&#x2F;image.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;03&#x2F;image.png&quot; alt=&quot;Result&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;parallelfor&quot;&gt;ParallelFor&lt;&#x2F;h2&gt;
-&lt;p&gt;UE4有一个 ParallelFor，是对于简单遍历的并行处理，基于 TaskGraph，具体去看 Runtime&#x2F;Core&#x2F;Public&#x2F;Async&#x2F;ParallelFor.h&lt;br &#x2F;&gt;
+&lt;p&gt;UE4 有一个 ParallelFor，是对于简单遍历的并行处理，基于 TaskGraph，具体去看 Runtime&#x2F;Core&#x2F;Public&#x2F;Async&#x2F;ParallelFor.h&lt;br &#x2F;&gt;
 下面给个简单的例子&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ParallelFor&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;100&lt;&#x2F;span&gt;&lt;span&gt;, [](int32 CurrIdx) {
 &lt;&#x2F;span&gt;&lt;span&gt;    int32 Sum = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;
@@ -440,8 +440,8 @@ TestTaskA 的代码如下，另外一个可以仿照着写&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;dui-bi-unity-c-job-system&quot;&gt;对比 Unity C# Job System&lt;&#x2F;h2&gt;
 &lt;p&gt;如果抽象成一张 DAG 来看，这两个本质上其实就是同一个东西。简单说就是通过建立依赖关系避免资源竞争实现易于管理的并行&lt;&#x2F;p&gt;
-&lt;p&gt;但是 Job System 相对于 TaskGraph 在用户代码中出现频率要高得多。因为 Unity DOTS 天生就能很好的设计并行，甚至 Job 其实是嵌入在 SystemBase 里的，对于游戏主逻辑都能被频繁使用；而 UE4是 OOP，个人理解的话应该主要用于耗时长的计算或者 I&#x2F;O 任务等，但是把游戏主逻辑放到 TaskGraph 里是比较困难的&lt;&#x2F;p&gt;
-&lt;p&gt;另外有一个小区别，UE4的 ParallerFor 与 Unity 里的 ScheduleParallel 是不一样的。UE4的 ParallelFor 其实是基于 TaskGraph 的顶层；而 Unity 的 ScheduleParallel 是 Job 本身自带的方法&lt;&#x2F;p&gt;
+&lt;p&gt;但是 Job System 相对于 TaskGraph 在用户代码中出现频率要高得多。因为 Unity DOTS 天生就能很好的设计并行，甚至 Job 其实是嵌入在 SystemBase 里的，对于游戏主逻辑都能被频繁使用；而 UE4 是 OOP，个人理解的话应该主要用于耗时长的计算或者 I&#x2F;O 任务等，但是把游戏主逻辑放到 TaskGraph 里是比较困难的&lt;&#x2F;p&gt;
+&lt;p&gt;另外有一个小区别，UE4 的 ParallerFor 与 Unity 里的 ScheduleParallel 是不一样的。UE4 的 ParallelFor 其实是基于 TaskGraph 的顶层；而 Unity 的 ScheduleParallel 是 Job 本身自带的方法&lt;&#x2F;p&gt;
 </content>
 	</entry>
 </feed>

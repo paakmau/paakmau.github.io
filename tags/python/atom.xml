@@ -27,10 +27,10 @@ Mac 下用 brew 安装即可&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;notebook-chuang-jian-yu-yun-xing&quot;&gt;Notebook 创建与运行&lt;&#x2F;h2&gt;
 &lt;p&gt;打开一个空文件夹，cmd+shift+p 呼出命令面板&lt;br &#x2F;&gt;
 输入 python create 进行搜索，选择 Python: Create New Blank Jupyter Notebook&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191222-011543@2x-1024x199.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191222-011543@2x-1024x199.png&quot; alt=&quot;Create Jupyter Notebook&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;在当前目录保存为 hello.ipynb&lt;br &#x2F;&gt;
 然后编辑内容如下并按 ctrl+enter 运行（为什么不是 cmd+enter）&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191222-013041@2x.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191222-013041@2x.png&quot; alt=&quot;Result&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;操作跟 web 版的差不多但是 Mac 下快捷键很蛋疼就这样吧&lt;&#x2F;p&gt;
 </content>
 	</entry>
@@ -43,7 +43,7 @@ Mac 下用 brew 安装即可&lt;&#x2F;p&gt;
 		<content type="html">&lt;p&gt;VSC 写 Python 也挺方便的，不过功能没那么多&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;python-huan-jing-pei-zhi&quot;&gt;Python 环境配置&lt;&#x2F;h2&gt;
 &lt;p&gt;xjb 装就行了&lt;br &#x2F;&gt;
-macOS Catalina 自带的 Python3不建议用，brew install python3&lt;&#x2F;p&gt;
+macOS Catalina 自带的 Python3 不建议用，brew install python3&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;xu-yao-an-zhuang-de-vsc-cha-jian&quot;&gt;需要安装的 VSC 插件&lt;&#x2F;h2&gt;
 &lt;ul&gt;
 &lt;li&gt;Python&lt;&#x2F;li&gt;
@@ -52,8 +52,8 @@ macOS Catalina 自带的 Python3不建议用，brew install python3&lt;&#x2F;p&g
 &lt;p&gt;打开一个空文件夹，在其中新建并编辑一个文件 hello.py，如下&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;py&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-py &quot;&gt;&lt;code class=&quot;language-py&quot; data-lang=&quot;py&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Hello World&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;按 F5运行，配置选 Python&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-194755@2x.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;按 F5 运行，配置选 Python&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-194755@2x.png&quot; alt=&quot;Result&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;另外，可以根据提示装一下语法提示器&lt;&#x2F;p&gt;
 </content>
 	</entry>

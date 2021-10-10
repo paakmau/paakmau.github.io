@@ -106,7 +106,7 @@
 </span></code></pre>
 <h2 id="pei-zhi-entity">配置 Entity</h2>
 <p>新建一个立方体 GameObject，移除 Box Collider，添加 Convert To Entity、Physics Shape、Physics Body 以及我们写的 RandomMoveCubeAuthoring 脚本<br />
-在 Physics Body 中把重力系数设为0，线性阻尼设为0.5。其他的用默认值就行</p>
+在 Physics Body 中把重力系数设为 0，线性阻尼设为 0.5。其他的用默认值就行</p>
 <p>这样这个 GameObject 在启动后会被自动转化为 Entity 并具有物理相关的组件以及 MoveDirection 组件</p>
 <h2 id="kong-zhi-yun-dong-zhuang-tai">控制运动状态</h2>
 <p>显然，写一个 System 生成随机方向，然后修改这个立方体的速度就行了</p>

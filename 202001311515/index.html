@@ -80,7 +80,7 @@
     <div itemprop="articleBody">
       <p>跟随本文，创建一个立方体 Entity，利用一个 System 控制它不断旋转。</p>
 <span id="continue-reading"></span><h2 id="zui-zhong-xiao-guo">最终效果</h2>
-<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191210-142039-HD.gif" alt="" /></p>
+<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191210-142039-HD.gif" alt="Result" /></p>
 <h2 id="bu-zou">步骤</h2>
 <p>首先写一个控制旋转速度的组件<br />
 RotationSpeed.cs</p>
@@ -91,7 +91,7 @@ RotationSpeed.cs</p>
 </span><span>}
 </span></code></pre>
 <p>然后在 Unity 编辑器中创建一个 Cube 的 GameObject，挂载 ConvertToEntity 与刚刚写好的 RotationSpeed，并设置 RotationSpeed 的初始值。具体如下图。</p>
-<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191210-143136@2x.png" alt="" /></p>
+<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191210-143136@2x.png" alt="Components of Cube" /></p>
 <p>解释：<br />
 这个 Cube 本身是一个 GameObject，但是挂上 ConvertToEntity 脚本之后，他会被转化为 Entity，他的 Transform 与 Mesh 信息也会被转化为相应的 Component。<br />
 其中 ConversionMode 选择 ConvertAndDestroy 代表转化为 Entity 之后原本的 GameObject 会被删除。</p>
@@ -119,7 +119,7 @@ RotationSpeedSystem.cs</p>
 <p>解释：JobComponentSystem 的抽象方法 OnUpdate 会在每帧调用，重载该方法并在其中规划 Job 就能实现对相应 Component 的并行读写。</p>
 <p>上面的代码中利用 ForEach 传入一个 Lambda 函数，这个函数筛选拥有 Rotation（Unity 自带）与 RotationSpeed（我们刚刚写的）组件的 Entity，然后根据 RotationSpeed 的信息修改 Rotation，从而实现旋转</p>
 <p>然后直接在 Unity 编辑器中运行即可</p>
-<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191210-142039-HD.gif" alt="" /></p>
+<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191210-142039-HD.gif" alt="Result" /></p>
 
     </div>
 

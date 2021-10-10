@@ -154,7 +154,7 @@
 <li>VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP<br />
 与上一个类似，但是每个三角形图元的最后两个顶点会作为下一个三角形图元的前两个顶点，也就是说相邻的两个三角形会共享两个点，所有的三角形连成一长条</li>
 </ul>
-<p>通常来说，从顶点缓冲区中载入的顶点是以数组中的索引为顺序的，但是我们可以使用元素缓冲区来手动指定索引，从而实现更优化的性能，比如复用顶点。如果把 primitiveRestart 设为 VK_TRUE，那么对于带有_STRIP 后缀的拓扑模式，我们就可以使用一个特殊的索引值0xFFFF 或0xFFFFFFFF，来中断当前连续的线段或连续的三角形，重新开启新的一系列线段或一系列三角形</p>
+<p>通常来说，从顶点缓冲区中载入的顶点是以数组中的索引为顺序的，但是我们可以使用元素缓冲区来手动指定索引，从而实现更优化的性能，比如复用顶点。如果把 primitiveRestart 设为 VK_TRUE，那么对于带有_STRIP 后缀的拓扑模式，我们就可以使用一个特殊的索引值 0xFFFF 或 0xFFFFFFFF，来中断当前连续的线段或连续的三角形，重新开启新的一系列线段或一系列三角形</p>
 <p>我们要画的是一个三角形，所以这样写</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
 </span><span>inputAssembly.</span><span style="color:#bf616a;">sType </span><span>= VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -172,7 +172,7 @@
 </span><span>viewport.</span><span style="color:#bf616a;">minDepth </span><span>= </span><span style="color:#d08770;">1.0</span><span style="color:#b48ead;">f</span><span>;
 </span></code></pre>
 <p>需要注意交换链及其图像的尺寸可能和窗体的不同。交换链图像在之后会作为帧缓冲区使用，因此我们这里要使用交换链的尺寸</p>
-<p>minDepth 与 maxDepth 指定了用于帧缓冲区的深度值范围。它们的值必须在[0.0f, 1.0f]之内，但是 minDepth 可以比 maxDepth 高。如果不是有特殊情况，应当使用标准值0.0f 和1.0f</p>
+<p>minDepth 与 maxDepth 指定了用于帧缓冲区的深度值范围。它们的值必须在[0.0f, 1.0f]之内，但是 minDepth 可以比 maxDepth 高。如果不是有特殊情况，应当使用标准值 0.0f 和 1.0f</p>
 <p>视口定义了从图像到帧缓冲区的变换，而剪裁矩形定义了实际会被存储的像素的区域。在剪裁矩形之外的任何像素都会被光栅化阶段抛弃。这个功能比起变换更像是过滤器</p>
 <p>我们这里只是要简单地绘制整个帧缓冲区，所以我们指定一个覆盖了所有区域剪裁矩形</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkRect2D scissor = {};
@@ -210,7 +210,7 @@
 <li>VK_POLYGON_MODE_POINT<br />
 只显示多边形的点</li>
 </ul>
-<p>lineWidth 成员十分显然，它描述了线的厚度，也就是片元的数量。最大线宽的支持取决于硬件，且如果要让它高于1.0f，我们还需要启用 wideLines 的 GPU 特性</p>
+<p>lineWidth 成员十分显然，它描述了线的厚度，也就是片元的数量。最大线宽的支持取决于硬件，且如果要让它高于 1.0f，我们还需要启用 wideLines 的 GPU 特性</p>
 <p>cullMode 变量决定了面剪裁的类型，我们可以禁用剪裁、剪裁前面、剪裁后面或者剪裁全部的面</p>
 <p>frontFace 变量指定了前面的顶点序，顺时针或者逆时针</p>
 <p>光栅化阶段能通过加上一个常量或者基于片元的斜率改变深度值。有时可以用在阴影贴图上，但是这里我们不需要它。于是把 depthBiasEnable 设为 VK_FALSE</p>

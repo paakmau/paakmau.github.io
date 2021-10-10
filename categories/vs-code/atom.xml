@@ -26,7 +26,7 @@
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; cmake&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --version
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h3 id=&quot;windows&quot;&gt;Windows&lt;&#x2F;h3&gt;
-&lt;p&gt;使用 MSYS2安装 mingw-w64集成的 Clang 和 CMake，并把它们所在的目录添加的环境变量，如果你使用的是64位 Windows 且使用默认路径安装了 MSYS2，那么这个目录应该是 C:\msys64\mingw32\bin&lt;&#x2F;p&gt;
+&lt;p&gt;使用 MSYS2 安装 mingw-w64 集成的 Clang 和 CMake，并把它们所在的目录添加的环境变量，如果你使用的是 64 位 Windows 且使用默认路径安装了 MSYS2，那么这个目录应该是 C:\msys64\mingw32\bin&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; pacman&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -S&lt;&#x2F;span&gt;&lt;span&gt; mingw-w64-x86_64-clang
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; pacman&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -S&lt;&#x2F;span&gt;&lt;span&gt; mingw-w64-x86_64_cmake
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
@@ -50,14 +50,14 @@
 &lt;p&gt;创建一个文件夹 HelloWorld，用 VS Code 打开&lt;&#x2F;p&gt;
 &lt;p&gt;在 macOS 下键入 Cmd + Shift + P，或者在 Windows 下键入 Ctrl + Shift + P，呼出命令面板&lt;&#x2F;p&gt;
 &lt;p&gt;搜索 CMake: Quick Start 命令，找到后回车&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;12&#x2F;cmake_quick_start.jpg&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;12&#x2F;cmake_quick_start.jpg&quot; alt=&quot;CMake Quick Start&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;输入项目名为 HelloWorld&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;12&#x2F;cmake_project_name.jpg&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;12&#x2F;cmake_project_name.jpg&quot; alt=&quot;Input project name&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;然后选择 Executable 创建可执行文件&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;12&#x2F;cmake_target.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;12&#x2F;cmake_target.png&quot; alt=&quot;Create executable&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;然后就会看到 CMake Tools 插件在目录下生成了 main.cpp 和 CMakeLists.txt，打开可以看到它的代码就是输出一个字符串&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;diao-shi-yun-xing&quot;&gt;调试运行&lt;&#x2F;h2&gt;
-&lt;p&gt;按下 Ctrl + F5就行了&lt;&#x2F;p&gt;
+&lt;p&gt;按下 Ctrl + F5 就行了&lt;&#x2F;p&gt;
 &lt;p&gt;比较折磨的是，CMake Tools 插件一开始就没有集成到 launch.json 和 tasks.json，所以需要使用它自己定的快捷键来构建和调试，但是最近已经有人提了 issue 并且受到了重视所以应该也快了吧&lt;&#x2F;p&gt;
 </content>
 	</entry>
@@ -77,7 +77,7 @@
 &lt;p&gt;$ npm init&lt;&#x2F;p&gt;
 &lt;p&gt;一路回车，然后编辑工作区中的 index.js 如下&lt;&#x2F;p&gt;
 &lt;p&gt;console.log(&amp;quot;Hello World&amp;quot;)&lt;&#x2F;p&gt;
-&lt;p&gt;F9下断点，F5直接跑&lt;&#x2F;p&gt;
+&lt;p&gt;F9 下断点，F5 直接跑&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
@@ -100,10 +100,10 @@ Mac 下用 brew 安装即可&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;notebook-chuang-jian-yu-yun-xing&quot;&gt;Notebook 创建与运行&lt;&#x2F;h2&gt;
 &lt;p&gt;打开一个空文件夹，cmd+shift+p 呼出命令面板&lt;br &#x2F;&gt;
 输入 python create 进行搜索，选择 Python: Create New Blank Jupyter Notebook&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191222-011543@2x-1024x199.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191222-011543@2x-1024x199.png&quot; alt=&quot;Create Jupyter Notebook&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;在当前目录保存为 hello.ipynb&lt;br &#x2F;&gt;
 然后编辑内容如下并按 ctrl+enter 运行（为什么不是 cmd+enter）&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191222-013041@2x.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191222-013041@2x.png&quot; alt=&quot;Result&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;操作跟 web 版的差不多但是 Mac 下快捷键很蛋疼就这样吧&lt;&#x2F;p&gt;
 </content>
 	</entry>
@@ -116,7 +116,7 @@ Mac 下用 brew 安装即可&lt;&#x2F;p&gt;
 		<content type="html">&lt;p&gt;VSC 写 Python 也挺方便的，不过功能没那么多&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;python-huan-jing-pei-zhi&quot;&gt;Python 环境配置&lt;&#x2F;h2&gt;
 &lt;p&gt;xjb 装就行了&lt;br &#x2F;&gt;
-macOS Catalina 自带的 Python3不建议用，brew install python3&lt;&#x2F;p&gt;
+macOS Catalina 自带的 Python3 不建议用，brew install python3&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;xu-yao-an-zhuang-de-vsc-cha-jian&quot;&gt;需要安装的 VSC 插件&lt;&#x2F;h2&gt;
 &lt;ul&gt;
 &lt;li&gt;Python&lt;&#x2F;li&gt;
@@ -125,8 +125,8 @@ macOS Catalina 自带的 Python3不建议用，brew install python3&lt;&#x2F;p&g
 &lt;p&gt;打开一个空文件夹，在其中新建并编辑一个文件 hello.py，如下&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;py&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-py &quot;&gt;&lt;code class=&quot;language-py&quot; data-lang=&quot;py&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Hello World&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;按 F5运行，配置选 Python&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-194755@2x.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;按 F5 运行，配置选 Python&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-194755@2x.png&quot; alt=&quot;Result&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;另外，可以根据提示装一下语法提示器&lt;&#x2F;p&gt;
 </content>
 	</entry>
@@ -154,9 +154,9 @@ macOS Catalina 自带的 Python3不建议用，brew install python3&lt;&#x2F;p&g
 Program.cs 是入口函数所在的文件，打开发现里面已经写好了 HelloWorld，所以就不改了&lt;br &#x2F;&gt;
 hello.csproj 是项目配置&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;diao-shi-yun-xing&quot;&gt;调试运行&lt;&#x2F;h2&gt;
-&lt;p&gt;直接按 F5，选择.NET Core，再按 F5就行了&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-193323@2x-1024x410.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-193406@2x.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;直接按 F5，选择.NET Core，再按 F5 就行了&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-193323@2x-1024x410.png&quot; alt=&quot;Select env&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-193406@2x.png&quot; alt=&quot;Result&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
@@ -182,24 +182,24 @@ hello.csproj 是项目配置&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;chuang-jian-spring-boot-xiang-mu&quot;&gt;创建 Spring Boot 项目&lt;&#x2F;h2&gt;
 &lt;p&gt;按下 Shift-Cmd-P 打开命令面板，输入 spring 搜索相关命令&lt;br &#x2F;&gt;
 选择 Spring Initializr: Generate a Maven Project&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-145332@2x-1024x342.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-145332@2x-1024x342.png&quot; alt=&quot;Gen Maven project&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;他会依次让你选择语言、Group Id、Artifact Id、Spring Boot 版本、依赖等，除了依赖我们一路回车&lt;br &#x2F;&gt;
 为了方便，依赖只选一个 Spring Web&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-150634@2x-1024x202.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-150641@2x-1024x127.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-150649@2x-1024x121.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-150659@2x-1024x241.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-150304@2x-1024x620.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-150634@2x-1024x202.png&quot; alt=&quot;Specify lang&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-150641@2x-1024x127.png&quot; alt=&quot;Input Group Id&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-150649@2x-1024x121.png&quot; alt=&quot;Input Artifact Id&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-150659@2x-1024x241.png&quot; alt=&quot;Specify Spring Boot version&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-150304@2x-1024x620.png&quot; alt=&quot;Select deps&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;接下来选择项目生成路径&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-150514@2x-1024x600.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-150514@2x-1024x600.png&quot; alt=&quot;Select project directory&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;然后他会在路径下生成一个 demo 文件夹&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;gong-zuo-qu-pei-zhi&quot;&gt;工作区配置&lt;&#x2F;h2&gt;
-&lt;p&gt;用 VSC 打开这个文件夹，按 F5运行，配置选择 Java&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-151044@2x-1024x451.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;用 VSC 打开这个文件夹，按 F5 运行，配置选择 Java&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-151044@2x-1024x451.png&quot; alt=&quot;Select env&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;他会生成 launch.json，跟上一篇 Java 的类似，用于确定主类，就不贴了&lt;br &#x2F;&gt;
 可以把 Current File 的那条删了，因为暂时不需要单文件运行&lt;&#x2F;p&gt;
-&lt;p&gt;按 F5运行，跑起来了&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-151311@2x-1024x285.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;按 F5 运行，跑起来了&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-151311@2x-1024x285.png&quot; alt=&quot;Result&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
@@ -230,7 +230,7 @@ hello.csproj 是项目配置&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;按 F5直接运行，VSC 自动生成 launch.json，有时候会失败，可以重试几遍&lt;br &#x2F;&gt;
+&lt;p&gt;按 F5 直接运行，VSC 自动生成 launch.json，有时候会失败，可以重试几遍&lt;br &#x2F;&gt;
 内容大概如下&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;json&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-json &quot;&gt;&lt;code class=&quot;language-json&quot; data-lang=&quot;json&quot;&gt;&lt;span&gt;{
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Use IntelliSense to learn about possible attributes.
@@ -256,7 +256,7 @@ hello.csproj 是项目配置&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;解释：它配置了两个 launch，一个是以当前打开的 Java 源文件作为主类调试，一个是以 Hello.java 作为主类进行调试&lt;&#x2F;p&gt;
 &lt;p&gt;切回 Hello.java 按 F5，得到如下输出&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-004354@2x.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-004354@2x.png&quot; alt=&quot;Result&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
@@ -287,11 +287,11 @@ Max 下装 Xcode 自带 Clang&lt;br &#x2F;&gt;
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;
 &lt;&#x2F;span&gt;&lt;span&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;按 F5直接运行&lt;br &#x2F;&gt;
+&lt;p&gt;按 F5 直接运行&lt;br &#x2F;&gt;
 VS Code 提示选择环境，这里选择 C++&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191220-161845@2x-1024x447.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191220-161845@2x-1024x447.png&quot; alt=&quot;Select env&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;选择配置，随便一个 C++编译器都行，我选了第一个 clang++&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191220-161916@2x-1024x351.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191220-161916@2x-1024x351.png&quot; alt=&quot;Select config&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;接下来 VS Code 自动生成了一个 launch.json 文件，我贴一下 Mac 下的&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;json&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-json &quot;&gt;&lt;code class=&quot;language-json&quot; data-lang=&quot;json&quot;&gt;&lt;span&gt;{
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Use IntelliSense to learn about possible attributes.
@@ -322,9 +322,9 @@ preLaunchTask 表示 launch 之前执行的 task&lt;&#x2F;p&gt;
 &lt;p&gt;这个 launch 其实只配置了调试器，它需要先执行 preLaunchTask 中配置的 task 用于编译，而这个 task 我们现在还没有请往后看&lt;&#x2F;p&gt;
 &lt;p&gt;切回之前的 hello.cpp，再次按下 F5&lt;br &#x2F;&gt;
 提示我们还没有配置 task，于是点击 Configure Task&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191220-162852@2x-1024x302.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191220-162852@2x-1024x302.png&quot; alt=&quot;No such task warning&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;选与之前 launch 一样的，所以我选择 clang++&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191220-163513@2x-1024x345.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191220-163513@2x-1024x345.png&quot; alt=&quot;Create task&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;他生成了一个 tasks.json 文件，可以看到里面有个任务配置了编译器与编译命令等&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;json&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-json &quot;&gt;&lt;code class=&quot;language-json&quot; data-lang=&quot;json&quot;&gt;&lt;span&gt;{
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; See https:&#x2F;&#x2F;go.microsoft.com&#x2F;fwlink&#x2F;?LinkId=733558 
@@ -353,7 +353,7 @@ preLaunchTask 表示 launch 之前执行的 task&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;切回 hello.cpp，F5，这次可以运行了&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191220-163937@2x-1024x215.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191220-163937@2x-1024x215.png&quot; alt=&quot;Result&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;codelldb-cha-jian&quot;&gt;CodeLLDB 插件&lt;&#x2F;h2&gt;
 &lt;p&gt;也可以使用这个插件调试 C&#x2F;C++程序，它能在集成终端中进行输入&lt;br &#x2F;&gt;
 但调试控制台使用的是 lldb 命令就比较蛋疼&lt;&#x2F;p&gt;

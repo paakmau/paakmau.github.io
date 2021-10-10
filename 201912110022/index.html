@@ -100,11 +100,11 @@ Max 下装 Xcode 自带 Clang<br />
 </span><span>    </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">0</span><span>;
 </span><span>}
 </span></code></pre>
-<p>按 F5直接运行<br />
+<p>按 F5 直接运行<br />
 VS Code 提示选择环境，这里选择 C++</p>
-<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191220-161845@2x-1024x447.png" alt="" /></p>
+<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191220-161845@2x-1024x447.png" alt="Select env" /></p>
 <p>选择配置，随便一个 C++编译器都行，我选了第一个 clang++</p>
-<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191220-161916@2x-1024x351.png" alt="" /></p>
+<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191220-161916@2x-1024x351.png" alt="Select config" /></p>
 <p>接下来 VS Code 自动生成了一个 launch.json 文件，我贴一下 Mac 下的</p>
 <pre data-lang="json" style="background-color:#2b303b;color:#c0c5ce;" class="language-json "><code class="language-json" data-lang="json"><span>{
 </span><span>    </span><span style="color:#65737e;">// Use IntelliSense to learn about possible attributes.
@@ -135,9 +135,9 @@ preLaunchTask 表示 launch 之前执行的 task</p>
 <p>这个 launch 其实只配置了调试器，它需要先执行 preLaunchTask 中配置的 task 用于编译，而这个 task 我们现在还没有请往后看</p>
 <p>切回之前的 hello.cpp，再次按下 F5<br />
 提示我们还没有配置 task，于是点击 Configure Task</p>
-<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191220-162852@2x-1024x302.png" alt="" /></p>
+<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191220-162852@2x-1024x302.png" alt="No such task warning" /></p>
 <p>选与之前 launch 一样的，所以我选择 clang++</p>
-<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191220-163513@2x-1024x345.png" alt="" /></p>
+<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191220-163513@2x-1024x345.png" alt="Create task" /></p>
 <p>他生成了一个 tasks.json 文件，可以看到里面有个任务配置了编译器与编译命令等</p>
 <pre data-lang="json" style="background-color:#2b303b;color:#c0c5ce;" class="language-json "><code class="language-json" data-lang="json"><span>{
 </span><span>    </span><span style="color:#65737e;">// See https://go.microsoft.com/fwlink/?LinkId=733558 
@@ -166,7 +166,7 @@ preLaunchTask 表示 launch 之前执行的 task</p>
 </span><span>}
 </span></code></pre>
 <p>切回 hello.cpp，F5，这次可以运行了</p>
-<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191220-163937@2x-1024x215.png" alt="" /></p>
+<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191220-163937@2x-1024x215.png" alt="Result" /></p>
 <h2 id="codelldb-cha-jian">CodeLLDB 插件</h2>
 <p>也可以使用这个插件调试 C/C++程序，它能在集成终端中进行输入<br />
 但调试控制台使用的是 lldb 命令就比较蛋疼</p>

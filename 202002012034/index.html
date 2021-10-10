@@ -112,8 +112,8 @@ RotationSpeed.cs</p>
 </span><span>}
 </span></code></pre>
 <p>解释：原本的 GenerateAuthoringComponent 特性被改成了 Serializable。GenerateAuthoringComponent 的作用是允许 ECS 的组件直接挂载在 GameObject 上，但是使用代码添加组件时不需要这个特性，因此只需要 Serializable 即可。</p>
-<p>在编辑器中修改 Cube 的 RotatingCubeAuthoring 的旋转速度为每秒180度，如下</p>
-<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191210-160141@2x.png" alt="" /></p>
+<p>在编辑器中修改 Cube 的 RotatingCubeAuthoring 的旋转速度为每秒 180 度，如下</p>
+<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191210-160141@2x.png" alt="Components of Cube" /></p>
 <h2 id="ijobforeach">IJobForEach</h2>
 <p>上一章中，我们使用 Lambda 对 Entity 进行了遍历，写法很简洁。但是这样的写法会产生 GC，为了更好的性能，可以使用 IJobForEach 接口进行遍历。</p>
 <p>修改 RotationSpeedSystem 为如下代码</p>

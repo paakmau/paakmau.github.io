@@ -86,13 +86,13 @@
 <h2 id="jian-jie">简介</h2>
 <p>Unity Physics 中，刚体可以通过 Trigger 或者 Collision 触发事件，需要勾选 Physics Shape 中的 Is Trigger 或 Raises Collision Events<br />
 它们的区别在于 Trigger 不会引起物理上的碰撞，只产生事件</p>
-<p><img src="https://hebomou.top/wp-content/uploads/2020/02/image-1.png" alt="" /></p>
+<p><img src="https://hebomou.top/wp-content/uploads/2020/02/image-1.png" alt="Config Physics Shape" /></p>
 <p>对于产生的 Trigger 事件或 Collision 事件，我们可以通过 ITriggerEventsJob 或 ICollisionEventsJob 来获取并处理</p>
 <p>下面的例子可以实现这样的效果<br />
 开始时所有的刚体不受重力影响，但是一个刚体被 Trigger 碰到后它就会重新受到重力并下坠</p>
 <h2 id="zhun-bei-trigger">准备 Trigger</h2>
 <p>首先准备一个 Entity 作为 Trigger，并且让他受到键盘控制运动。<br />
-新建一个 Cube 的 GameObject，移除 Box Collider，添加 Convert To Entity，Physics Body，Physics Shape。在 Physics Body 中把重力系数设为0，在 Physics Shape 中勾选 Is Trigger<br />
+新建一个 Cube 的 GameObject，移除 Box Collider，添加 Convert To Entity，Physics Body，Physics Shape。在 Physics Body 中把重力系数设为 0，在 Physics Shape 中勾选 Is Trigger<br />
 然后使用 Authoring 为它添加 PlayerInput 组件。</p>
 <p>保存键盘输入的组件<br />
 PlayerInput.cs</p>
@@ -139,7 +139,7 @@ MoveSystem.cs</p>
 </span></code></pre>
 <h2 id="zhun-bei-yong-yu-bei-hong-fa-de-entity">准备用于被触发的 Entity</h2>
 <p>然后准备另一个用于被触发的 Entity，它至少需要有 Physics Shape、Physics Body<br />
-当然要在 Physics Body 中将重力系数设为0</p>
+当然要在 Physics Body 中将重力系数设为 0</p>
 <h2 id="chu-li-trigger-shi-jian">处理 Trigger 事件</h2>
 <p>写一个简单的 JobComponentSystem 就行了<br />
 只是其中的 Job 需要使用 ITriggerEventsJob 接口，个人感觉是物理引擎 Simulate 之后会产生 Trigger 事件的数组，然后通过 ITriggerEventsJob 来遍历它处理每个 Trigger 事件</p>

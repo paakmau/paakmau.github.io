@@ -94,14 +94,14 @@
 <p>解释：<br />
 第二行用于清除原本的 ExecStart，不可缺少</p>
 <p>-H tcp://0.0.0.0:2337<br />
-监听2337端口，使得 Daemon 可以由2337端口远程访问</p>
+监听 2337 端口，使得 Daemon 可以由 2337 端口远程访问</p>
 <p>-H unix:///var/run/docker.sock<br />
 监听 Unix 域 Socket，使得原本的本地连接方式依然可用</p>
 <p>重启后台进程与 Docker 服务</p>
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> systemctl daemon-reload
 </span><span style="color:#bf616a;">$</span><span> systemctl restart docker
 </span></code></pre>
-<p>至此，我们就能通过2337端口远程访问 Docker Daemon 了</p>
+<p>至此，我们就能通过 2337 端口远程访问 Docker Daemon 了</p>
 <h2 id="ke-hu-duan-macos-pei-zhi-yuan-cheng-lian-jie">客户端（macOS）配置远程连接</h2>
 <p>安装 Docker Client</p>
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> brew install docker

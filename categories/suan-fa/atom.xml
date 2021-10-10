@@ -29,12 +29,12 @@
 根据名字我们知道它是一个有向图，然后没有环&lt;br &#x2F;&gt;
 如果你想的没错那应该就是你想的那样不过其实我就是懒得解释&lt;&#x2F;p&gt;
 &lt;p&gt;大概长这个样子&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;04&#x2F;image-1024x455.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;04&#x2F;image-1024x455.png&quot; alt=&quot;Directed graph&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;chu-du-he-ru-du&quot;&gt;出度和入度&lt;&#x2F;h2&gt;
 &lt;p&gt;然后再说一下点的出度和入度&lt;br &#x2F;&gt;
 每一个点上每存在一条从这个点出发的边，它的出度就加一，因此出度是点上的「出边」的个数&lt;br &#x2F;&gt;
 同理，每个点的入度也就是有多少条边指向这个点，也就是「入边」的个数&lt;br &#x2F;&gt;
-比如图中2号点的入度是2，出度是1这样&lt;&#x2F;p&gt;
+比如图中 2 号点的入度是 2，出度是 1 这样&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;tuo-bu-pai-xu&quot;&gt;拓扑排序&lt;&#x2F;h2&gt;
 &lt;p&gt;敏锐的同学应该已经发现了，任务的依赖关系必不能成环，于是这些依赖关系就是个 DAG&lt;br &#x2F;&gt;
 说到 DAG，那就是拓扑排序了&lt;&#x2F;p&gt;
@@ -270,7 +270,7 @@ F(p)表示 p 节点最少需要的石子数&lt;&#x2F;p&gt;
 		<updated>2019-12-19T00:40:51+00:00</updated>
 		<link href="https://paakmau.github.io/201912190040/" type="text/html"/>
 		<id>https://paakmau.github.io/201912190040/</id>
-		<content type="html">&lt;p&gt;一个01背包问题&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;一个 01 背包问题&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;ti-mu-miao-shu&quot;&gt;题目描述&lt;&#x2F;h2&gt;
 &lt;p&gt;The aspiring Roy the Robber has seen a lot of American movies, and knows that the bad guys usually gets caught in the end, often because they become too greedy. He has decided to work in the lucrative business of bank robbery only for a short while, before retiring to a comfortable job at a university.&lt;&#x2F;p&gt;
 &lt;p&gt;For a few months now, Roy has been assessing the security of various banks and the amount of cash they hold. He wants to make a calculated risk, and grab as much money as possible.&lt;&#x2F;p&gt;
@@ -308,7 +308,7 @@ A bank goes bankrupt if it is robbed, and you may assume that all probabilities 
 &lt;&#x2F;span&gt;&lt;span&gt;6
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;ti-jie&quot;&gt;题解&lt;&#x2F;h2&gt;
-&lt;p&gt;01背包&lt;br &#x2F;&gt;
+&lt;p&gt;01 背包&lt;br &#x2F;&gt;
 F(i, j)表示前 i 个银行取得 j 的钱而不被抓的最大概率&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;algorithm&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;climits&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
@@ -357,7 +357,7 @@ F(i, j)表示前 i 个银行取得 j 的钱而不被抓的最大概率&lt;&#x2F;
 		<id>https://paakmau.github.io/201912182310/</id>
 		<content type="html">&lt;p&gt;退役了退役了，刷点水题准备面试&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;ti-mu-miao-shu&quot;&gt;题目描述&lt;&#x2F;h2&gt;
-&lt;p&gt;在一个圆形操场的四周摆放 N 堆石子，现要将石子有次序地合并成一堆。规定每次只能选相邻的2堆合并成新的一堆，并将新的一堆的石子数，记为该次合并的得分。&lt;&#x2F;p&gt;
+&lt;p&gt;在一个圆形操场的四周摆放 N 堆石子，现要将石子有次序地合并成一堆。规定每次只能选相邻的 2 堆合并成新的一堆，并将新的一堆的石子数，记为该次合并的得分。&lt;&#x2F;p&gt;
 &lt;p&gt;试设计出一个算法,计算出将 N 堆石子合并成 1 堆的最小得分和最大得分。&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;shu-ru-ge-shi&quot;&gt;输入格式&lt;&#x2F;h2&gt;
 &lt;p&gt;数据的第 1 行是正整数 N，表示有 N 堆石子。&lt;br &#x2F;&gt;

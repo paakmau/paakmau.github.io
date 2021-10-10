@@ -15,13 +15,13 @@
 		<id>https://paakmau.github.io/201912152020/</id>
 		<content type="html">&lt;p&gt;之前做 Unity 网络游戏开发的时候，想着后端也用 C#就很方便，于是看上了开源跨平台的.NET Core，当时网络模块就是用了 LiteNetLib 实现的。&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;这个东西依然支持.NET Core 3.1和.NET Framework 4.x（虽然官网都没写）。功能不多，用起来方便，很适合小规模的实时联机游戏。&lt;&#x2F;p&gt;
+&lt;p&gt;这个东西依然支持.NET Core 3.1 和.NET Framework 4.x（虽然官网都没写）。功能不多，用起来方便，很适合小规模的实时联机游戏。&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;RevenantX&#x2F;LiteNetLib&quot;&gt;https:&#x2F;&#x2F;github.com&#x2F;RevenantX&#x2F;LiteNetLib&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;gai-gua&quot;&gt;概括&lt;&#x2F;h2&gt;
 &lt;p&gt;跟随本文实现 Unity 前端与.NET Core 后端互相发送信息&lt;&#x2F;p&gt;
-&lt;p&gt;Unity 的.NET 版本为.NET Framework 4.x，后端为.NET Core 3.1，LiteNetLib 库使用0.8.x 稳定版本&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191215-201104@2x.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191215-201120@2x.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Unity 的.NET 版本为.NET Framework 4.x，后端为.NET Core 3.1，LiteNetLib 库使用 0.8.x 稳定版本&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191215-201104@2x.png&quot; alt=&quot;Result of Unity&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191215-201120@2x.png&quot; alt=&quot;Result of backend&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;unity-qian-duan&quot;&gt;Unity 前端&lt;&#x2F;h2&gt;
 &lt;p&gt;注意：Unity 里应当用源码而不是预编译的 DLL 文件，因为源码中使用了条件编译以避开 Unity 的 Bug。&lt;&#x2F;p&gt;
 &lt;p&gt;直接从 GitHub 上 Clone 下来，把其中的 LiteNetLib 拷贝到 Unity 项目里就能使用了。&lt;&#x2F;p&gt;
@@ -205,7 +205,7 @@
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Docker 部署.NET Core 3.0控制台项目</title>
+		<title>Docker 部署.NET Core 3.0 控制台项目</title>
 		<published>2019-12-12T17:24:24+00:00</published>
 		<updated>2019-12-12T17:24:24+00:00</updated>
 		<link href="https://paakmau.github.io/201912121724/" type="text/html"/>
@@ -277,9 +277,9 @@ FROM&lt;br &#x2F;&gt;
 Program.cs 是入口函数所在的文件，打开发现里面已经写好了 HelloWorld，所以就不改了&lt;br &#x2F;&gt;
 hello.csproj 是项目配置&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;diao-shi-yun-xing&quot;&gt;调试运行&lt;&#x2F;h2&gt;
-&lt;p&gt;直接按 F5，选择.NET Core，再按 F5就行了&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-193323@2x-1024x410.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-193406@2x.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;直接按 F5，选择.NET Core，再按 F5 就行了&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-193323@2x-1024x410.png&quot; alt=&quot;Select env&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-193406@2x.png&quot; alt=&quot;Result&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 </content>
 	</entry>
 </feed>

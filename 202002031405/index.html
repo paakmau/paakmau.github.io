@@ -81,7 +81,7 @@
       <p>一般游戏中都避不开实体的动态生成与动态销毁。</p>
 <p>本文演示使用 Prefab 创建旋转的立方体方阵并定时销毁。</p>
 <span id="continue-reading"></span>
-<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191212-030831-HD.gif" alt="" /></p>
+<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191212-030831-HD.gif" alt="Result" /></p>
 <h2 id="ji-ben-si-lu">基本思路</h2>
 <p>放置一个生成器实体在场景中，让一个 SpawnerSystem 根据它创建立方体方阵。<br />
 旋转与销毁的思路都与前文相同，让旋转系统筛选旋转速度组件并控制旋转，让销毁系统筛选销毁时间组件并控制销毁即可。</p>
@@ -128,7 +128,7 @@ RotatingCubeAuthoring.cs</p>
 </span><span style="color:#eff1f5;">}
 </span></code></pre>
 <p>最后创建一个基于 Cube 的 Prefab，移除 Collider，挂载 ConvertToEntity 与 RotatingCubeAuthoring 脚本。如下图所示。</p>
-<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191212-014200@2x-357x1024.png" alt="" /></p>
+<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191212-014200@2x-357x1024.png" alt="Components of Cube" /></p>
 <p>至此，就能使用该 Prefab 批量生成旋转立方体的 Entity 实例。</p>
 <h2 id="bian-xie-xuan-zhuan-xi-tong">编写旋转系统</h2>
 <p>与 HelloWorld 完全一致</p>
@@ -285,7 +285,7 @@ SpawnerSystem.cs</p>
 <p>首先 SpawnerSystem 筛选出了一个拥有 Spawner 组件的实体，根据该组件中的 Prefab 与方阵信息创建了整个方阵的旋转方块实体，最后销毁这个拥有 Spawner 组件的实体防止重复实例化 Prefab。</p>
 <p>然后 RotateSpeedSystem 控制拥有 RotationSpeed 组件的方块旋转</p>
 <p>还有 DestroySystem 筛选出拥有 DestroyTime 组件的实体，每个 Tick 都让 TimeBeforeDestroy 这个计时器减去 DeltaTime，并把计时器已经归零的 Entity 销毁。</p>
-<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191212-030831-HD.gif" alt="" /></p>
+<p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191212-030831-HD.gif" alt="Result" /></p>
 
     </div>
 

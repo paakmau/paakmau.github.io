@@ -132,13 +132,13 @@ nginx 的配置文件会被放在 data_nginx_conf 数据卷中&lt;br &#x2F;&gt;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;解释：&lt;br &#x2F;&gt;
 其中 ssl_certificate 与 ssl_certificate_key 设定了证书的路径，需要把 example.com 替换为你博客的域名&lt;br &#x2F;&gt;
-proxy_pass 用于转发 wordpress 容器的80端口&lt;br &#x2F;&gt;
-最后监听本容器的80端口把 HTTP 重定向到 HTTPS&lt;&#x2F;p&gt;
+proxy_pass 用于转发 wordpress 容器的 80 端口&lt;br &#x2F;&gt;
+最后监听本容器的 80 端口把 HTTP 重定向到 HTTPS&lt;&#x2F;p&gt;
 &lt;p&gt;然后重启 nginx 容器就完成了&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; docker restart nginx
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;zheng-shu-xu-qian&quot;&gt;证书续签&lt;&#x2F;h2&gt;
-&lt;p&gt;证书有效期只有90天，因此需要续签&lt;&#x2F;p&gt;
+&lt;p&gt;证书有效期只有 90 天，因此需要续签&lt;&#x2F;p&gt;
 &lt;p&gt;我们先把 nginx 停了，把端口让出来&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; docker stop nginx
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
@@ -154,7 +154,7 @@ proxy_pass 用于转发 wordpress 容器的80端口&lt;br &#x2F;&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Docker 部署.NET Core 3.0控制台项目</title>
+		<title>Docker 部署.NET Core 3.0 控制台项目</title>
 		<published>2019-12-12T17:24:24+00:00</published>
 		<updated>2019-12-12T17:24:24+00:00</updated>
 		<link href="https://paakmau.github.io/201912121724/" type="text/html"/>
@@ -224,14 +224,14 @@ FROM&lt;br &#x2F;&gt;
 &lt;p&gt;解释：&lt;br &#x2F;&gt;
 第二行用于清除原本的 ExecStart，不可缺少&lt;&#x2F;p&gt;
 &lt;p&gt;-H tcp:&#x2F;&#x2F;0.0.0.0:2337&lt;br &#x2F;&gt;
-监听2337端口，使得 Daemon 可以由2337端口远程访问&lt;&#x2F;p&gt;
+监听 2337 端口，使得 Daemon 可以由 2337 端口远程访问&lt;&#x2F;p&gt;
 &lt;p&gt;-H unix:&#x2F;&#x2F;&#x2F;var&#x2F;run&#x2F;docker.sock&lt;br &#x2F;&gt;
 监听 Unix 域 Socket，使得原本的本地连接方式依然可用&lt;&#x2F;p&gt;
 &lt;p&gt;重启后台进程与 Docker 服务&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; systemctl daemon-reload
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; systemctl restart docker
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;至此，我们就能通过2337端口远程访问 Docker Daemon 了&lt;&#x2F;p&gt;
+&lt;p&gt;至此，我们就能通过 2337 端口远程访问 Docker Daemon 了&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;ke-hu-duan-macos-pei-zhi-yuan-cheng-lian-jie&quot;&gt;客户端（macOS）配置远程连接&lt;&#x2F;h2&gt;
 &lt;p&gt;安装 Docker Client&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; brew install docker
@@ -326,7 +326,7 @@ FROM&lt;br &#x2F;&gt;
 &lt;h2 id=&quot;docker-compose&quot;&gt;Docker Compose&lt;&#x2F;h2&gt;
 &lt;p&gt;在项目部署的时候，我们可能会用到多个容器，逐个配置就会很麻烦。可以使用 Docker Compose 同时配置管理多个容器&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;docker-an-zhuang&quot;&gt;Docker 安装&lt;&#x2F;h2&gt;
-&lt;p&gt;这里以 Debian 10为例&lt;&#x2F;p&gt;
+&lt;p&gt;这里以 Debian 10 为例&lt;&#x2F;p&gt;
 &lt;p&gt;使用 apt 安装，首先根据处理器架构添加合适的 apt 仓库，然后直接 &lt;code&gt;apt install&lt;&#x2F;code&gt; 即可。&lt;&#x2F;p&gt;
 &lt;p&gt;官网链接在这里&lt;br &#x2F;&gt;
 &lt;a href=&quot;https:&#x2F;&#x2F;docs.docker.com&#x2F;install&#x2F;linux&#x2F;docker-ce&#x2F;debian&#x2F;&quot;&gt;https:&#x2F;&#x2F;docs.docker.com&#x2F;install&#x2F;linux&#x2F;docker-ce&#x2F;debian&#x2F;&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
@@ -447,7 +447,7 @@ mysql --default-authentication-plugin=mysql_native_password&lt;br &#x2F;&gt;
 设置 mysql 的默认加密插件&lt;&#x2F;p&gt;
 &lt;p&gt;加密插件问题&lt;br &#x2F;&gt;
 因为这里使用了 MySQL 8.0，它的默认认证插件是 caching_sha2_password，WordPress 连接比较麻烦，改回 mysql_native_password 省事一点。&lt;br &#x2F;&gt;
-或者可以直接使用 mysql:5.7镜像&lt;&#x2F;p&gt;
+或者可以直接使用 mysql:5.7 镜像&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;yun-xing-wordpress-rong-qi-bing-lian-jie-mysql&quot;&gt;运行 WordPress 容器并链接 MySQL&lt;&#x2F;h2&gt;
 &lt;p&gt;先拉取 wordpress 镜像（如果需要）&lt;br &#x2F;&gt;
 然后创建并运行 wordpress 容器&lt;&#x2F;p&gt;
@@ -460,7 +460,7 @@ mysql --default-authentication-plugin=mysql_native_password&lt;br &#x2F;&gt;
 &lt;p&gt;参数解释：&lt;br &#x2F;&gt;
 -d 后台运行&lt;br &#x2F;&gt;
 --name 设置容器的 name&lt;br &#x2F;&gt;
--p 映射容器80端口到本机的80端口&lt;br &#x2F;&gt;
+-p 映射容器 80 端口到本机的 80 端口&lt;br &#x2F;&gt;
 -v 映射数据卷&lt;br &#x2F;&gt;
 --link 链接 MySQL&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;huo-qu-bei-fen&quot;&gt;获取备份&lt;&#x2F;h2&gt;

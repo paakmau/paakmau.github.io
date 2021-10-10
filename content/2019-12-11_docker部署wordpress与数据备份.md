@@ -51,7 +51,7 @@ mysql --default-authentication-plugin=mysql\_native\_password
   
 加密插件问题  
 因为这里使用了 MySQL 8.0，它的默认认证插件是 caching\_sha2\_password，WordPress 连接比较麻烦，改回 mysql\_native\_password 省事一点。  
-或者可以直接使用 mysql:5.7镜像
+或者可以直接使用 mysql:5.7 镜像
 
 ## 运行 WordPress 容器并链接 MySQL
 
@@ -69,7 +69,7 @@ $ docker run -d --name wordpress \
 参数解释：  
 \-d 后台运行  
 \--name 设置容器的 name  
-\-p 映射容器80端口到本机的80端口  
+\-p 映射容器 80 端口到本机的 80 端口  
 \-v 映射数据卷  
 \--link 链接 MySQL
 

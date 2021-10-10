@@ -145,7 +145,7 @@ export default router;
 <https://github.com/pillarjs/path-to-regexp>
 
 然后路由匹配是按照定义的顺序决定的，先定义的先匹配  
-因此可以在路由的最后配置404页面
+因此可以在路由的最后配置 404 页面
 
 ## 嵌套路由
 

@@ -12,7 +12,7 @@ categories = [".NET Core"]
 
 <!-- more -->
 
-这个东西依然支持.NET Core 3.1和.NET Framework 4.x（虽然官网都没写）。功能不多，用起来方便，很适合小规模的实时联机游戏。
+这个东西依然支持.NET Core 3.1 和.NET Framework 4.x（虽然官网都没写）。功能不多，用起来方便，很适合小规模的实时联机游戏。
 
 <https://github.com/RevenantX/LiteNetLib>
 
@@ -20,7 +20,7 @@ categories = [".NET Core"]
 
 跟随本文实现 Unity 前端与.NET Core 后端互相发送信息  
   
-Unity 的.NET 版本为.NET Framework 4.x，后端为.NET Core 3.1，LiteNetLib 库使用0.8.x 稳定版本
+Unity 的.NET 版本为.NET Framework 4.x，后端为.NET Core 3.1，LiteNetLib 库使用 0.8.x 稳定版本
 
 ![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191215-201104@2x.png)
 

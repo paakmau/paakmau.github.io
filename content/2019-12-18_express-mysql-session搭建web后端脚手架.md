@@ -18,13 +18,13 @@ categories = ["Node.js"]
 但是该脚手架缺少 Express 异常处理，感兴趣可以自行添加  
 而且用 MySQL 存 Session 感觉不太正常，应该换 Redis，篇幅有限就不写了（虽然已经很长了）
 
-作为示例，本文还实现了基于 Session 的验证码认证、RESTful 风格接口与 MD5加密的登陆注册
+作为示例，本文还实现了基于 Session 的验证码认证、RESTful 风格接口与 MD5 加密的登陆注册
 
 ## 环境
 
 Node.js v13.3.0
 
-MySQL 8.0.18，监听3306端口，认证插件为 mysql\_native\_password  
+MySQL 8.0.18，监听 3306 端口，认证插件为 mysql\_native\_password  
 root 账户的密码为 root
 
 在 MySQL 中执行以下脚本建立两个数据库，分别用于存储 Session 数据与用户数据
@@ -71,7 +71,7 @@ const app = express()
 // 定义一个 Get 请求的回调
 app.get('/helloworld', (req, res) => res.send("hello world!"))
 
-// 将后端开在8080端口
+// 将后端开在 8080 端口
 app.listen(8080)
 ```
 
@@ -224,10 +224,10 @@ console.log(captcha.data)
 svg-captcha 的 create 方法生成一个验证码对象  
 它的 text 属性是验证码文本，data 属性是一个 svg 图像
 
-## MD5加密
+## MD5 加密
 
-MD5加密其实就是一个哈希函数，只是他的哈希值长的又丑又长，不可逆  
-因此把用户的密码用 MD5算法哈希后存储，就可以通过哈希值比对用户密码实现登陆，也没有人能知道密码原文
+MD5 加密其实就是一个哈希函数，只是他的哈希值长的又丑又长，不可逆  
+因此把用户的密码用 MD5 算法哈希后存储，就可以通过哈希值比对用户密码实现登陆，也没有人能知道密码原文
 
 安装 utility 依赖
 
@@ -324,7 +324,7 @@ app.use(session({
 
 // 验证码库
 const svgCaptcha = require("svg-captcha")
-// MD5加密
+// MD5 加密
 const utility = require("utility")
 function encodePassword(pwd) {
     return utility.md5(pwd + "hello express md5")
@@ -352,7 +352,7 @@ app.post("/user", (req, res, next) => {
     if (username.length < 6  password.length < 6) { res.send({ success: false, data: "账号密码都应该大于等于六位" }); return }
     // 认证验证码
     if (req.session.captcha == undefined  captcha.toLowerCase() != req.session.captcha.toLowerCase()) { res.send({ success: false, data: "验证码错误" }); return }
-    // MD5并尝试插入
+    // MD5 并尝试插入
     password = encodePassword(password)
     mysqlConnect.query('SELECT id FROM `hello`.`user` WHERE `username` = ?', [username], (err, result, field) => {
         if (err) { res.send({ success: false, data: err }); return }
@@ -374,7 +374,7 @@ app.post("/token", (req, res, next) => {
     if (username.length < 6  password.length < 6) { res.send({ success: false, data: "账号密码都应该大于等于六位" }); return }
     // 认证验证码
     if (req.session.captcha == undefined  captcha.toLowerCase() != req.session.captcha.toLowerCase()) { res.send({ success: false, data: "验证码错误" }); return }
-    // MD5并验证
+    // MD5 并验证
     password = encodePassword(password)
     mysqlConnect.query('SELECT password FROM `hello`.`user` WHERE `username` = ?', [username], (err, result, field) => {
         if (err) { res.send({ success: true, data: err }); return }

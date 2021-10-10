@@ -44,7 +44,7 @@ com.havok.physics 是微软写的，是 Havok 引擎在 Unity 上的发行版，
 
 其中 Hybrid Renderer 依赖 Entities，Entities 依赖 Collections、Mathematics 等包，Package Manager 会自动安装所有依赖
 
-另外注意，如果在 mac 上使用 VS Code 作为编辑器，Visual Studio Code Editor 这个包的1.1.4版本会导致 Omnisharp 出问题，需要退至1.1.3版本
+另外注意，如果在 mac 上使用 VS Code 作为编辑器，Visual Studio Code Editor 这个包的 1.1.4 版本会导致 Omnisharp 出问题，需要退至 1.1.3 版本
 
 ## HelloWorld
 

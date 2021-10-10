@@ -55,7 +55,7 @@ public struct RotationSpeed : IComponentData
 
 解释：原本的 GenerateAuthoringComponent 特性被改成了 Serializable。GenerateAuthoringComponent 的作用是允许 ECS 的组件直接挂载在 GameObject 上，但是使用代码添加组件时不需要这个特性，因此只需要 Serializable 即可。
 
-在编辑器中修改 Cube 的 RotatingCubeAuthoring 的旋转速度为每秒180度，如下
+在编辑器中修改 Cube 的 RotatingCubeAuthoring 的旋转速度为每秒 180 度，如下
 
 ![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191210-160141@2x.png)
 

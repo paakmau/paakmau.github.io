@@ -1,5 +1,5 @@
 +++
-title = "Docker 部署.NET Core 3.0控制台项目"
+title = "Docker 部署.NET Core 3.0 控制台项目"
 date = 2019-12-12 17:24:24
 slug = "201912121724"
 

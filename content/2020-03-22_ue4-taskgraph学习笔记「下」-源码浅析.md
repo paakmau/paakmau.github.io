@@ -108,7 +108,7 @@ void ConditionalQueueTask(ENamedThreads::Type CurrentThread)
 ## 结语
 
 源码终于啃完了，感觉很多写法非常的牛逼  
-发现自己 C++的高 she 级 pi 用 cao 法 zuo 还不是很熟悉，可能也是太久没碰 UE4了，有空就去把改填的坑填了
+发现自己 C++的高 she 级 pi 用 cao 法 zuo 还不是很熟悉，可能也是太久没碰 UE4 了，有空就去把改填的坑填了
 
 但是实现的思路感觉还是很好理解，甚至有一种随 xia 心 ji 所 ba 欲 xie 的感觉（比如 FTaskThreadAnyThread 的公共任务队列就直接扔在 FTaskGraphImplementation 单例里）
 

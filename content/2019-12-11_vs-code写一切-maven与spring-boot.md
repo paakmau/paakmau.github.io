@@ -53,13 +53,13 @@ VSC 用于开发 Maven 项目已经比较成熟
 
 ## 工作区配置
 
-用 VSC 打开这个文件夹，按 F5运行，配置选择 Java
+用 VSC 打开这个文件夹，按 F5 运行，配置选择 Java
 
 ![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191221-151044@2x-1024x451.png)
 
 他会生成 launch.json，跟上一篇 Java 的类似，用于确定主类，就不贴了  
 可以把 Current File 的那条删了，因为暂时不需要单文件运行
 
-按 F5运行，跑起来了
+按 F5 运行，跑起来了
 
 ![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191221-151311@2x-1024x285.png)

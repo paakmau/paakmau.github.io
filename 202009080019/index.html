@@ -96,7 +96,7 @@
 </span><span>}
 </span></code></pre>
 <p>接着我们就可以开始填充这个成员函数。创建逻辑设备需要我们在结构体里指定很多的细节</p>
-<p>第一个就是VkDeviceQueueCreateInfo，这个结构体描述了对于一个队列族我们需要创建的队列数量以及各自的优先级</p>
+<p>第一个就是 VkDeviceQueueCreateInfo，这个结构体描述了对于一个队列族我们需要创建的队列数量以及各自的优先级</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>uint32_t queueFamilyIndex = </span><span style="color:#bf616a;">findQueueFamily</span><span>(physicalDevice).</span><span style="color:#bf616a;">value</span><span>();
 </span><span>VkDeviceQueueCreateInfo queueCreateInfo = {};
 </span><span>queueCreateInfo.</span><span style="color:#bf616a;">sType </span><span>= VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
@@ -124,7 +124,7 @@
 </span><span>    </span><span style="color:#b48ead;">throw </span><span>std::</span><span style="color:#bf616a;">runtime_error</span><span>(&quot;</span><span style="color:#a3be8c;">failed to create logical device</span><span>&quot;);
 </span><span style="background-color:#bf616a;color:#2b303b;">}</span><span>
 </span></code></pre>
-<p>可以看到创建逻辑设备主要是把上面的队列创建信息和设备特性传进去，最后指定一下逻辑设备需要启用的扩展，这里传入了VK_KHR_swapchain 来让我们能够使用交换链，交换链将会在后面的文章中介绍</p>
+<p>可以看到创建逻辑设备主要是把上面的队列创建信息和设备特性传进去，最后指定一下逻辑设备需要启用的扩展，这里传入了 VK_KHR_swapchain 来让我们能够使用交换链，交换链将会在后面的文章中介绍</p>
 <h2 id="qu-hui-dui-lie-ju-bing">取回队列句柄</h2>
 <p>创建逻辑设备的同时会根据传入的队列创建信息创建相应的队列，所以我们需要取回对队列句柄</p>
 <p>还是先添加一个成员变量</p>

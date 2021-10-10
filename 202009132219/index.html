@@ -154,7 +154,7 @@
 <li>VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP<br />
 与上一个类似，但是每个三角形图元的最后两个顶点会作为下一个三角形图元的前两个顶点，也就是说相邻的两个三角形会共享两个点，所有的三角形连成一长条</li>
 </ul>
-<p>通常来说，从顶点缓冲区中载入的顶点是以数组中的索引为顺序的，但是我们可以使用元素缓冲区来手动指定索引，从而实现更优化的性能，比如复用顶点。如果把 primitiveRestart 设为VK_TRUE，那么对于带有_STRIP 后缀的拓扑模式，我们就可以使用一个特殊的索引值0xFFFF 或0xFFFFFFFF，来中断当前连续的线段或连续的三角形，重新开启新的一系列线段或一系列三角形</p>
+<p>通常来说，从顶点缓冲区中载入的顶点是以数组中的索引为顺序的，但是我们可以使用元素缓冲区来手动指定索引，从而实现更优化的性能，比如复用顶点。如果把 primitiveRestart 设为 VK_TRUE，那么对于带有_STRIP 后缀的拓扑模式，我们就可以使用一个特殊的索引值0xFFFF 或0xFFFFFFFF，来中断当前连续的线段或连续的三角形，重新开启新的一系列线段或一系列三角形</p>
 <p>我们要画的是一个三角形，所以这样写</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
 </span><span>inputAssembly.</span><span style="color:#bf616a;">sType </span><span>= VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -172,7 +172,7 @@
 </span><span>viewport.</span><span style="color:#bf616a;">minDepth </span><span>= </span><span style="color:#d08770;">1.0</span><span style="color:#b48ead;">f</span><span>;
 </span></code></pre>
 <p>需要注意交换链及其图像的尺寸可能和窗体的不同。交换链图像在之后会作为帧缓冲区使用，因此我们这里要使用交换链的尺寸</p>
-<p>minDepth 与 maxDepth 指定了用于帧缓冲区的深度值范围。它们的值必须在[0.0f, 1.0f]之内，但是 minDepth 可以比maxDepth 高。如果不是有特殊情况，应当使用标准值0.0f 和1.0f</p>
+<p>minDepth 与 maxDepth 指定了用于帧缓冲区的深度值范围。它们的值必须在[0.0f, 1.0f]之内，但是 minDepth 可以比 maxDepth 高。如果不是有特殊情况，应当使用标准值0.0f 和1.0f</p>
 <p>视口定义了从图像到帧缓冲区的变换，而剪裁矩形定义了实际会被存储的像素的区域。在剪裁矩形之外的任何像素都会被光栅化阶段抛弃。这个功能比起变换更像是过滤器</p>
 <p>我们这里只是要简单地绘制整个帧缓冲区，所以我们指定一个覆盖了所有区域剪裁矩形</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkRect2D scissor = {};
@@ -199,8 +199,8 @@
 </span><span>rasterizer.</span><span style="color:#bf616a;">frontFace </span><span>= VK_FRONT_FACE_CLOCKWISE;
 </span><span>rasterizer.</span><span style="color:#bf616a;">depthBiasEnable </span><span>= VK_FALSE;
 </span></code></pre>
-<p>如果把 depthClampEnable 设为VK_TRUE，那么在近裁和远裁平面之外的片元会被截断在平面上，而不是直接丢弃。这在阴影贴图等特殊情况下非常的实用。使用它也需要开启相应的 GPU 特性</p>
-<p>如果把 rasterizerDiscardEnable 设为VK_TRUE，那么几何体将不会通过光栅化阶段。它从根本上禁止了到帧缓冲区的任何输出</p>
+<p>如果把 depthClampEnable 设为 VK_TRUE，那么在近裁和远裁平面之外的片元会被截断在平面上，而不是直接丢弃。这在阴影贴图等特殊情况下非常的实用。使用它也需要开启相应的 GPU 特性</p>
+<p>如果把 rasterizerDiscardEnable 设为 VK_TRUE，那么几何体将不会通过光栅化阶段。它从根本上禁止了到帧缓冲区的任何输出</p>
 <p>polygonMode 决定了如何为几何体生成片元，有以下几种模式</p>
 <ul>
 <li>VK_POLYGON_MODE_FILL<br />
@@ -210,12 +210,12 @@
 <li>VK_POLYGON_MODE_POINT<br />
 只显示多边形的点</li>
 </ul>
-<p>lineWidth 成员十分显然，它描述了线的厚度，也就是片元的数量。最大线宽的支持取决于硬件，且如果要让它高于1.0f，我们还需要启用 wideLines 的GPU 特性</p>
+<p>lineWidth 成员十分显然，它描述了线的厚度，也就是片元的数量。最大线宽的支持取决于硬件，且如果要让它高于1.0f，我们还需要启用 wideLines 的 GPU 特性</p>
 <p>cullMode 变量决定了面剪裁的类型，我们可以禁用剪裁、剪裁前面、剪裁后面或者剪裁全部的面</p>
 <p>frontFace 变量指定了前面的顶点序，顺时针或者逆时针</p>
-<p>光栅化阶段能通过加上一个常量或者基于片元的斜率改变深度值。有时可以用在阴影贴图上，但是这里我们不需要它。于是把 depthBiasEnable 设为VK_FALSE</p>
+<p>光栅化阶段能通过加上一个常量或者基于片元的斜率改变深度值。有时可以用在阴影贴图上，但是这里我们不需要它。于是把 depthBiasEnable 设为 VK_FALSE</p>
 <h3 id="duo-zhong-cai-yang">多重采样</h3>
-<p>也就是在游戏中常见的的MSAA。我们使用 VkPipelineMultisampleStateCreateInfo 结构体来配置多重采样，多重采样是抗锯齿的一种方式。如果有多个几何体在光栅化后有某些像素重合，在片元着色器阶段之后，多重采样可以把这些像素混合起来。这种情况主要发生在边上，且在边上的锯齿问题也是最为严重的。因为如果只有一个多边形被映射为一个像素的话，对于这个像素就不需要多次执行片元着色器，所以多重采样的性能优势就远远大于简单的先高分辨率渲染再压缩图像。如果要使用多重采样的话，也需要启用对应的 GPU 特性</p>
+<p>也就是在游戏中常见的的 MSAA。我们使用 VkPipelineMultisampleStateCreateInfo 结构体来配置多重采样，多重采样是抗锯齿的一种方式。如果有多个几何体在光栅化后有某些像素重合，在片元着色器阶段之后，多重采样可以把这些像素混合起来。这种情况主要发生在边上，且在边上的锯齿问题也是最为严重的。因为如果只有一个多边形被映射为一个像素的话，对于这个像素就不需要多次执行片元着色器，所以多重采样的性能优势就远远大于简单的先高分辨率渲染再压缩图像。如果要使用多重采样的话，也需要启用对应的 GPU 特性</p>
 <p>当然目前我们只需要禁用它就行</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkPipelineMultisampleStateCreateInfo multisampling = {};
 </span><span>multisampling.</span><span style="color:#bf616a;">sType </span><span>= VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
@@ -223,14 +223,14 @@
 </span><span>multisampling.</span><span style="color:#bf616a;">rasterizationSamples </span><span>= VK_SAMPLE_COUNT_1_BIT;
 </span></code></pre>
 <h3 id="shen-du-yu-mo-ban-ce-shi">深度与模板测试</h3>
-<p>如果使用深度或模板缓冲，就需要使用 VkPipelineDepthStencilStateCreateInfo 结构体来配置深度和模板测试。目前我们也不需要它，所以只需要在后面创建流水线的时候简单地传入nullptr，而不是这个结构体的指针</p>
+<p>如果使用深度或模板缓冲，就需要使用 VkPipelineDepthStencilStateCreateInfo 结构体来配置深度和模板测试。目前我们也不需要它，所以只需要在后面创建流水线的时候简单地传入 nullptr，而不是这个结构体的指针</p>
 <h3 id="yan-se-hun-he">颜色混合</h3>
 <p>片元着色器已经返回了一个颜色之后，它需要与帧缓冲区中已经存在的颜色进行结合，有以下两种方式。</p>
 <ul>
 <li>把旧的值跟新的值混合起来产生最终的颜色</li>
 <li>把旧的值跟新的值使用位运算结合</li>
 </ul>
-<p>配置颜色混合需要两种结构体。第一种是VkPipelineColorBlendAttachmentState，描述了每个被附着的帧缓冲区的配置；第二种是VkPipelineColorBlendStateCreateInfo，描述了全局的颜色混合设置</p>
+<p>配置颜色混合需要两种结构体。第一种是 VkPipelineColorBlendAttachmentState，描述了每个被附着的帧缓冲区的配置；第二种是 VkPipelineColorBlendStateCreateInfo，描述了全局的颜色混合设置</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
 </span><span>colorBlendAttachment.</span><span style="color:#bf616a;">colorWriteMask </span><span>= VK_COLOR_COMPONENT_R_BIT  VK_COLOR_COMPONENT_G_BIT  VK_COLOR_COMPONENT_B_BIT  VK_COLOR_COMPONENT_A_BIT;
 </span><span>colorBlendAttachment.</span><span style="color:#bf616a;">blendEnable </span><span>= VK_FALSE;
@@ -241,8 +241,8 @@
 </span><span>colorBlending.</span><span style="color:#bf616a;">attachmentCount </span><span>= </span><span style="color:#d08770;">1</span><span>;
 </span><span>colorBlending.</span><span style="color:#bf616a;">pAttachments </span><span>= &amp;colorBlendAttachment;
 </span></code></pre>
-<p>第一种结构体是对于每一个帧缓冲区配置的，不过这里我们只有一个帧缓冲区。它可以配置上面提到的颜色混合的第一种方式。使用颜色混合最常见的方式是实现 alpha 混合，也就是通过透明度来把新颜色跟旧颜色混合起来。不过我们不管它，把 blendEnable 设为VK_FALSE 来直接使用新颜色覆盖掉旧的颜色</p>
-<p>第二种结构体持有了所有的第一种结构体的数组，且它可以为颜色混合的第一种方式（也就是第一种结构体中配置的混合方式）设置常量。它还可以使用第二种混合方式，这时就要把 logicOpEnable 设为VK_TRUE 来启用位运算，再配置具体的位运算操作。当然这里我们直接禁用掉就行</p>
+<p>第一种结构体是对于每一个帧缓冲区配置的，不过这里我们只有一个帧缓冲区。它可以配置上面提到的颜色混合的第一种方式。使用颜色混合最常见的方式是实现 alpha 混合，也就是通过透明度来把新颜色跟旧颜色混合起来。不过我们不管它，把 blendEnable 设为 VK_FALSE 来直接使用新颜色覆盖掉旧的颜色</p>
+<p>第二种结构体持有了所有的第一种结构体的数组，且它可以为颜色混合的第一种方式（也就是第一种结构体中配置的混合方式）设置常量。它还可以使用第二种混合方式，这时就要把 logicOpEnable 设为 VK_TRUE 来启用位运算，再配置具体的位运算操作。当然这里我们直接禁用掉就行</p>
 <h3 id="dong-tai-zhuang-tai">动态状态</h3>
 <p>我们在之前配置的结构体中有一部分状态实际上是可以在不重新创建流水线的情况下被改变的。比如视口的尺寸、线宽、混合常量等。如果有这样的需要，就应当在 VkPipelineDynamicStateCreateInfo 中进行配置，然后在结构体中配置的这些状态将会失效，于是就需要在绘制的时候再进行指定。当然现在我们不需要它，所以在创建流水线的时候传入 nullptr 就行了</p>
 <h2 id="liu-shui-xian-bu-ju">流水线布局</h2>
@@ -312,7 +312,7 @@
 </span></code></pre>
 <p>填充 VkGraphicsPipelineCreateInfo 结构体的前半部分就是把上文填好的结构体扔进去</p>
 <p>需要注意的是对于渲染路径而言，需要传入图形流水线所用于的子路径索引。之后这条流水线同样可以选择其他的渲染路径，而不是这个特定的实例，但它们都应当兼容当前所选的的渲染路径。当然我们不需要用到</p>
-<p>还有 basePipelineHandle 与basePipelineIndex 这两个参数。Vulkan 允许我们根据一条已经存在的流水线派生出新的流水线。流水线派生的优势在于，根据一条已有的流水线创建具有类似功能的流水线开销会更小，且在父流水线相同的流水线之间切换也会更快。我们可以通过 basePipelineHandle 指定一条已存在的流水线的句柄，也可以通过 basePipelineIndex 指定即将被创建的流水线的索引。当然现在我们只需要创建一条流水线，直接指定空的句柄和无效索引即可。并且这些值只有在 VkGraphicsPipelineCreateInfo 的flags 成员中打上VK_PIPELINE_CREATE_DERIVATIVE_BIT 位域标记才会生效</p>
+<p>还有 basePipelineHandle 与 basePipelineIndex 这两个参数。Vulkan 允许我们根据一条已经存在的流水线派生出新的流水线。流水线派生的优势在于，根据一条已有的流水线创建具有类似功能的流水线开销会更小，且在父流水线相同的流水线之间切换也会更快。我们可以通过 basePipelineHandle 指定一条已存在的流水线的句柄，也可以通过 basePipelineIndex 指定即将被创建的流水线的索引。当然现在我们只需要创建一条流水线，直接指定空的句柄和无效索引即可。并且这些值只有在 VkGraphicsPipelineCreateInfo 的 flags 成员中打上 VK_PIPELINE_CREATE_DERIVATIVE_BIT 位域标记才会生效</p>
 <p>最后在 cleanup 中销毁流水线</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">cleanup</span><span>() {
 </span><span>    </span><span style="color:#bf616a;">vkDestroyPipeline</span><span>(device, graphicsPipeline, </span><span style="color:#d08770;">nullptr</span><span>);

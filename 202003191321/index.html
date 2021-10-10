@@ -78,17 +78,17 @@
 </span>
     </header>
     <div itemprop="articleBody">
-      <p>这个东西跟 Unity 中的Job 很相似，都是基于任务的并行程序设计，可以处理资源竞争与执行顺序问题</p>
+      <p>这个东西跟 Unity 中的 Job 很相似，都是基于任务的并行程序设计，可以处理资源竞争与执行顺序问题</p>
 <span id="continue-reading"></span><h2 id="jian-dan-jie-shao">简单介绍</h2>
 <p>简单说就是一张有向无环图，每一个任务是节点，任务的依赖关系是边，根据拓扑排序规划任务的执行。如果一个节点的入度为零就可以并行，并且执行完成后删掉自己的出边；否则等待入边的节点执行完成</p>
 <ul>
 <li>节点是 TGraphTask 模版类，我们需要自己实现任务类满足它的要求。重点是实现 DoTask 方法</li>
-<li>边是FGraphEventRef，可以在 CreateTask 之后得到，可以理解为任务完成的事件；同时在 CreateTask 的时候可以把其他任务的FGraphEventRef 以 FGraphEventArray 的形式传入以表示依赖（入边）</li>
+<li>边是 FGraphEventRef，可以在 CreateTask 之后得到，可以理解为任务完成的事件；同时在 CreateTask 的时候可以把其他任务的 FGraphEventRef 以 FGraphEventArray 的形式传入以表示依赖（入边）</li>
 </ul>
-<p>另外，任务类的 DoTask 方法参数中有一个const FGraphEventRef &amp;MyCompletionGraphEvent，根据变量名我们知道它是任务自身的完成事件。于是我们还可以在这个东西上进行蛇皮操作，比如在本任务完成之前再等待另一个任务完成，但是写起来很乱</p>
+<p>另外，任务类的 DoTask 方法参数中有一个 const FGraphEventRef &amp;MyCompletionGraphEvent，根据变量名我们知道它是任务自身的完成事件。于是我们还可以在这个东西上进行蛇皮操作，比如在本任务完成之前再等待另一个任务完成，但是写起来很乱</p>
 <h2 id="helloworld">HelloWorld</h2>
 <p>跟随下面的指引建立两个任务类，然后通过 FGraphEventRef 指定他们的执行顺序</p>
-<p>准备两个任务类 TestTaskA 和TestTaskB<br />
+<p>准备两个任务类 TestTaskA 和 TestTaskB<br />
 TestTaskA 的代码如下，另外一个可以仿照着写</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">TestTaskA
 </span><span style="color:#eff1f5;">{
@@ -119,7 +119,7 @@ TestTaskA 的代码如下，另外一个可以仿照着写</p>
 </span><span style="color:#eff1f5;">    }
 </span><span style="color:#eff1f5;">}</span><span>;
 </span></code></pre>
-<p>创建一个Actor，并修改 BeginPlay 方法如下</p>
+<p>创建一个 Actor，并修改 BeginPlay 方法如下</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">void </span><span>AMyActor::</span><span style="color:#8fa1b3;">BeginPlay</span><span>()
 </span><span>{
 </span><span>    Super::</span><span style="color:#bf616a;">BeginPlay</span><span>();
@@ -131,7 +131,7 @@ TestTaskA 的代码如下，另外一个可以仿照着写</p>
 <p>最后在输出里看到这样的结果</p>
 <p><img src="https://hebomou.top/wp-content/uploads/2020/03/image.png" alt="" /></p>
 <h2 id="parallelfor">ParallelFor</h2>
-<p>UE4有一个ParallelFor，是对于简单遍历的并行处理，基于TaskGraph，具体去看Runtime/Core/Public/Async/ParallelFor.h<br />
+<p>UE4有一个 ParallelFor，是对于简单遍历的并行处理，基于 TaskGraph，具体去看 Runtime/Core/Public/Async/ParallelFor.h<br />
 下面给个简单的例子</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#bf616a;">ParallelFor</span><span>(</span><span style="color:#d08770;">100</span><span>, [](int32 CurrIdx) {
 </span><span>    int32 Sum = </span><span style="color:#d08770;">0</span><span>;
@@ -139,10 +139,10 @@ TestTaskA 的代码如下，另外一个可以仿照着写</p>
 </span><span>        Sum += FMath::</span><span style="color:#bf616a;">Sqrt</span><span>(</span><span style="color:#d08770;">1234.56</span><span style="color:#b48ead;">f</span><span>);
 </span><span>});
 </span></code></pre>
-<h2 id="dui-bi-unity-c-job-system">对比Unity C# Job System</h2>
+<h2 id="dui-bi-unity-c-job-system">对比 Unity C# Job System</h2>
 <p>如果抽象成一张 DAG 来看，这两个本质上其实就是同一个东西。简单说就是通过建立依赖关系避免资源竞争实现易于管理的并行</p>
-<p>但是Job System 相对于 TaskGraph 在用户代码中出现频率要高得多。因为Unity DOTS 天生就能很好的设计并行，甚至 Job 其实是嵌入在SystemBase 里的，对于游戏主逻辑都能被频繁使用；而UE4是OOP，个人理解的话应该主要用于耗时长的计算或者I/O 任务等，但是把游戏主逻辑放到 TaskGraph 里是比较困难的</p>
-<p>另外有一个小区别，UE4的 ParallerFor 与Unity 里的 ScheduleParallel 是不一样的。UE4的 ParallelFor 其实是基于TaskGraph 的顶层；而 Unity 的ScheduleParallel 是 Job 本身自带的方法</p>
+<p>但是 Job System 相对于 TaskGraph 在用户代码中出现频率要高得多。因为 Unity DOTS 天生就能很好的设计并行，甚至 Job 其实是嵌入在 SystemBase 里的，对于游戏主逻辑都能被频繁使用；而 UE4是 OOP，个人理解的话应该主要用于耗时长的计算或者 I/O 任务等，但是把游戏主逻辑放到 TaskGraph 里是比较困难的</p>
+<p>另外有一个小区别，UE4的 ParallerFor 与 Unity 里的 ScheduleParallel 是不一样的。UE4的 ParallelFor 其实是基于 TaskGraph 的顶层；而 Unity 的 ScheduleParallel 是 Job 本身自带的方法</p>
 
     </div>
 

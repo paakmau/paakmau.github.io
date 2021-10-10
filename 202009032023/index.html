@@ -78,50 +78,50 @@
 </span>
     </header>
     <div itemprop="articleBody">
-      <p>Vulkan 是一个跨平台的图形与计算API，本系列文章将使用 Vulkan 绘制一个三角形，旨在为上手 Vulkan 提供帮助</p>
+      <p>Vulkan 是一个跨平台的图形与计算 API，本系列文章将使用 Vulkan 绘制一个三角形，旨在为上手 Vulkan 提供帮助</p>
 <span id="continue-reading"></span>
 <p>使用 CMake 管理项目<br />
-使用VS Code 编辑代码<br />
+使用 VS Code 编辑代码<br />
 使用 GLFW 管理窗体</p>
 <p><img src="https://hebomou.top/wp-content/uploads/2020/09/image-1.png" alt="" /></p>
 <p>本系列文章主要是下面这个教程的翻译，但是做了一些修改</p>
 <p><a href="https://vulkan-tutorial.com/">https://vulkan-</a><a href="https://vulkan-tutorial.com/">tutorial</a><a href="https://vulkan-tutorial.com/">.com/</a></p>
-<h2 id="an-zhuang-vulkan">安装Vulkan</h2>
+<h2 id="an-zhuang-vulkan">安装 Vulkan</h2>
 <p>前往官网下载安装包直接安装</p>
 <p><a href="https://vulkan.lunarg.com/">https://vulkan.lunarg.com/</a></p>
-<h2 id="an-zhuang-glfw">安装GLFW</h2>
-<p>Vulkan 只是一个图形API，无法管理窗体。为了方便，我们引入跨平台的 GLFW 库</p>
+<h2 id="an-zhuang-glfw">安装 GLFW</h2>
+<p>Vulkan 只是一个图形 API，无法管理窗体。为了方便，我们引入跨平台的 GLFW 库</p>
 <h3 id="macos">macOS</h3>
 <p>可以用 brew 安装</p>
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> brew install glfw
 </span></code></pre>
 <h3 id="windows">Windows</h3>
-<p>稍微麻烦一点，可以用MinGW-w64编译 GLFW 的源码并安装，最后添加环境变量</p>
+<p>稍微麻烦一点，可以用 MinGW-w64编译 GLFW 的源码并安装，最后添加环境变量</p>
 <p>先去官网下载源码<br />
 <a href="https://www.glfw.org/">https://www.glfw.org/</a></p>
-<p>然后以管理员身份运行PowerShell，cd 到 GLFW 源码项目文件夹下，输入以下命令</p>
+<p>然后以管理员身份运行 PowerShell，cd 到 GLFW 源码项目文件夹下，输入以下命令</p>
 <pre data-lang="ps1" style="background-color:#2b303b;color:#c0c5ce;" class="language-ps1 "><code class="language-ps1" data-lang="ps1"><span>PS mkdir build
 </span><span>PS cd build
 </span><span>PS cmake -G &quot;</span><span style="color:#a3be8c;">MinGW Makefiles</span><span>&quot; ..
 </span><span>PS mingw32-make install
 </span></code></pre>
-<p>这样 GLFW 默认会被安装在C:/Program Files (x86)/GLFW 文件夹中，如果想装在别的地方可以修改CMAKE_INSTALL_PREFIX 环境变量，当然也可以直接下载预编译的二进制文件，但是可能它不会提供配置 GLFW 所需的CMake 模块</p>
-<p>最后需要添加一个glfw3_DIR 环境变量，指向存放配置 GLFW 的CMake 模块的路径，值是C:\Program Files (x86)\GLFW\lib\cmake\glfw3，如果你使用了不同的安装路径，请做相应修改，这样后续find_package 才能找到glfw3的头文件和依赖库</p>
-<h2 id="an-zhuang-cmake">安装CMake</h2>
-<p>考虑到跨平台，我们用 CMake 配合VS Code 会很方便</p>
+<p>这样 GLFW 默认会被安装在 C:/Program Files (x86)/GLFW 文件夹中，如果想装在别的地方可以修改 CMAKE_INSTALL_PREFIX 环境变量，当然也可以直接下载预编译的二进制文件，但是可能它不会提供配置 GLFW 所需的 CMake 模块</p>
+<p>最后需要添加一个 glfw3_DIR 环境变量，指向存放配置 GLFW 的 CMake 模块的路径，值是 C:\Program Files (x86)\GLFW\lib\cmake\glfw3，如果你使用了不同的安装路径，请做相应修改，这样后续 find_package 才能找到 glfw3的头文件和依赖库</p>
+<h2 id="an-zhuang-cmake">安装 CMake</h2>
+<p>考虑到跨平台，我们用 CMake 配合 VS Code 会很方便</p>
 <p>mac 下同样可以用 brew 安装</p>
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> brew install cmake
 </span></code></pre>
 <p>Windows 下使用官网安装包安装就行了</p>
-<h2 id="an-zhuang-vs-code-cha-jian">安装VS Code 插件</h2>
+<h2 id="an-zhuang-vs-code-cha-jian">安装 VS Code 插件</h2>
 <ul>
 <li>C/C++</li>
 <li>CMake</li>
 <li>CMake Tools</li>
 </ul>
 <h2 id="chuang-jian-cmake-xiang-mu">创建 CMake 项目</h2>
-<p>直接新建一个文件夹，用VS Code 打开它</p>
-<p>在其中创建CMakeList.txt 文件，内容如下</p>
+<p>直接新建一个文件夹，用 VS Code 打开它</p>
+<p>在其中创建 CMakeList.txt 文件，内容如下</p>
 <pre data-lang="cmake" style="background-color:#2b303b;color:#c0c5ce;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span style="color:#96b5b4;">cmake_minimum_required</span><span>(</span><span style="color:#bf616a;">VERSION </span><span>3.0.0)
 </span><span style="color:#96b5b4;">project</span><span>(VulkanTest </span><span style="color:#bf616a;">VERSION </span><span>0.1.0)
 </span><span>
@@ -136,9 +136,9 @@
 </span><span style="color:#96b5b4;">target_include_directories</span><span>(VulkanTest </span><span style="color:#bf616a;">PRIVATE </span><span>${</span><span style="color:#bf616a;">Vulkan_INCLUDE_DIRS</span><span>})
 </span><span style="color:#96b5b4;">target_link_libraries</span><span>(VulkanTest ${</span><span style="color:#bf616a;">Vulkan_LIBRARIES</span><span>})
 </span></code></pre>
-<p>简单说就是这个项目只有main.cpp 一个文件，然后寻找 Vulkan 和glfw3这两个库，并链接到我们的项目中</p>
+<p>简单说就是这个项目只有 main.cpp 一个文件，然后寻找 Vulkan 和 glfw3这两个库，并链接到我们的项目中</p>
 <h2 id="yong-glfw-chuang-jian-chuang-ti">用 GLFW 创建窗体</h2>
-<p>接下来我们创建main.cpp 文件</p>
+<p>接下来我们创建 main.cpp 文件</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">GLFW/glfw3.h</span><span>&gt;
 </span><span>
 </span><span style="color:#b48ead;">const </span><span>uint32_t WIDTH = </span><span style="color:#d08770;">800</span><span>;
@@ -187,7 +187,7 @@
 GLFW 原本设计就是要为 OpenGL 创建上下文，而这里我们只用它管理窗体，因此使用这行代码防止他为 OpenGL 创建上下文</p>
 <p>glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);<br />
 处理可变大小窗体很麻烦，因此我们直接禁用它</p>
-<p>在VS Code 中键入cmd + shift + p 呼出命令面板，在其中输入CMake: Debug 选项并回车调试项目，就能看到它创建了一个空窗体</p>
+<p>在 VS Code 中键入 cmd + shift + p 呼出命令面板，在其中输入 CMake: Debug 选项并回车调试项目，就能看到它创建了一个空窗体</p>
 <p><img src="https://hebomou.top/wp-content/uploads/2020/09/image-2.png" alt="" /></p>
 <p>在接下来的文章中我们会不断填充这段代码，最终在屏幕中渲染出一个三角形</p>
 

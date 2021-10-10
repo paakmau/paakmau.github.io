@@ -78,9 +78,9 @@
 </span>
     </header>
     <div itemprop="articleBody">
-      <p>Vulkan 是一个跨平台的API，它不能够直接与不同平台的窗体系统进行交互。为了在 Vulkan 与窗体系统之间建立连接来把渲染结果展示到屏幕上，我们需要使用一些 WSI 扩展。本文将会介绍VK_KHR_surface 扩展。它暴露一个 VkSurfaceKHR 对象，这个对象代表一个我们可以把图像渲染上去的抽象表面</p>
+      <p>Vulkan 是一个跨平台的 API，它不能够直接与不同平台的窗体系统进行交互。为了在 Vulkan 与窗体系统之间建立连接来把渲染结果展示到屏幕上，我们需要使用一些 WSI 扩展。本文将会介绍 VK_KHR_surface 扩展。它暴露一个 VkSurfaceKHR 对象，这个对象代表一个我们可以把图像渲染上去的抽象表面</p>
 <span id="continue-reading"></span>
-<p>这个VK_KHR_surface 是一个实例等级的扩展，并且我们其实在上一篇文章中就已经启用了它，因为它已经被包含在前文所用到的 glfwGetRequiredInstanceExtensions 所返回的列表中。这个列表同时还包含一些其他的 WSI 扩展，不过我们可以先不管这些</p>
+<p>这个 VK_KHR_surface 是一个实例等级的扩展，并且我们其实在上一篇文章中就已经启用了它，因为它已经被包含在前文所用到的 glfwGetRequiredInstanceExtensions 所返回的列表中。这个列表同时还包含一些其他的 WSI 扩展，不过我们可以先不管这些</p>
 <p>另外需要注意的是，窗体表面其实并不一定需要创建，因为你可能只是要离屏渲染而不用把结果显示到屏幕上</p>
 <h2 id="chuang-jian-chuang-ti-biao-mian">创建窗体表面</h2>
 <p>首先跟上一篇文章一样，我们先添加一个私有成员变量用于保存创建好的窗体表面</p>
@@ -98,7 +98,7 @@
 </span><span>        </span><span style="color:#b48ead;">throw </span><span>std::</span><span style="color:#bf616a;">runtime_error</span><span>(&quot;</span><span style="color:#a3be8c;">failed to create window surface!</span><span>&quot;);
 </span><span>}
 </span></code></pre>
-<p>可以看到非常简单，而且是调了 GLFW 的API 来实现的，说明 GLFW 对Vulkan 有一定的支持。需要注意的是vulkan/vulkan.h 这个头文件一定要写在GLFW/glfw3.h 之前，因为 GLFW 会根据Vulkan 的宏进行条件编译，头文件顺序不对的话将会无法使用 glfwCreateWindowSurface 这个函数</p>
+<p>可以看到非常简单，而且是调了 GLFW 的 API 来实现的，说明 GLFW 对 Vulkan 有一定的支持。需要注意的是 vulkan/vulkan.h 这个头文件一定要写在 GLFW/glfw3.h 之前，因为 GLFW 会根据 Vulkan 的宏进行条件编译，头文件顺序不对的话将会无法使用 glfwCreateWindowSurface 这个函数</p>
 <h2 id="xiao-hui-chuang-ti-biao-mian">销毁窗体表面</h2>
 <p>最后我们要在 cleanup 中销毁掉窗体表面</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">cleanup</span><span>() {

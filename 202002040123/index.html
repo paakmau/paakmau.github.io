@@ -78,22 +78,22 @@
 </span>
     </header>
     <div itemprop="articleBody">
-      <p>前文中我们用 IJobForEach 或者JobComponentSystem.Entities.ForEach 都只能筛选并遍历具有特定 Component 的Entity，但其实有更灵活且同样高效的方式</p>
+      <p>前文中我们用 IJobForEach 或者 JobComponentSystem.Entities.ForEach 都只能筛选并遍历具有特定 Component 的 Entity，但其实有更灵活且同样高效的方式</p>
 <span id="continue-reading"></span><h2 id="entityquery">EntityQuery</h2>
-<p>Unity 提供了 EntityQuery 用于精确筛选Entity，并且文档中提到 IJobForEach 与JobComponentSystem.Entities.ForEach 的内部实现其实都是EntityQuery</p>
+<p>Unity 提供了 EntityQuery 用于精确筛选 Entity，并且文档中提到 IJobForEach 与 JobComponentSystem.Entities.ForEach 的内部实现其实都是 EntityQuery</p>
 <h3 id="getentityquery">GetEntityQuery</h3>
 <p>最简单的，我们可以筛选具有指定组件的实体，并规定这些组件的读写权限</p>
-<p>例如下面的代码选出了全部的同时拥有 Translation 与MoveSpeed 组件的Entity，并且规定 Translation 可读可写，MoveSpeed 只读</p>
+<p>例如下面的代码选出了全部的同时拥有 Translation 与 MoveSpeed 组件的 Entity，并且规定 Translation 可读可写，MoveSpeed 只读</p>
 <pre data-lang="cs" style="background-color:#2b303b;color:#c0c5ce;" class="language-cs "><code class="language-cs" data-lang="cs"><span>EntityQuery </span><span style="color:#bf616a;">m_Query </span><span>= </span><span style="color:#bf616a;">GetEntityQuery</span><span>(typeof(Translation), </span><span style="color:#bf616a;">ComponentType</span><span>.</span><span style="color:#bf616a;">ReadOnly</span><span>&lt;MoveSpeed&gt;());
 </span></code></pre>
 <h3 id="entityquerydesc">EntityQueryDesc</h3>
-<p>对于更复杂的筛选，我们使用 EntityQueryDesc 来创建EntityQuery，一个 EntityQueryDesc 对象具有三个属性，它们的类型都是 ComponentType 数组</p>
+<p>对于更复杂的筛选，我们使用 EntityQueryDesc 来创建 EntityQuery，一个 EntityQueryDesc 对象具有三个属性，它们的类型都是 ComponentType 数组</p>
 <ul>
 <li>All：数组中所有的类型必须出现在 Entity 中，且可以在其中规定读写权限</li>
 <li>Any：数组中至少一个类型会出现在 Entity 中</li>
 <li>None：数组中任意类型都不会出现在 Entity 中</li>
 </ul>
-<p>下面举个例子，筛选同时具有Translation、MoveSpeed，不具有RotationSpeed，至少具有 Wing 或magic 中的一个的所有Entity</p>
+<p>下面举个例子，筛选同时具有 Translation、MoveSpeed，不具有 RotationSpeed，至少具有 Wing 或 magic 中的一个的所有 Entity</p>
 <pre data-lang="cs" style="background-color:#2b303b;color:#c0c5ce;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#b48ead;">var </span><span style="color:#bf616a;">query </span><span>= new EntityQueryDesc
 </span><span>{
 </span><span>    </span><span style="color:#bf616a;">All </span><span>= new ComponentType[] { </span><span style="color:#bf616a;">ComponentType</span><span>.</span><span style="color:#bf616a;">ReadOnly</span><span>&lt;MoveSpeed&gt;(), typeof(Translation) },
@@ -103,7 +103,7 @@
 </span><span>EntityQuery </span><span style="color:#bf616a;">m_Group </span><span>= </span><span style="color:#bf616a;">GetEntityQuery</span><span>(</span><span style="color:#bf616a;">query</span><span>);
 </span></code></pre>
 <h3 id="lian-he-shai-xuan">联合筛选</h3>
-<p>我们可以在调用 GetEntityQuery 函数时传入EntityQueryDesc 数组，数组中的筛选条件是「或」的关系，下面是例子</p>
+<p>我们可以在调用 GetEntityQuery 函数时传入 EntityQueryDesc 数组，数组中的筛选条件是「或」的关系，下面是例子</p>
 <pre data-lang="cs" style="background-color:#2b303b;color:#c0c5ce;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#b48ead;">var </span><span style="color:#bf616a;">query1 </span><span>= new EntityQueryDesc
 </span><span>{
 </span><span>    </span><span style="color:#bf616a;">All </span><span>= new ComponentType[] { </span><span style="color:#bf616a;">ComponentType</span><span>.</span><span style="color:#bf616a;">ReadOnly</span><span>&lt;MoveSpeed&gt;(), typeof(Translation), typeof(Wing) },
@@ -116,8 +116,8 @@
 </span><span style="color:#bf616a;">m_Group </span><span>= </span><span style="color:#bf616a;">GetEntityQuery</span><span>(new EntityQueryDesc[] { </span><span style="color:#bf616a;">query1</span><span>, </span><span style="color:#bf616a;">query2 </span><span>});
 </span></code></pre>
 <h3 id="shared-component-guo-lu">Shared Component 过滤</h3>
-<p>可以对筛选出的 Entity 拥有的指定Shared Component 进行过滤，保证过滤出的 Entity 拥有的指定Shared Component 均为特定值</p>
-<p>例如下面代码用一个Shared Component 作为分组标记，过滤出 GroupId 为5的所有Entity</p>
+<p>可以对筛选出的 Entity 拥有的指定 Shared Component 进行过滤，保证过滤出的 Entity 拥有的指定 Shared Component 均为特定值</p>
+<p>例如下面代码用一个 Shared Component 作为分组标记，过滤出 GroupId 为5的所有 Entity</p>
 <pre data-lang="cs" style="background-color:#2b303b;color:#c0c5ce;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#b48ead;">public struct </span><span>SharedGroup : </span><span style="color:#a3be8c;">ISharedComponentData </span><span>{
 </span><span>    </span><span style="color:#b48ead;">public int </span><span style="color:#bf616a;">GroupId</span><span>;
 </span><span>}
@@ -148,18 +148,18 @@
 </span><span style="color:#eff1f5;">}
 </span></code></pre>
 <p>解释：<br />
-当前版本官方手册中这个地方的代码有误，上面代码中把 AddSharedComponentFilter 放在OnCreate，SetSharedComponentFilter 放在 OnUpdate 的用法是我瞎猜的。当前版本的官方手册用的是之前版本的，根本不是这两个函数<br />
-另外我碰巧发现，就算没有Add，直接 Set 它也会自动Add</p>
+当前版本官方手册中这个地方的代码有误，上面代码中把 AddSharedComponentFilter 放在 OnCreate，SetSharedComponentFilter 放在 OnUpdate 的用法是我瞎猜的。当前版本的官方手册用的是之前版本的，根本不是这两个函数<br />
+另外我碰巧发现，就算没有 Add，直接 Set 它也会自动 Add</p>
 <h3 id="ban-ben-xiu-gai-guo-lu">版本修改过滤</h3>
 <p>过滤出指定组件被修改过的</p>
-<p>同样也有 Add 和Set 两个版本，官方手册同样不靠谱</p>
+<p>同样也有 Add 和 Set 两个版本，官方手册同样不靠谱</p>
 <p>然后下面的代码用于过滤出 Translation 组件经过修改的实体<br />
 当然是我瞎猜的也没有试（反正 API 还会改）</p>
 <pre data-lang="cs" style="background-color:#2b303b;color:#c0c5ce;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#bf616a;">m_Group</span><span>.</span><span style="color:#bf616a;">AddChangedVersionFilter</span><span>(typeof(Translation));
 </span></code></pre>
 <h2 id="shou-dong-bian-li">手动遍历</h2>
-<p>这种方式可以遍历所有的Entity，可以灵活访问任意 Entity 的任意Component，但显然效率低下，官方手册说蛇皮操作推荐用这个</p>
-<p>手册说用IJobParallelFor，懒得写了（反正 API 也会改）（看着语法提示干就完了，奥利给）</p>
+<p>这种方式可以遍历所有的 Entity，可以灵活访问任意 Entity 的任意 Component，但显然效率低下，官方手册说蛇皮操作推荐用这个</p>
+<p>手册说用 IJobParallelFor，懒得写了（反正 API 也会改）（看着语法提示干就完了，奥利给）</p>
 
     </div>
 

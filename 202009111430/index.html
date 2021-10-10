@@ -110,7 +110,7 @@
 </span><span>colorAttachment.</span><span style="color:#bf616a;">finalLayout </span><span>= VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 </span></code></pre>
 <p>format 应当与交换链图像的格式相匹配</p>
-<p>我们不需要多重采样，因此使用VK_SAMPLE_COUNT_1_BIT</p>
+<p>我们不需要多重采样，因此使用 VK_SAMPLE_COUNT_1_BIT</p>
 <p>loadOp 和 storeOp 决定了渲染前与渲染后应当对附着中的数据如何处理。loadOp 有以下几种选择</p>
 <ul>
 <li>VK_ATTACHMENT_LOAD_OP_LOAD<br />
@@ -129,7 +129,7 @@
 渲染后帧缓冲区的内容是未定义的</li>
 </ul>
 <p>当然我们需要在屏幕上看到这个三角形，所以选择第一个</p>
-<p>loadOp 和 storeOp 应用与颜色和深度数据，而 stencilLoadOp 和stencilStoreOp 应用于模板数据。我们的应用不需要模板缓冲区，因此它们无关紧要</p>
+<p>loadOp 和 storeOp 应用与颜色和深度数据，而 stencilLoadOp 和 stencilStoreOp 应用于模板数据。我们的应用不需要模板缓冲区，因此它们无关紧要</p>
 <p>Vulkan 中纹理和帧缓冲区是由指定了某种像素格式的 VkImage 对象代表的，然而像素在内存中的布局可以根据你的需求进行改变，最常见的几种布局有这几种</p>
 <ul>
 <li>VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL<br />
@@ -140,7 +140,7 @@
 用作内存拷贝操作的终点的图像</li>
 </ul>
 <p>我们需要知道的是图像在即将用于某种操作之前需要先转换为与之适配的特定的布局</p>
-<p>initialLayout 指定了渲染路径开始之前图像的布局，finalLayout 指定了经过渲染路径之后图像需要自动转换到的布局。把 initialLayout 设为VK_IMAGE_LAYOUT_UNDEFINED 表示我们不关心图像之前是什么类型的布局。需要注意，选择这个值意味着图像中的内容不保证会被保留，不过现在这个问题不重要因为我们本来就会清除它。我们希望在渲染后这个图像就能够用交换链展示到屏幕上，于是我们把 finalLayout 设为VK_IMAGE_LAYOUT_PRESENT_SRC_KHR</p>
+<p>initialLayout 指定了渲染路径开始之前图像的布局，finalLayout 指定了经过渲染路径之后图像需要自动转换到的布局。把 initialLayout 设为 VK_IMAGE_LAYOUT_UNDEFINED 表示我们不关心图像之前是什么类型的布局。需要注意，选择这个值意味着图像中的内容不保证会被保留，不过现在这个问题不重要因为我们本来就会清除它。我们希望在渲染后这个图像就能够用交换链展示到屏幕上，于是我们把 finalLayout 设为 VK_IMAGE_LAYOUT_PRESENT_SRC_KHR</p>
 <h2 id="zi-lu-jing-he-fu-zhao-yin-yong">子路径和附着引用</h2>
 <p>一个渲染路径会由多个子路径组成。子路径就是一系列有序的渲染操作，它依赖于上一个路径处理后的帧缓冲区中的内容，例如一系列一个接一个的后处理特效。如果你把这些渲染操作分组到同一个渲染路径，Vulkan 就能重排这些操作，节约内存带宽来尽可能提高性能。不过对于我们的第一个三角形，我们使用一条子路径就行了</p>
 <p>每一个子路径需要引用一个或多个附着，也就是我们上面提到的附着描述结构体。不过我们不是使用指针，而是使用 VkAttachmentReference 结构体来描述引用关系</p>
@@ -148,7 +148,7 @@
 </span><span>colorAttachmentRef.</span><span style="color:#bf616a;">attachment </span><span>= </span><span style="color:#d08770;">0</span><span>;
 </span><span>colorAttachmentRef.</span><span style="color:#bf616a;">layout </span><span>= VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 </span></code></pre>
-<p>attachment 参数指定了需要引用的附着在附着数组中的索引。我们只有一个 VkAttachmentDescription 结构体，也就是数组只有一个元素，所以它的索引是零。layout 参数指定了在子路径过程中这个附着应当使用哪种布局，Vulkan 会在子路径开始时自动地把附着转换为这种布局，我们希望把这个附着作为颜色附着来使用，因此选择VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL 布局来最优化性能</p>
+<p>attachment 参数指定了需要引用的附着在附着数组中的索引。我们只有一个 VkAttachmentDescription 结构体，也就是数组只有一个元素，所以它的索引是零。layout 参数指定了在子路径过程中这个附着应当使用哪种布局，Vulkan 会在子路径开始时自动地把附着转换为这种布局，我们希望把这个附着作为颜色附着来使用，因此选择 VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL 布局来最优化性能</p>
 <p>一个子路径由一个 VkSubpassDescription 结构体来描述</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkSubpassDescription subpass = {};
 </span><span>subpass.</span><span style="color:#bf616a;">pipelineBindPoint </span><span>= VK_PIPELINE_BIND_POINT_GRAPHICS;
@@ -156,7 +156,7 @@
 </span><span>subpass.</span><span style="color:#bf616a;">pColorAttachments </span><span>= &amp;colorAttachmentRef;
 </span></code></pre>
 <p>Vulkan 将来可能会支持计算子路径，因此这里我们需要用 pipelineBindPoint 成员显式地指定为图形子路径</p>
-<p>然后 pColorAttachments 指向一个数组，其中的附着将会与片元着色器中的输出根据数组中的索引一一对应。这里我们指向了一个结构体，也就是长度为一的数组，也就跟上一篇文章中的layout**(<strong>location = 0</strong>)** out vec4 outColor 这行命令相对应</p>
+<p>然后 pColorAttachments 指向一个数组，其中的附着将会与片元着色器中的输出根据数组中的索引一一对应。这里我们指向了一个结构体，也就是长度为一的数组，也就跟上一篇文章中的 layout**(<strong>location = 0</strong>)** out vec4 outColor 这行命令相对应</p>
 <p>接下来几种类型的附着也同样能被子路径引用</p>
 <ul>
 <li>pInputAttachments<br />
@@ -170,7 +170,7 @@
 </ul>
 <h2 id="zi-lu-jing-yi-lai">子路径依赖</h2>
 <p>之前提到，渲染路径中的子路径会自动处理图像布局的转换。这些转换需要由子路径依赖控制，子路径依赖指定了子路径之间的内存与执行的依赖关系。这里虽然我们只有一个子路径，但是这个子路径之前与之后的操作其实也可以认为是隐式的子路径</p>
-<p>有两种内置的默认依赖关系分别用来处理渲染路径开始时与结束时的图像布局转换，但是前者并不合适。它假设转换发生在流水线的一开始，但是我们在那个时候还没有能够从交换链中拿到图像。于是我们可以让渲染路径等待VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT 阶段</p>
+<p>有两种内置的默认依赖关系分别用来处理渲染路径开始时与结束时的图像布局转换，但是前者并不合适。它假设转换发生在流水线的一开始，但是我们在那个时候还没有能够从交换链中拿到图像。于是我们可以让渲染路径等待 VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT 阶段</p>
 <p>子路径的依赖关系由多个 VkSubpassDependency 结构体指定，当然我们这里只需要指定一个依赖关系，也就是渲染路径之前的操作（隐式的子路径）与我们之前定义的子路径之间的依赖关系</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkSubpassDependency dependency = {};
 </span><span>dependency.</span><span style="color:#bf616a;">srcSubpass </span><span>= VK_SUBPASS_EXTERNAL;
@@ -180,9 +180,9 @@
 </span><span>dependency.</span><span style="color:#bf616a;">dstStageMask </span><span>= VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 </span><span>dependency.</span><span style="color:#bf616a;">dstAccessMask </span><span>= VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
 </span></code></pre>
-<p>srcSubpass 和 dstSubpass 指定的是两个存在依赖关系的独立的子路径的索引，即索引为 dstSubpass 的子路径依赖于索引为srcSubpass 的子路径，VK_SUBPASS_EXTERNAL 这个值其实用于指代渲染路径之前或之后的操作，是之前还是之后取决于它被用于 srcSubpass 还是dstSubpass。然后零这个索引指的是我们之前定义的子路径，是第一个也就是我们唯一的一个子路径。dstSubpass 的值必须要比 srcSubpass 的值更大，以此避免循环依赖问题（除了VK_SUBPASS_EXTERNAL）</p>
-<p>而 srcStageMask 和srcAccessMask 指定的是需要等待的源子路径中的操作以及操作所在的阶段。我们在进入子路径访问图像之前，需要等待交换链完成对图像的读取。我们可以通过等待颜色附着输出阶段本身来实现</p>
-<p>接下来的 dstStageMask 和dstAccessMask 指定的是目标子路径中的操作以及操作所处于的阶段，这里我们的操作涉及写入颜色缓冲区，且位于颜色附着阶段。这些设置可以防止转换的发生，直到它被允许时，这里我们希望在开始写入颜色时才发生转换</p>
+<p>srcSubpass 和 dstSubpass 指定的是两个存在依赖关系的独立的子路径的索引，即索引为 dstSubpass 的子路径依赖于索引为 srcSubpass 的子路径，VK_SUBPASS_EXTERNAL 这个值其实用于指代渲染路径之前或之后的操作，是之前还是之后取决于它被用于 srcSubpass 还是 dstSubpass。然后零这个索引指的是我们之前定义的子路径，是第一个也就是我们唯一的一个子路径。dstSubpass 的值必须要比 srcSubpass 的值更大，以此避免循环依赖问题（除了 VK_SUBPASS_EXTERNAL）</p>
+<p>而 srcStageMask 和 srcAccessMask 指定的是需要等待的源子路径中的操作以及操作所在的阶段。我们在进入子路径访问图像之前，需要等待交换链完成对图像的读取。我们可以通过等待颜色附着输出阶段本身来实现</p>
+<p>接下来的 dstStageMask 和 dstAccessMask 指定的是目标子路径中的操作以及操作所处于的阶段，这里我们的操作涉及写入颜色缓冲区，且位于颜色附着阶段。这些设置可以防止转换的发生，直到它被允许时，这里我们希望在开始写入颜色时才发生转换</p>
 <h2 id="xuan-ran-lu-jing">渲染路径</h2>
 <p>现在附着和引用它的子路径都已经讨论完了，我们就可以开始创建渲染路径了</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkRenderPassCreateInfo renderPassInfo = {};

@@ -81,14 +81,14 @@
       <p>因为是我某门课的作业才顺便写的，因为感觉 js 后端偏向玩具所以不太感兴趣。但还是不得不说这玩具真好玩，贼牛逼。Express 框架用几十行代码就能搭出几乎完整的后端脚手架</p>
 <span id="continue-reading"></span>
 <p>本项目是一个近似完整的后端脚手<br />
-以 Express 框架为基础，以 MySQL 作为数据存储，有跨域处理，有Session。</p>
+以 Express 框架为基础，以 MySQL 作为数据存储，有跨域处理，有 Session。</p>
 <p>但是该脚手架缺少 Express 异常处理，感兴趣可以自行添加<br />
-而且用 MySQL 存Session 感觉不太正常，应该换Redis，篇幅有限就不写了（虽然已经很长了）</p>
-<p>作为示例，本文还实现了基于 Session 的验证码认证、RESTful 风格接口与MD5加密的登陆注册</p>
+而且用 MySQL 存 Session 感觉不太正常，应该换 Redis，篇幅有限就不写了（虽然已经很长了）</p>
+<p>作为示例，本文还实现了基于 Session 的验证码认证、RESTful 风格接口与 MD5加密的登陆注册</p>
 <h2 id="huan-jing">环境</h2>
 <p>Node.js v13.3.0</p>
-<p>MySQL 8.0.18，监听3306端口，认证插件为mysql_native_password<br />
-root 账户的密码为root</p>
+<p>MySQL 8.0.18，监听3306端口，认证插件为 mysql_native_password<br />
+root 账户的密码为 root</p>
 <p>在 MySQL 中执行以下脚本建立两个数据库，分别用于存储 Session 数据与用户数据</p>
 <pre data-lang="SQL" style="background-color:#2b303b;color:#c0c5ce;" class="language-SQL "><code class="language-SQL" data-lang="SQL"><span style="color:#b48ead;">CREATE SCHEMA </span><span>`</span><span style="color:#8fa1b3;">hello_session</span><span>` ;
 </span><span style="color:#b48ead;">CREATE SCHEMA </span><span>`</span><span style="color:#8fa1b3;">hello</span><span>` ;
@@ -100,19 +100,19 @@ root 账户的密码为root</p>
 </span><span>  `</span><span style="color:#a3be8c;">password</span><span>` </span><span style="color:#b48ead;">VARCHAR</span><span>(</span><span style="color:#d08770;">45</span><span>) NOT </span><span style="color:#d08770;">NULL</span><span>,
 </span><span>  </span><span style="color:#b48ead;">PRIMARY KEY</span><span> (`</span><span style="color:#a3be8c;">id</span><span>`));
 </span></code></pre>
-<h2 id="xin-jian-node-js-xiang-mu">新建Node.js 项目</h2>
-<p>然后建立文件夹并初始化Node.js 项目</p>
+<h2 id="xin-jian-node-js-xiang-mu">新建 Node.js 项目</h2>
+<p>然后建立文件夹并初始化 Node.js 项目</p>
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> mkdir hello-world
 </span><span style="color:#bf616a;">$</span><span> cd hello-world
 </span><span style="color:#bf616a;">$</span><span> npm init
 </span></code></pre>
 <p>然后一路回车即可<br />
-本文配置中入口点（entry point）使用了默认值，即index.js</p>
+本文配置中入口点（entry point）使用了默认值，即 index.js</p>
 <h2 id="express-kuang-jia-kuai-su-shang-shou">Express 框架快速上手</h2>
 <p>首先安装 express 依赖</p>
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> npm install express
 </span></code></pre>
-<p>然后修改入口点index.js 代码如下</p>
+<p>然后修改入口点 index.js 代码如下</p>
 <pre data-lang="js" style="background-color:#2b303b;color:#c0c5ce;" class="language-js "><code class="language-js" data-lang="js"><span style="color:#b48ead;">const </span><span style="color:#bf616a;">express </span><span>= </span><span style="color:#96b5b4;">require</span><span>(&quot;</span><span style="color:#a3be8c;">express</span><span>&quot;)
 </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">app </span><span>= </span><span style="color:#8fa1b3;">express</span><span>()
 </span><span>
@@ -123,50 +123,50 @@ root 账户的密码为root</p>
 </span><span style="color:#bf616a;">app</span><span>.</span><span style="color:#8fa1b3;">listen</span><span>(</span><span style="color:#d08770;">8080</span><span>)
 </span></code></pre>
 <p>于是我们测试一下<br />
-在终端中输入如下命令即可运行index.js</p>
+在终端中输入如下命令即可运行 index.js</p>
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> node index.js
 </span></code></pre>
-<p>在 Postman 中对localhost:8080/helloworld 发送 Get 请求，得到如下结果</p>
+<p>在 Postman 中对 localhost:8080/helloworld 发送 Get 请求，得到如下结果</p>
 <p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191217-005416@2x.png" alt="" /></p>
 <p>Express 框架就搭建成功了</p>
 <h2 id="express-zhong-jian-jian">Express 中间件</h2>
 <p>Express 每次处理 Request 都会经过所有的中间件，可以想像成流水线。因此可以利用它为 Express 添加新的功能</p>
-<p>而对于上文代码中的app，调用app.use 方法就能为 app 添加中间件</p>
-<h2 id="yin-ru-body-parser-zhong-jian-jian">引入body-parser 中间件</h2>
-<p>这个中间件能将 HTTP 请求体中的JSON 转换为 js 对象属性</p>
-<p>首先安装body-parser 依赖</p>
+<p>而对于上文代码中的 app，调用 app.use 方法就能为 app 添加中间件</p>
+<h2 id="yin-ru-body-parser-zhong-jian-jian">引入 body-parser 中间件</h2>
+<p>这个中间件能将 HTTP 请求体中的 JSON 转换为 js 对象属性</p>
+<p>首先安装 body-parser 依赖</p>
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> npm install body-parser
 </span></code></pre>
 <p>接下来我们测试一下获取 body 的内容<br />
-修改index.js 如下，并运行</p>
+修改 index.js 如下，并运行</p>
 <pre data-lang="js" style="background-color:#2b303b;color:#c0c5ce;" class="language-js "><code class="language-js" data-lang="js"><span style="color:#b48ead;">const </span><span style="color:#bf616a;">express </span><span>= </span><span style="color:#96b5b4;">require</span><span>(&quot;</span><span style="color:#a3be8c;">express</span><span>&quot;)
 </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">app </span><span>= </span><span style="color:#8fa1b3;">express</span><span>()
 </span><span>
-</span><span style="color:#65737e;">// 添加body-parser
+</span><span style="color:#65737e;">// 添加 body-parser
 </span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">bodyParser </span><span>= </span><span style="color:#96b5b4;">require</span><span>(&quot;</span><span style="color:#a3be8c;">body-parser</span><span>&quot;)
 </span><span style="color:#bf616a;">app</span><span>.</span><span style="color:#8fa1b3;">use</span><span>(</span><span style="color:#bf616a;">bodyParser</span><span>.</span><span style="color:#8fa1b3;">json</span><span>())
 </span><span style="color:#bf616a;">app</span><span>.</span><span style="color:#8fa1b3;">use</span><span>(</span><span style="color:#bf616a;">bodyParser</span><span>.</span><span style="color:#8fa1b3;">urlencoded</span><span>({ extended: </span><span style="color:#d08770;">false </span><span>}))
 </span><span>
-</span><span style="color:#65737e;">// 添加 post 请求并获取body 的 json 数据
+</span><span style="color:#65737e;">// 添加 post 请求并获取 body 的 json 数据
 </span><span style="color:#bf616a;">app</span><span>.</span><span style="color:#8fa1b3;">post</span><span>(&#39;</span><span style="color:#a3be8c;">/helloworld</span><span>&#39;, (</span><span style="color:#bf616a;">req</span><span>, </span><span style="color:#bf616a;">res</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span style="color:#bf616a;">res</span><span>.</span><span style="color:#96b5b4;">send</span><span>(&quot;</span><span style="color:#a3be8c;">You msg is: </span><span>&quot; + </span><span style="color:#bf616a;">req</span><span>.body.</span><span style="color:#bf616a;">msg</span><span>));
 </span><span>
 </span><span style="color:#bf616a;">app</span><span>.</span><span style="color:#8fa1b3;">listen</span><span>(</span><span style="color:#d08770;">8080</span><span>)
 </span></code></pre>
 <p>Postman 中发送 post 请求，并收到回应，见下图。</p>
 <p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191217-011755@2x-1024x505.png" alt="" /></p>
-<h2 id="yin-ru-express-session-zhong-jian-jian">引入express-session 中间件</h2>
-<p>Session 是一种存储在后端的缓存数据，可以理解为以 id 索引的一块临时数据。前端将 id 存储在Cookie 中，它把 id 传递给后端，后端就能根据 id 找到对应的Session。它的安全性相对 Cookie 高很多，一般用于登陆、验证码等。<br />
+<h2 id="yin-ru-express-session-zhong-jian-jian">引入 express-session 中间件</h2>
+<p>Session 是一种存储在后端的缓存数据，可以理解为以 id 索引的一块临时数据。前端将 id 存储在 Cookie 中，它把 id 传递给后端，后端就能根据 id 找到对应的 Session。它的安全性相对 Cookie 高很多，一般用于登陆、验证码等。<br />
 Session 可以简单存储在内存中，也可以存储在数据库中</p>
-<p>在 express 中可以通过express-session 中间件实现 Session 功能</p>
-<p>为了方便我们选择 mysql 作为Session 的存储方式（但一般使用 redis 数据库）</p>
-<p>它会使用我们最开始时建立的 mysql 数据库hello_session<br />
+<p>在 express 中可以通过 express-session 中间件实现 Session 功能</p>
+<p>为了方便我们选择 mysql 作为 Session 的存储方式（但一般使用 redis 数据库）</p>
+<p>它会使用我们最开始时建立的 mysql 数据库 hello_session<br />
 （express-session 会自动建表所以不用担心）</p>
 <p>然后测试一下看看<br />
-修改index.js 如下，并运行</p>
+修改 index.js 如下，并运行</p>
 <pre data-lang="js" style="background-color:#2b303b;color:#c0c5ce;" class="language-js "><code class="language-js" data-lang="js"><span style="color:#b48ead;">const </span><span style="color:#bf616a;">express </span><span>= </span><span style="color:#96b5b4;">require</span><span>(&quot;</span><span style="color:#a3be8c;">express</span><span>&quot;)
 </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">app </span><span>= </span><span style="color:#8fa1b3;">express</span><span>()
 </span><span>
-</span><span style="color:#65737e;">// 添加express-session
+</span><span style="color:#65737e;">// 添加 express-session
 </span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">session </span><span>= </span><span style="color:#96b5b4;">require</span><span>(&quot;</span><span style="color:#a3be8c;">express-session</span><span>&quot;)
 </span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">mysqlStore </span><span>= </span><span style="color:#96b5b4;">require</span><span>(&quot;</span><span style="color:#a3be8c;">express-mysql-session</span><span>&quot;)
 </span><span style="color:#bf616a;">app</span><span>.</span><span style="color:#8fa1b3;">use</span><span>(</span><span style="color:#8fa1b3;">session</span><span>({
@@ -183,12 +183,12 @@ Session 可以简单存储在内存中，也可以存储在数据库中</p>
 </span><span>    },
 </span><span>}))
 </span><span>
-</span><span style="color:#65737e;">// 设置session.hello
+</span><span style="color:#65737e;">// 设置 session.hello
 </span><span style="color:#bf616a;">app</span><span>.</span><span style="color:#96b5b4;">get</span><span>(&#39;</span><span style="color:#a3be8c;">/set-session</span><span>&#39;, (</span><span style="color:#bf616a;">req</span><span>, </span><span style="color:#bf616a;">res</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
 </span><span>    </span><span style="color:#bf616a;">req</span><span>.</span><span style="color:#bf616a;">session</span><span>.</span><span style="color:#bf616a;">hello </span><span>= &quot;</span><span style="color:#a3be8c;">Hello!</span><span>&quot;
 </span><span>    </span><span style="color:#bf616a;">res</span><span>.</span><span style="color:#96b5b4;">send</span><span>(&quot;</span><span style="color:#a3be8c;">session.hello has been set.</span><span>&quot;)
 </span><span>})
-</span><span style="color:#65737e;">// 获取session.hello 的值
+</span><span style="color:#65737e;">// 获取 session.hello 的值
 </span><span style="color:#bf616a;">app</span><span>.</span><span style="color:#96b5b4;">get</span><span>(&#39;</span><span style="color:#a3be8c;">/get-session</span><span>&#39;, (</span><span style="color:#bf616a;">req</span><span>, </span><span style="color:#bf616a;">res</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
 </span><span>    </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">req</span><span>.</span><span style="color:#bf616a;">session</span><span>.</span><span style="color:#bf616a;">hello </span><span>== </span><span style="color:#d08770;">undefined</span><span>)
 </span><span>        </span><span style="color:#bf616a;">res</span><span>.</span><span style="color:#96b5b4;">send</span><span>(&quot;</span><span style="color:#a3be8c;">session.hello is undefined.</span><span>&quot;)
@@ -199,18 +199,18 @@ Session 可以简单存储在内存中，也可以存储在数据库中</p>
 </span><span style="color:#bf616a;">app</span><span>.</span><span style="color:#8fa1b3;">listen</span><span>(</span><span style="color:#d08770;">8080</span><span>)
 </span></code></pre>
 <p>解释：<br />
-对于同一个客户端，req.session 是相同的，它其实是根据客户端持有的Session ID（如果没有，则会自动分配一个）找到的对应Session</p>
-<p>Postman 中直接请求get-session 会收到“session.hello is undefined.”，但是如果先请求set-session 在get-session 就会收到“Hello!”</p>
+对于同一个客户端，req.session 是相同的，它其实是根据客户端持有的 Session ID（如果没有，则会自动分配一个）找到的对应 Session</p>
+<p>Postman 中直接请求 get-session 会收到“session.hello is undefined.”，但是如果先请求 set-session 在 get-session 就会收到“Hello!”</p>
 <h2 id="kua-yu-chu-li">跨域处理</h2>
 <p>因为前后端分离，前端与后端会部署在不同的服务器或者同一台服务器的不同端口上，所以前端要访问后端接口就会产生跨域问题。</p>
-<p>而由于使用了Session，前端需要将 Cookie 的内容传递给后端，跨域配置的安全性要求也就更高</p>
+<p>而由于使用了 Session，前端需要将 Cookie 的内容传递给后端，跨域配置的安全性要求也就更高</p>
 <p>可以参考后文代码中配置示例</p>
 <h2 id="sheng-cheng-yan-zheng-ma">生成验证码</h2>
-<p>安装svg-captcha 库</p>
+<p>安装 svg-captcha 库</p>
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> npm install svg-captcha
 </span></code></pre>
 <p>尝试生成验证码<br />
-修改index.js 如下并运行</p>
+修改 index.js 如下并运行</p>
 <pre data-lang="js" style="background-color:#2b303b;color:#c0c5ce;" class="language-js "><code class="language-js" data-lang="js"><span style="color:#b48ead;">const </span><span style="color:#bf616a;">svgCaptcha </span><span>= </span><span style="color:#96b5b4;">require</span><span>(&quot;</span><span style="color:#a3be8c;">svg-captcha</span><span>&quot;)
 </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">captcha </span><span>= </span><span style="color:#bf616a;">svgCaptcha</span><span>.</span><span style="color:#8fa1b3;">create</span><span>({
 </span><span>        </span><span style="color:#65737e;">// 翻转颜色
@@ -232,12 +232,12 @@ svg-captcha 的 create 方法生成一个验证码对象<br />
 它的 text 属性是验证码文本，data 属性是一个 svg 图像</p>
 <h2 id="md5jia-mi">MD5加密</h2>
 <p>MD5加密其实就是一个哈希函数，只是他的哈希值长的又丑又长，不可逆<br />
-因此把用户的密码用MD5算法哈希后存储，就可以通过哈希值比对用户密码实现登陆，也没有人能知道密码原文</p>
+因此把用户的密码用 MD5算法哈希后存储，就可以通过哈希值比对用户密码实现登陆，也没有人能知道密码原文</p>
 <p>安装 utility 依赖</p>
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> npm install utility
 </span></code></pre>
 <p>尝试加密<br />
-修改index.js 如下，并运行</p>
+修改 index.js 如下，并运行</p>
 <pre data-lang="js" style="background-color:#2b303b;color:#c0c5ce;" class="language-js "><code class="language-js" data-lang="js"><span style="color:#b48ead;">const </span><span style="color:#bf616a;">utility </span><span>= </span><span style="color:#96b5b4;">require</span><span>(&quot;</span><span style="color:#a3be8c;">utility</span><span>&quot;)
 </span><span style="color:#b48ead;">function </span><span style="color:#8fa1b3;">encodePassword</span><span>(</span><span style="color:#bf616a;">pwd</span><span>) {
 </span><span>    </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">utility</span><span>.</span><span style="color:#8fa1b3;">md5</span><span>(</span><span style="color:#bf616a;">pwd </span><span>+ &quot;</span><span style="color:#a3be8c;">hello express md5</span><span>&quot;)
@@ -248,11 +248,11 @@ svg-captcha 的 create 方法生成一个验证码对象<br />
 <p>得到如下密文</p>
 <pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>9c6481dbc7c568e6e0ed338c415db921
 </span></code></pre>
-<h2 id="lian-jie-mysql">连接MySQL</h2>
+<h2 id="lian-jie-mysql">连接 MySQL</h2>
 <p>这部分与 Express 无关</p>
-<p>这里会使用到我们最初建立的 hello 数据库及其中的user 表</p>
+<p>这里会使用到我们最初建立的 hello 数据库及其中的 user 表</p>
 <p>尝试连接 MySQL 服务器，并添加一条测试记录<br />
-编辑index.js 脚本如下</p>
+编辑 index.js 脚本如下</p>
 <pre data-lang="js" style="background-color:#2b303b;color:#c0c5ce;" class="language-js "><code class="language-js" data-lang="js"><span style="color:#b48ead;">const </span><span style="color:#bf616a;">mysql </span><span>= </span><span style="color:#96b5b4;">require</span><span>(&quot;</span><span style="color:#a3be8c;">mysql</span><span>&quot;)
 </span><span>
 </span><span style="color:#65737e;">// 建立连接
@@ -269,7 +269,7 @@ svg-captcha 的 create 方法生成一个验证码对象<br />
 </span><span> </span><span style="color:#bf616a;">mysqlConnect</span><span>.</span><span style="color:#8fa1b3;">query</span><span>(&quot;</span><span style="color:#a3be8c;">INSERT INTO `web_homework`.`user` (`username`, `password`) VALUES (?, ?);</span><span>&quot;, [&quot;</span><span style="color:#a3be8c;">test_username</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">test_password</span><span>&quot;], (</span><span style="color:#bf616a;">err</span><span>, </span><span style="color:#bf616a;">result</span><span>, </span><span style="color:#bf616a;">field</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{ </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">err</span><span>) </span><span style="color:#ebcb8b;">console</span><span>.</span><span style="color:#96b5b4;">log</span><span>(</span><span style="color:#bf616a;">err</span><span>) })
 </span></code></pre>
 <h2 id="gou-zao-wan-zheng-de-jiao-shou-jia">构造完整的脚手架</h2>
-<p>编辑index.js 如下并运行</p>
+<p>编辑 index.js 如下并运行</p>
 <pre data-lang="js" style="background-color:#2b303b;color:#c0c5ce;" class="language-js "><code class="language-js" data-lang="js"><span style="color:#b48ead;">const </span><span style="color:#bf616a;">express </span><span>= </span><span style="color:#96b5b4;">require</span><span>(&quot;</span><span style="color:#a3be8c;">express</span><span>&quot;)
 </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">app </span><span>= </span><span style="color:#8fa1b3;">express</span><span>()
 </span><span>
@@ -284,7 +284,7 @@ svg-captcha 的 create 方法生成一个验证码对象<br />
 </span><span>    </span><span style="color:#8fa1b3;">next</span><span>();
 </span><span>});
 </span><span>
-</span><span style="color:#65737e;">// 添加body-parser 中间件
+</span><span style="color:#65737e;">// 添加 body-parser 中间件
 </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">bodyParser </span><span>= </span><span style="color:#96b5b4;">require</span><span>(&quot;</span><span style="color:#a3be8c;">body-parser</span><span>&quot;)
 </span><span style="color:#bf616a;">app</span><span>.</span><span style="color:#8fa1b3;">use</span><span>(</span><span style="color:#bf616a;">bodyParser</span><span>.</span><span style="color:#8fa1b3;">json</span><span>())
 </span><span style="color:#bf616a;">app</span><span>.</span><span style="color:#8fa1b3;">use</span><span>(</span><span style="color:#bf616a;">bodyParser</span><span>.</span><span style="color:#8fa1b3;">urlencoded</span><span>({ extended: </span><span style="color:#d08770;">false </span><span>}))

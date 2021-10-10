@@ -13,53 +13,53 @@
 		<updated>2020-07-11T20:38:43+00:00</updated>
 		<link href="https://paakmau.github.io/202007112038/" type="text/html"/>
 		<id>https://paakmau.github.io/202007112038/</id>
-		<content type="html">&lt;p&gt;相对于 Git 和SVN，Perforce 在管理二进制文件上更方便&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;相对于 Git 和 SVN，Perforce 在管理二进制文件上更方便&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;本文参考了官网教程&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;www.perforce.com&#x2F;manuals&#x2F;p4guide&#x2F;Content&#x2F;P4Guide&#x2F;tutorial.readmefirst.html&quot;&gt;https:&#x2F;&#x2F;www.perforce.com&#x2F;manuals&#x2F;p4guide&#x2F;Content&#x2F;P4Guide&#x2F;tutorial.readmefirst.html&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;git-yong-hu-kan-zhe-li&quot;&gt;Git 用户看这里&lt;&#x2F;h2&gt;
-&lt;p&gt;Stream Depot 大概可以理解为一个 Git 项目，然后 Stream 就是Git 里的分支&lt;&#x2F;p&gt;
-&lt;p&gt;其中 Stream 必须要依赖于Stream Depot 存在&lt;&#x2F;p&gt;
+&lt;p&gt;Stream Depot 大概可以理解为一个 Git 项目，然后 Stream 就是 Git 里的分支&lt;&#x2F;p&gt;
+&lt;p&gt;其中 Stream 必须要依赖于 Stream Depot 存在&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;an-zhuang&quot;&gt;安装&lt;&#x2F;h2&gt;
 &lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;www.perforce.com&#x2F;downloads&quot;&gt;https:&#x2F;&#x2F;www.perforce.com&#x2F;downloads&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;把服务端和命令行客户端都装上就行了，也可以整图形化界面&lt;&#x2F;p&gt;
-&lt;p&gt;Windows 下安装包会自动配置环境变量；并且服务端装完后会自动启动，如果没有的话就用p4d 命令启动服务端&lt;&#x2F;p&gt;
+&lt;p&gt;Windows 下安装包会自动配置环境变量；并且服务端装完后会自动启动，如果没有的话就用 p4d 命令启动服务端&lt;&#x2F;p&gt;
 &lt;p&gt;我们可以在 PowerShell 里输入下面的命令测试一下服务端是否正常&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 info
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;h2 id=&quot;chuang-jian-stream-depot&quot;&gt;创建Stream Depot&lt;&#x2F;h2&gt;
+&lt;h2 id=&quot;chuang-jian-stream-depot&quot;&gt;创建 Stream Depot&lt;&#x2F;h2&gt;
 &lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 depot -t stream TestDepot
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;解释一下，这行命令创建了一个名为 TestDepot 的Stream Depot，-t stream 用于指定这个 Depot 的类型&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;chuang-jian-stream&quot;&gt;创建Stream&lt;&#x2F;h2&gt;
-&lt;p&gt;Git 中我们通常会开 master 和dev 分支&lt;&#x2F;p&gt;
-&lt;p&gt;在 Perforce 里我们也可以做同样的操作，使用下面两行命令创建 main 和dev 两个Stream&lt;&#x2F;p&gt;
+&lt;p&gt;解释一下，这行命令创建了一个名为 TestDepot 的 Stream Depot，-t stream 用于指定这个 Depot 的类型&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;chuang-jian-stream&quot;&gt;创建 Stream&lt;&#x2F;h2&gt;
+&lt;p&gt;Git 中我们通常会开 master 和 dev 分支&lt;&#x2F;p&gt;
+&lt;p&gt;在 Perforce 里我们也可以做同样的操作，使用下面两行命令创建 main 和 dev 两个 Stream&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 stream -t mainline &#x2F;&#x2F;TestDepot&#x2F;main
 &lt;&#x2F;span&gt;&lt;span&gt;PS p4 stream -t development -P &#x2F;&#x2F;TestDepot&#x2F;main &#x2F;&#x2F;TestDepot&#x2F;dev
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;解释一下，-t 参数用于指定 Stream 的类型，-P 参数用于指定父Stream；上面的例子里 main 这个Stream 是 dev 的父Stream&lt;&#x2F;p&gt;
-&lt;p&gt;需要注意 mainline 类型的Stream 不能有父Stream&lt;&#x2F;p&gt;
-&lt;p&gt;我们可以使用下面的命令来查看所有的Stream&lt;&#x2F;p&gt;
+&lt;p&gt;解释一下，-t 参数用于指定 Stream 的类型，-P 参数用于指定父 Stream；上面的例子里 main 这个 Stream 是 dev 的父 Stream&lt;&#x2F;p&gt;
+&lt;p&gt;需要注意 mainline 类型的 Stream 不能有父 Stream&lt;&#x2F;p&gt;
+&lt;p&gt;我们可以使用下面的命令来查看所有的 Stream&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 streams
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;h2 id=&quot;chuang-jian-workspace&quot;&gt;创建Workspace&lt;&#x2F;h2&gt;
+&lt;h2 id=&quot;chuang-jian-workspace&quot;&gt;创建 Workspace&lt;&#x2F;h2&gt;
 &lt;p&gt;之前 Stream 相关的操作都是作用在服务端上的&lt;&#x2F;p&gt;
-&lt;p&gt;这里我们在本地创建Workspace&lt;&#x2F;p&gt;
-&lt;p&gt;首先设置环境变量P4CLIENT，这个是 PowerShell 的写法&lt;br &#x2F;&gt;
+&lt;p&gt;这里我们在本地创建 Workspace&lt;&#x2F;p&gt;
+&lt;p&gt;首先设置环境变量 P4CLIENT，这个是 PowerShell 的写法&lt;br &#x2F;&gt;
 配环境变量这种操作其实我是觉得挺离谱的&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS $&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;env:P4CLIENT&lt;&#x2F;span&gt;&lt;span&gt;=&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;hello_client&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;然后 cd 到一个空的文件夹，输入以下命令&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 client -S &#x2F;&#x2F;TestDepot&#x2F;main
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;这样这个文件夹就跟 main 这个Stream 绑定起来了&lt;&#x2F;p&gt;
+&lt;p&gt;这样这个文件夹就跟 main 这个 Stream 绑定起来了&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;tian-jia-wen-jian&quot;&gt;添加文件&lt;&#x2F;h2&gt;
-&lt;p&gt;在这个文件夹里新建一个文件test_file.txt&lt;&#x2F;p&gt;
+&lt;p&gt;在这个文件夹里新建一个文件 test_file.txt&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 add .\test_file.txt
 &lt;&#x2F;span&gt;&lt;span&gt;PS p4 submit -d &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Add a test file&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;xiu-gai-wen-jian&quot;&gt;修改文件&lt;&#x2F;h2&gt;
-&lt;p&gt;Workspace 里已有的文件通常都是只读的，我们使用下面这行命令修改test_file.txt 的读写权限&lt;&#x2F;p&gt;
+&lt;p&gt;Workspace 里已有的文件通常都是只读的，我们使用下面这行命令修改 test_file.txt 的读写权限&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 edit .\test_file.txt
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;然后用编辑器改一下里面的内容&lt;&#x2F;p&gt;
@@ -74,21 +74,21 @@
 &lt;p&gt;如果其他人对 Stream 进行了修改并提交到了服务端，我们可以把这些修改同步到本地的 Workspace 里&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 sync
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;h2 id=&quot;qie-huan-stream&quot;&gt;切换Stream&lt;&#x2F;h2&gt;
-&lt;p&gt;我们可以使用下面这个命令查看所有的Stream&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;qie-huan-stream&quot;&gt;切换 Stream&lt;&#x2F;h2&gt;
+&lt;p&gt;我们可以使用下面这个命令查看所有的 Stream&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;switch &lt;&#x2F;span&gt;&lt;span&gt;-l
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;然后我们切换到dev&lt;&#x2F;p&gt;
+&lt;p&gt;然后我们切换到 dev&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;switch &lt;&#x2F;span&gt;&lt;span&gt;-r dev
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;h2 id=&quot;he-bing-stream&quot;&gt;合并Stream&lt;&#x2F;h2&gt;
+&lt;h2 id=&quot;he-bing-stream&quot;&gt;合并 Stream&lt;&#x2F;h2&gt;
 &lt;p&gt;merge 命令只能以父 Stream 为源，子 Stream 为目标&lt;&#x2F;p&gt;
-&lt;p&gt;首先 switch 到子Stream，然后执行下面的命令，会自动从父 Stream 上合并过来&lt;&#x2F;p&gt;
+&lt;p&gt;首先 switch 到子 Stream，然后执行下面的命令，会自动从父 Stream 上合并过来&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 merge
 &lt;&#x2F;span&gt;&lt;span&gt;PS p4 resolve
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;后面的 resolve 命令是解决两个Stream 的冲突，不同于 Git 的自动合并，手动合并非常原始，建议使用图形化界面或者编辑器插件&lt;&#x2F;p&gt;
-&lt;p&gt;resolve 完了之后记得submit&lt;&#x2F;p&gt;
+&lt;p&gt;后面的 resolve 命令是解决两个 Stream 的冲突，不同于 Git 的自动合并，手动合并非常原始，建议使用图形化界面或者编辑器插件&lt;&#x2F;p&gt;
+&lt;p&gt;resolve 完了之后记得 submit&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;ps1&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ps1 &quot;&gt;&lt;code class=&quot;language-ps1&quot; data-lang=&quot;ps1&quot;&gt;&lt;span&gt;PS p4 submit -d &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Merge&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 </content>
@@ -191,12 +191,12 @@ Decal 纹理：木头上大的裂纹或图案&lt;&#x2F;p&gt;
 一般出现在合并模块后，可能会出现缝隙&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;ji-qiao&quot;&gt;技巧&lt;&#x2F;h2&gt;
 &lt;p&gt;在模块化设计中通常有这样的技巧&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;strong&gt;吸附到Grid&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+&lt;p&gt;&lt;strong&gt;吸附到 Grid&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
 需要注意的是，为了能让模块化的网格体比较轻松地组合成完整的结构，一般要把需要拼接的边缘部分吸附到 Grid 上对齐。比如说一面墙的网格体如果大致上是一个矩形，那这个矩形的四条边都要吸附到 Grid 上&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;strong&gt;统一锚点设计&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
 为了方便模块化网格体之间的无缝衔接，也可以通过锚点的合理设计实现。比如墙面的锚点可以放在底边中心；管道模块的锚点可以放在几何中心，管道九十度拐角模块的锚点放在它所连接的两头管道的中线的交点处&lt;br &#x2F;&gt;
 当然网格体的尺寸也要根据 Grid 进行设计，从而在使用锚点把模型吸附到 Grid 上的时候就能完成模块之间的拼接&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;strong&gt;合理建模并展UV&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+&lt;p&gt;&lt;strong&gt;合理建模并展 UV&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
 因为我们准备的纹理贴图是一比一的无缝纹理，在展 UV 甚至是建模的时候就要注意保证纹理的映射问题，比如一个有洞的墙面上会有很恶心的布线，要应用砖块纹理就会比较麻烦&lt;&#x2F;p&gt;
 </content>
 	</entry>
@@ -220,7 +220,7 @@ Decal 纹理：木头上大的裂纹或图案&lt;&#x2F;p&gt;
 把模型的信息从局部空间转换到裁剪空间，就是这一阶段需要做的事情&lt;&#x2F;p&gt;
 &lt;p&gt;具体说的话，有以下三个步骤&lt;&#x2F;p&gt;
 &lt;p&gt;Model 变换，从局部空间转换到世界空间&lt;br &#x2F;&gt;
-一个模型的 transform 会有translation、rotation、scale 这三个东西，经过这样的transform，模型中的顶点和法向量就能转移到世界坐标&lt;&#x2F;p&gt;
+一个模型的 transform 会有 translation、rotation、scale 这三个东西，经过这样的 transform，模型中的顶点和法向量就能转移到世界坐标&lt;&#x2F;p&gt;
 &lt;p&gt;View 变换，从世界空间转换到视角空间&lt;br &#x2F;&gt;
 简单地说，就是通过旋转平移场景中的所有物体，把摄像机挪到原点，并且面向某个轴。其实跟第一个步骤很像&lt;br &#x2F;&gt;
 这个步骤是为了方便接下来的投影&lt;&#x2F;p&gt;
@@ -231,8 +231,8 @@ Decal 纹理：木头上大的裂纹或图案&lt;&#x2F;p&gt;
 &lt;p&gt;总的说就是把视锥外的点和面剔除掉，然后得到屏幕空间上的坐标&lt;&#x2F;p&gt;
 &lt;p&gt;具体来说要做下面几件事情&lt;&#x2F;p&gt;
 &lt;p&gt;剪裁&lt;br &#x2F;&gt;
-经过了上一个阶段，可以通过点的 z 和w 坐标判断某个点是否在视锥内部&lt;br &#x2F;&gt;
-如果不在就进行剪裁，可以用Sutherland-Hodgeman 算法来生成新的边界&lt;&#x2F;p&gt;
+经过了上一个阶段，可以通过点的 z 和 w 坐标判断某个点是否在视锥内部&lt;br &#x2F;&gt;
+如果不在就进行剪裁，可以用 Sutherland-Hodgeman 算法来生成新的边界&lt;&#x2F;p&gt;
 &lt;p&gt;背面剔除&lt;br &#x2F;&gt;
 根据三角面的环绕顺序可以判断面向摄像机的是正面还是背面&lt;br &#x2F;&gt;
 使用行列式（或者说二维向量的叉乘）的结果看正负号就行了&lt;&#x2F;p&gt;
@@ -260,15 +260,15 @@ Decal 纹理：木头上大的裂纹或图案&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;bing-xing-xing&quot;&gt;并行性&lt;&#x2F;h2&gt;
 &lt;p&gt;渲染是一个高度并行的东西&lt;br &#x2F;&gt;
 渲染管线中主要的计算都集中在显卡上&lt;&#x2F;p&gt;
-&lt;p&gt;显卡的结构我们知道它的核心数远远大于CPU，比如目前千元级的 N 卡就能有大约一千五百个CUDA 核心&lt;br &#x2F;&gt;
+&lt;p&gt;显卡的结构我们知道它的核心数远远大于 CPU，比如目前千元级的 N 卡就能有大约一千五百个 CUDA 核心&lt;br &#x2F;&gt;
 并且渲染过程中的运算主要是对一堆向量做相同的运算（尤其是矩阵乘法），也就是会在每个 GPU 核心上都运行同样的逻辑&lt;&#x2F;p&gt;
 &lt;p&gt;因此渲染计算在硬件层面上本身就能并行，而且由于模型中点的数量一般都远大于显卡核心数量，所以并行也非常充分&lt;&#x2F;p&gt;
 &lt;p&gt;另外提一下流水线，我们很容易联想到 CPU 指令的流水线技术&lt;br &#x2F;&gt;
 于是我们就可以做类似的优化，比如说游戏主线程、CPU 上的渲染线程、GPU 上的渲染计算这三个阶段就有一点类似 CPU 指令的流水线技术&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;draw-call&quot;&gt;Draw call&lt;&#x2F;h2&gt;
 &lt;p&gt;由 CPU 发起，把需要渲染的原始数据扔给显卡，让显卡计算并输出到屏幕上&lt;&#x2F;p&gt;
-&lt;p&gt;需要注意的一个问题是 CPU 需要为渲染准备数据，比如材质、点、法线等等，而在显卡上计算通常会很快，因此如果频繁的发起draw call 可能会导致性能瓶颈被卡在 CPU 准备数据上&lt;&#x2F;p&gt;
-&lt;p&gt;优化的思路主要是把多次draw call 合并为一次；或者多次draw call 可以共享相同的数据，比如静态网格或者共享材质&lt;&#x2F;p&gt;
+&lt;p&gt;需要注意的一个问题是 CPU 需要为渲染准备数据，比如材质、点、法线等等，而在显卡上计算通常会很快，因此如果频繁的发起 draw call 可能会导致性能瓶颈被卡在 CPU 准备数据上&lt;&#x2F;p&gt;
+&lt;p&gt;优化的思路主要是把多次 draw call 合并为一次；或者多次 draw call 可以共享相同的数据，比如静态网格或者共享材质&lt;&#x2F;p&gt;
 </content>
 	</entry>
 </feed>

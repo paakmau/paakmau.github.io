@@ -114,10 +114,10 @@
 </span><span style="color:#eff1f5;">    }
 </span><span style="color:#eff1f5;">}</span><span>;
 </span></code></pre>
-<p>然而这样写也有问题，假设对于 str 的访问（除了初始化）都是只读的，那么在 str 初始化之后其实各个线程访问str 都是不会产生竞争条件的，根本不需要上锁，因此这样写会造成巨大的性能浪费</p>
+<p>然而这样写也有问题，假设对于 str 的访问（除了初始化）都是只读的，那么在 str 初始化之后其实各个线程访问 str 都是不会产生竞争条件的，根本不需要上锁，因此这样写会造成巨大的性能浪费</p>
 <h2 id="double-check">Double check</h2>
 <p>简单地说就是在上锁之前检查一下是否已经初始化，如果已经初始化了，就不用上锁。其实很简单，就是写起来不怎么高雅</p>
-<p>为什么叫做Double check 呢，因为上锁之后还要检查一下初始化情况，所以总共检查两次</p>
+<p>为什么叫做 Double check 呢，因为上锁之后还要检查一下初始化情况，所以总共检查两次</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">Test
 </span><span style="color:#eff1f5;">{
 </span><span style="color:#eff1f5;">    shared_ptr&lt;string&gt; str;
@@ -136,7 +136,7 @@
 </span><span style="color:#eff1f5;">    }
 </span><span style="color:#eff1f5;">}</span><span>;
 </span></code></pre>
-<p>然而这样写还是有风险。在某一个线程拿到了锁，初始化到一半的时候，也就是 str 的指针非空且分配了内存但是它内部数据没有初始化；而此时另一个线程却可以直接拿到str，且 str 内部的数据是爆炸的，就会产生未定义行为。这种情况的原因可能是编译器指令重排或者处理器乱序执行</p>
+<p>然而这样写还是有风险。在某一个线程拿到了锁，初始化到一半的时候，也就是 str 的指针非空且分配了内存但是它内部数据没有初始化；而此时另一个线程却可以直接拿到 str，且 str 内部的数据是爆炸的，就会产生未定义行为。这种情况的原因可能是编译器指令重排或者处理器乱序执行</p>
 <h2 id="std-call-once">std::call_once</h2>
 <p>C++钦定的只执行一次，看代码就行了</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">Test
@@ -158,7 +158,7 @@
 </span></code></pre>
 <h2 id="ju-bu-jing-tai-bian-liang">局部静态变量</h2>
 <p>如果需要懒加载的对象是一个单例，可以考虑使用局部静态变量</p>
-<p>局部静态变量只有在被用到的时候才会分配内存并初始化。当然看起来还是存在竞争条件，但是在C++11标准中，规定了静态局部变量要线程安全，所以还是可以放心食用</p>
+<p>局部静态变量只有在被用到的时候才会分配内存并初始化。当然看起来还是存在竞争条件，但是在 C++11标准中，规定了静态局部变量要线程安全，所以还是可以放心食用</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">Test
 </span><span style="color:#eff1f5;">{
 </span><span style="color:#b48ead;">public</span><span style="color:#eff1f5;">:

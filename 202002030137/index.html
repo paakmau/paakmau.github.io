@@ -78,15 +78,15 @@
 </span>
     </header>
     <div itemprop="articleBody">
-      <p>本文将介绍Unity ECS 中对于 Component 的内存管理</p>
+      <p>本文将介绍 Unity ECS 中对于 Component 的内存管理</p>
 <span id="continue-reading"></span><h2 id="component-de-chunk-shi-cun-chu">Component 的 Chunk 式存储</h2>
-<p>首先，一组 Component 是一个Archetype。多个 Entity 如果由相同的Component 构成，那么他们属于同一个Archetype。</p>
-<p>Unity 会把属于同种 Archetype 的Entity 归成同一类，同一类实体的组件会被集中存储。首先他们被划分为若干个Chunk，一个 Chunk 内部的同种组件会存储在连续的内存中；然后同类的 Chunk 之间可能用链表或指针数组相连，从而能够遍历这个 Archetype 所有实体的所有组件。如下图所示。</p>
+<p>首先，一组 Component 是一个 Archetype。多个 Entity 如果由相同的 Component 构成，那么他们属于同一个 Archetype。</p>
+<p>Unity 会把属于同种 Archetype 的 Entity 归成同一类，同一类实体的组件会被集中存储。首先他们被划分为若干个 Chunk，一个 Chunk 内部的同种组件会存储在连续的内存中；然后同类的 Chunk 之间可能用链表或指针数组相连，从而能够遍历这个 Archetype 所有实体的所有组件。如下图所示。</p>
 <p><img src="https://hebomou.top/wp-content/uploads/2019/12/ArchetypeChunkDiagram.jpg" alt="" /></p>
 <p>同种颜色的方块为同种组件，Chunk 中的每列方块都是一个实体</p>
 <h2 id="zhen-dui-chunk-de-bian-li">针对 Chunk 的遍历</h2>
-<p>在前文中，我们使用的 IJobForEach 就是对符合筛选条件的所有Archetype 中所有 Chunk 中的所有Entity 进行遍历，它遍历的元素是Entity。</p>
-<p>但是 Unity 提供了一种在Chunk 层面上遍历的方法，即遍历符合条件的所有Chunk。</p>
+<p>在前文中，我们使用的 IJobForEach 就是对符合筛选条件的所有 Archetype 中所有 Chunk 中的所有 Entity 进行遍历，它遍历的元素是 Entity。</p>
+<p>但是 Unity 提供了一种在 Chunk 层面上遍历的方法，即遍历符合条件的所有 Chunk。</p>
 <p>将第二章中的 RotateSpeedSystem 修改为如下代码，依然能正常运行</p>
 <pre data-lang="cs" style="background-color:#2b303b;color:#c0c5ce;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">RotateSpeedSystem </span><span style="color:#eff1f5;">: </span><span style="color:#a3be8c;">JobComponentSystem </span><span style="color:#eff1f5;">{
 </span><span style="color:#eff1f5;">    EntityQuery </span><span style="color:#bf616a;">m_Group</span><span style="color:#eff1f5;">;
@@ -124,15 +124,15 @@
 </span><span style="color:#eff1f5;">}
 </span></code></pre>
 <p>解释：<br />
-m_Group 用于存储筛选 Chunk 的条件。在 OnCreate 中赋值为对Rotation 可读可写，对 RotationSpeed 只读。在Job Schedule 的时候被传入。<br />
-RotationJob 是用于规划 Job 的struct，Execute 中传入的 chunk 变量就是当前遍历到的Chunk，根据 RotationType 和RotationSpeedType 就能从 chunk 中拿到对应类型的原生数组，直接用 for 循环即可遍历该Chunk 中的所有 Entity 的所有Component。</p>
-<p>这样的遍历方式相对于 IJobForEach 更加灵活，它对 Component 的筛选跟访问是独立开的，也就是它筛选出的 Component 跟实际访问的Component 可以不一样，更加灵活。<br />
+m_Group 用于存储筛选 Chunk 的条件。在 OnCreate 中赋值为对 Rotation 可读可写，对 RotationSpeed 只读。在 Job Schedule 的时候被传入。<br />
+RotationJob 是用于规划 Job 的 struct，Execute 中传入的 chunk 变量就是当前遍历到的 Chunk，根据 RotationType 和 RotationSpeedType 就能从 chunk 中拿到对应类型的原生数组，直接用 for 循环即可遍历该 Chunk 中的所有 Entity 的所有 Component。</p>
+<p>这样的遍历方式相对于 IJobForEach 更加灵活，它对 Component 的筛选跟访问是独立开的，也就是它筛选出的 Component 跟实际访问的 Component 可以不一样，更加灵活。<br />
 比如说使用「或」条件筛选出的组件实际可能有多种情况，可以在内部判断是哪一种情况并灵活处理<br />
 此外它还可以跟 ChunkComponentData 配合使用，可以提高性能（愚蠢的常数优化）</p>
 <h2 id="chunkcomponentdata-jie-shao">ChunkComponentData 介绍</h2>
-<p>它是一种奇怪的Component，Unity 规定这类 Component 由同一个Chunk 中每个 Entity 共享。<br />
-举个例子，如果一个 Archetype 中包含一个ChunkComponentData 类型的组件，那么它的每个 Chunk 就会有一个该组件。同一个 Chunk 中，Entity 共享同一个该组件。不同 Chunk 的该组件是不同的实例，它们的值也可以不相同。</p>
-<p>如果修改一个 Entity 上的该类组件，它所在 Chunk 中其他Entity 的同类组件的值也会一并修改。</p>
+<p>它是一种奇怪的 Component，Unity 规定这类 Component 由同一个 Chunk 中每个 Entity 共享。<br />
+举个例子，如果一个 Archetype 中包含一个 ChunkComponentData 类型的组件，那么它的每个 Chunk 就会有一个该组件。同一个 Chunk 中，Entity 共享同一个该组件。不同 Chunk 的该组件是不同的实例，它们的值也可以不相同。</p>
+<p>如果修改一个 Entity 上的该类组件，它所在 Chunk 中其他 Entity 的同类组件的值也会一并修改。</p>
 <p>感觉这种组件应该可以用于在同种 Archetype 中细分小类型，或者用于共享公共数据。对它进行写访问的时候应该需要结合 IJobChunk 使用。</p>
 
     </div>

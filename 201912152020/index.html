@@ -59,7 +59,7 @@
 
 <article itemscope itemtype="http://schema.org/BlogPosting">
     <header>
-        <h1 itemprop="headline">支持.NET Core 以及 Unity 的轻量级可靠UDP 库 LiteNetLib 介绍</h1>
+        <h1 itemprop="headline">支持.NET Core 以及 Unity 的轻量级可靠 UDP 库 LiteNetLib 介绍</h1>
         <span class="muted">
     <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
          width="16" height="16" fill="none" stroke="currentcolor"
@@ -78,7 +78,7 @@
 </span>
     </header>
     <div itemprop="articleBody">
-      <p>之前做 Unity 网络游戏开发的时候，想着后端也用C#就很方便，于是看上了开源跨平台的.NET Core，当时网络模块就是用了 LiteNetLib 实现的。</p>
+      <p>之前做 Unity 网络游戏开发的时候，想着后端也用 C#就很方便，于是看上了开源跨平台的.NET Core，当时网络模块就是用了 LiteNetLib 实现的。</p>
 <span id="continue-reading"></span>
 <p>这个东西依然支持.NET Core 3.1和.NET Framework 4.x（虽然官网都没写）。功能不多，用起来方便，很适合小规模的实时联机游戏。</p>
 <p><a href="https://github.com/RevenantX/LiteNetLib">https://github.com/RevenantX/LiteNetLib</a></p>
@@ -88,9 +88,9 @@
 <p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191215-201104@2x.png" alt="" /></p>
 <p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191215-201120@2x.png" alt="" /></p>
 <h2 id="unity-qian-duan">Unity 前端</h2>
-<p>注意：Unity 里应当用源码而不是预编译的 DLL 文件，因为源码中使用了条件编译以避开 Unity 的Bug。</p>
-<p>直接从 GitHub 上Clone 下来，把其中的 LiteNetLib 拷贝到Unity 项目里就能使用了。</p>
-<p>为了方便，我们简单写一个实现 INetEventListener 接口的MonoBehaviour 就好，注释比较详细。</p>
+<p>注意：Unity 里应当用源码而不是预编译的 DLL 文件，因为源码中使用了条件编译以避开 Unity 的 Bug。</p>
+<p>直接从 GitHub 上 Clone 下来，把其中的 LiteNetLib 拷贝到 Unity 项目里就能使用了。</p>
+<p>为了方便，我们简单写一个实现 INetEventListener 接口的 MonoBehaviour 就好，注释比较详细。</p>
 <p>LiteNetLibHello.cs</p>
 <pre data-lang="cs" style="background-color:#2b303b;color:#c0c5ce;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#b48ead;">using </span><span>System.Net;
 </span><span style="color:#b48ead;">using </span><span>System.Net.Sockets;
@@ -98,7 +98,7 @@
 </span><span style="color:#b48ead;">using </span><span>LiteNetLib.Utils;
 </span><span style="color:#b48ead;">using </span><span>UnityEngine;
 </span><span>
-</span><span style="color:#65737e;">/// &lt;</span><span style="color:#bf616a;">summary</span><span style="color:#65737e;">&gt; 作为MonoBehaviour，该类也是监听器 &lt;/</span><span style="color:#bf616a;">summary</span><span style="color:#65737e;">&gt;
+</span><span style="color:#65737e;">/// &lt;</span><span style="color:#bf616a;">summary</span><span style="color:#65737e;">&gt; 作为 MonoBehaviour，该类也是监听器 &lt;/</span><span style="color:#bf616a;">summary</span><span style="color:#65737e;">&gt;
 </span><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">LiteNetLibHello </span><span style="color:#eff1f5;">: </span><span style="color:#a3be8c;">MonoBehaviour</span><span style="color:#eff1f5;">, </span><span style="color:#a3be8c;">INetEventListener </span><span style="color:#eff1f5;">{
 </span><span style="color:#eff1f5;">
 </span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">/// &lt;</span><span style="color:#bf616a;">summary</span><span style="color:#65737e;">&gt; server 的监听端口 &lt;/</span><span style="color:#bf616a;">summary</span><span style="color:#65737e;">&gt;
@@ -116,7 +116,7 @@
 </span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">/// &lt;</span><span style="color:#bf616a;">summary</span><span style="color:#65737e;">&gt; LiteNetLib 核心的网络管理器，用来主动连接、断开、触发事件回调等 &lt;/</span><span style="color:#bf616a;">summary</span><span style="color:#65737e;">&gt;
 </span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">private </span><span style="color:#eff1f5;">NetManager </span><span style="color:#bf616a;">m_clientManager</span><span style="color:#eff1f5;">;
 </span><span style="color:#eff1f5;">
-</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">/// &lt;</span><span style="color:#bf616a;">summary</span><span style="color:#65737e;">&gt; 服务器Peer &lt;/</span><span style="color:#bf616a;">summary</span><span style="color:#65737e;">&gt;
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">/// &lt;</span><span style="color:#bf616a;">summary</span><span style="color:#65737e;">&gt; 服务器 Peer &lt;/</span><span style="color:#bf616a;">summary</span><span style="color:#65737e;">&gt;
 </span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">private </span><span style="color:#eff1f5;">NetPeer </span><span style="color:#bf616a;">m_server</span><span style="color:#eff1f5;">;
 </span><span style="color:#eff1f5;">
 </span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">/// &lt;</span><span style="color:#bf616a;">summary</span><span style="color:#65737e;">&gt; Writer &lt;/</span><span style="color:#bf616a;">summary</span><span style="color:#65737e;">&gt;
@@ -145,7 +145,7 @@
 </span><span style="color:#eff1f5;">            </span><span style="color:#bf616a;">m_helloTimer </span><span>= </span><span style="color:#bf616a;">c_helloInterval</span><span style="color:#eff1f5;">;
 </span><span style="color:#eff1f5;">
 </span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">peer </span><span>= </span><span style="color:#bf616a;">m_clientManager</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">FirstPeer</span><span style="color:#eff1f5;">;
-</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">peer </span><span>!= </span><span style="color:#d08770;">null </span><span>&amp;&amp; </span><span style="color:#bf616a;">peer</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">ConnectionState </span><span>== </span><span style="color:#bf616a;">ConnectionState</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Connected</span><span style="color:#eff1f5;">) { </span><span style="color:#65737e;">// 若已连接到 Server 则发送HelloWorld
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">peer </span><span>!= </span><span style="color:#d08770;">null </span><span>&amp;&amp; </span><span style="color:#bf616a;">peer</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">ConnectionState </span><span>== </span><span style="color:#bf616a;">ConnectionState</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Connected</span><span style="color:#eff1f5;">) { </span><span style="color:#65737e;">// 若已连接到 Server 则发送 HelloWorld
 </span><span style="color:#eff1f5;">                </span><span style="color:#bf616a;">m_writer</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Put </span><span style="color:#eff1f5;">(</span><span>&quot;</span><span style="color:#a3be8c;">Hello, I&#39;m client.</span><span>&quot;</span><span style="color:#eff1f5;">);
 </span><span style="color:#eff1f5;">                </span><span style="color:#65737e;">// 不可靠 UDP 方式直接发送消息
 </span><span style="color:#eff1f5;">                </span><span style="color:#bf616a;">peer</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Send </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">m_writer</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">DeliveryMethod</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Unreliable</span><span style="color:#eff1f5;">);
@@ -262,7 +262,7 @@
 <p>会用就行，可以直接跳过</p>
 <p>接收信息</p>
 <p>首先，这个网络库使用事件监听的思路来把网络消息传递给上游模块。他会把网络消息转化为连接、断开、数据传输、网络错误等事件并适时调用上游的事件监听器的相应接口。</p>
-<p>然后，它开一个线程监听端口，接收消息并把转换为事件储存在队列里。上游模块需要定时PollEvent，让他一次性地访问整个队列（当然队列会被清空），根据每个事件调用监听器相应的接口。</p>
+<p>然后，它开一个线程监听端口，接收消息并把转换为事件储存在队列里。上游模块需要定时 PollEvent，让他一次性地访问整个队列（当然队列会被清空），根据每个事件调用监听器相应的接口。</p>
 <p>因此，虽然消息的获取是异步的，但事件监听是同步的，使用时不必担心线程问题。</p>
 <p>发送信息</p>
 <p>简单得多。数据发送，都被放入发送队列，然后内部有一个线程定时把整个队列发送。有兴趣去看源码，很好理解。</p>

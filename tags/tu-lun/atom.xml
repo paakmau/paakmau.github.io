@@ -13,10 +13,10 @@
 		<updated>2020-04-28T22:21:26+00:00</updated>
 		<link href="https://paakmau.github.io/202004282221/" type="text/html"/>
 		<id>https://paakmau.github.io/202004282221/</id>
-		<content type="html">&lt;p&gt;Unreal 的Task Graph、Unity 的Job System、HPX 还有C#的 Task 都属于TAP&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;Unreal 的 Task Graph、Unity 的 Job System、HPX 还有 C#的 Task 都属于 TAP&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;tap&quot;&gt;TAP&lt;&#x2F;h2&gt;
 &lt;p&gt;Task-based asynchronous pattern&lt;&#x2F;p&gt;
-&lt;p&gt;是微软提出的，对你没猜错，就是C#的那个&lt;&#x2F;p&gt;
+&lt;p&gt;是微软提出的，对你没猜错，就是 C#的那个&lt;&#x2F;p&gt;
 &lt;p&gt;一般来说，如果多个异步操作之间存在共享数据的情况，我们可能会用信号量、互斥锁或者条件变量这样的东西搞来搞去。但是如果共享的数据很多很复杂或者异步操作也很多很复杂，这些东西绕来绕去，于是我们的代码可能写个几天就会变得十分丑陋&lt;&#x2F;p&gt;
 &lt;p&gt;接下来我们考虑用 TAP 的思路来设计异步代码&lt;br &#x2F;&gt;
 简单的说就是异步的任务之间存在依赖关系。如果一个任务依赖于别的任务，它必须等待这些任务完成后才能执行；然后如果几个任务的依赖都完成了，那么他们就能并行&lt;&#x2F;p&gt;
@@ -25,7 +25,7 @@
 比如我们随便分一下：煎鸡蛋煎牛排都用同一口锅，煎鸡蛋依赖煎牛排；煎牛仔骨和煎鸡翅用另一口锅，煎牛仔骨依赖煎鸡翅。&lt;br &#x2F;&gt;
 总而言之，就是在分配任务的时候要一起把资源也给分配了，从而保证资源不冲突&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;dag&quot;&gt;DAG&lt;&#x2F;h2&gt;
-&lt;p&gt;介绍拓排之前先说一下DAG，也就是Directed Acyclic Graph，有向无环图&lt;br &#x2F;&gt;
+&lt;p&gt;介绍拓排之前先说一下 DAG，也就是 Directed Acyclic Graph，有向无环图&lt;br &#x2F;&gt;
 根据名字我们知道它是一个有向图，然后没有环&lt;br &#x2F;&gt;
 如果你想的没错那应该就是你想的那样不过其实我就是懒得解释&lt;&#x2F;p&gt;
 &lt;p&gt;大概长这个样子&lt;&#x2F;p&gt;
@@ -36,8 +36,8 @@
 同理，每个点的入度也就是有多少条边指向这个点，也就是「入边」的个数&lt;br &#x2F;&gt;
 比如图中2号点的入度是2，出度是1这样&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;tuo-bu-pai-xu&quot;&gt;拓扑排序&lt;&#x2F;h2&gt;
-&lt;p&gt;敏锐的同学应该已经发现了，任务的依赖关系必不能成环，于是这些依赖关系就是个DAG&lt;br &#x2F;&gt;
-说到DAG，那就是拓扑排序了&lt;&#x2F;p&gt;
+&lt;p&gt;敏锐的同学应该已经发现了，任务的依赖关系必不能成环，于是这些依赖关系就是个 DAG&lt;br &#x2F;&gt;
+说到 DAG，那就是拓扑排序了&lt;&#x2F;p&gt;
 &lt;p&gt;说到拓扑排序，就又联想到差分约束。也就是说如果 CPU 有无限多个核心并且线程调度成本不计然后还知道每个任务的所需时间，我们可以通过查分约束算出在依赖关系下完成全部的任务需要的最小时间（但是并没有什么卵用）&lt;br &#x2F;&gt;
 好了偏题了，我们继续科普&lt;&#x2F;p&gt;
 &lt;p&gt;就拿之前平底锅和胶囊咖啡机的例子来说，可以把每个任务想象成节点，而依赖关系就是边，而拓扑排序就是在满足依赖关系的条件下对所有任务进行排序&lt;&#x2F;p&gt;
@@ -59,14 +59,14 @@
 		<content type="html">&lt;p&gt;接下来阅读 TaskGraph 的源码来了解其实现细节&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;taskgraph-shi-xian-gai-gua&quot;&gt;TaskGraph 实现概括&lt;&#x2F;h2&gt;
 &lt;p&gt;首先是线程管理。我们创建的 TGraphTask 并不能直接运行，需要把它交给某个 FTaskThreadBase 对象来控制执行。这个 FTaskThreadBase 可以理解为一个线程，可以把很多个 TGraphTask 交给他，它会依次执行这些任务（当然也要满足依赖）&lt;&#x2F;p&gt;
-&lt;p&gt;另外注意到我们可以为 TGraphTask 指定想要让他执行的线程，于是我们发现对于游戏中的每一个线程都会产生一个 FTaskThreadBase 对象，这个对象持有他所对应的线程的指针。我们创建的 TGraphTask 对象会被交给对应的FTaskThreadBase 对象，从而在正确的线程上执行&lt;&#x2F;p&gt;
-&lt;p&gt;然后是任务之间依赖关系的处理。我们在 CreateTask 的时候看起来是把依赖传给了任务，但其实是 TGraphTask 被他所依赖的所有FGraphEvent 持有。这样在一个 TGraphTask 结束时，他就可以立刻通过 FGraphEvent 更新依赖于自己的其他TGraphTask 的依赖入度，然后如果入度为零就放入执行队列&lt;&#x2F;p&gt;
+&lt;p&gt;另外注意到我们可以为 TGraphTask 指定想要让他执行的线程，于是我们发现对于游戏中的每一个线程都会产生一个 FTaskThreadBase 对象，这个对象持有他所对应的线程的指针。我们创建的 TGraphTask 对象会被交给对应的 FTaskThreadBase 对象，从而在正确的线程上执行&lt;&#x2F;p&gt;
+&lt;p&gt;然后是任务之间依赖关系的处理。我们在 CreateTask 的时候看起来是把依赖传给了任务，但其实是 TGraphTask 被他所依赖的所有 FGraphEvent 持有。这样在一个 TGraphTask 结束时，他就可以立刻通过 FGraphEvent 更新依赖于自己的其他 TGraphTask 的依赖入度，然后如果入度为零就放入执行队列&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;xian-cheng-guan-li&quot;&gt;线程管理&lt;&#x2F;h2&gt;
 &lt;p&gt;TaskGraph 的线程管理是基于 Runnable 的，于是简单的介绍一下它&lt;&#x2F;p&gt;
-&lt;p&gt;一个线程其实是由一个 FRunnableThread 对象管理，包括了线程优先级，创建等；而我们想要在线程里执行逻辑代码就要需要通过FRunnable，把逻辑代码写在它的 Run 方法里，然后把它丢给 FRunnableThread 让真实的线程去执行它&lt;&#x2F;p&gt;
-&lt;p&gt;而 TaskGraph 里的FTaskThreadBase 其实就继承自FRunnable；它同时还持有一个 FWorkerThread 对象，这个对象又持有FRunnableThread。也就是 FTaskThreadBase 自己不但能够管理线程，同时还能控制线程去执行逻辑代码&lt;br &#x2F;&gt;
-另外所有的 FTaskThreadBase 都由一个FTaskGraphImplementation 单例持有&lt;&#x2F;p&gt;
-&lt;p&gt;最后看一下 FTaskThreadBase 的Run 方法，就是不断地执行任务&lt;br &#x2F;&gt;
+&lt;p&gt;一个线程其实是由一个 FRunnableThread 对象管理，包括了线程优先级，创建等；而我们想要在线程里执行逻辑代码就要需要通过 FRunnable，把逻辑代码写在它的 Run 方法里，然后把它丢给 FRunnableThread 让真实的线程去执行它&lt;&#x2F;p&gt;
+&lt;p&gt;而 TaskGraph 里的 FTaskThreadBase 其实就继承自 FRunnable；它同时还持有一个 FWorkerThread 对象，这个对象又持有 FRunnableThread。也就是 FTaskThreadBase 自己不但能够管理线程，同时还能控制线程去执行逻辑代码&lt;br &#x2F;&gt;
+另外所有的 FTaskThreadBase 都由一个 FTaskGraphImplementation 单例持有&lt;&#x2F;p&gt;
+&lt;p&gt;最后看一下 FTaskThreadBase 的 Run 方法，就是不断地执行任务&lt;br &#x2F;&gt;
 需要注意的是这些任务都是在满足了依赖之后才会被 Run 方法访问到，后文会详细描述&lt;br &#x2F;&gt;
 这里贴一下 Run 的源码&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;virtual&lt;&#x2F;span&gt;&lt;span&gt; uint32 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;Run&lt;&#x2F;span&gt;&lt;span&gt;() &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;override
@@ -78,9 +78,9 @@
 &lt;&#x2F;span&gt;&lt;span&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;ftaskthreadbase-de-pai-sheng-lei&quot;&gt;FTaskThreadBase 的派生类&lt;&#x2F;h2&gt;
-&lt;p&gt;查看源码我们发现这个东西有两个派生类，FTaskThreadAnyThread 和FNamedTaskThread，这里简单介绍一下&lt;&#x2F;p&gt;
+&lt;p&gt;查看源码我们发现这个东西有两个派生类，FTaskThreadAnyThread 和 FNamedTaskThread，这里简单介绍一下&lt;&#x2F;p&gt;
 &lt;p&gt;FTaskThreadAnyThread 比较符合我们的想象（如果你跟我想的一样）&lt;br &#x2F;&gt;
-它由 FTaskGraphImplementation 单例在实例化的时候创建若干个。然后这个单例维护一个待执行任务的队列，每个 FTaskThreadAnyThread 在自己的任务执行完成后不断地调用这个单例的FindWork 方法获取队列中的任务然后去执行它，可以说所有的 FTaskThreadAnyThread 共享同一个任务队列（如果不考虑优先级的话）&lt;br &#x2F;&gt;
+它由 FTaskGraphImplementation 单例在实例化的时候创建若干个。然后这个单例维护一个待执行任务的队列，每个 FTaskThreadAnyThread 在自己的任务执行完成后不断地调用这个单例的 FindWork 方法获取队列中的任务然后去执行它，可以说所有的 FTaskThreadAnyThread 共享同一个任务队列（如果不考虑优先级的话）&lt;br &#x2F;&gt;
 还是贴一下 FindWork 的源码&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span&gt;FBaseGraphTask* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;FindWork&lt;&#x2F;span&gt;&lt;span&gt;(ENamedThreads::Type &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ThreadInNeed&lt;&#x2F;span&gt;&lt;span&gt;)
 &lt;&#x2F;span&gt;&lt;span&gt;{
@@ -106,14 +106,14 @@
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;ren-wu-zhi-jian-de-yi-lai-guan-xi&quot;&gt;任务之间的依赖关系&lt;&#x2F;h2&gt;
 &lt;p&gt;上文中提到一个任务只有在满足了依赖的情况下才会被扔进任务队列里，并且任务的完成是通过 FGraphEvent 来通知依赖于自己的其他任务的&lt;&#x2F;p&gt;
-&lt;p&gt;于是我们先看看 FGraphEvent 是怎么拿到其他任务的，在 CreateTask 的时候我们会传入一个FGraphEventRef 的数组表示这个任务的依赖，然后跟随调用往下查我们发现有个 SetupPrereqs 函数它遍历了这个数组然后对每个FGraphEvent 都调用它的 AddSubsequent 方法，把任务自身扔进这些事件的 SubsequentList 里&lt;br &#x2F;&gt;
+&lt;p&gt;于是我们先看看 FGraphEvent 是怎么拿到其他任务的，在 CreateTask 的时候我们会传入一个 FGraphEventRef 的数组表示这个任务的依赖，然后跟随调用往下查我们发现有个 SetupPrereqs 函数它遍历了这个数组然后对每个 FGraphEvent 都调用它的 AddSubsequent 方法，把任务自身扔进这些事件的 SubsequentList 里&lt;br &#x2F;&gt;
 简单贴一下源码&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;bool &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;AddSubsequent&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class&lt;&#x2F;span&gt;&lt;span&gt; FBaseGraphTask* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Task&lt;&#x2F;span&gt;&lt;span&gt;)
 &lt;&#x2F;span&gt;&lt;span&gt;{
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; SubsequentList.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;PushIfNotClosed&lt;&#x2F;span&gt;&lt;span&gt;(Task);
 &lt;&#x2F;span&gt;&lt;span&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;然后在一个 TGraphTask 执行结束后，他会调用自己的 FGraphEvent 的DispatchSubsequents 方法，这个方法把 SubsequentList 里的TGraphTask 都 Pop 出来，调用它们的 ConditionalQueueTask 方法，把每个任务的依赖数（入度）减一，如果为零了意味着依赖满足，就可以把这个任务扔进任务队列里&lt;br &#x2F;&gt;
+&lt;p&gt;然后在一个 TGraphTask 执行结束后，他会调用自己的 FGraphEvent 的 DispatchSubsequents 方法，这个方法把 SubsequentList 里的 TGraphTask 都 Pop 出来，调用它们的 ConditionalQueueTask 方法，把每个任务的依赖数（入度）减一，如果为零了意味着依赖满足，就可以把这个任务扔进任务队列里&lt;br &#x2F;&gt;
 再贴一下源码&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;ConditionalQueueTask&lt;&#x2F;span&gt;&lt;span&gt;(ENamedThreads::Type &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CurrentThread&lt;&#x2F;span&gt;&lt;span&gt;)
 &lt;&#x2F;span&gt;&lt;span&gt;{
@@ -125,9 +125,9 @@
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;jie-yu&quot;&gt;结语&lt;&#x2F;h2&gt;
 &lt;p&gt;源码终于啃完了，感觉很多写法非常的牛逼&lt;br &#x2F;&gt;
-发现自己C++的高 she 级pi 用 cao 法zuo 还不是很熟悉，可能也是太久没碰UE4了，有空就去把改填的坑填了&lt;&#x2F;p&gt;
-&lt;p&gt;但是实现的思路感觉还是很好理解，甚至有一种随 xia 心ji 所 ba 欲xie 的感觉（比如 FTaskThreadAnyThread 的公共任务队列就直接扔在FTaskGraphImplementation 单例里）&lt;&#x2F;p&gt;
-&lt;p&gt;结合了 Runnable 的TaskGraph 是很好的跨平台基于任务的多线程实现方案，如果要自己写引擎的话这个很好用（抄就完事了）&lt;&#x2F;p&gt;
+发现自己 C++的高 she 级 pi 用 cao 法 zuo 还不是很熟悉，可能也是太久没碰 UE4了，有空就去把改填的坑填了&lt;&#x2F;p&gt;
+&lt;p&gt;但是实现的思路感觉还是很好理解，甚至有一种随 xia 心 ji 所 ba 欲 xie 的感觉（比如 FTaskThreadAnyThread 的公共任务队列就直接扔在 FTaskGraphImplementation 单例里）&lt;&#x2F;p&gt;
+&lt;p&gt;结合了 Runnable 的 TaskGraph 是很好的跨平台基于任务的多线程实现方案，如果要自己写引擎的话这个很好用（抄就完事了）&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
@@ -136,17 +136,17 @@
 		<updated>2020-03-19T13:21:19+00:00</updated>
 		<link href="https://paakmau.github.io/202003191321/" type="text/html"/>
 		<id>https://paakmau.github.io/202003191321/</id>
-		<content type="html">&lt;p&gt;这个东西跟 Unity 中的Job 很相似，都是基于任务的并行程序设计，可以处理资源竞争与执行顺序问题&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;这个东西跟 Unity 中的 Job 很相似，都是基于任务的并行程序设计，可以处理资源竞争与执行顺序问题&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;jian-dan-jie-shao&quot;&gt;简单介绍&lt;&#x2F;h2&gt;
 &lt;p&gt;简单说就是一张有向无环图，每一个任务是节点，任务的依赖关系是边，根据拓扑排序规划任务的执行。如果一个节点的入度为零就可以并行，并且执行完成后删掉自己的出边；否则等待入边的节点执行完成&lt;&#x2F;p&gt;
 &lt;ul&gt;
 &lt;li&gt;节点是 TGraphTask 模版类，我们需要自己实现任务类满足它的要求。重点是实现 DoTask 方法&lt;&#x2F;li&gt;
-&lt;li&gt;边是FGraphEventRef，可以在 CreateTask 之后得到，可以理解为任务完成的事件；同时在 CreateTask 的时候可以把其他任务的FGraphEventRef 以 FGraphEventArray 的形式传入以表示依赖（入边）&lt;&#x2F;li&gt;
+&lt;li&gt;边是 FGraphEventRef，可以在 CreateTask 之后得到，可以理解为任务完成的事件；同时在 CreateTask 的时候可以把其他任务的 FGraphEventRef 以 FGraphEventArray 的形式传入以表示依赖（入边）&lt;&#x2F;li&gt;
 &lt;&#x2F;ul&gt;
-&lt;p&gt;另外，任务类的 DoTask 方法参数中有一个const FGraphEventRef &amp;amp;MyCompletionGraphEvent，根据变量名我们知道它是任务自身的完成事件。于是我们还可以在这个东西上进行蛇皮操作，比如在本任务完成之前再等待另一个任务完成，但是写起来很乱&lt;&#x2F;p&gt;
+&lt;p&gt;另外，任务类的 DoTask 方法参数中有一个 const FGraphEventRef &amp;amp;MyCompletionGraphEvent，根据变量名我们知道它是任务自身的完成事件。于是我们还可以在这个东西上进行蛇皮操作，比如在本任务完成之前再等待另一个任务完成，但是写起来很乱&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;helloworld&quot;&gt;HelloWorld&lt;&#x2F;h2&gt;
 &lt;p&gt;跟随下面的指引建立两个任务类，然后通过 FGraphEventRef 指定他们的执行顺序&lt;&#x2F;p&gt;
-&lt;p&gt;准备两个任务类 TestTaskA 和TestTaskB&lt;br &#x2F;&gt;
+&lt;p&gt;准备两个任务类 TestTaskA 和 TestTaskB&lt;br &#x2F;&gt;
 TestTaskA 的代码如下，另外一个可以仿照着写&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;TestTaskA
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
@@ -177,7 +177,7 @@ TestTaskA 的代码如下，另外一个可以仿照着写&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span&gt;;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;创建一个Actor，并修改 BeginPlay 方法如下&lt;&#x2F;p&gt;
+&lt;p&gt;创建一个 Actor，并修改 BeginPlay 方法如下&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span&gt;AMyActor::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;BeginPlay&lt;&#x2F;span&gt;&lt;span&gt;()
 &lt;&#x2F;span&gt;&lt;span&gt;{
 &lt;&#x2F;span&gt;&lt;span&gt;    Super::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;BeginPlay&lt;&#x2F;span&gt;&lt;span&gt;();
@@ -189,7 +189,7 @@ TestTaskA 的代码如下，另外一个可以仿照着写&lt;&#x2F;p&gt;
 &lt;p&gt;最后在输出里看到这样的结果&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;03&#x2F;image.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;parallelfor&quot;&gt;ParallelFor&lt;&#x2F;h2&gt;
-&lt;p&gt;UE4有一个ParallelFor，是对于简单遍历的并行处理，基于TaskGraph，具体去看Runtime&#x2F;Core&#x2F;Public&#x2F;Async&#x2F;ParallelFor.h&lt;br &#x2F;&gt;
+&lt;p&gt;UE4有一个 ParallelFor，是对于简单遍历的并行处理，基于 TaskGraph，具体去看 Runtime&#x2F;Core&#x2F;Public&#x2F;Async&#x2F;ParallelFor.h&lt;br &#x2F;&gt;
 下面给个简单的例子&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ParallelFor&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;100&lt;&#x2F;span&gt;&lt;span&gt;, [](int32 CurrIdx) {
 &lt;&#x2F;span&gt;&lt;span&gt;    int32 Sum = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;
@@ -197,10 +197,10 @@ TestTaskA 的代码如下，另外一个可以仿照着写&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span&gt;        Sum += FMath::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Sqrt&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1234.56&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;);
 &lt;&#x2F;span&gt;&lt;span&gt;});
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;h2 id=&quot;dui-bi-unity-c-job-system&quot;&gt;对比Unity C# Job System&lt;&#x2F;h2&gt;
+&lt;h2 id=&quot;dui-bi-unity-c-job-system&quot;&gt;对比 Unity C# Job System&lt;&#x2F;h2&gt;
 &lt;p&gt;如果抽象成一张 DAG 来看，这两个本质上其实就是同一个东西。简单说就是通过建立依赖关系避免资源竞争实现易于管理的并行&lt;&#x2F;p&gt;
-&lt;p&gt;但是Job System 相对于 TaskGraph 在用户代码中出现频率要高得多。因为Unity DOTS 天生就能很好的设计并行，甚至 Job 其实是嵌入在SystemBase 里的，对于游戏主逻辑都能被频繁使用；而UE4是OOP，个人理解的话应该主要用于耗时长的计算或者I&#x2F;O 任务等，但是把游戏主逻辑放到 TaskGraph 里是比较困难的&lt;&#x2F;p&gt;
-&lt;p&gt;另外有一个小区别，UE4的 ParallerFor 与Unity 里的 ScheduleParallel 是不一样的。UE4的 ParallelFor 其实是基于TaskGraph 的顶层；而 Unity 的ScheduleParallel 是 Job 本身自带的方法&lt;&#x2F;p&gt;
+&lt;p&gt;但是 Job System 相对于 TaskGraph 在用户代码中出现频率要高得多。因为 Unity DOTS 天生就能很好的设计并行，甚至 Job 其实是嵌入在 SystemBase 里的，对于游戏主逻辑都能被频繁使用；而 UE4是 OOP，个人理解的话应该主要用于耗时长的计算或者 I&#x2F;O 任务等，但是把游戏主逻辑放到 TaskGraph 里是比较困难的&lt;&#x2F;p&gt;
+&lt;p&gt;另外有一个小区别，UE4的 ParallerFor 与 Unity 里的 ScheduleParallel 是不一样的。UE4的 ParallelFor 其实是基于 TaskGraph 的顶层；而 Unity 的 ScheduleParallel 是 Job 本身自带的方法&lt;&#x2F;p&gt;
 </content>
 	</entry>
 </feed>

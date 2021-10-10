@@ -8,13 +8,13 @@
 	<updated>2020-03-30T20:12:40+00:00</updated>
 	<id>https://paakmau.github.io/tags/mockmvc/atom.xml</id>
 	<entry xml:lang="zh">
-		<title>使用 MockMvc 对SpringBoot 项目集成测试</title>
+		<title>使用 MockMvc 对 SpringBoot 项目集成测试</title>
 		<published>2020-03-30T20:12:40+00:00</published>
 		<updated>2020-03-30T20:12:40+00:00</updated>
 		<link href="https://paakmau.github.io/202003302012/" type="text/html"/>
 		<id>https://paakmau.github.io/202003302012/</id>
-		<content type="html">&lt;p&gt;对后端进行集成测试的时候，我们一般都希望从发送 HTTP 请求开始对后端进行完整的测试，可能会考虑用 Postman 或者Postwoman 这类东西，但是直觉告诉我们应该也可以把集成测试写在代码里&lt;&#x2F;p&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;zai-pom-xml-li-yin-ru-yi-lai&quot;&gt;在pom.xml 里引入依赖&lt;&#x2F;h2&gt;
+		<content type="html">&lt;p&gt;对后端进行集成测试的时候，我们一般都希望从发送 HTTP 请求开始对后端进行完整的测试，可能会考虑用 Postman 或者 Postwoman 这类东西，但是直觉告诉我们应该也可以把集成测试写在代码里&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;zai-pom-xml-li-yin-ru-yi-lai&quot;&gt;在 pom.xml 里引入依赖&lt;&#x2F;h2&gt;
 &lt;pre data-lang=&quot;xml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-xml &quot;&gt;&lt;code class=&quot;language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;dependency&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;groupId&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;org.springframework.boot&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;groupId&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;artifactId&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;spring-boot-starter-test&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;artifactId&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
@@ -37,7 +37,7 @@
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;name;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;这里使用了 Lombok 插件自动生成Getter、Setter 和构造函数，并重写了 equals 方法&lt;&#x2F;p&gt;
+&lt;p&gt;这里使用了 Lombok 插件自动生成 Getter、Setter 和构造函数，并重写了 equals 方法&lt;&#x2F;p&gt;
 &lt;p&gt;BookController 如下&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;@&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;RestController
 &lt;&#x2F;span&gt;&lt;span&gt;@&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;RequestMapping&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;book&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
@@ -65,8 +65,8 @@
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;ji-cheng-ce-shi&quot;&gt;集成测试&lt;&#x2F;h2&gt;
-&lt;p&gt;我们可以使用 MockMvc 指定HTTP 请求的类型、PathVariable、RequestParam、RequestBody 等，并能使用断言验证返回的状态码、结果等&lt;br &#x2F;&gt;
-请求返回的 JSON 数据也能使用Fastjson 方便的转换为对象&lt;&#x2F;p&gt;
+&lt;p&gt;我们可以使用 MockMvc 指定 HTTP 请求的类型、PathVariable、RequestParam、RequestBody 等，并能使用断言验证返回的状态码、结果等&lt;br &#x2F;&gt;
+请求返回的 JSON 数据也能使用 Fastjson 方便的转换为对象&lt;&#x2F;p&gt;
 &lt;p&gt;不多逼逼，看代码&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;@&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;SpringBootTest
 &lt;&#x2F;span&gt;&lt;span&gt;@&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;AutoConfigureMockMvc
@@ -105,9 +105,9 @@
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;需要注意的是使用 RequestBody 接收的参数需要使用Fastjson 转换为字符串，并指定类型为APPLICATION_JSON&lt;br &#x2F;&gt;
-并且请求的返回值也可以使用 Fastjson 转换成简单的对象，比如上面代码就转成了BookVo&lt;br &#x2F;&gt;
-另外@Data 注解会为 BookVo 重写equals 方法，因此可以直接用 assertEquals 断言&lt;&#x2F;p&gt;
+&lt;p&gt;需要注意的是使用 RequestBody 接收的参数需要使用 Fastjson 转换为字符串，并指定类型为 APPLICATION_JSON&lt;br &#x2F;&gt;
+并且请求的返回值也可以使用 Fastjson 转换成简单的对象，比如上面代码就转成了 BookVo&lt;br &#x2F;&gt;
+另外@Data 注解会为 BookVo 重写 equals 方法，因此可以直接用 assertEquals 断言&lt;&#x2F;p&gt;
 </content>
 	</entry>
 </feed>

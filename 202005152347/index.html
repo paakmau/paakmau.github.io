@@ -81,20 +81,20 @@
       <p>UE4的材质编辑器中我们可以创建材质结点然后给它们连线来创建材质</p>
 <p>本文将根据源码解析材质结点在内存中的数据结构</p>
 <span id="continue-reading"></span><h2 id="uedgraph">UEdGraph</h2>
-<p>先简单提一下UEdGraph</p>
+<p>先简单提一下 UEdGraph</p>
 <p>它用来管理一张可视化的有向图，而且其实蓝图就是用这个东西来做的<br />
-一个 UEdGraph 对象会包括图中所有的UEdGraphNode 也就是结点<br />
+一个 UEdGraph 对象会包括图中所有的 UEdGraphNode 也就是结点<br />
 一个结点包括位置等基础信息，然后它还有一个 UEdGraphPin 的指针数组<br />
 一个 UEdGraphPin 其实就是一个插槽，用一个字节表示是输入插槽还是输出插槽，然后持有它所属的 UEdGraphNode 指针，还有一个 UEdGraphNode 指针数组保存这个插槽连接到的结点</p>
 <h2 id="umaterialgraph">UMaterialGraph</h2>
-<p>它派生自UEdGraph，保存一个材质在编辑器中的所有结点形成的有向图。虽然它主要用于管理由材质结点组成的可视化的有向图，但它也持有 UMaterial 指针用来获取材质输入插槽等信息<br />
+<p>它派生自 UEdGraph，保存一个材质在编辑器中的所有结点形成的有向图。虽然它主要用于管理由材质结点组成的可视化的有向图，但它也持有 UMaterial 指针用来获取材质输入插槽等信息<br />
 然后用户在编辑器中对材质的修改都会作用到这个对象上</p>
-<p>它有一个UMaterialGraphNode_Root 类型的成员变量RootNode，这个 RootNode 其实就是编辑器中的材质结果结点，通过这个结点向前递归我们可以找到这个材质结果结点连接的所有结点，不过其实它的基类 UEdGraph 本身就具有这样的功能</p>
+<p>它有一个 UMaterialGraphNode_Root 类型的成员变量 RootNode，这个 RootNode 其实就是编辑器中的材质结果结点，通过这个结点向前递归我们可以找到这个材质结果结点连接的所有结点，不过其实它的基类 UEdGraph 本身就具有这样的功能</p>
 <h2 id="umaterialgraphnode-base">UMaterialGraphNode_Base</h2>
-<p>根据名字我们知道它是材质结点的基类，派生自UEdGraphNode</p>
-<p>比如前面提到的UMaterialGraphNode_Root 就是它的一个派生类；此外它的派生类还有UMaterialGraphNode，这个派生类用于管理材质结果结点之外的其他结点</p>
+<p>根据名字我们知道它是材质结点的基类，派生自 UEdGraphNode</p>
+<p>比如前面提到的 UMaterialGraphNode_Root 就是它的一个派生类；此外它的派生类还有 UMaterialGraphNode，这个派生类用于管理材质结果结点之外的其他结点</p>
 <p>这两个派生类之间的主要区别在于获取插槽等结点数据的方式不同</p>
-<p>UMaterialGraphNode_Root 获取插槽数据是通过 UEdGraphNode 的GetGraph 方法获取所属的 UEdGraph 指针，然后类型转换到 UMaterialGraph 指针，再通过 UMaterialGraph 的MaterialInputs 得到材质结果结点上的各个输入</p>
+<p>UMaterialGraphNode_Root 获取插槽数据是通过 UEdGraphNode 的 GetGraph 方法获取所属的 UEdGraph 指针，然后类型转换到 UMaterialGraph 指针，再通过 UMaterialGraph 的 MaterialInputs 得到材质结果结点上的各个输入</p>
 <p>下面贴一下它的 CreateInputPins 的实现</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">void </span><span>UMaterialGraphNode_Root::</span><span style="color:#8fa1b3;">CreateInputPins</span><span>()
 </span><span>{
@@ -111,7 +111,7 @@
 <p>UMaterialExpression<br />
 结点表达式</p>
 <p>因为不同类型的结点会具有不同的输入输出和功能，所以一个结点就是一个具有若干输入和输出表达式</p>
-<p>但是 UMaterialExpression 只是一个接口，因为不同表达式的输入输出不同，因此具体的表达式都会派生自UMaterialExpression，比如 UMaterialExpressionAdd 就是具体的加法表达式</p>
+<p>但是 UMaterialExpression 只是一个接口，因为不同表达式的输入输出不同，因此具体的表达式都会派生自 UMaterialExpression，比如 UMaterialExpressionAdd 就是具体的加法表达式</p>
 <p>这里简单贴一下它的 CreateInputPins 的实现</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">void </span><span>UMaterialGraphNode::</span><span style="color:#8fa1b3;">CreateInputPins</span><span>()
 </span><span>{

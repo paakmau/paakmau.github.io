@@ -78,11 +78,11 @@
 </span>
     </header>
     <div itemprop="articleBody">
-      <p>Vue Router 是Vue.js 官方提供的路由管理器，轻松构建单页应用<br />
-本文基于用Vue CLI 创建的脚手架，包括动态路径参数、嵌套路由、命名视图、懒加载</p>
-<span id="continue-reading"></span><h2 id="yin-ru-vue-router">引入Vue Router</h2>
-<p>在使用Vue CLI 构建时需要引入Router</p>
-<p>如果没有，需要安装vue-router 依赖，然后修改main.js 等，但很麻烦就懒得写了</p>
+      <p>Vue Router 是 Vue.js 官方提供的路由管理器，轻松构建单页应用<br />
+本文基于用 Vue CLI 创建的脚手架，包括动态路径参数、嵌套路由、命名视图、懒加载</p>
+<span id="continue-reading"></span><h2 id="yin-ru-vue-router">引入 Vue Router</h2>
+<p>在使用 Vue CLI 构建时需要引入 Router</p>
+<p>如果没有，需要安装 vue-router 依赖，然后修改 main.js 等，但很麻烦就懒得写了</p>
 <h2 id="jiao-shou-jia-zhong-de-xiang-guan-wen-jian">脚手架中的相关文件</h2>
 <p>先介绍一下脚手架中与路由相关的文件</p>
 <p>src/router/index.js<br />
@@ -133,7 +133,7 @@ router 是路由管理器，这里有路由模式、基地址的配置，并把 
 router-link 是类似超链接一样的东西<br />
 router-view 是组件将会被渲染到的地方</p>
 <p>src/main.js<br />
-它 import 了src/router，并且在 Vue 对象实例化的时候传入，随便贴个大概代码</p>
+它 import 了 src/router，并且在 Vue 对象实例化的时候传入，随便贴个大概代码</p>
 <pre data-lang="js" style="background-color:#2b303b;color:#c0c5ce;" class="language-js "><code class="language-js" data-lang="js"><span style="color:#b48ead;">import </span><span style="color:#bf616a;">Vue </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">vue</span><span>&quot;;
 </span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">App </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">./App.vue</span><span>&quot;;
 </span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">router </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">./router</span><span>&quot;;
@@ -177,20 +177,20 @@ router-view 是组件将会被渲染到的地方</p>
 </span><span>
 </span><span style="color:#b48ead;">export default </span><span style="color:#bf616a;">router</span><span>;
 </span></code></pre>
-<p>然后User.vue 长这样</p>
+<p>然后 User.vue 长这样</p>
 <pre data-lang="html" style="background-color:#2b303b;color:#c0c5ce;" class="language-html "><code class="language-html" data-lang="html"><span>&lt;</span><span style="color:#bf616a;">template</span><span>&gt;
 </span><span>  &lt;</span><span style="color:#bf616a;">div </span><span style="color:#d08770;">class</span><span>=&quot;</span><span style="color:#a3be8c;">user</span><span>&quot;&gt;
 </span><span>    &lt;</span><span style="color:#bf616a;">h1</span><span>&gt;User ID: {{ $route.params.id }}&lt;/</span><span style="color:#bf616a;">h1</span><span>&gt;
 </span><span>  &lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
 </span><span>&lt;/</span><span style="color:#bf616a;">template</span><span>&gt;
 </span></code></pre>
-<p>这个东西使用path-to-regexp 作为路径匹配引擎，支持正则匹配，这是它的 GitHub 链接<br />
+<p>这个东西使用 path-to-regexp 作为路径匹配引擎，支持正则匹配，这是它的 GitHub 链接<br />
 <a href="https://github.com/pillarjs/path-to-regexp">https://github.com/pillarjs/path-to-regexp</a></p>
 <p>然后路由匹配是按照定义的顺序决定的，先定义的先匹配<br />
 因此可以在路由的最后配置404页面</p>
 <h2 id="qian-tao-lu-you">嵌套路由</h2>
 <p>就是在子页面中使用路由</p>
-<p>我们在路由配置中为 user 添加profile 子路由，具体如下</p>
+<p>我们在路由配置中为 user 添加 profile 子路由，具体如下</p>
 <pre data-lang="js" style="background-color:#2b303b;color:#c0c5ce;" class="language-js "><code class="language-js" data-lang="js"><span style="color:#b48ead;">import </span><span style="color:#bf616a;">Vue </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">vue</span><span>&quot;;
 </span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">VueRouter </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">vue-router</span><span>&quot;;
 </span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">Home </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">../views/Home.vue</span><span>&quot;;
@@ -225,7 +225,7 @@ router-view 是组件将会被渲染到的地方</p>
 </span><span>});
 </span><span style="color:#b48ead;">export default </span><span style="color:#bf616a;">router</span><span>;
 </span></code></pre>
-<p>同时修改User.vue，为它添加router-view</p>
+<p>同时修改 User.vue，为它添加 router-view</p>
 <pre data-lang="html" style="background-color:#2b303b;color:#c0c5ce;" class="language-html "><code class="language-html" data-lang="html"><span>&lt;</span><span style="color:#bf616a;">template</span><span>&gt;
 </span><span>  &lt;</span><span style="color:#bf616a;">div </span><span style="color:#d08770;">class</span><span>=&quot;</span><span style="color:#a3be8c;">user</span><span>&quot;&gt;
 </span><span>    &lt;</span><span style="color:#bf616a;">h1</span><span>&gt;User ID: {{ $route.params.id }}&lt;/</span><span style="color:#bf616a;">h1</span><span>&gt;
@@ -234,7 +234,7 @@ router-view 是组件将会被渲染到的地方</p>
 </span><span>&lt;/</span><span style="color:#bf616a;">template</span><span>&gt;
 </span></code></pre>
 <h2 id="ming-ming-shi-tu">命名视图</h2>
-<p>有时候同一个页面中会有多个router-view，我们希望在不同的视图中显示不同的东西</p>
+<p>有时候同一个页面中会有多个 router-view，我们希望在不同的视图中显示不同的东西</p>
 <p>路由配置如下</p>
 <pre data-lang="js" style="background-color:#2b303b;color:#c0c5ce;" class="language-js "><code class="language-js" data-lang="js"><span style="color:#b48ead;">import </span><span style="color:#bf616a;">Vue </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">vue</span><span>&quot;;
 </span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">VueRouter </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">vue-router</span><span>&quot;;

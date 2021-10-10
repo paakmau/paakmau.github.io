@@ -13,9 +13,9 @@
 		<updated>2020-03-30T19:31:41+00:00</updated>
 		<link href="https://paakmau.github.io/202003301931/" type="text/html"/>
 		<id>https://paakmau.github.io/202003301931/</id>
-		<content type="html">&lt;p&gt;现在 SpringBoot 上比较主流的持久层ORM 框架应该就是 MyBatis 和JPA 了。JPA 对于简单查询（特别是作业）非常方便，可以说开箱即用，但是面对复杂查询就要稍微多学一点；而 MyBatis 写起来虽然没那么简洁，但在复杂查询的时候直接上 SQL 语句就完事了&lt;&#x2F;p&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;yin-ru-jpa-yu-mysql-yi-lai&quot;&gt;引入 JPA 与MySQL 依赖&lt;&#x2F;h2&gt;
-&lt;p&gt;在pom.xml 中添加如下两条&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;现在 SpringBoot 上比较主流的持久层 ORM 框架应该就是 MyBatis 和 JPA 了。JPA 对于简单查询（特别是作业）非常方便，可以说开箱即用，但是面对复杂查询就要稍微多学一点；而 MyBatis 写起来虽然没那么简洁，但在复杂查询的时候直接上 SQL 语句就完事了&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;yin-ru-jpa-yu-mysql-yi-lai&quot;&gt;引入 JPA 与 MySQL 依赖&lt;&#x2F;h2&gt;
+&lt;p&gt;在 pom.xml 中添加如下两条&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;xml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-xml &quot;&gt;&lt;code class=&quot;language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;dependency&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;groupId&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;mysql&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;groupId&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;artifactId&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;mysql-connector-java&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;artifactId&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
@@ -27,8 +27,8 @@
 &lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;scope&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;compile&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;scope&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;dependency&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;h2 id=&quot;pei-zhi-application-yml&quot;&gt;配置application.yml&lt;&#x2F;h2&gt;
-&lt;p&gt;提醒一下，URL 中的数据库要提前建好，比如下面示例中的数据库是library&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;pei-zhi-application-yml&quot;&gt;配置 application.yml&lt;&#x2F;h2&gt;
+&lt;p&gt;提醒一下，URL 中的数据库要提前建好，比如下面示例中的数据库是 library&lt;&#x2F;p&gt;
 &lt;p&gt;然后用户名和密码也在这里配置&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;yml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-yml &quot;&gt;&lt;code class=&quot;language-yml&quot; data-lang=&quot;yml&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;spring&lt;&#x2F;span&gt;&lt;span&gt;:
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;datasource&lt;&#x2F;span&gt;&lt;span&gt;:
@@ -57,8 +57,8 @@
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;注意：对于实体，本文都省略了Getter、Setter 和构造函数&lt;&#x2F;p&gt;
-&lt;p&gt;然后对于一个Entity，需要写一个继承自 JpaRepository 的接口供逻辑层调用，不需要写实现类&lt;&#x2F;p&gt;
+&lt;p&gt;注意：对于实体，本文都省略了 Getter、Setter 和构造函数&lt;&#x2F;p&gt;
+&lt;p&gt;然后对于一个 Entity，需要写一个继承自 JpaRepository 的接口供逻辑层调用，不需要写实现类&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public interface &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;BookRepo &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;extends &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;JpaRepository&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Book&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Long&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;&amp;gt; {
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
@@ -89,10 +89,10 @@
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;需要注意的是 JPA 的save 方法，如果实体的 ID 为空或零，他会INSERT，否则UPDATE&lt;br &#x2F;&gt;
+&lt;p&gt;需要注意的是 JPA 的 save 方法，如果实体的 ID 为空或零，他会 INSERT，否则 UPDATE&lt;br &#x2F;&gt;
 并且 save 方法的返回值才能作为最终有效的实体，作为参数传入的实体 JPA 不保证有效&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;zi-ding-yi-cha-xun&quot;&gt;自定义查询&lt;&#x2F;h2&gt;
-&lt;p&gt;根据语法提示我们发现 JpaRepository 提供了跟ID 有关的很多访问数据库的方法，但是对于其他查询就要自己写，比如使用 ID 之外的字段来查询记录&lt;&#x2F;p&gt;
+&lt;p&gt;根据语法提示我们发现 JpaRepository 提供了跟 ID 有关的很多访问数据库的方法，但是对于其他查询就要自己写，比如使用 ID 之外的字段来查询记录&lt;&#x2F;p&gt;
 &lt;p&gt;直接在方法名中写查询语句就行了，不过要注意字段名的大小写&lt;&#x2F;p&gt;
 &lt;p&gt;我们修改 BookRepo 如下&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public interface &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;BookRepo &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;extends &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;JpaRepository&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Book&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Long&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;&amp;gt; {
@@ -118,12 +118,12 @@
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;并添加一个Repo&lt;&#x2F;p&gt;
+&lt;p&gt;并添加一个 Repo&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public interface &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;AuthorRepo &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;extends &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;JpaRepository&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Author&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Long&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;&amp;gt; {
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;然后修改 Book 如下&lt;&#x2F;p&gt;
-&lt;p&gt;这里的 ManyToOne 表示多个Book 对应同一个Author，此外还有OneToMany、ManyToMany 等&lt;&#x2F;p&gt;
+&lt;p&gt;这里的 ManyToOne 表示多个 Book 对应同一个 Author，此外还有 OneToMany、ManyToMany 等&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;@&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Entity
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Book &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;

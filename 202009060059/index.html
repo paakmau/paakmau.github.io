@@ -145,7 +145,7 @@
 </span><span>    </span><span style="color:#b48ead;">return </span><span>std::</span><span style="color:#bf616a;">optional</span><span>&lt;uint32_t&gt;();
 </span><span>}
 </span></code></pre>
-<p>注意到uint32_t 的任何取值都有可能是一个真实存在的队列族索引，因此我们使用std::optional 来处理获取失败的情况</p>
+<p>注意到 uint32_t 的任何取值都有可能是一个真实存在的队列族索引，因此我们使用 std::optional 来处理获取失败的情况</p>
 <p>然后我们修改 pickPhysicalDevice 中遍历物理设备并选择集显的那部分代码，在其中尝试获取这个显卡支持的我们需要的队列族，并判断是否获取成功</p>
 <p>这部分的完整代码如下</p>
 <pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#65737e;">// 选取一个合适的设备

@@ -8,27 +8,27 @@
 	<updated>2020-03-31T23:47:45+00:00</updated>
 	<id>https://paakmau.github.io/tags/opengl/atom.xml</id>
 	<entry xml:lang="zh">
-		<title>Mac 下使用 Makefile 基于GLFW 配置Dear ImGui</title>
+		<title>Mac 下使用 Makefile 基于 GLFW 配置 Dear ImGui</title>
 		<published>2020-03-31T23:47:45+00:00</published>
 		<updated>2020-03-31T23:47:45+00:00</updated>
 		<link href="https://paakmau.github.io/202003312347/" type="text/html"/>
 		<id>https://paakmau.github.io/202003312347/</id>
-		<content type="html">&lt;p&gt;用 Xcode 配置起来很简单，但是OpenGL.framework 被弃用了，会爆不少警告（其实是因为我习惯了 VSC 改不过来）&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;用 Xcode 配置起来很简单，但是 OpenGL.framework 被弃用了，会爆不少警告（其实是因为我习惯了 VSC 改不过来）&lt;&#x2F;p&gt;
 &lt;p&gt;于是尝试用 Makefile 搞一搞&lt;&#x2F;p&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;an-zhuang-glew-he-glfw&quot;&gt;安装 GLEW 和GLFW&lt;&#x2F;h2&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;an-zhuang-glew-he-glfw&quot;&gt;安装 GLEW 和 GLFW&lt;&#x2F;h2&gt;
 &lt;p&gt;使用 brew 安装就行，它会把对应的库和头文放在在&#x2F;usr&#x2F;local&#x2F;lib 和&#x2F;usr&#x2F;local&#x2F;include 下&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; brew install glew
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; brew install glfw
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;h2 id=&quot;huo-qu-dear-imgui-yuan-ma&quot;&gt;获取Dear ImGui 源码&lt;&#x2F;h2&gt;
+&lt;h2 id=&quot;huo-qu-dear-imgui-yuan-ma&quot;&gt;获取 Dear ImGui 源码&lt;&#x2F;h2&gt;
 &lt;p&gt;我们可以直接把它的源码 Clone 下来&lt;&#x2F;p&gt;
 &lt;p&gt;仓库地址在这里&lt;br &#x2F;&gt;
 &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;ocornut&#x2F;imgui&quot;&gt;https:&#x2F;&#x2F;github.com&#x2F;ocornut&#x2F;imgui&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;然后其实看看 examples 里的例子抄抄就完事了（本文也是靠着它写的）&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;yin-ru-dear-imgui-ku&quot;&gt;引入Dear ImGui 库&lt;&#x2F;h2&gt;
-&lt;p&gt;首先建一个libs&#x2F;imgui 文件夹用于存放这个外部库&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;yin-ru-dear-imgui-ku&quot;&gt;引入 Dear ImGui 库&lt;&#x2F;h2&gt;
+&lt;p&gt;首先建一个 libs&#x2F;imgui 文件夹用于存放这个外部库&lt;&#x2F;p&gt;
 &lt;p&gt;然后把项目源码根目录下的源文件跟头文件都拷贝进去&lt;br &#x2F;&gt;
-还有 examples 下的imgui_impl_glfw.cpp、imgui_impl_glfw.h、imgui_impl_opengl3.cpp、imgui_impl_opengl3.h&lt;&#x2F;p&gt;
+还有 examples 下的 imgui_impl_glfw.cpp、imgui_impl_glfw.h、imgui_impl_opengl3.cpp、imgui_impl_opengl3.h&lt;&#x2F;p&gt;
 &lt;p&gt;最后给个图&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;03&#x2F;image-1.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;makefile&quot;&gt;Makefile&lt;&#x2F;h2&gt;

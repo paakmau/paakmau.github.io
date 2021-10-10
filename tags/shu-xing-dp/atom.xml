@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh">
-	<title>泊谋 - 树形DP</title>
+	<title>泊谋 - 树形 DP</title>
 	<subtitle>随便写写，开心就行。</subtitle>
 	<link href="https://paakmau.github.io/tags/shu-xing-dp/atom.xml" rel="self" type="application/atom+xml"/>
   <link href="https://paakmau.github.io"/>
@@ -13,7 +13,7 @@
 		<updated>2019-12-19T17:51:23+00:00</updated>
 		<link href="https://paakmau.github.io/201912191751/" type="text/html"/>
 		<id>https://paakmau.github.io/201912191751/</id>
-		<content type="html">&lt;p&gt;一题简单的树形DP&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;一题简单的树形 DP&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;ti-mu-miao-shu&quot;&gt;题目描述&lt;&#x2F;h2&gt;
 &lt;p&gt;There is an old stone game, played on an arbitrary general tree T. The goal is to put one stone on the root of T observing the following rules:&lt;&#x2F;p&gt;
 &lt;ol&gt;
@@ -56,7 +56,7 @@ You are to write a program to determine the least number of stones to be picked 
 &lt;&#x2F;span&gt;&lt;span&gt;4
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;ti-jie&quot;&gt;题解&lt;&#x2F;h2&gt;
-&lt;p&gt;树形DP&lt;br &#x2F;&gt;
+&lt;p&gt;树形 DP&lt;br &#x2F;&gt;
 F(p)表示 p 节点最少需要的石子数&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;cstdio&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;cstring&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;

@@ -15,11 +15,11 @@
 		<id>https://paakmau.github.io/201912232105/</id>
 		<content type="html">&lt;p&gt;参考的是这个项目&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;mathielo&#x2F;dst-dedicated-server&quot;&gt;https:&#x2F;&#x2F;github.com&#x2F;mathielo&#x2F;dst-dedicated-server&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;xiang-mu-clone&quot;&gt;项目Clone&lt;&#x2F;h2&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;xiang-mu-clone&quot;&gt;项目 Clone&lt;&#x2F;h2&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; git clone https:&#x2F;&#x2F;github.com&#x2F;mathielo&#x2F;dst-dedicated-server.git
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;token-pei-zhi&quot;&gt;Token 配置&lt;&#x2F;h2&gt;
-&lt;p&gt;游戏中可以在控制台里输入如下命令生成Token&lt;&#x2F;p&gt;
+&lt;p&gt;游戏中可以在控制台里输入如下命令生成 Token&lt;&#x2F;p&gt;
 &lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;TheNet:GenerateClusterToken()
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;也可以用图形化界面生成（进游戏之后 xjb 乱按就能找到）&lt;&#x2F;p&gt;
@@ -32,15 +32,15 @@ cluster_name 房间名&lt;br &#x2F;&gt;
 cluster_description 房间描述&lt;br &#x2F;&gt;
 cluster_password 密码&lt;&#x2F;p&gt;
 &lt;p&gt;DSTClusterConfig&#x2F;mods&#x2F;dedicated_server_mods_setup.lua&lt;br &#x2F;&gt;
-用于安装Mod，同目录下有个示例，照着写就行&lt;&#x2F;p&gt;
+用于安装 Mod，同目录下有个示例，照着写就行&lt;&#x2F;p&gt;
 &lt;p&gt;DSTClusterConfig&#x2F;mods&#x2F;modoverrides.lua&lt;br &#x2F;&gt;
-用于配置Mod，同目录下有个示例，还是照着写就行&lt;&#x2F;p&gt;
+用于配置 Mod，同目录下有个示例，还是照着写就行&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;fu-wu-qi-qi-dong&quot;&gt;服务器启动&lt;&#x2F;h2&gt;
 &lt;p&gt;切到项目根目录，执行以下命令即可&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; sudo docker-compose up&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -d
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;fu-wu-qi-zan-ting&quot;&gt;服务器暂停&lt;&#x2F;h2&gt;
-&lt;p&gt;如果需要停止服务器，需要 attach 到dst_master 容器中手动停止&lt;&#x2F;p&gt;
+&lt;p&gt;如果需要停止服务器，需要 attach 到 dst_master 容器中手动停止&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; sudo docker attach dst_master
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;然后会进入饥荒服务器的控制台&lt;br &#x2F;&gt;
@@ -61,14 +61,14 @@ c_rollback(count) 回档&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Docker 下使用Let&#x27;s Encrypt 与 nginx 搭建支持HTTPS 的 WordPress 博客</title>
+		<title>Docker 下使用 Let&#x27;s Encrypt 与 nginx 搭建支持 HTTPS 的 WordPress 博客</title>
 		<published>2019-12-18T19:16:13+00:00</published>
 		<updated>2019-12-18T19:16:13+00:00</updated>
 		<link href="https://paakmau.github.io/201912181916/" type="text/html"/>
 		<id>https://paakmau.github.io/201912181916/</id>
-		<content type="html">&lt;p&gt;Let&#x27;s Encrypt 提供免费 SSL 证书的自动签发续签服务，我们可以用它来为博客启用HTTPS&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;Let&#x27;s Encrypt 提供免费 SSL 证书的自动签发续签服务，我们可以用它来为博客启用 HTTPS&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;qian-fa-zheng-shu&quot;&gt;签发证书&lt;&#x2F;h2&gt;
-&lt;p&gt;我们使用certbot&#x2F;certbot 镜像构建一次性容器签发证书&lt;&#x2F;p&gt;
+&lt;p&gt;我们使用 certbot&#x2F;certbot 镜像构建一次性容器签发证书&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; docker volume create data_letsencrypt
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; docker run&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --rm -p&lt;&#x2F;span&gt;&lt;span&gt; 80:80&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -p&lt;&#x2F;span&gt;&lt;span&gt; 443:443 \
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;   -v&lt;&#x2F;span&gt;&lt;span&gt; data_letsencrypt:&#x2F;etc&#x2F;letsencrypt \
@@ -78,10 +78,10 @@ c_rollback(count) 回档&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;解释：&lt;br &#x2F;&gt;
 --rm 表示容器结束后就自动删除&lt;&#x2F;p&gt;
-&lt;p&gt;其中yourname@email.com 为你的邮箱&lt;br &#x2F;&gt;
+&lt;p&gt;其中 yourname@email.com 为你的邮箱&lt;br &#x2F;&gt;
 example.com 为博客的域名&lt;br &#x2F;&gt;
-证书会被生成在data_letsencrypt 数据卷下的live&#x2F;example.com 目录中&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;bu-shu-mysql-yu-wordpress&quot;&gt;部署 MySQL 与WordPress&lt;&#x2F;h2&gt;
+证书会被生成在 data_letsencrypt 数据卷下的 live&#x2F;example.com 目录中&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;bu-shu-mysql-yu-wordpress&quot;&gt;部署 MySQL 与 WordPress&lt;&#x2F;h2&gt;
 &lt;p&gt;基本正常部署&lt;br &#x2F;&gt;
 但由于我们使用 nginx 反向代理，所以 WordPress 不需要做端口映射&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; docker volume create data_mysql_wordpress
@@ -103,10 +103,10 @@ example.com 为博客的域名&lt;br &#x2F;&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;   -p&lt;&#x2F;span&gt;&lt;span&gt; 80:80&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -p&lt;&#x2F;span&gt;&lt;span&gt; 443:443 nginx
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;解释：&lt;br &#x2F;&gt;
-nginx 的配置文件会被放在data_nginx_conf 数据卷中&lt;br &#x2F;&gt;
-映射data_letsencrypt 数据卷以获取证书&lt;br &#x2F;&gt;
+nginx 的配置文件会被放在 data_nginx_conf 数据卷中&lt;br &#x2F;&gt;
+映射 data_letsencrypt 数据卷以获取证书&lt;br &#x2F;&gt;
 链接 wordpress 容器用于代理转发&lt;&#x2F;p&gt;
-&lt;p&gt;进入data_nginx_conf 数据卷并修改default.conf 如下&lt;&#x2F;p&gt;
+&lt;p&gt;进入 data_nginx_conf 数据卷并修改 default.conf 如下&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;conf&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-conf &quot;&gt;&lt;code class=&quot;language-conf&quot; data-lang=&quot;conf&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;server &lt;&#x2F;span&gt;&lt;span&gt;{
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;listen &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;443&lt;&#x2F;span&gt;&lt;span&gt; ssl;
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;server_name &lt;&#x2F;span&gt;&lt;span&gt;example.com;
@@ -131,9 +131,9 @@ nginx 的配置文件会被放在data_nginx_conf 数据卷中&lt;br &#x2F;&gt;
 &lt;&#x2F;span&gt;&lt;span&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;解释：&lt;br &#x2F;&gt;
-其中ssl_certificate 与ssl_certificate_key 设定了证书的路径，需要把example.com 替换为你博客的域名&lt;br &#x2F;&gt;
+其中 ssl_certificate 与 ssl_certificate_key 设定了证书的路径，需要把 example.com 替换为你博客的域名&lt;br &#x2F;&gt;
 proxy_pass 用于转发 wordpress 容器的80端口&lt;br &#x2F;&gt;
-最后监听本容器的80端口把 HTTP 重定向到HTTPS&lt;&#x2F;p&gt;
+最后监听本容器的80端口把 HTTP 重定向到 HTTPS&lt;&#x2F;p&gt;
 &lt;p&gt;然后重启 nginx 容器就完成了&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; docker restart nginx
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
@@ -142,7 +142,7 @@ proxy_pass 用于转发 wordpress 容器的80端口&lt;br &#x2F;&gt;
 &lt;p&gt;我们先把 nginx 停了，把端口让出来&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; docker stop nginx
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;然后再次使用certbot&#x2F;certbot 进行续签&lt;&#x2F;p&gt;
+&lt;p&gt;然后再次使用 certbot&#x2F;certbot 进行续签&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; docker run&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --rm -p&lt;&#x2F;span&gt;&lt;span&gt; 80:80&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -p&lt;&#x2F;span&gt;&lt;span&gt; 443:443 \
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;   -v&lt;&#x2F;span&gt;&lt;span&gt; data_letsencrypt:&#x2F;etc&#x2F;letsencrypt \
 &lt;&#x2F;span&gt;&lt;span&gt;   certbot&#x2F;certbot renew&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --standalone
@@ -159,7 +159,7 @@ proxy_pass 用于转发 wordpress 容器的80端口&lt;br &#x2F;&gt;
 		<updated>2019-12-12T17:24:24+00:00</updated>
 		<link href="https://paakmau.github.io/201912121724/" type="text/html"/>
 		<id>https://paakmau.github.io/201912121724/</id>
-		<content type="html">&lt;p&gt;本文将光速创建一个HelloWorld，然后使用 Docker 进行部署&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;本文将光速创建一个 HelloWorld，然后使用 Docker 进行部署&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;xin-jian-bing-fa-bu-net-core-kong-zhi-tai-xiang-mu&quot;&gt;新建并发布.NET Core 控制台项目&lt;&#x2F;h2&gt;
 &lt;p&gt;首先新建一个.NET Core 控制台项目，并直接运行&lt;br &#x2F;&gt;
 控制台应该会输出“Hello World!”，如果没有可以自己写一个。&lt;&#x2F;p&gt;
@@ -168,12 +168,12 @@ proxy_pass 用于转发 wordpress 容器的80端口&lt;br &#x2F;&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; dotnet run
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;解释：&lt;br &#x2F;&gt;
-dotnet new 用于创建新项目，console 表示是控制台项目，--name 指定项目名称为 hello 并在当前路径下创建hello 文件夹，而项目在其中。&lt;&#x2F;p&gt;
+dotnet new 用于创建新项目，console 表示是控制台项目，--name 指定项目名称为 hello 并在当前路径下创建 hello 文件夹，而项目在其中。&lt;&#x2F;p&gt;
 &lt;p&gt;于是直接发布&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; dotnet publish&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -c&lt;&#x2F;span&gt;&lt;span&gt; Release
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;解释：该命令会把项目发布到 hello 文件夹中的bin&#x2F;Release&#x2F;netcoreapp3.0&#x2F;publish 里&lt;&#x2F;p&gt;
-&lt;p&gt;然后在 hello 目录下编写Dockerfile 文件用于生成镜像&lt;br &#x2F;&gt;
+&lt;p&gt;解释：该命令会把项目发布到 hello 文件夹中的 bin&#x2F;Release&#x2F;netcoreapp3.0&#x2F;publish 里&lt;&#x2F;p&gt;
+&lt;p&gt;然后在 hello 目录下编写 Dockerfile 文件用于生成镜像&lt;br &#x2F;&gt;
 Dockerfile&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;dockerfile&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-dockerfile &quot;&gt;&lt;code class=&quot;language-dockerfile&quot; data-lang=&quot;dockerfile&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;FROM&lt;&#x2F;span&gt;&lt;span&gt; mcr.microsoft.com&#x2F;dotnet&#x2F;core&#x2F;runtime
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;COPY&lt;&#x2F;span&gt;&lt;span&gt; bin&#x2F;Release&#x2F;netcoreapp3.0&#x2F;publish&#x2F; &#x2F;publish
@@ -182,7 +182,7 @@ Dockerfile&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;解释：&lt;br &#x2F;&gt;
 FROM&lt;br &#x2F;&gt;
-表示我们的镜像基于dotnet core runtime&lt;&#x2F;p&gt;
+表示我们的镜像基于 dotnet core runtime&lt;&#x2F;p&gt;
 &lt;p&gt;COPY&lt;br &#x2F;&gt;
 用于拷贝我们打包好的应用，这里第一个参数的路径应该替换为应用的发布路径&lt;&#x2F;p&gt;
 &lt;p&gt;WORKDIR&lt;br &#x2F;&gt;
@@ -198,7 +198,7 @@ FROM&lt;br &#x2F;&gt;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;解释：&lt;br &#x2F;&gt;
 -t 表示虚拟终端，用于在 Docker 命令行工具中输出应用的控制台输出。但一般项目中不需要&lt;br &#x2F;&gt;
---name hello 表示容器名为hello&lt;&#x2F;p&gt;
+--name hello 表示容器名为 hello&lt;&#x2F;p&gt;
 &lt;p&gt;最后看到终端输出“Hello World!”&lt;&#x2F;p&gt;
 </content>
 	</entry>
@@ -209,12 +209,12 @@ FROM&lt;br &#x2F;&gt;
 		<link href="https://paakmau.github.io/201912112126/" type="text/html"/>
 		<id>https://paakmau.github.io/201912112126/</id>
 		<content type="html">&lt;p&gt;Docker Daemon 运行在 Debian 上，Docker Client 在 macOS 上&lt;&#x2F;p&gt;
-&lt;p&gt;因为不想在本地安装Docker，考虑在本地用Docker Client 远程连接到远程服务器的Docker Daemon 上。&lt;&#x2F;p&gt;
+&lt;p&gt;因为不想在本地安装 Docker，考虑在本地用 Docker Client 远程连接到远程服务器的 Docker Daemon 上。&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;ming-ci-jie-shi&quot;&gt;名词解释&lt;&#x2F;h2&gt;
 &lt;p&gt;Docker Daemon，可以理解为 Docker 的后端，也是 Docker 项目实际运行的地方。&lt;&#x2F;p&gt;
-&lt;p&gt;Docker client，Docker 的客户端，可以用来控制 Daemon 运行Docker 项目。&lt;&#x2F;p&gt;
+&lt;p&gt;Docker client，Docker 的客户端，可以用来控制 Daemon 运行 Docker 项目。&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;fu-wu-duan-debian-pei-zhi-yuan-cheng-lian-jie&quot;&gt;服务端（Debian）配置远程连接&lt;&#x2F;h2&gt;
-&lt;p&gt;覆盖配置docker.service 即可&lt;&#x2F;p&gt;
+&lt;p&gt;覆盖配置 docker.service 即可&lt;&#x2F;p&gt;
 &lt;p&gt;修改&#x2F;etc&#x2F;systemd&#x2F;system&#x2F;docker.service.d&#x2F;override.conf 的内容如下&lt;br &#x2F;&gt;
 （如果目录或文件不存在就直接创建）&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;conf&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-conf &quot;&gt;&lt;code class=&quot;language-conf&quot; data-lang=&quot;conf&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;[Service]
@@ -222,30 +222,30 @@ FROM&lt;br &#x2F;&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ExecStart&lt;&#x2F;span&gt;&lt;span&gt;=&#x2F;usr&#x2F;bin&#x2F;dockerd -H &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;tcp:&#x2F;&#x2F;0.0.0.0:2337 &lt;&#x2F;span&gt;&lt;span&gt;-H &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;unix:&#x2F;&#x2F;&#x2F;var&#x2F;run&#x2F;docker.sock
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;解释：&lt;br &#x2F;&gt;
-第二行用于清除原本的ExecStart，不可缺少&lt;&#x2F;p&gt;
+第二行用于清除原本的 ExecStart，不可缺少&lt;&#x2F;p&gt;
 &lt;p&gt;-H tcp:&#x2F;&#x2F;0.0.0.0:2337&lt;br &#x2F;&gt;
 监听2337端口，使得 Daemon 可以由2337端口远程访问&lt;&#x2F;p&gt;
 &lt;p&gt;-H unix:&#x2F;&#x2F;&#x2F;var&#x2F;run&#x2F;docker.sock&lt;br &#x2F;&gt;
-监听 Unix 域Socket，使得原本的本地连接方式依然可用&lt;&#x2F;p&gt;
+监听 Unix 域 Socket，使得原本的本地连接方式依然可用&lt;&#x2F;p&gt;
 &lt;p&gt;重启后台进程与 Docker 服务&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; systemctl daemon-reload
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; systemctl restart docker
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;至此，我们就能通过2337端口远程访问Docker Daemon 了&lt;&#x2F;p&gt;
+&lt;p&gt;至此，我们就能通过2337端口远程访问 Docker Daemon 了&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;ke-hu-duan-macos-pei-zhi-yuan-cheng-lian-jie&quot;&gt;客户端（macOS）配置远程连接&lt;&#x2F;h2&gt;
-&lt;p&gt;安装Docker Client&lt;&#x2F;p&gt;
+&lt;p&gt;安装 Docker Client&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; brew install docker
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;临时指定 Docker 服务器的地址&lt;br &#x2F;&gt;
-需要修改x.x.x.x 为服务器的ip&lt;br &#x2F;&gt;
-如有需要，可以把DOCKER_HOST 环境变量写入.bashrc 或者.zshrc&lt;&#x2F;p&gt;
+需要修改 x.x.x.x 为服务器的 ip&lt;br &#x2F;&gt;
+如有需要，可以把 DOCKER_HOST 环境变量写入.bashrc 或者.zshrc&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; export DOCKER_HOST=tcp:&#x2F;&#x2F;x.x.x.x:2337
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;显示 Docker 信息以确认是否成功&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; docker info
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;fu-wu-duan-debian-pei-zhi-yuan-cheng-lian-jie-jia-mi&quot;&gt;服务端（Debian）配置远程连接加密&lt;&#x2F;h2&gt;
-&lt;p&gt;发现远程连接不需要验证，如果有人获取了我们服务器的 ip 与端口，他就能直接连接到Docker Daemon。并且 Docker 具有root 权限，不加密十分危险。&lt;&#x2F;p&gt;
+&lt;p&gt;发现远程连接不需要验证，如果有人获取了我们服务器的 ip 与端口，他就能直接连接到 Docker Daemon。并且 Docker 具有 root 权限，不加密十分危险。&lt;&#x2F;p&gt;
 &lt;p&gt;所以接下来我们快速配置加密连接&lt;&#x2F;p&gt;
 &lt;p&gt;执行下述脚本在&#x2F;etc&#x2F;docker 目录下直接创建密钥&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 创建 certs 目录并切换路径
@@ -280,7 +280,7 @@ FROM&lt;br &#x2F;&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 删除多余的文件
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;rm -rf&lt;&#x2F;span&gt;&lt;span&gt; ca.srl client.csr extfile.cnf server.csr
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;接下来覆盖配置docker.service&lt;br &#x2F;&gt;
+&lt;p&gt;接下来覆盖配置 docker.service&lt;br &#x2F;&gt;
 修改&#x2F;etc&#x2F;systemd&#x2F;system&#x2F;docker.service.d&#x2F;override.conf 的内容如下&lt;br &#x2F;&gt;
 （如果目录或文件不存在就直接创建）&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;conf&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-conf &quot;&gt;&lt;code class=&quot;language-conf&quot; data-lang=&quot;conf&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;[Service]
@@ -290,7 +290,7 @@ FROM&lt;br &#x2F;&gt;
 &lt;p&gt;解释：基本跟上文的远程连接配置相同，只是指定了 tls 认证方式&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;ke-hu-duan-macos-pei-zhi-yuan-cheng-lian-jie-jia-mi&quot;&gt;客户端（macOS）配置远程连接加密&lt;&#x2F;h2&gt;
 &lt;p&gt;首先拷贝密钥&lt;br &#x2F;&gt;
-将服务器上&#x2F;etc&#x2F;docker&#x2F;certs 下的ca.pem、cert.pem、key.pem 拷贝到客户端的~&#x2F;.docker 中&lt;&#x2F;p&gt;
+将服务器上&#x2F;etc&#x2F;docker&#x2F;certs 下的 ca.pem、cert.pem、key.pem 拷贝到客户端的~&#x2F;.docker 中&lt;&#x2F;p&gt;
 &lt;p&gt;然后配置 Docker 环境变量到.zshrc 或.bashrc 中&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;export &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;DOCKER_HOST&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;tcp:&#x2F;&#x2F;x.x.x.x:2337 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;DOCKER_TLS_VERIFY&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;1
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
@@ -358,13 +358,13 @@ FROM&lt;br &#x2F;&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;   &lt;&#x2F;span&gt;&lt;span&gt;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;lsb_release -cs&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;   stable&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;接下来更新apt&lt;&#x2F;p&gt;
+&lt;p&gt;接下来更新 apt&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; sudo apt update
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;安装Docker&lt;&#x2F;p&gt;
+&lt;p&gt;安装 Docker&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; sudo apt install docker-ce docker-ce-cli containerd.io
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;尝试HelloWorld&lt;br &#x2F;&gt;
+&lt;p&gt;尝试 HelloWorld&lt;br &#x2F;&gt;
 观察到类似以下输出的东西就安装成功了&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; sudo docker run hello-world
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Unable&lt;&#x2F;span&gt;&lt;span&gt; to find image &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;hello-world:latest&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39; locally
@@ -394,7 +394,7 @@ FROM&lt;br &#x2F;&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;For&lt;&#x2F;span&gt;&lt;span&gt; more examples and ideas, visit:
 &lt;&#x2F;span&gt;&lt;span&gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;https:&#x2F;&#x2F;docs.docker.com&#x2F;get-started&#x2F;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;h2 id=&quot;shi-yong-snap-an-zhuang-docker&quot;&gt;使用 Snap 安装Docker&lt;&#x2F;h2&gt;
+&lt;h2 id=&quot;shi-yong-snap-an-zhuang-docker&quot;&gt;使用 Snap 安装 Docker&lt;&#x2F;h2&gt;
 &lt;p&gt;喜闻乐见，在沙箱中运行沙箱&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; sudo snap install docker
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
@@ -418,13 +418,13 @@ FROM&lt;br &#x2F;&gt;
 		<updated>2019-12-11T19:14:31+00:00</updated>
 		<link href="https://paakmau.github.io/201912111914/" type="text/html"/>
 		<id>https://paakmau.github.io/201912111914/</id>
-		<content type="html">&lt;p&gt;阅读本文了解 Docker 上的WordPress 快速部署，及其数据备份获取&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;阅读本文了解 Docker 上的 WordPress 快速部署，及其数据备份获取&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;da-zhi-bu-zou&quot;&gt;大致步骤&lt;&#x2F;h2&gt;
 &lt;p&gt;先创建 Volume 用于备份&lt;br &#x2F;&gt;
 然后运行 MySQL 容器&lt;br &#x2F;&gt;
 最后运行 WordPress 容器&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;chuang-jian-volume&quot;&gt;创建Volume&lt;&#x2F;h2&gt;
-&lt;p&gt;创建分别用于 MySQL 和WordPress 的volume&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;chuang-jian-volume&quot;&gt;创建 Volume&lt;&#x2F;h2&gt;
+&lt;p&gt;创建分别用于 MySQL 和 WordPress 的 volume&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; docker volume create data_mysql_wordpress
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; docker volume create data_wordpress
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
@@ -440,15 +440,15 @@ FROM&lt;br &#x2F;&gt;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;参数解释：&lt;br &#x2F;&gt;
 -d 后台运行&lt;br &#x2F;&gt;
---name 设置容器的name&lt;br &#x2F;&gt;
+--name 设置容器的 name&lt;br &#x2F;&gt;
 -v 映射数据卷&lt;br &#x2F;&gt;
 -e 设置环境变量&lt;br &#x2F;&gt;
 mysql --default-authentication-plugin=mysql_native_password&lt;br &#x2F;&gt;
 设置 mysql 的默认加密插件&lt;&#x2F;p&gt;
 &lt;p&gt;加密插件问题&lt;br &#x2F;&gt;
-因为这里使用了MySQL 8.0，它的默认认证插件是caching_sha2_password，WordPress 连接比较麻烦，改回mysql_native_password 省事一点。&lt;br &#x2F;&gt;
-或者可以直接使用mysql:5.7镜像&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;yun-xing-wordpress-rong-qi-bing-lian-jie-mysql&quot;&gt;运行 WordPress 容器并链接MySQL&lt;&#x2F;h2&gt;
+因为这里使用了 MySQL 8.0，它的默认认证插件是 caching_sha2_password，WordPress 连接比较麻烦，改回 mysql_native_password 省事一点。&lt;br &#x2F;&gt;
+或者可以直接使用 mysql:5.7镜像&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;yun-xing-wordpress-rong-qi-bing-lian-jie-mysql&quot;&gt;运行 WordPress 容器并链接 MySQL&lt;&#x2F;h2&gt;
 &lt;p&gt;先拉取 wordpress 镜像（如果需要）&lt;br &#x2F;&gt;
 然后创建并运行 wordpress 容器&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; docker pull wordpress
@@ -459,12 +459,12 @@ mysql --default-authentication-plugin=mysql_native_password&lt;br &#x2F;&gt;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;参数解释：&lt;br &#x2F;&gt;
 -d 后台运行&lt;br &#x2F;&gt;
---name 设置容器的name&lt;br &#x2F;&gt;
+--name 设置容器的 name&lt;br &#x2F;&gt;
 -p 映射容器80端口到本机的80端口&lt;br &#x2F;&gt;
 -v 映射数据卷&lt;br &#x2F;&gt;
---link 链接MySQL&lt;&#x2F;p&gt;
+--link 链接 MySQL&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;huo-qu-bei-fen&quot;&gt;获取备份&lt;&#x2F;h2&gt;
-&lt;p&gt;使用docker volume inspect 命令获取 mysql 和wordpress 的数据存储路径&lt;br &#x2F;&gt;
+&lt;p&gt;使用 docker volume inspect 命令获取 mysql 和 wordpress 的数据存储路径&lt;br &#x2F;&gt;
 输出里的 Mountpoint 即是数据存储路径&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; docker volume inspect data_mysql_wordpress
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;[

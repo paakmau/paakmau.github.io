@@ -80,11 +80,11 @@
     <div itemprop="articleBody">
       <p>参考的是这个项目</p>
 <p><a href="https://github.com/mathielo/dst-dedicated-server">https://github.com/mathielo/dst-dedicated-server</a></p>
-<span id="continue-reading"></span><h2 id="xiang-mu-clone">项目Clone</h2>
+<span id="continue-reading"></span><h2 id="xiang-mu-clone">项目 Clone</h2>
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> git clone https://github.com/mathielo/dst-dedicated-server.git
 </span></code></pre>
 <h2 id="token-pei-zhi">Token 配置</h2>
-<p>游戏中可以在控制台里输入如下命令生成Token</p>
+<p>游戏中可以在控制台里输入如下命令生成 Token</p>
 <pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>TheNet:GenerateClusterToken()
 </span></code></pre>
 <p>也可以用图形化界面生成（进游戏之后 xjb 乱按就能找到）</p>
@@ -97,15 +97,15 @@ cluster_name 房间名<br />
 cluster_description 房间描述<br />
 cluster_password 密码</p>
 <p>DSTClusterConfig/mods/dedicated_server_mods_setup.lua<br />
-用于安装Mod，同目录下有个示例，照着写就行</p>
+用于安装 Mod，同目录下有个示例，照着写就行</p>
 <p>DSTClusterConfig/mods/modoverrides.lua<br />
-用于配置Mod，同目录下有个示例，还是照着写就行</p>
+用于配置 Mod，同目录下有个示例，还是照着写就行</p>
 <h2 id="fu-wu-qi-qi-dong">服务器启动</h2>
 <p>切到项目根目录，执行以下命令即可</p>
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> sudo docker-compose up</span><span style="color:#bf616a;"> -d
 </span></code></pre>
 <h2 id="fu-wu-qi-zan-ting">服务器暂停</h2>
-<p>如果需要停止服务器，需要 attach 到dst_master 容器中手动停止</p>
+<p>如果需要停止服务器，需要 attach 到 dst_master 容器中手动停止</p>
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> sudo docker attach dst_master
 </span></code></pre>
 <p>然后会进入饥荒服务器的控制台<br />

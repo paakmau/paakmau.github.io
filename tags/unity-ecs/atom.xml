@@ -15,15 +15,15 @@
 		<id>https://paakmau.github.io/202003152207/</id>
 		<content type="html">&lt;p&gt;官方手册里有提到，但是没有具体描述。本文主要基于官方示例代码与实践&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;yu-dao-de-wen-ti&quot;&gt;遇到的问题&lt;&#x2F;h2&gt;
-&lt;p&gt;前文和手册中都有介绍过CollisionFilter，但是这个东西是跟 Collider 绑在一起扔进Blob 里的。而 Blob 是一种类似引用的东西，因此由同一个带有 Collider 的Prefab 实例化出的Entity，他们的 CollisionFilter 也是相同的。如果想要改变，必须要为每个实例化的 Entity 单独创建一个Collider 的 Blob 资源来让他们的CollisionFilter 不同。这就非常蛋疼&lt;&#x2F;p&gt;
+&lt;p&gt;前文和手册中都有介绍过 CollisionFilter，但是这个东西是跟 Collider 绑在一起扔进 Blob 里的。而 Blob 是一种类似引用的东西，因此由同一个带有 Collider 的 Prefab 实例化出的 Entity，他们的 CollisionFilter 也是相同的。如果想要改变，必须要为每个实例化的 Entity 单独创建一个 Collider 的 Blob 资源来让他们的 CollisionFilter 不同。这就非常蛋疼&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;jian-dan-gao-xiao-dan-shi-bu-zheng-chang-ye-bu-yi-ding-gao-xiao-de-jie-jue-fang-an&quot;&gt;简单高效但是不正常也不一定高效的解决方案&lt;&#x2F;h2&gt;
-&lt;p&gt;最简单的一种思路，为每一个实例化的 Entity 单独创建一个Collider 的 Blob 资源&lt;&#x2F;p&gt;
-&lt;p&gt;例如网格碰撞体，可以把 Prefab 上碰撞体中存着点和面的NativeArray 的引用偷出来，重新定个 CollisionFilter 就行了，因为点和面都是共用的，所以内存上其实不亏&lt;&#x2F;p&gt;
+&lt;p&gt;最简单的一种思路，为每一个实例化的 Entity 单独创建一个 Collider 的 Blob 资源&lt;&#x2F;p&gt;
+&lt;p&gt;例如网格碰撞体，可以把 Prefab 上碰撞体中存着点和面的 NativeArray 的引用偷出来，重新定个 CollisionFilter 就行了，因为点和面都是共用的，所以内存上其实不亏&lt;&#x2F;p&gt;
 &lt;p&gt;而且使用 CollisionFilter 的效率很高，因此在碰撞处理时的性能上也不亏&lt;&#x2F;p&gt;
 &lt;p&gt;不过在一开始创建新的 Blob 的时候就很麻烦而且时间开销较大；并且如果涉及到 Entity 的销毁，可能要把相应的 Blob 资源一起销毁；为了降低 Blob 创建销毁的时间开销，就要开个 Blob 资源的内存池（ECS 里开内存池是有毒吧？）。最终实现起来会变得很蛇皮，我个人认为作为一个正常的人类不应该做这样的事情。&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;zheng-chang-de-jie-jue-fang-an&quot;&gt;正常的解决方案&lt;&#x2F;h2&gt;
-&lt;p&gt;根据手册的指示，使用IBodyPairsJob&lt;br &#x2F;&gt;
-具体来说，我们写一个 Struct 实现IBodyPairsJob 接口，并把它注入到 StepPhysicsWorld 中，把需要屏蔽的碰撞 Disable 掉。这样就能对碰撞为所欲为了&lt;&#x2F;p&gt;
+&lt;p&gt;根据手册的指示，使用 IBodyPairsJob&lt;br &#x2F;&gt;
+具体来说，我们写一个 Struct 实现 IBodyPairsJob 接口，并把它注入到 StepPhysicsWorld 中，把需要屏蔽的碰撞 Disable 掉。这样就能对碰撞为所欲为了&lt;&#x2F;p&gt;
 &lt;p&gt;下面是个简单的代码，他禁用了所有拥有 NonUniformScale 组件的碰撞体的碰撞&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cs&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cs &quot;&gt;&lt;code class=&quot;language-cs&quot; data-lang=&quot;cs&quot;&gt;&lt;span&gt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;UpdateBefore&lt;&#x2F;span&gt;&lt;span&gt; (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;typeof&lt;&#x2F;span&gt;&lt;span&gt; (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;StepPhysicsWorld&lt;&#x2F;span&gt;&lt;span&gt;))]
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;DisableCollisionSystem &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;SystemBase &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
@@ -51,8 +51,8 @@
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;但是需要注意几个点&lt;&#x2F;p&gt;
 &lt;ol&gt;
-&lt;li&gt;使用 CollisionFilter 来实现的话，碰撞处理过程中的性能要注入 IBodyPairsJob 好；但是使用 IBodyPairsJob 不需要考虑上述CollisionFilter 的诸多问题，也避免了销毁与创建的开销；&lt;&#x2F;li&gt;
-&lt;li&gt;上面的代码使用了lambda，却没有用 Burst 优化，因此会产生GC，可以暂时用蛇皮方法自己搞搞；但Unity Physic 之后的版本应该会自己解决这个问题，不用我们操心&lt;&#x2F;li&gt;
+&lt;li&gt;使用 CollisionFilter 来实现的话，碰撞处理过程中的性能要注入 IBodyPairsJob 好；但是使用 IBodyPairsJob 不需要考虑上述 CollisionFilter 的诸多问题，也避免了销毁与创建的开销；&lt;&#x2F;li&gt;
+&lt;li&gt;上面的代码使用了 lambda，却没有用 Burst 优化，因此会产生 GC，可以暂时用蛇皮方法自己搞搞；但 Unity Physic 之后的版本应该会自己解决这个问题，不用我们操心&lt;&#x2F;li&gt;
 &lt;&#x2F;ol&gt;
 </content>
 	</entry>
@@ -65,19 +65,19 @@
 		<content type="html">&lt;p&gt;这部分内容手册中没有，本文参考的是官方示例代码与官方论坛&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;Unity-Technologies&#x2F;EntityComponentSystemSamples&quot;&gt;https:&#x2F;&#x2F;github.com&#x2F;Unity-Technologies&#x2F;EntityComponentSystemSamples&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;在 OOP 的物理引擎中，碰撞发生后引擎可以通过调用用户提供的回调函数将碰撞事件传递给用户程序。而在 Unity 的ECS 框架中我们需要使用数据驱动的思路来处理碰撞&lt;br &#x2F;&gt;
+&lt;p&gt;在 OOP 的物理引擎中，碰撞发生后引擎可以通过调用用户提供的回调函数将碰撞事件传递给用户程序。而在 Unity 的 ECS 框架中我们需要使用数据驱动的思路来处理碰撞&lt;br &#x2F;&gt;
 但是引擎已经把事件处理封装好了，因此我们实现的时候其实看起来跟回调差不多&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;jian-jie&quot;&gt;简介&lt;&#x2F;h2&gt;
-&lt;p&gt;Unity Physics 中，刚体可以通过 Trigger 或者Collision 触发事件，需要勾选Physics Shape 中的Is Trigger 或Raises Collision Events&lt;br &#x2F;&gt;
+&lt;p&gt;Unity Physics 中，刚体可以通过 Trigger 或者 Collision 触发事件，需要勾选 Physics Shape 中的 Is Trigger 或 Raises Collision Events&lt;br &#x2F;&gt;
 它们的区别在于 Trigger 不会引起物理上的碰撞，只产生事件&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;02&#x2F;image-1.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
-&lt;p&gt;对于产生的 Trigger 事件或Collision 事件，我们可以通过 ITriggerEventsJob 或ICollisionEventsJob 来获取并处理&lt;&#x2F;p&gt;
+&lt;p&gt;对于产生的 Trigger 事件或 Collision 事件，我们可以通过 ITriggerEventsJob 或 ICollisionEventsJob 来获取并处理&lt;&#x2F;p&gt;
 &lt;p&gt;下面的例子可以实现这样的效果&lt;br &#x2F;&gt;
 开始时所有的刚体不受重力影响，但是一个刚体被 Trigger 碰到后它就会重新受到重力并下坠&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;zhun-bei-trigger&quot;&gt;准备Trigger&lt;&#x2F;h2&gt;
-&lt;p&gt;首先准备一个 Entity 作为Trigger，并且让他受到键盘控制运动。&lt;br &#x2F;&gt;
-新建一个 Cube 的GameObject，移除Box Collider，添加Convert To Entity，Physics Body，Physics Shape。在Physics Body 中把重力系数设为0，在Physics Shape 中勾选Is Trigger&lt;br &#x2F;&gt;
-然后使用 Authoring 为它添加PlayerInput 组件。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;zhun-bei-trigger&quot;&gt;准备 Trigger&lt;&#x2F;h2&gt;
+&lt;p&gt;首先准备一个 Entity 作为 Trigger，并且让他受到键盘控制运动。&lt;br &#x2F;&gt;
+新建一个 Cube 的 GameObject，移除 Box Collider，添加 Convert To Entity，Physics Body，Physics Shape。在 Physics Body 中把重力系数设为0，在 Physics Shape 中勾选 Is Trigger&lt;br &#x2F;&gt;
+然后使用 Authoring 为它添加 PlayerInput 组件。&lt;&#x2F;p&gt;
 &lt;p&gt;保存键盘输入的组件&lt;br &#x2F;&gt;
 PlayerInput.cs&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cs&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cs &quot;&gt;&lt;code class=&quot;language-cs&quot; data-lang=&quot;cs&quot;&gt;&lt;span&gt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Serializable&lt;&#x2F;span&gt;&lt;span&gt;]
@@ -121,12 +121,12 @@ MoveSystem.cs&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;h2 id=&quot;zhun-bei-yong-yu-bei-hong-fa-de-entity&quot;&gt;准备用于被触发的Entity&lt;&#x2F;h2&gt;
-&lt;p&gt;然后准备另一个用于被触发的Entity，它至少需要有Physics Shape、Physics Body&lt;br &#x2F;&gt;
-当然要在Physics Body 中将重力系数设为0&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;zhun-bei-yong-yu-bei-hong-fa-de-entity&quot;&gt;准备用于被触发的 Entity&lt;&#x2F;h2&gt;
+&lt;p&gt;然后准备另一个用于被触发的 Entity，它至少需要有 Physics Shape、Physics Body&lt;br &#x2F;&gt;
+当然要在 Physics Body 中将重力系数设为0&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;chu-li-trigger-shi-jian&quot;&gt;处理 Trigger 事件&lt;&#x2F;h2&gt;
 &lt;p&gt;写一个简单的 JobComponentSystem 就行了&lt;br &#x2F;&gt;
-只是其中的 Job 需要使用ITriggerEventsJob 接口，个人感觉是物理引擎 Simulate 之后会产生Trigger 事件的数组，然后通过 ITriggerEventsJob 来遍历它处理每个Trigger 事件&lt;&#x2F;p&gt;
+只是其中的 Job 需要使用 ITriggerEventsJob 接口，个人感觉是物理引擎 Simulate 之后会产生 Trigger 事件的数组，然后通过 ITriggerEventsJob 来遍历它处理每个 Trigger 事件&lt;&#x2F;p&gt;
 &lt;p&gt;DetectTriggerSystem.cs&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cs&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cs &quot;&gt;&lt;code class=&quot;language-cs&quot; data-lang=&quot;cs&quot;&gt;&lt;span&gt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;UpdateAfter&lt;&#x2F;span&gt;&lt;span&gt; (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;typeof&lt;&#x2F;span&gt;&lt;span&gt; (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;EndFramePhysicsSystem&lt;&#x2F;span&gt;&lt;span&gt;))]
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;DetectTriggerSystem &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;JobComponentSystem &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
@@ -158,7 +158,7 @@ MoveSystem.cs&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;chu-li-collision-shi-jian&quot;&gt;处理 Collision 事件&lt;&#x2F;h2&gt;
-&lt;p&gt;跟上文 Trigger 事件类似，也是使用JobComponentSystem，Job 需要换成 ICollisionEventsJob 接口，然后调整 Update 的顺序并使用EndFramePhysicsSystem.HandlesToWaitFor 处理同步，官方给的例子是有问题的，本文根据论坛作了一些修改&lt;&#x2F;p&gt;
+&lt;p&gt;跟上文 Trigger 事件类似，也是使用 JobComponentSystem，Job 需要换成 ICollisionEventsJob 接口，然后调整 Update 的顺序并使用 EndFramePhysicsSystem.HandlesToWaitFor 处理同步，官方给的例子是有问题的，本文根据论坛作了一些修改&lt;&#x2F;p&gt;
 &lt;p&gt;贴一下代码&lt;br &#x2F;&gt;
 DetectCollisionSystem.cs&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cs&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cs &quot;&gt;&lt;code class=&quot;language-cs&quot; data-lang=&quot;cs&quot;&gt;&lt;span&gt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;UpdateAfter&lt;&#x2F;span&gt;&lt;span&gt; (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;typeof&lt;&#x2F;span&gt;&lt;span&gt; (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;StepPhysicsWorld&lt;&#x2F;span&gt;&lt;span&gt;))]
@@ -202,23 +202,23 @@ DetectCollisionSystem.cs&lt;&#x2F;p&gt;
 		<updated>2020-02-08T21:55:32+00:00</updated>
 		<link href="https://paakmau.github.io/202002082155/" type="text/html"/>
 		<id>https://paakmau.github.io/202002082155/</id>
-		<content type="html">&lt;p&gt;在编辑器为 GameObject 挂载Physics Body 和Physics Shape 这两个 Authoring 脚本会为转化出的Entity 添加很多个组件&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;在编辑器为 GameObject 挂载 Physics Body 和 Physics Shape 这两个 Authoring 脚本会为转化出的 Entity 添加很多个组件&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;这些组件直接影响物理引擎中的运动、碰撞等计算，也能够被我们写的 System 获取或修改&lt;&#x2F;p&gt;
 &lt;p&gt;接下来本文依照官方手册对他们进行介绍&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;physicscollider&quot;&gt;PhysicsCollider&lt;&#x2F;h2&gt;
 &lt;p&gt;储存的是指针，在物体运动导致的碰撞或者碰撞查询时会用到&lt;&#x2F;p&gt;
-&lt;p&gt;除了碰撞体的形状大小之外，它还包括摩擦系数与恢复系数等材质信息，Is Trigger 与Raises Collision Events，MassProperties，当然还有Collision Filter&lt;&#x2F;p&gt;
-&lt;p&gt;另外，如果被设为空指针，引擎依然会模拟它的Physics Body，但它将不会触发任何碰撞。可以特殊用途，比如把空指针的碰撞体用关节连起来以模拟蒙皮&lt;&#x2F;p&gt;
+&lt;p&gt;除了碰撞体的形状大小之外，它还包括摩擦系数与恢复系数等材质信息，Is Trigger 与 Raises Collision Events，MassProperties，当然还有 Collision Filter&lt;&#x2F;p&gt;
+&lt;p&gt;另外，如果被设为空指针，引擎依然会模拟它的 Physics Body，但它将不会触发任何碰撞。可以特殊用途，比如把空指针的碰撞体用关节连起来以模拟蒙皮&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;physicsvelocity&quot;&gt;PhysicsVelocity&lt;&#x2F;h2&gt;
 &lt;p&gt;包括线速度和角速度&lt;&#x2F;p&gt;
-&lt;p&gt;每一帧，引擎会根据重力以及来自其他碰撞体或关节的力计算新的速度，然后根据速度计算新的Transform&lt;&#x2F;p&gt;
+&lt;p&gt;每一帧，引擎会根据重力以及来自其他碰撞体或关节的力计算新的速度，然后根据速度计算新的 Transform&lt;&#x2F;p&gt;
 &lt;p&gt;而我们也可以使用代码修改这个组件，覆盖掉引擎计算的速度。可以实现匀速运动或施加冲量等效果&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;physicsmass&quot;&gt;PhysicsMass&lt;&#x2F;h2&gt;
 &lt;p&gt;跟编辑器中的质量分布对应&lt;&#x2F;p&gt;
 &lt;p&gt;包括重心，惯性张量等&lt;&#x2F;p&gt;
 &lt;p&gt;值得注意的是，部分属性会以逆元的形式存储，这可以加速内部物理计算。另外可以通过将部分属性值设为0以表示无穷大&lt;&#x2F;p&gt;
-&lt;p&gt;而且可以不需要对它手工赋值，因为碰撞体的 ICollider 接口有一个MassProperties 属性，可以根据它进行缩放近似地实现想要的效果&lt;&#x2F;p&gt;
+&lt;p&gt;而且可以不需要对它手工赋值，因为碰撞体的 ICollider 接口有一个 MassProperties 属性，可以根据它进行缩放近似地实现想要的效果&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;physicsgravityfactor&quot;&gt;PhysicsGravityFactor&lt;&#x2F;h2&gt;
 &lt;p&gt;它规定了重力系数&lt;&#x2F;p&gt;
 &lt;p&gt;跟编辑器中一样&lt;&#x2F;p&gt;
@@ -230,7 +230,7 @@ DetectCollisionSystem.cs&lt;&#x2F;p&gt;
 &lt;p&gt;可以用于设置重力的方向大小，SolverIterationCount 等&lt;&#x2F;p&gt;
 &lt;p&gt;SolverIterationCount，求解迭代次数。如果关节震荡或行为怪异，可以通过提高该值以改善，当然这会降低性能&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;physicsjoint&quot;&gt;PhysicsJoint&lt;&#x2F;h2&gt;
-&lt;p&gt;这个组件是关节，属性包括关节连接的两个Entity，关节类型与参数，以及这两个 Entity 是否会发生碰撞&lt;&#x2F;p&gt;
+&lt;p&gt;这个组件是关节，属性包括关节连接的两个 Entity，关节类型与参数，以及这两个 Entity 是否会发生碰撞&lt;&#x2F;p&gt;
 &lt;p&gt;然后与 PhysicsCollider 类似，关节的类型与参数以指针形式存储，可能因为内部有 Constraint 的动态数组&lt;&#x2F;p&gt;
 &lt;p&gt;并且 Unity 提供了许多类型的关节，以及用于创建它们的静态函数。手册上说后续还会添加其他类型&lt;&#x2F;p&gt;
 &lt;p&gt;至于目前有哪些类型可以查阅官方手册&lt;br &#x2F;&gt;
@@ -245,21 +245,21 @@ DetectCollisionSystem.cs&lt;&#x2F;p&gt;
 		<id>https://paakmau.github.io/202002072339/</id>
 		<content type="html">&lt;p&gt;跟主流物理引擎一样，Unity Physics 也具有碰撞查询的功能&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;目前Unity Physics 中的碰撞查询有以下几种&lt;br &#x2F;&gt;
+&lt;p&gt;目前 Unity Physics 中的碰撞查询有以下几种&lt;br &#x2F;&gt;
 射线检测、碰撞体投射检测、碰撞体距离检测、点距离检测、重叠检测&lt;br &#x2F;&gt;
-当然它们都支持Collision Filter&lt;&#x2F;p&gt;
+当然它们都支持 Collision Filter&lt;&#x2F;p&gt;
 &lt;p&gt;接下来我会制作一个示例项目并进行全面的介绍&lt;&#x2F;p&gt;
 &lt;p&gt;注意&lt;br &#x2F;&gt;
 尽量使用稳定版本的 Unity 编辑器，Alpha 或 Beta 可能会遇到非常多的坑，不要问我怎么知道的&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;shi-li-xiang-mu-jie-shao&quot;&gt;示例项目介绍&lt;&#x2F;h2&gt;
 &lt;p&gt;这个示例项目大概是这样&lt;br &#x2F;&gt;
 我们可以控制一个球体移动，然后场景中有一些用于检测碰撞的立方体。当我们控制的球体移动到一个立方体的检测范围之内时，这个立方体就会作出反应以表示检测到碰撞&lt;&#x2F;p&gt;
-&lt;p&gt;另外，为了方便，我规定所有 Entity 都在z=0平面上，球体也只能在这个平面上运动，下面的代码也依赖这个规定&lt;br &#x2F;&gt;
-因此请保证所有 Entitiy 的z 坐标都为0&lt;&#x2F;p&gt;
+&lt;p&gt;另外，为了方便，我规定所有 Entity 都在 z=0平面上，球体也只能在这个平面上运动，下面的代码也依赖这个规定&lt;br &#x2F;&gt;
+因此请保证所有 Entitiy 的 z 坐标都为0&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;02&#x2F;2020-02-08-03-04-16.2020-02-08-03_05_22.gif&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;kong-zhi-qiu-ti-yun-dong&quot;&gt;控制球体运动&lt;&#x2F;h2&gt;
 &lt;p&gt;先写一个受我们控制的球体&lt;br &#x2F;&gt;
-这个球体持有 PlayerInput 组件，一个 FetchInputSystem 获取键盘输入，并写入这个组件，然后 MoveSystem 根据PlayerInput 的值修改Translation（作为示例其实可以把这两个 System 整成一个）&lt;&#x2F;p&gt;
+这个球体持有 PlayerInput 组件，一个 FetchInputSystem 获取键盘输入，并写入这个组件，然后 MoveSystem 根据 PlayerInput 的值修改 Translation（作为示例其实可以把这两个 System 整成一个）&lt;&#x2F;p&gt;
 &lt;p&gt;PlayerInput.cs&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cs&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cs &quot;&gt;&lt;code class=&quot;language-cs&quot; data-lang=&quot;cs&quot;&gt;&lt;span&gt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Serializable&lt;&#x2F;span&gt;&lt;span&gt;]
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public struct &lt;&#x2F;span&gt;&lt;span&gt;PlayerInput : &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;IComponentData &lt;&#x2F;span&gt;&lt;span&gt;{
@@ -309,11 +309,11 @@ DetectCollisionSystem.cs&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;接下来是喜闻乐见的 Entity 配置环节&lt;br &#x2F;&gt;
-创建一个 Sphere 的GameObject，移除Sphere Collider，添加Convert To Entity，添加Physics Shape 并修改Shape Type 为Sphere，添加Physics Body 并把Gravity Factor 设为0，添加上面的 MoveSphereAuthoring 脚本&lt;br &#x2F;&gt;
+创建一个 Sphere 的 GameObject，移除 Sphere Collider，添加 Convert To Entity，添加 Physics Shape 并修改 Shape Type 为 Sphere，添加 Physics Body 并把 Gravity Factor 设为0，添加上面的 MoveSphereAuthoring 脚本&lt;br &#x2F;&gt;
 注意把球体的 z 坐标设为0&lt;&#x2F;p&gt;
-&lt;p&gt;启动后按下WASD，小球能相应运动&lt;&#x2F;p&gt;
+&lt;p&gt;启动后按下 WASD，小球能相应运动&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;zhun-bei-yong-yu-jian-ce-de-li-fang-ti&quot;&gt;准备用于检测的立方体&lt;&#x2F;h2&gt;
-&lt;p&gt;这些立方体只是普通的立方体，为它添加一个用于标记的组件CollisionChecker，这样就能在 System 中识别并遍历它们&lt;&#x2F;p&gt;
+&lt;p&gt;这些立方体只是普通的立方体，为它添加一个用于标记的组件 CollisionChecker，这样就能在 System 中识别并遍历它们&lt;&#x2F;p&gt;
 &lt;p&gt;CollisionChecker.cs&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cs&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cs &quot;&gt;&lt;code class=&quot;language-cs&quot; data-lang=&quot;cs&quot;&gt;&lt;span&gt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Serializable&lt;&#x2F;span&gt;&lt;span&gt;]
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public struct &lt;&#x2F;span&gt;&lt;span&gt;CollisionChecker : &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;IComponentData &lt;&#x2F;span&gt;&lt;span&gt;{ }
@@ -326,17 +326,17 @@ DetectCollisionSystem.cs&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;配置Entity&lt;br &#x2F;&gt;
-创建 Cube 的GameObject，移除Box Collider，添加Convert To Entitiy，Physics Shape，以及上面的CollisionCheckerAuthoring&lt;br &#x2F;&gt;
-可以复制多个，但要注意分散放置以免立方体之间互相检测到（也可以用Collision Filter 解决这个问题）&lt;&#x2F;p&gt;
+&lt;p&gt;配置 Entity&lt;br &#x2F;&gt;
+创建 Cube 的 GameObject，移除 Box Collider，添加 Convert To Entitiy，Physics Shape，以及上面的 CollisionCheckerAuthoring&lt;br &#x2F;&gt;
+可以复制多个，但要注意分散放置以免立方体之间互相检测到（也可以用 Collision Filter 解决这个问题）&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;peng-zhuang-cha-xun&quot;&gt;碰撞查询&lt;&#x2F;h2&gt;
 &lt;p&gt;接下来我们写一个 CollisionQuerySystem 用于测试不同的碰撞查询类型&lt;&#x2F;p&gt;
 &lt;p&gt;我们在立方体附近进行不同类型的碰撞查询，如果检测到碰撞体就控制立方体自旋&lt;&#x2F;p&gt;
-&lt;p&gt;除了包围盒的重叠检测之外，这些查询都可以获取碰撞检测得到的第一个或者全部刚体，并获得RigidBodyIndex（通过它可以拿到Entity），碰撞位置，碰撞到的面的法向量，碰撞到网格的哪个面，还有碰撞点的位置&lt;br &#x2F;&gt;
+&lt;p&gt;除了包围盒的重叠检测之外，这些查询都可以获取碰撞检测得到的第一个或者全部刚体，并获得 RigidBodyIndex（通过它可以拿到 Entity），碰撞位置，碰撞到的面的法向量，碰撞到网格的哪个面，还有碰撞点的位置&lt;br &#x2F;&gt;
 可以根据需要查文档或者看接口瞎猜就完事了奥利给&lt;&#x2F;p&gt;
 &lt;h3 id=&quot;ray-cast&quot;&gt;Ray cast&lt;&#x2F;h3&gt;
 &lt;p&gt;射线检测。&lt;br &#x2F;&gt;
-在立方体附近发射一条射线用于检测射线碰到的碰撞体。注意，如果没有修改Collision Filter，请不要让这条射线碰到立方体本身&lt;&#x2F;p&gt;
+在立方体附近发射一条射线用于检测射线碰到的碰撞体。注意，如果没有修改 Collision Filter，请不要让这条射线碰到立方体本身&lt;&#x2F;p&gt;
 &lt;p&gt;下面的示例代码在立方体上面向上发送了一条长度为1的射线&lt;&#x2F;p&gt;
 &lt;p&gt;CollisionQuerySystem.cs&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cs&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cs &quot;&gt;&lt;code class=&quot;language-cs&quot; data-lang=&quot;cs&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;CollisionQuerySystem &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;JobComponentSystem &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
@@ -373,7 +373,7 @@ DetectCollisionSystem.cs&lt;&#x2F;p&gt;
 &lt;p&gt;碰撞体投射检测。&lt;br &#x2F;&gt;
 在立方体附近使用碰撞体扫过一条线段，检测碰撞到的碰撞体，同样注意不要让这个发射出去的碰撞体碰到立方体本身&lt;&#x2F;p&gt;
 &lt;p&gt;下面示例代码在立方体上方向上发射了一个球体&lt;br &#x2F;&gt;
-注意需要在 Player 设置里允许unsafe 代码&lt;&#x2F;p&gt;
+注意需要在 Player 设置里允许 unsafe 代码&lt;&#x2F;p&gt;
 &lt;p&gt;CollisionQuerySystem.cs&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cs&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cs &quot;&gt;&lt;code class=&quot;language-cs&quot; data-lang=&quot;cs&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;CollisionQuerySystem &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;JobComponentSystem &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    [&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;BurstCompile&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;]
@@ -482,13 +482,13 @@ DetectCollisionSystem.cs&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h3 id=&quot;overlap-query&quot;&gt;Overlap query&lt;&#x2F;h3&gt;
-&lt;p&gt;使用 AABB 检测重叠，性能比Collider Distance 好&lt;br &#x2F;&gt;
+&lt;p&gt;使用 AABB 检测重叠，性能比 Collider Distance 好&lt;br &#x2F;&gt;
 但是只能检测碰撞是否发生，无法获取碰撞点的具体信息&lt;&#x2F;p&gt;
 &lt;p&gt;注意两点&lt;&#x2F;p&gt;
-&lt;p&gt;第一是立方体的包围盒会与立方体本身重叠，所以必须修改默认的Collision Filter&lt;br &#x2F;&gt;
-我们需要在立方体的Physics Shape 组件的Collision Filter 里把Belongs To 修改为只有0，这样代码里就能使用Collision Filter 避免检测到立方体本身&lt;&#x2F;p&gt;
+&lt;p&gt;第一是立方体的包围盒会与立方体本身重叠，所以必须修改默认的 Collision Filter&lt;br &#x2F;&gt;
+我们需要在立方体的 Physics Shape 组件的 Collision Filter 里把 Belongs To 修改为只有0，这样代码里就能使用 Collision Filter 避免检测到立方体本身&lt;&#x2F;p&gt;
 &lt;p&gt;第二是如果不对默认创建的立方体做旋转操作，它的 AABB 就是它本身&lt;br &#x2F;&gt;
-我们可以把立方体随意旋转一个角度或者把Physics Shape 里的Shape Type 改成别的形状以获得更明显的效果&lt;&#x2F;p&gt;
+我们可以把立方体随意旋转一个角度或者把 Physics Shape 里的 Shape Type 改成别的形状以获得更明显的效果&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cs&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cs &quot;&gt;&lt;code class=&quot;language-cs&quot; data-lang=&quot;cs&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;CollisionQuerySystem &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;JobComponentSystem &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    [&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;BurstCompile&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;]
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;CheckCollisionJob : &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;IJobForEach&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;&amp;lt;CollisionChecker, Translation, PhysicsCollider, Rotation&amp;gt; {
@@ -542,7 +542,7 @@ DetectCollisionSystem.cs&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;解释：这里把 random 放进去是为了保证随机数生成的均匀性&lt;&#x2F;p&gt;
-&lt;p&gt;然后写一个 Authoring 用来把这个组件添加到Entity 上&lt;&#x2F;p&gt;
+&lt;p&gt;然后写一个 Authoring 用来把这个组件添加到 Entity 上&lt;&#x2F;p&gt;
 &lt;p&gt;RandomMoveCubeAuthoring.cs&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cs&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cs &quot;&gt;&lt;code class=&quot;language-cs&quot; data-lang=&quot;cs&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;RandomMoveCubeAuthoring &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;MonoBehaviour&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;IConvertGameObjectToEntity &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;Convert &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(Entity &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;entity&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, EntityManager &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;dstManager&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, GameObjectConversionSystem &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;conversionSystem&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {
@@ -555,10 +555,10 @@ DetectCollisionSystem.cs&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;h2 id=&quot;pei-zhi-entity&quot;&gt;配置Entity&lt;&#x2F;h2&gt;
-&lt;p&gt;新建一个立方体GameObject，移除Box Collider，添加Convert To Entity、Physics Shape、Physics Body 以及我们写的 RandomMoveCubeAuthoring 脚本&lt;br &#x2F;&gt;
-在Physics Body 中把重力系数设为0，线性阻尼设为0.5。其他的用默认值就行&lt;&#x2F;p&gt;
-&lt;p&gt;这样这个 GameObject 在启动后会被自动转化为Entity 并具有物理相关的组件以及 MoveDirection 组件&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;pei-zhi-entity&quot;&gt;配置 Entity&lt;&#x2F;h2&gt;
+&lt;p&gt;新建一个立方体 GameObject，移除 Box Collider，添加 Convert To Entity、Physics Shape、Physics Body 以及我们写的 RandomMoveCubeAuthoring 脚本&lt;br &#x2F;&gt;
+在 Physics Body 中把重力系数设为0，线性阻尼设为0.5。其他的用默认值就行&lt;&#x2F;p&gt;
+&lt;p&gt;这样这个 GameObject 在启动后会被自动转化为 Entity 并具有物理相关的组件以及 MoveDirection 组件&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;kong-zhi-yun-dong-zhuang-tai&quot;&gt;控制运动状态&lt;&#x2F;h2&gt;
 &lt;p&gt;显然，写一个 System 生成随机方向，然后修改这个立方体的速度就行了&lt;&#x2F;p&gt;
 &lt;p&gt;下面有匀速运动和添加冲量两个版本，区别在于匀速运动每一帧都把速度修改为指定值，而添加冲量只需要在方向改变的那一帧修改速度&lt;&#x2F;p&gt;
@@ -616,22 +616,22 @@ DetectCollisionSystem.cs&lt;&#x2F;p&gt;
 		<updated>2020-02-04T23:56:57+00:00</updated>
 		<link href="https://paakmau.github.io/202002042356/" type="text/html"/>
 		<id>https://paakmau.github.io/202002042356/</id>
-		<content type="html">&lt;p&gt;前文展示了一个简单的HelloWorld，本文将进一步介绍其中用到的Physics Shape 和Physics Body 这两个脚本的参数设置&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;前文展示了一个简单的 HelloWorld，本文将进一步介绍其中用到的 Physics Shape 和 Physics Body 这两个脚本的参数设置&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;这两个脚本其实都是Authoring，它们会根据编辑器中设定的值为 Entity 相应地添加组件&lt;&#x2F;p&gt;
+&lt;p&gt;这两个脚本其实都是 Authoring，它们会根据编辑器中设定的值为 Entity 相应地添加组件&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;physics-shape&quot;&gt;Physics Shape&lt;&#x2F;h2&gt;
 &lt;p&gt;可以理解为碰撞体，能为 Entity 添加碰撞功能&lt;&#x2F;p&gt;
 &lt;h3 id=&quot;xun-chang-shu-xing&quot;&gt;寻常属性&lt;&#x2F;h3&gt;
 &lt;p&gt;在 Inspector 面板中，我们可以设置它的形状、大小、重心、材质、摩擦系数、恢复系数等属性&lt;br &#x2F;&gt;
 这些属性在主流物理引擎中十分常见，高中物理也都学过，就不细说了&lt;&#x2F;p&gt;
-&lt;h3 id=&quot;is-trigger-yu-raises-collision-events&quot;&gt;Is Trigger 与Raises Collision Events&lt;&#x2F;h3&gt;
-&lt;p&gt;如果勾选了Is Trigger，碰撞体就不会与其他碰撞体产生物理碰撞，但是在碰撞体重叠时会产生碰撞事件&lt;br &#x2F;&gt;
+&lt;h3 id=&quot;is-trigger-yu-raises-collision-events&quot;&gt;Is Trigger 与 Raises Collision Events&lt;&#x2F;h3&gt;
+&lt;p&gt;如果勾选了 Is Trigger，碰撞体就不会与其他碰撞体产生物理碰撞，但是在碰撞体重叠时会产生碰撞事件&lt;br &#x2F;&gt;
 可以用来检测角色是否进入一个区域&lt;&#x2F;p&gt;
-&lt;p&gt;而Raises Collision Events 与Is Trigger 类似，会产生碰撞事件，但是它能够与其他碰撞体产生物理碰撞&lt;&#x2F;p&gt;
+&lt;p&gt;而 Raises Collision Events 与 Is Trigger 类似，会产生碰撞事件，但是它能够与其他碰撞体产生物理碰撞&lt;&#x2F;p&gt;
 &lt;h3 id=&quot;collision-filter&quot;&gt;Collision Filter&lt;&#x2F;h3&gt;
-&lt;p&gt;Collision Filter 能屏蔽碰撞体与某些碰撞体的碰撞，也就是，只跟指定分组的Physics Shape 发生碰撞&lt;&#x2F;p&gt;
+&lt;p&gt;Collision Filter 能屏蔽碰撞体与某些碰撞体的碰撞，也就是，只跟指定分组的 Physics Shape 发生碰撞&lt;&#x2F;p&gt;
 &lt;p&gt;具有32个分组，一个碰撞体可以属于多个分组，并且可以指定与哪些分组发生碰撞&lt;br &#x2F;&gt;
-内部实现其实就是uint，用位运算做判断&lt;&#x2F;p&gt;
+内部实现其实就是 uint，用位运算做判断&lt;&#x2F;p&gt;
 &lt;p&gt;另外，碰撞查询也具有这个特性，例如发射射线或发射碰撞器等&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;physics-body&quot;&gt;Physics Body&lt;&#x2F;h2&gt;
 &lt;p&gt;Physics Body 使 Entity 具有运动的能力&lt;&#x2F;p&gt;
@@ -642,62 +642,62 @@ DetectCollisionSystem.cs&lt;&#x2F;p&gt;
 Kinematic，运动学。可以运动的刚体，可以理解为质量无穷大的 Dynamic 刚体，看起来就是能把其他普通 Dynamic 刚体弹开，自己不受碰撞的影响。可以用于电梯&lt;br &#x2F;&gt;
 Static，静态。无法运动的刚体，可以理解为质量无穷大&lt;&#x2F;p&gt;
 &lt;h3 id=&quot;zhi-liang-fen-pei&quot;&gt;质量分配&lt;&#x2F;h3&gt;
-&lt;p&gt;勾选Override Default Mass Distribution 以手动配置重心与惯性张量&lt;&#x2F;p&gt;
+&lt;p&gt;勾选 Override Default Mass Distribution 以手动配置重心与惯性张量&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;fu-he-peng-zhuang-ti&quot;&gt;复合碰撞体&lt;&#x2F;h2&gt;
-&lt;p&gt;多个不同的Physics Shape 可以组合到一起&lt;&#x2F;p&gt;
+&lt;p&gt;多个不同的 Physics Shape 可以组合到一起&lt;&#x2F;p&gt;
 &lt;p&gt;个人猜测应该就是把多个碰撞体整合为一个碰撞体，最终组件数量不会变&lt;br &#x2F;&gt;
-但并不是，验证后发现每个带有Physics Shape 的 GameObject 都转化为了Entity，然后用 Parent 组件跟父组件捆起来，感觉是 Unity 偷懒了&lt;br &#x2F;&gt;
+但并不是，验证后发现每个带有 Physics Shape 的 GameObject 都转化为了 Entity，然后用 Parent 组件跟父组件捆起来，感觉是 Unity 偷懒了&lt;br &#x2F;&gt;
 因此为了效率，可以把用作静态碰撞体的所有模型在导入 Unity 之前先合并为同一个模型。不要在 Unity 里蛇皮操作&lt;&#x2F;p&gt;
 &lt;p&gt;根据官方手册，可以这样操作&lt;br &#x2F;&gt;
-在 Hierarchy 面板中将多个具有Physics Shape 的子 GameObject 挂在一个具有Physics Body 的父 GameObject 下&lt;br &#x2F;&gt;
-注意，只有父 GameObject 拥有Convert to Entity 组件，子 GameObject 不需要&lt;&#x2F;p&gt;
+在 Hierarchy 面板中将多个具有 Physics Shape 的子 GameObject 挂在一个具有 Physics Body 的父 GameObject 下&lt;br &#x2F;&gt;
+注意，只有父 GameObject 拥有 Convert to Entity 组件，子 GameObject 不需要&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Unity Physics 学习笔记「一」 简要介绍与HelloWorld</title>
+		<title>Unity Physics 学习笔记「一」 简要介绍与 HelloWorld</title>
 		<published>2020-02-04T22:09:43+00:00</published>
 		<updated>2020-02-04T22:09:43+00:00</updated>
 		<link href="https://paakmau.github.io/202002042209/" type="text/html"/>
 		<id>https://paakmau.github.io/202002042209/</id>
-		<content type="html">&lt;p&gt;现在 Unity 的Package Manager 中已经有了适用于 ECS 框架的物理引擎，功能完善&lt;br &#x2F;&gt;
-可以说 Unity 的DOTS（面向数据技术栈）已经能够用于制作大部分游戏类型&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;现在 Unity 的 Package Manager 中已经有了适用于 ECS 框架的物理引擎，功能完善&lt;br &#x2F;&gt;
+可以说 Unity 的 DOTS（面向数据技术栈）已经能够用于制作大部分游戏类型&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;这个系列会介绍目前Unity Physics 中的绝大多数内容，与Havok Physics 关系不大&lt;&#x2F;p&gt;
+&lt;p&gt;这个系列会介绍目前 Unity Physics 中的绝大多数内容，与 Havok Physics 关系不大&lt;&#x2F;p&gt;
 &lt;p&gt;需要旧版 Unity 的基础，Unity ECS 基础，并对常见物理引擎有一定了解&lt;&#x2F;p&gt;
 &lt;p&gt;本系列文章基于&lt;br &#x2F;&gt;
 com.unity.entities 0.5.1-preview.11&lt;br &#x2F;&gt;
 com.unity.physics 0.2.5-preview.1&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;xiang-guan-package-jie-shao&quot;&gt;相关 Package 介绍&lt;&#x2F;h2&gt;
-&lt;p&gt;目前相关的包有两个，一个是com.unity.physics，另一个是com.havok.physics&lt;&#x2F;p&gt;
+&lt;p&gt;目前相关的包有两个，一个是 com.unity.physics，另一个是 com.havok.physics&lt;&#x2F;p&gt;
 &lt;p&gt;com.unity.physics 是 Unity 自己写的&lt;&#x2F;p&gt;
 &lt;ul&gt;
 &lt;li&gt;无状态。现代物理引擎通常会维护大量的状态缓存以提高性能，但这对网络同步中状态的回退与恢复不太友好，因此 Unity 舍弃了这一特性以提高简单性与可控性&lt;&#x2F;li&gt;
-&lt;li&gt;模块化。该物理引擎可以脱离 jobs 和ECS 单独存在，这使得用户在使用时更加灵活&lt;&#x2F;li&gt;
+&lt;li&gt;模块化。该物理引擎可以脱离 jobs 和 ECS 单独存在，这使得用户在使用时更加灵活&lt;&#x2F;li&gt;
 &lt;li&gt;高性能。该引擎比较轻量化，跟其他商业引擎相比，功能相似，但性能持平或更优&lt;&#x2F;li&gt;
 &lt;&#x2F;ul&gt;
-&lt;p&gt;com.havok.physics 是微软写的，是 Havok 引擎在Unity 上的发行版，本系列文章不做具体介绍&lt;&#x2F;p&gt;
+&lt;p&gt;com.havok.physics 是微软写的，是 Havok 引擎在 Unity 上的发行版，本系列文章不做具体介绍&lt;&#x2F;p&gt;
 &lt;ul&gt;
-&lt;li&gt;基于com.unity.physics&lt;&#x2F;li&gt;
+&lt;li&gt;基于 com.unity.physics&lt;&#x2F;li&gt;
 &lt;li&gt;性能更好&lt;&#x2F;li&gt;
 &lt;li&gt;质量更好&lt;&#x2F;li&gt;
 &lt;li&gt;调试更好&lt;&#x2F;li&gt;
 &lt;&#x2F;ul&gt;
 &lt;h2 id=&quot;kai-shi-qian-de-zhun-bei&quot;&gt;开始前的准备&lt;&#x2F;h2&gt;
-&lt;p&gt;在Package Manager 中安装Hybrid Renderer 和Unity Physics 两个包就行了&lt;&#x2F;p&gt;
-&lt;p&gt;其中Hybrid Renderer 依赖Entities，Entities 依赖Collections、Mathematics 等包，Package Manager 会自动安装所有依赖&lt;&#x2F;p&gt;
-&lt;p&gt;另外注意，如果在 mac 上使用VS Code 作为编辑器，Visual Studio Code Editor 这个包的1.1.4版本会导致 Omnisharp 出问题，需要退至1.1.3版本&lt;&#x2F;p&gt;
+&lt;p&gt;在 Package Manager 中安装 Hybrid Renderer 和 Unity Physics 两个包就行了&lt;&#x2F;p&gt;
+&lt;p&gt;其中 Hybrid Renderer 依赖 Entities，Entities 依赖 Collections、Mathematics 等包，Package Manager 会自动安装所有依赖&lt;&#x2F;p&gt;
+&lt;p&gt;另外注意，如果在 mac 上使用 VS Code 作为编辑器，Visual Studio Code Editor 这个包的1.1.4版本会导致 Omnisharp 出问题，需要退至1.1.3版本&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;helloworld&quot;&gt;HelloWorld&lt;&#x2F;h2&gt;
-&lt;p&gt;创建一个Cube GameObject 命名为CubeA，移除Box Collider，添加Convert To Entity、Physics Shape，这样他就是一个 static 的刚体&lt;&#x2F;p&gt;
-&lt;p&gt;再创建一个Cube GameObject 命名为CubeB，移除Box Collider，添加Convert To Entity、Physics Shape、Physics Body，这样他就是一个 dynamic 的刚体，注意Physics Body 默认会添加重力&lt;&#x2F;p&gt;
-&lt;p&gt;然后把 CubeA 移到CubeB 的正上方，运行就会看到 CubeA 落下砸到CubeB 上并发生碰撞&lt;&#x2F;p&gt;
+&lt;p&gt;创建一个 Cube GameObject 命名为 CubeA，移除 Box Collider，添加 Convert To Entity、Physics Shape，这样他就是一个 static 的刚体&lt;&#x2F;p&gt;
+&lt;p&gt;再创建一个 Cube GameObject 命名为 CubeB，移除 Box Collider，添加 Convert To Entity、Physics Shape、Physics Body，这样他就是一个 dynamic 的刚体，注意 Physics Body 默认会添加重力&lt;&#x2F;p&gt;
+&lt;p&gt;然后把 CubeA 移到 CubeB 的正上方，运行就会看到 CubeA 落下砸到 CubeB 上并发生碰撞&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;02&#x2F;image-258x300.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;debug-display&quot;&gt;Debug Display&lt;&#x2F;h2&gt;
-&lt;p&gt;在场景中新建一个空的GameObject，添加 ConvertToEntity 与PhysicsDebugDisplay，并在 PhysicsDebugDisplay 中勾选需要展示的信息，运行后就能在 Scene 窗体中看到了&lt;&#x2F;p&gt;
-&lt;p&gt;注意是在 Scene 窗体中而不是Game 窗体&lt;&#x2F;p&gt;
+&lt;p&gt;在场景中新建一个空的 GameObject，添加 ConvertToEntity 与 PhysicsDebugDisplay，并在 PhysicsDebugDisplay 中勾选需要展示的信息，运行后就能在 Scene 窗体中看到了&lt;&#x2F;p&gt;
+&lt;p&gt;注意是在 Scene 窗体中而不是 Game 窗体&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Unity ECS 框架摸索 第七章 评价 Unity 目前版本的ECS 框架</title>
+		<title>Unity ECS 框架摸索 第七章 评价 Unity 目前版本的 ECS 框架</title>
 		<published>2020-02-04T03:15:00+00:00</published>
 		<updated>2020-02-04T03:15:00+00:00</updated>
 		<link href="https://paakmau.github.io/202002040315/" type="text/html"/>
@@ -707,7 +707,7 @@ com.unity.physics 0.2.5-preview.1&lt;&#x2F;p&gt;
 &lt;p&gt;就是坑多，文档不齐，官方例子也有一些小问题&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;jie-ou&quot;&gt;解藕&lt;&#x2F;h2&gt;
 &lt;p&gt;写了一下发现 System 之间耦合度真的低，通常可以把一连串的依赖调用拆成互不干涉的 System 分别独立进行，比如「子弹命中掉血」与「血量为零死亡」可以拆成两个无关联的系统&lt;&#x2F;p&gt;
-&lt;p&gt;我在合并两个项目的时候就直接把 Component 与System 的代码拷贝过来，两边也互不影响（当然也不能瞎几把玩）&lt;&#x2F;p&gt;
+&lt;p&gt;我在合并两个项目的时候就直接把 Component 与 System 的代码拷贝过来，两边也互不影响（当然也不能瞎几把玩）&lt;&#x2F;p&gt;
 &lt;p&gt;但是有个问题是系统的调用顺序可能会对最终处理结果有影响，比如物理引擎还有网络同步&lt;br &#x2F;&gt;
 手动处理调用顺序的感觉有点像在 DAG 上做拓排&lt;br &#x2F;&gt;
 讲真我甚至觉得有一点面向过程&lt;&#x2F;p&gt;
@@ -716,19 +716,19 @@ com.unity.physics 0.2.5-preview.1&lt;&#x2F;p&gt;
 &lt;p&gt;并且具有比较完整的筛选功能&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;bing-xing&quot;&gt;并行&lt;&#x2F;h2&gt;
 &lt;p&gt;使用 Job 就能轻松处理并行&lt;&#x2F;p&gt;
-&lt;p&gt;而且居然还支持Lambda&lt;&#x2F;p&gt;
+&lt;p&gt;而且居然还支持 Lambda&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;geng-xin-hen-kuai&quot;&gt;更新很快&lt;&#x2F;h2&gt;
 &lt;p&gt;我感觉每隔十几天就更新一次，速度飞快&lt;&#x2F;p&gt;
 &lt;p&gt;而且其实去年就在写这个系列了，然后磨蹭了几个月发现两个大更新，我吐了。API 变了一点，于是代码只能全部重跑一遍&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;huan-bu-neng-chun-ecs&quot;&gt;还不能纯ECS&lt;&#x2F;h2&gt;
-&lt;p&gt;目前 Mesh 和Camera 都没有 ECS 版的，Prefab 也只能将就一下&lt;&#x2F;p&gt;
-&lt;p&gt;需要写一些临时代码把 GameObject 转化为Entity 与Component&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;shi-yao-shi-hou-neng-yong-yu-production&quot;&gt;什么时候能用于Production&lt;&#x2F;h2&gt;
-&lt;p&gt;物理引擎跟微软合作，已经能在Package Manager 中安装了，说明 API 应该也稳定了吧&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;huan-bu-neng-chun-ecs&quot;&gt;还不能纯 ECS&lt;&#x2F;h2&gt;
+&lt;p&gt;目前 Mesh 和 Camera 都没有 ECS 版的，Prefab 也只能将就一下&lt;&#x2F;p&gt;
+&lt;p&gt;需要写一些临时代码把 GameObject 转化为 Entity 与 Component&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;shi-yao-shi-hou-neng-yong-yu-production&quot;&gt;什么时候能用于 Production&lt;&#x2F;h2&gt;
+&lt;p&gt;物理引擎跟微软合作，已经能在 Package Manager 中安装了，说明 API 应该也稳定了吧&lt;&#x2F;p&gt;
 &lt;p&gt;官方还说今年会有1.0版本&lt;&#x2F;p&gt;
 &lt;p&gt;Production 可能要等个两年&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;xiang-mu-an-li&quot;&gt;项目案例&lt;&#x2F;h2&gt;
-&lt;p&gt;基于Unity DOTS 写的坦克大乱斗游戏，很大程度上参考了 Unity 官方文档和示例，可以作为一个学习的简单例子&lt;&#x2F;p&gt;
+&lt;p&gt;基于 Unity DOTS 写的坦克大乱斗游戏，很大程度上参考了 Unity 官方文档和示例，可以作为一个学习的简单例子&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;paakmau&#x2F;JustFight&quot;&gt;https:&#x2F;&#x2F;github.com&#x2F;paakmau&#x2F;JustFight&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
 </content>
 	</entry>
@@ -738,22 +738,22 @@ com.unity.physics 0.2.5-preview.1&lt;&#x2F;p&gt;
 		<updated>2020-02-04T01:23:00+00:00</updated>
 		<link href="https://paakmau.github.io/202002040123/" type="text/html"/>
 		<id>https://paakmau.github.io/202002040123/</id>
-		<content type="html">&lt;p&gt;前文中我们用 IJobForEach 或者JobComponentSystem.Entities.ForEach 都只能筛选并遍历具有特定 Component 的Entity，但其实有更灵活且同样高效的方式&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;前文中我们用 IJobForEach 或者 JobComponentSystem.Entities.ForEach 都只能筛选并遍历具有特定 Component 的 Entity，但其实有更灵活且同样高效的方式&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;entityquery&quot;&gt;EntityQuery&lt;&#x2F;h2&gt;
-&lt;p&gt;Unity 提供了 EntityQuery 用于精确筛选Entity，并且文档中提到 IJobForEach 与JobComponentSystem.Entities.ForEach 的内部实现其实都是EntityQuery&lt;&#x2F;p&gt;
+&lt;p&gt;Unity 提供了 EntityQuery 用于精确筛选 Entity，并且文档中提到 IJobForEach 与 JobComponentSystem.Entities.ForEach 的内部实现其实都是 EntityQuery&lt;&#x2F;p&gt;
 &lt;h3 id=&quot;getentityquery&quot;&gt;GetEntityQuery&lt;&#x2F;h3&gt;
 &lt;p&gt;最简单的，我们可以筛选具有指定组件的实体，并规定这些组件的读写权限&lt;&#x2F;p&gt;
-&lt;p&gt;例如下面的代码选出了全部的同时拥有 Translation 与MoveSpeed 组件的Entity，并且规定 Translation 可读可写，MoveSpeed 只读&lt;&#x2F;p&gt;
+&lt;p&gt;例如下面的代码选出了全部的同时拥有 Translation 与 MoveSpeed 组件的 Entity，并且规定 Translation 可读可写，MoveSpeed 只读&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cs&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cs &quot;&gt;&lt;code class=&quot;language-cs&quot; data-lang=&quot;cs&quot;&gt;&lt;span&gt;EntityQuery &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;m_Query &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetEntityQuery&lt;&#x2F;span&gt;&lt;span&gt;(typeof(Translation), &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ComponentType&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ReadOnly&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;MoveSpeed&amp;gt;());
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h3 id=&quot;entityquerydesc&quot;&gt;EntityQueryDesc&lt;&#x2F;h3&gt;
-&lt;p&gt;对于更复杂的筛选，我们使用 EntityQueryDesc 来创建EntityQuery，一个 EntityQueryDesc 对象具有三个属性，它们的类型都是 ComponentType 数组&lt;&#x2F;p&gt;
+&lt;p&gt;对于更复杂的筛选，我们使用 EntityQueryDesc 来创建 EntityQuery，一个 EntityQueryDesc 对象具有三个属性，它们的类型都是 ComponentType 数组&lt;&#x2F;p&gt;
 &lt;ul&gt;
 &lt;li&gt;All：数组中所有的类型必须出现在 Entity 中，且可以在其中规定读写权限&lt;&#x2F;li&gt;
 &lt;li&gt;Any：数组中至少一个类型会出现在 Entity 中&lt;&#x2F;li&gt;
 &lt;li&gt;None：数组中任意类型都不会出现在 Entity 中&lt;&#x2F;li&gt;
 &lt;&#x2F;ul&gt;
-&lt;p&gt;下面举个例子，筛选同时具有Translation、MoveSpeed，不具有RotationSpeed，至少具有 Wing 或magic 中的一个的所有Entity&lt;&#x2F;p&gt;
+&lt;p&gt;下面举个例子，筛选同时具有 Translation、MoveSpeed，不具有 RotationSpeed，至少具有 Wing 或 magic 中的一个的所有 Entity&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cs&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cs &quot;&gt;&lt;code class=&quot;language-cs&quot; data-lang=&quot;cs&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;var &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;query &lt;&#x2F;span&gt;&lt;span&gt;= new EntityQueryDesc
 &lt;&#x2F;span&gt;&lt;span&gt;{
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;All &lt;&#x2F;span&gt;&lt;span&gt;= new ComponentType[] { &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ComponentType&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ReadOnly&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;MoveSpeed&amp;gt;(), typeof(Translation) },
@@ -763,7 +763,7 @@ com.unity.physics 0.2.5-preview.1&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span&gt;EntityQuery &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;m_Group &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetEntityQuery&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;query&lt;&#x2F;span&gt;&lt;span&gt;);
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h3 id=&quot;lian-he-shai-xuan&quot;&gt;联合筛选&lt;&#x2F;h3&gt;
-&lt;p&gt;我们可以在调用 GetEntityQuery 函数时传入EntityQueryDesc 数组，数组中的筛选条件是「或」的关系，下面是例子&lt;&#x2F;p&gt;
+&lt;p&gt;我们可以在调用 GetEntityQuery 函数时传入 EntityQueryDesc 数组，数组中的筛选条件是「或」的关系，下面是例子&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cs&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cs &quot;&gt;&lt;code class=&quot;language-cs&quot; data-lang=&quot;cs&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;var &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;query1 &lt;&#x2F;span&gt;&lt;span&gt;= new EntityQueryDesc
 &lt;&#x2F;span&gt;&lt;span&gt;{
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;All &lt;&#x2F;span&gt;&lt;span&gt;= new ComponentType[] { &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ComponentType&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ReadOnly&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;MoveSpeed&amp;gt;(), typeof(Translation), typeof(Wing) },
@@ -776,8 +776,8 @@ com.unity.physics 0.2.5-preview.1&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;m_Group &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetEntityQuery&lt;&#x2F;span&gt;&lt;span&gt;(new EntityQueryDesc[] { &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;query1&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;query2 &lt;&#x2F;span&gt;&lt;span&gt;});
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h3 id=&quot;shared-component-guo-lu&quot;&gt;Shared Component 过滤&lt;&#x2F;h3&gt;
-&lt;p&gt;可以对筛选出的 Entity 拥有的指定Shared Component 进行过滤，保证过滤出的 Entity 拥有的指定Shared Component 均为特定值&lt;&#x2F;p&gt;
-&lt;p&gt;例如下面代码用一个Shared Component 作为分组标记，过滤出 GroupId 为5的所有Entity&lt;&#x2F;p&gt;
+&lt;p&gt;可以对筛选出的 Entity 拥有的指定 Shared Component 进行过滤，保证过滤出的 Entity 拥有的指定 Shared Component 均为特定值&lt;&#x2F;p&gt;
+&lt;p&gt;例如下面代码用一个 Shared Component 作为分组标记，过滤出 GroupId 为5的所有 Entity&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cs&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cs &quot;&gt;&lt;code class=&quot;language-cs&quot; data-lang=&quot;cs&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public struct &lt;&#x2F;span&gt;&lt;span&gt;SharedGroup : &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;ISharedComponentData &lt;&#x2F;span&gt;&lt;span&gt;{
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GroupId&lt;&#x2F;span&gt;&lt;span&gt;;
 &lt;&#x2F;span&gt;&lt;span&gt;}
@@ -808,22 +808,22 @@ com.unity.physics 0.2.5-preview.1&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;解释：&lt;br &#x2F;&gt;
-当前版本官方手册中这个地方的代码有误，上面代码中把 AddSharedComponentFilter 放在OnCreate，SetSharedComponentFilter 放在 OnUpdate 的用法是我瞎猜的。当前版本的官方手册用的是之前版本的，根本不是这两个函数&lt;br &#x2F;&gt;
-另外我碰巧发现，就算没有Add，直接 Set 它也会自动Add&lt;&#x2F;p&gt;
+当前版本官方手册中这个地方的代码有误，上面代码中把 AddSharedComponentFilter 放在 OnCreate，SetSharedComponentFilter 放在 OnUpdate 的用法是我瞎猜的。当前版本的官方手册用的是之前版本的，根本不是这两个函数&lt;br &#x2F;&gt;
+另外我碰巧发现，就算没有 Add，直接 Set 它也会自动 Add&lt;&#x2F;p&gt;
 &lt;h3 id=&quot;ban-ben-xiu-gai-guo-lu&quot;&gt;版本修改过滤&lt;&#x2F;h3&gt;
 &lt;p&gt;过滤出指定组件被修改过的&lt;&#x2F;p&gt;
-&lt;p&gt;同样也有 Add 和Set 两个版本，官方手册同样不靠谱&lt;&#x2F;p&gt;
+&lt;p&gt;同样也有 Add 和 Set 两个版本，官方手册同样不靠谱&lt;&#x2F;p&gt;
 &lt;p&gt;然后下面的代码用于过滤出 Translation 组件经过修改的实体&lt;br &#x2F;&gt;
 当然是我瞎猜的也没有试（反正 API 还会改）&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cs&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cs &quot;&gt;&lt;code class=&quot;language-cs&quot; data-lang=&quot;cs&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;m_Group&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;AddChangedVersionFilter&lt;&#x2F;span&gt;&lt;span&gt;(typeof(Translation));
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;shou-dong-bian-li&quot;&gt;手动遍历&lt;&#x2F;h2&gt;
-&lt;p&gt;这种方式可以遍历所有的Entity，可以灵活访问任意 Entity 的任意Component，但显然效率低下，官方手册说蛇皮操作推荐用这个&lt;&#x2F;p&gt;
-&lt;p&gt;手册说用IJobParallelFor，懒得写了（反正 API 也会改）（看着语法提示干就完了，奥利给）&lt;&#x2F;p&gt;
+&lt;p&gt;这种方式可以遍历所有的 Entity，可以灵活访问任意 Entity 的任意 Component，但显然效率低下，官方手册说蛇皮操作推荐用这个&lt;&#x2F;p&gt;
+&lt;p&gt;手册说用 IJobParallelFor，懒得写了（反正 API 也会改）（看着语法提示干就完了，奥利给）&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Unity ECS 框架摸索 第五章 利用 Prefab 实例化Entity 及其销毁</title>
+		<title>Unity ECS 框架摸索 第五章 利用 Prefab 实例化 Entity 及其销毁</title>
 		<published>2020-02-03T14:05:00+00:00</published>
 		<updated>2020-02-03T14:05:00+00:00</updated>
 		<link href="https://paakmau.github.io/202002031405/" type="text/html"/>
@@ -835,7 +835,7 @@ com.unity.physics 0.2.5-preview.1&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;ji-ben-si-lu&quot;&gt;基本思路&lt;&#x2F;h2&gt;
 &lt;p&gt;放置一个生成器实体在场景中，让一个 SpawnerSystem 根据它创建立方体方阵。&lt;br &#x2F;&gt;
 旋转与销毁的思路都与前文相同，让旋转系统筛选旋转速度组件并控制旋转，让销毁系统筛选销毁时间组件并控制销毁即可。&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;zhi-zuo-xuan-zhuan-li-fang-ti-de-prefab&quot;&gt;制作旋转立方体的Prefab&lt;&#x2F;h2&gt;
+&lt;h2 id=&quot;zhi-zuo-xuan-zhuan-li-fang-ti-de-prefab&quot;&gt;制作旋转立方体的 Prefab&lt;&#x2F;h2&gt;
 &lt;p&gt;其实跟 HelloWorld 中基本一致，但是为了表述清晰这里还是写一下。&lt;&#x2F;p&gt;
 &lt;p&gt;首先编写用于控制旋转速度的组件&lt;br &#x2F;&gt;
 RotationSpeed.cs&lt;&#x2F;p&gt;
@@ -859,7 +859,7 @@ DestroyTime.cs&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public float &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;TimeBeforeDestroy&lt;&#x2F;span&gt;&lt;span&gt;;
 &lt;&#x2F;span&gt;&lt;span&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;接下来则是用于添加上面两个组件的Authoring&lt;br &#x2F;&gt;
+&lt;p&gt;接下来则是用于添加上面两个组件的 Authoring&lt;br &#x2F;&gt;
 RotatingCubeAuthoring.cs&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cs&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cs &quot;&gt;&lt;code class=&quot;language-cs&quot; data-lang=&quot;cs&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;using &lt;&#x2F;span&gt;&lt;span&gt;Unity.Entities;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;using &lt;&#x2F;span&gt;&lt;span&gt;Unity.Mathematics;
@@ -877,12 +877,12 @@ RotatingCubeAuthoring.cs&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;最后创建一个基于 Cube 的Prefab，移除Collider，挂载 ConvertToEntity 与RotatingCubeAuthoring 脚本。如下图所示。&lt;&#x2F;p&gt;
+&lt;p&gt;最后创建一个基于 Cube 的 Prefab，移除 Collider，挂载 ConvertToEntity 与 RotatingCubeAuthoring 脚本。如下图所示。&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191212-014200@2x-357x1024.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
-&lt;p&gt;至此，就能使用该 Prefab 批量生成旋转立方体的Entity 实例。&lt;&#x2F;p&gt;
+&lt;p&gt;至此，就能使用该 Prefab 批量生成旋转立方体的 Entity 实例。&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;bian-xie-xuan-zhuan-xi-tong&quot;&gt;编写旋转系统&lt;&#x2F;h2&gt;
 &lt;p&gt;与 HelloWorld 完全一致&lt;&#x2F;p&gt;
-&lt;p&gt;控制方块旋转的System&lt;br &#x2F;&gt;
+&lt;p&gt;控制方块旋转的 System&lt;br &#x2F;&gt;
 RotateSpeedSystem.cs&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cs&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cs &quot;&gt;&lt;code class=&quot;language-cs&quot; data-lang=&quot;cs&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;using &lt;&#x2F;span&gt;&lt;span&gt;Unity.Burst;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;using &lt;&#x2F;span&gt;&lt;span&gt;Unity.Collections;
@@ -909,7 +909,7 @@ RotateSpeedSystem.cs&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;bian-xie-xiao-hui-entity-de-xi-tong&quot;&gt;编写销毁 Entity 的系统&lt;&#x2F;h2&gt;
-&lt;p&gt;筛选 DestroyTime 组件，让 TimeBeforeDestroy 不断随时间减少，在它归零的时候销毁它所属的Entity。&lt;&#x2F;p&gt;
+&lt;p&gt;筛选 DestroyTime 组件，让 TimeBeforeDestroy 不断随时间减少，在它归零的时候销毁它所属的 Entity。&lt;&#x2F;p&gt;
 &lt;p&gt;下面是销毁系统的具体代码&lt;br &#x2F;&gt;
 DestroySystem.cs&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cs&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cs &quot;&gt;&lt;code class=&quot;language-cs&quot; data-lang=&quot;cs&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;using &lt;&#x2F;span&gt;&lt;span&gt;Unity.Burst;
@@ -941,11 +941,11 @@ DestroySystem.cs&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;解释：&lt;br &#x2F;&gt;
-在一个 System 遍历Entity 的时候，如果直接将某个 Entity 销毁，会导致遍历出现错乱。因此需要将销毁操作放入一个命令缓冲区，只要在下次 Tick 该系统运行之前执行这个命令缓冲区中的所有操作，就能安全地销毁Entity。&lt;&#x2F;p&gt;
-&lt;p&gt;然后每一个 Tick 里系统是有执行顺序的，我们找到所有系统中第一个执行的系统BeginInitializationEntityCommandBufferSystem。然后调用它的接口创建命令缓冲区，写入销毁命令，在下次 Tick 的时候这个系统就会执行我们写入的销毁命令。&lt;&#x2F;p&gt;
-&lt;p&gt;另外，IJobForEachWithEntity 跟前文的 IJobForEach 基本一致，但是使用它遍历可以拿到Entity。这里我们需要拿到 Entity 以便销毁它。&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;bian-xie-bing-fang-zhi-spawner&quot;&gt;编写并放置Spawner&lt;&#x2F;h2&gt;
-&lt;p&gt;首先是 Spawner 组件用于记录Prefab 与生成数量信息&lt;br &#x2F;&gt;
+在一个 System 遍历 Entity 的时候，如果直接将某个 Entity 销毁，会导致遍历出现错乱。因此需要将销毁操作放入一个命令缓冲区，只要在下次 Tick 该系统运行之前执行这个命令缓冲区中的所有操作，就能安全地销毁 Entity。&lt;&#x2F;p&gt;
+&lt;p&gt;然后每一个 Tick 里系统是有执行顺序的，我们找到所有系统中第一个执行的系统 BeginInitializationEntityCommandBufferSystem。然后调用它的接口创建命令缓冲区，写入销毁命令，在下次 Tick 的时候这个系统就会执行我们写入的销毁命令。&lt;&#x2F;p&gt;
+&lt;p&gt;另外，IJobForEachWithEntity 跟前文的 IJobForEach 基本一致，但是使用它遍历可以拿到 Entity。这里我们需要拿到 Entity 以便销毁它。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;bian-xie-bing-fang-zhi-spawner&quot;&gt;编写并放置 Spawner&lt;&#x2F;h2&gt;
+&lt;p&gt;首先是 Spawner 组件用于记录 Prefab 与生成数量信息&lt;br &#x2F;&gt;
 生成的实体会形成一个方阵，CountX、CountY 分别表示方阵横纵方向上实体的数量&lt;br &#x2F;&gt;
 Spawner.cs&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cs&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cs &quot;&gt;&lt;code class=&quot;language-cs&quot; data-lang=&quot;cs&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;using &lt;&#x2F;span&gt;&lt;span&gt;Unity.Entities;
@@ -985,12 +985,12 @@ SpawnerAuthoring.cs&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;解释：&lt;br &#x2F;&gt;
-它不仅把CountX、CountY 传入组件，还使用 GameObjectConversionSystem 把GameObject 类型的 Prefab 转化为Entity。&lt;br &#x2F;&gt;
+它不仅把 CountX、CountY 传入组件，还使用 GameObjectConversionSystem 把 GameObject 类型的 Prefab 转化为 Entity。&lt;br &#x2F;&gt;
 具体为什么这样写不用管，当作咒语记下来就好。（反正 api 还会改不少）&lt;&#x2F;p&gt;
-&lt;p&gt;然后在 Scene 中新建一个空的GameObject 命名为Spawner，挂载 ConvertToEntity 与SpawnerAuthoring 脚本&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;bian-xie-spawnersystem&quot;&gt;编写SpawnerSystem&lt;&#x2F;h2&gt;
+&lt;p&gt;然后在 Scene 中新建一个空的 GameObject 命名为 Spawner，挂载 ConvertToEntity 与 SpawnerAuthoring 脚本&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;bian-xie-spawnersystem&quot;&gt;编写 SpawnerSystem&lt;&#x2F;h2&gt;
 &lt;p&gt;现在场景中已经存在一个生成器实体了，我们只需要写一个系统读取该实体储存的 Prefab 信息，就能实例化任意多个 Prefab 了。&lt;&#x2F;p&gt;
-&lt;p&gt;当然，为了防止反复访问这个生成器实体而重复实例化Prefab，需要在实例化 Prefab 之后就立刻销毁该实体&lt;&#x2F;p&gt;
+&lt;p&gt;当然，为了防止反复访问这个生成器实体而重复实例化 Prefab，需要在实例化 Prefab 之后就立刻销毁该实体&lt;&#x2F;p&gt;
 &lt;p&gt;代码如下&lt;br &#x2F;&gt;
 SpawnerSystem.cs&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cs&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cs &quot;&gt;&lt;code class=&quot;language-cs&quot; data-lang=&quot;cs&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;using &lt;&#x2F;span&gt;&lt;span&gt;Unity.Burst;
@@ -1032,9 +1032,9 @@ SpawnerSystem.cs&lt;&#x2F;p&gt;
 &lt;p&gt;解释：&lt;br &#x2F;&gt;
 同样的，在遍历实体过程中创建新的实体会导致遍历混乱，所以它也跟 DestroySystem 一样使用了命令缓冲区来创建新的实体。&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;yun-xing-liu-cheng&quot;&gt;运行流程&lt;&#x2F;h2&gt;
-&lt;p&gt;首先 SpawnerSystem 筛选出了一个拥有Spawner 组件的实体，根据该组件中的 Prefab 与方阵信息创建了整个方阵的旋转方块实体，最后销毁这个拥有 Spawner 组件的实体防止重复实例化Prefab。&lt;&#x2F;p&gt;
-&lt;p&gt;然后 RotateSpeedSystem 控制拥有RotationSpeed 组件的方块旋转&lt;&#x2F;p&gt;
-&lt;p&gt;还有 DestroySystem 筛选出拥有DestroyTime 组件的实体，每个 Tick 都让TimeBeforeDestroy 这个计时器减去DeltaTime，并把计时器已经归零的 Entity 销毁。&lt;&#x2F;p&gt;
+&lt;p&gt;首先 SpawnerSystem 筛选出了一个拥有 Spawner 组件的实体，根据该组件中的 Prefab 与方阵信息创建了整个方阵的旋转方块实体，最后销毁这个拥有 Spawner 组件的实体防止重复实例化 Prefab。&lt;&#x2F;p&gt;
+&lt;p&gt;然后 RotateSpeedSystem 控制拥有 RotationSpeed 组件的方块旋转&lt;&#x2F;p&gt;
+&lt;p&gt;还有 DestroySystem 筛选出拥有 DestroyTime 组件的实体，每个 Tick 都让 TimeBeforeDestroy 这个计时器减去 DeltaTime，并把计时器已经归零的 Entity 销毁。&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191212-030831-HD.gif&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 </content>
 	</entry>
@@ -1044,15 +1044,15 @@ SpawnerSystem.cs&lt;&#x2F;p&gt;
 		<updated>2020-02-03T01:37:42+00:00</updated>
 		<link href="https://paakmau.github.io/202002030137/" type="text/html"/>
 		<id>https://paakmau.github.io/202002030137/</id>
-		<content type="html">&lt;p&gt;本文将介绍Unity ECS 中对于 Component 的内存管理&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;本文将介绍 Unity ECS 中对于 Component 的内存管理&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;component-de-chunk-shi-cun-chu&quot;&gt;Component 的 Chunk 式存储&lt;&#x2F;h2&gt;
-&lt;p&gt;首先，一组 Component 是一个Archetype。多个 Entity 如果由相同的Component 构成，那么他们属于同一个Archetype。&lt;&#x2F;p&gt;
-&lt;p&gt;Unity 会把属于同种 Archetype 的Entity 归成同一类，同一类实体的组件会被集中存储。首先他们被划分为若干个Chunk，一个 Chunk 内部的同种组件会存储在连续的内存中；然后同类的 Chunk 之间可能用链表或指针数组相连，从而能够遍历这个 Archetype 所有实体的所有组件。如下图所示。&lt;&#x2F;p&gt;
+&lt;p&gt;首先，一组 Component 是一个 Archetype。多个 Entity 如果由相同的 Component 构成，那么他们属于同一个 Archetype。&lt;&#x2F;p&gt;
+&lt;p&gt;Unity 会把属于同种 Archetype 的 Entity 归成同一类，同一类实体的组件会被集中存储。首先他们被划分为若干个 Chunk，一个 Chunk 内部的同种组件会存储在连续的内存中；然后同类的 Chunk 之间可能用链表或指针数组相连，从而能够遍历这个 Archetype 所有实体的所有组件。如下图所示。&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;ArchetypeChunkDiagram.jpg&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;同种颜色的方块为同种组件，Chunk 中的每列方块都是一个实体&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;zhen-dui-chunk-de-bian-li&quot;&gt;针对 Chunk 的遍历&lt;&#x2F;h2&gt;
-&lt;p&gt;在前文中，我们使用的 IJobForEach 就是对符合筛选条件的所有Archetype 中所有 Chunk 中的所有Entity 进行遍历，它遍历的元素是Entity。&lt;&#x2F;p&gt;
-&lt;p&gt;但是 Unity 提供了一种在Chunk 层面上遍历的方法，即遍历符合条件的所有Chunk。&lt;&#x2F;p&gt;
+&lt;p&gt;在前文中，我们使用的 IJobForEach 就是对符合筛选条件的所有 Archetype 中所有 Chunk 中的所有 Entity 进行遍历，它遍历的元素是 Entity。&lt;&#x2F;p&gt;
+&lt;p&gt;但是 Unity 提供了一种在 Chunk 层面上遍历的方法，即遍历符合条件的所有 Chunk。&lt;&#x2F;p&gt;
 &lt;p&gt;将第二章中的 RotateSpeedSystem 修改为如下代码，依然能正常运行&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cs&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cs &quot;&gt;&lt;code class=&quot;language-cs&quot; data-lang=&quot;cs&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;RotateSpeedSystem &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;JobComponentSystem &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    EntityQuery &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;m_Group&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
@@ -1090,15 +1090,15 @@ SpawnerSystem.cs&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;解释：&lt;br &#x2F;&gt;
-m_Group 用于存储筛选 Chunk 的条件。在 OnCreate 中赋值为对Rotation 可读可写，对 RotationSpeed 只读。在Job Schedule 的时候被传入。&lt;br &#x2F;&gt;
-RotationJob 是用于规划 Job 的struct，Execute 中传入的 chunk 变量就是当前遍历到的Chunk，根据 RotationType 和RotationSpeedType 就能从 chunk 中拿到对应类型的原生数组，直接用 for 循环即可遍历该Chunk 中的所有 Entity 的所有Component。&lt;&#x2F;p&gt;
-&lt;p&gt;这样的遍历方式相对于 IJobForEach 更加灵活，它对 Component 的筛选跟访问是独立开的，也就是它筛选出的 Component 跟实际访问的Component 可以不一样，更加灵活。&lt;br &#x2F;&gt;
+m_Group 用于存储筛选 Chunk 的条件。在 OnCreate 中赋值为对 Rotation 可读可写，对 RotationSpeed 只读。在 Job Schedule 的时候被传入。&lt;br &#x2F;&gt;
+RotationJob 是用于规划 Job 的 struct，Execute 中传入的 chunk 变量就是当前遍历到的 Chunk，根据 RotationType 和 RotationSpeedType 就能从 chunk 中拿到对应类型的原生数组，直接用 for 循环即可遍历该 Chunk 中的所有 Entity 的所有 Component。&lt;&#x2F;p&gt;
+&lt;p&gt;这样的遍历方式相对于 IJobForEach 更加灵活，它对 Component 的筛选跟访问是独立开的，也就是它筛选出的 Component 跟实际访问的 Component 可以不一样，更加灵活。&lt;br &#x2F;&gt;
 比如说使用「或」条件筛选出的组件实际可能有多种情况，可以在内部判断是哪一种情况并灵活处理&lt;br &#x2F;&gt;
 此外它还可以跟 ChunkComponentData 配合使用，可以提高性能（愚蠢的常数优化）&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;chunkcomponentdata-jie-shao&quot;&gt;ChunkComponentData 介绍&lt;&#x2F;h2&gt;
-&lt;p&gt;它是一种奇怪的Component，Unity 规定这类 Component 由同一个Chunk 中每个 Entity 共享。&lt;br &#x2F;&gt;
-举个例子，如果一个 Archetype 中包含一个ChunkComponentData 类型的组件，那么它的每个 Chunk 就会有一个该组件。同一个 Chunk 中，Entity 共享同一个该组件。不同 Chunk 的该组件是不同的实例，它们的值也可以不相同。&lt;&#x2F;p&gt;
-&lt;p&gt;如果修改一个 Entity 上的该类组件，它所在 Chunk 中其他Entity 的同类组件的值也会一并修改。&lt;&#x2F;p&gt;
+&lt;p&gt;它是一种奇怪的 Component，Unity 规定这类 Component 由同一个 Chunk 中每个 Entity 共享。&lt;br &#x2F;&gt;
+举个例子，如果一个 Archetype 中包含一个 ChunkComponentData 类型的组件，那么它的每个 Chunk 就会有一个该组件。同一个 Chunk 中，Entity 共享同一个该组件。不同 Chunk 的该组件是不同的实例，它们的值也可以不相同。&lt;&#x2F;p&gt;
+&lt;p&gt;如果修改一个 Entity 上的该类组件，它所在 Chunk 中其他 Entity 的同类组件的值也会一并修改。&lt;&#x2F;p&gt;
 &lt;p&gt;感觉这种组件应该可以用于在同种 Archetype 中细分小类型，或者用于共享公共数据。对它进行写访问的时候应该需要结合 IJobChunk 使用。&lt;&#x2F;p&gt;
 </content>
 	</entry>
@@ -1110,8 +1110,8 @@ RotationJob 是用于规划 Job 的struct，Execute 中传入的 chunk 变量就
 		<id>https://paakmau.github.io/202002012034/</id>
 		<content type="html">&lt;p&gt;上一章介绍了 ECS 并行处理的实现，接下来就这个 HelloWorld 进行深入的研究。&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;tian-jia-component-de-ji-qiao&quot;&gt;添加 Component 的技巧&lt;&#x2F;h2&gt;
-&lt;p&gt;第二章中为 Entity 添加Component 的方式是直接在 GameObject 上挂载脚本，但是 Unity 编辑器目前并非为ECS 设计，如果为每一个 Component 都挂载一个脚本会很麻烦，所以考虑使用代码添加组件。&lt;&#x2F;p&gt;
-&lt;p&gt;我们编写如下脚本，把它挂载在 Cube 上，它就能为 Cube 生成的Entity 添加 RotationSpeed 组件。&lt;br &#x2F;&gt;
+&lt;p&gt;第二章中为 Entity 添加 Component 的方式是直接在 GameObject 上挂载脚本，但是 Unity 编辑器目前并非为 ECS 设计，如果为每一个 Component 都挂载一个脚本会很麻烦，所以考虑使用代码添加组件。&lt;&#x2F;p&gt;
+&lt;p&gt;我们编写如下脚本，把它挂载在 Cube 上，它就能为 Cube 生成的 Entity 添加 RotationSpeed 组件。&lt;br &#x2F;&gt;
 RotatingCubeAuthoring.cs&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cs&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cs &quot;&gt;&lt;code class=&quot;language-cs&quot; data-lang=&quot;cs&quot;&gt;&lt;span&gt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;RequiresEntityConversion&lt;&#x2F;span&gt;&lt;span&gt;]
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;RotatingCubeAuthoring &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;MonoBehaviour&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;IConvertGameObjectToEntity &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
@@ -1123,8 +1123,8 @@ RotatingCubeAuthoring.cs&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;解释：IConvertGameObjectToEntity 接口的 Convert 方法会在GameObject 转换的过程中被调用，可以在其中直接用 EntityManager 为Entity 添加任意Component，并能对其赋值，更加灵活。&lt;br &#x2F;&gt;
-在该段代码中我们就把直观的 Degree 转换成了Radian。&lt;&#x2F;p&gt;
+&lt;p&gt;解释：IConvertGameObjectToEntity 接口的 Convert 方法会在 GameObject 转换的过程中被调用，可以在其中直接用 EntityManager 为 Entity 添加任意 Component，并能对其赋值，更加灵活。&lt;br &#x2F;&gt;
+在该段代码中我们就把直观的 Degree 转换成了 Radian。&lt;&#x2F;p&gt;
 &lt;p&gt;再把之前的 RotationSpeed 组件修改一下&lt;br &#x2F;&gt;
 RotationSpeed.cs&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cs&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cs &quot;&gt;&lt;code class=&quot;language-cs&quot; data-lang=&quot;cs&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 修改前
@@ -1141,11 +1141,11 @@ RotationSpeed.cs&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public float &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;RadiansPerSecond&lt;&#x2F;span&gt;&lt;span&gt;;
 &lt;&#x2F;span&gt;&lt;span&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;解释：原本的 GenerateAuthoringComponent 特性被改成了Serializable。GenerateAuthoringComponent 的作用是允许 ECS 的组件直接挂载在GameObject 上，但是使用代码添加组件时不需要这个特性，因此只需要 Serializable 即可。&lt;&#x2F;p&gt;
-&lt;p&gt;在编辑器中修改 Cube 的RotatingCubeAuthoring 的旋转速度为每秒180度，如下&lt;&#x2F;p&gt;
+&lt;p&gt;解释：原本的 GenerateAuthoringComponent 特性被改成了 Serializable。GenerateAuthoringComponent 的作用是允许 ECS 的组件直接挂载在 GameObject 上，但是使用代码添加组件时不需要这个特性，因此只需要 Serializable 即可。&lt;&#x2F;p&gt;
+&lt;p&gt;在编辑器中修改 Cube 的 RotatingCubeAuthoring 的旋转速度为每秒180度，如下&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191210-160141@2x.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;ijobforeach&quot;&gt;IJobForEach&lt;&#x2F;h2&gt;
-&lt;p&gt;上一章中，我们使用 Lambda 对Entity 进行了遍历，写法很简洁。但是这样的写法会产生GC，为了更好的性能，可以使用 IJobForEach 接口进行遍历。&lt;&#x2F;p&gt;
+&lt;p&gt;上一章中，我们使用 Lambda 对 Entity 进行了遍历，写法很简洁。但是这样的写法会产生 GC，为了更好的性能，可以使用 IJobForEach 接口进行遍历。&lt;&#x2F;p&gt;
 &lt;p&gt;修改 RotationSpeedSystem 为如下代码&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cs&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cs &quot;&gt;&lt;code class=&quot;language-cs&quot; data-lang=&quot;cs&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 修改后
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;RotateSpeedSystem &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;JobComponentSystem &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
@@ -1163,7 +1163,7 @@ RotationSpeed.cs&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;解释：原本使用 Lambda 对Job 进行规划。修改后使用一个结构体实现 IJobForEach 接口。在其中规定了 Entity 的筛选条件为拥有Rotation 和 RotationSpeed 组件，并实现 Execute 方法规划Job。有效避免了GC。&lt;&#x2F;p&gt;
+&lt;p&gt;解释：原本使用 Lambda 对 Job 进行规划。修改后使用一个结构体实现 IJobForEach 接口。在其中规定了 Entity 的筛选条件为拥有 Rotation 和 RotationSpeed 组件，并实现 Execute 方法规划 Job。有效避免了 GC。&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
@@ -1172,7 +1172,7 @@ RotationSpeed.cs&lt;&#x2F;p&gt;
 		<updated>2020-01-31T15:15:00+00:00</updated>
 		<link href="https://paakmau.github.io/202001311515/" type="text/html"/>
 		<id>https://paakmau.github.io/202001311515/</id>
-		<content type="html">&lt;p&gt;跟随本文，创建一个立方体Entity，利用一个 System 控制它不断旋转。&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;跟随本文，创建一个立方体 Entity，利用一个 System 控制它不断旋转。&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;zui-zhong-xiao-guo&quot;&gt;最终效果&lt;&#x2F;h2&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191210-142039-HD.gif&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;bu-zou&quot;&gt;步骤&lt;&#x2F;h2&gt;
@@ -1184,13 +1184,13 @@ RotationSpeed.cs&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public float &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;RadiansPerSecond&lt;&#x2F;span&gt;&lt;span&gt;;
 &lt;&#x2F;span&gt;&lt;span&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;然后在 Unity 编辑器中创建一个Cube 的GameObject，挂载 ConvertToEntity 与刚刚写好的RotationSpeed，并设置 RotationSpeed 的初始值。具体如下图。&lt;&#x2F;p&gt;
+&lt;p&gt;然后在 Unity 编辑器中创建一个 Cube 的 GameObject，挂载 ConvertToEntity 与刚刚写好的 RotationSpeed，并设置 RotationSpeed 的初始值。具体如下图。&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191210-143136@2x.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;解释：&lt;br &#x2F;&gt;
-这个 Cube 本身是一个GameObject，但是挂上 ConvertToEntity 脚本之后，他会被转化为Entity，他的 Transform 与Mesh 信息也会被转化为相应的Component。&lt;br &#x2F;&gt;
-其中 ConversionMode 选择ConvertAndDestroy 代表转化为 Entity 之后原本的GameObject 会被删除。&lt;&#x2F;p&gt;
-&lt;p&gt;此外，我们挂载的 RotationSpeed 同样也会成为这个Entity 的组件。&lt;&#x2F;p&gt;
-&lt;p&gt;至此，我们添加了一个具有 RotationSpeed 组件的Cube 实体&lt;&#x2F;p&gt;
+这个 Cube 本身是一个 GameObject，但是挂上 ConvertToEntity 脚本之后，他会被转化为 Entity，他的 Transform 与 Mesh 信息也会被转化为相应的 Component。&lt;br &#x2F;&gt;
+其中 ConversionMode 选择 ConvertAndDestroy 代表转化为 Entity 之后原本的 GameObject 会被删除。&lt;&#x2F;p&gt;
+&lt;p&gt;此外，我们挂载的 RotationSpeed 同样也会成为这个 Entity 的组件。&lt;&#x2F;p&gt;
+&lt;p&gt;至此，我们添加了一个具有 RotationSpeed 组件的 Cube 实体&lt;&#x2F;p&gt;
 &lt;p&gt;接下来写一个控制旋转的系统&lt;br &#x2F;&gt;
 RotationSpeedSystem.cs&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cs&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cs &quot;&gt;&lt;code class=&quot;language-cs&quot; data-lang=&quot;cs&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;RotationSpeedSystem &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;JobComponentSystem &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
@@ -1210,8 +1210,8 @@ RotationSpeedSystem.cs&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;解释：JobComponentSystem 的抽象方法 OnUpdate 会在每帧调用，重载该方法并在其中规划 Job 就能实现对相应Component 的并行读写。&lt;&#x2F;p&gt;
-&lt;p&gt;上面的代码中利用 ForEach 传入一个Lambda 函数，这个函数筛选拥有Rotation（Unity 自带）与RotationSpeed（我们刚刚写的）组件的Entity，然后根据 RotationSpeed 的信息修改Rotation，从而实现旋转&lt;&#x2F;p&gt;
+&lt;p&gt;解释：JobComponentSystem 的抽象方法 OnUpdate 会在每帧调用，重载该方法并在其中规划 Job 就能实现对相应 Component 的并行读写。&lt;&#x2F;p&gt;
+&lt;p&gt;上面的代码中利用 ForEach 传入一个 Lambda 函数，这个函数筛选拥有 Rotation（Unity 自带）与 RotationSpeed（我们刚刚写的）组件的 Entity，然后根据 RotationSpeed 的信息修改 Rotation，从而实现旋转&lt;&#x2F;p&gt;
 &lt;p&gt;然后直接在 Unity 编辑器中运行即可&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191210-142039-HD.gif&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 </content>
@@ -1224,31 +1224,31 @@ RotationSpeedSystem.cs&lt;&#x2F;p&gt;
 		<id>https://paakmau.github.io/202001311348/</id>
 		<content type="html">&lt;p&gt;之前接触 ECS 是因为看了守望先锋的架构分析。了解了一下发现这种架构天生支持多线程，而且对缓存非常友好，似乎做联网同步也很方便，感觉这应该是个挺有前途的设计思路。&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;这几天翻了一下 Unity 官网，看到 ECS 有文档了，例子也更新了许多，突然兴奋，准备写个 Demo 试试。顺便想记录看看 Unity 的正式版api 能改成个什么鬼样子（大雾）&lt;&#x2F;p&gt;
+&lt;p&gt;这几天翻了一下 Unity 官网，看到 ECS 有文档了，例子也更新了许多，突然兴奋，准备写个 Demo 试试。顺便想记录看看 Unity 的正式版 api 能改成个什么鬼样子（大雾）&lt;&#x2F;p&gt;
 &lt;p&gt;本系列基于 Entities 0.5.1-preview.11，并非正式版。&lt;br &#x2F;&gt;
-因此更倾向于科普而不是实用（学了也没用早晚要改API），另外需要对旧版 Unity 有少许了解。&lt;&#x2F;p&gt;
+因此更倾向于科普而不是实用（学了也没用早晚要改 API），另外需要对旧版 Unity 有少许了解。&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;ecs-jia-gou&quot;&gt;ECS 架构&lt;&#x2F;h2&gt;
-&lt;p&gt;ECS，是Entity-Component-System 的缩写，该架构也就只有这三个东西组成（严格意义上）。这个架构由数据驱动逻辑，有别于我们熟知的OOP（面向对象）&lt;&#x2F;p&gt;
+&lt;p&gt;ECS，是 Entity-Component-System 的缩写，该架构也就只有这三个东西组成（严格意义上）。这个架构由数据驱动逻辑，有别于我们熟知的 OOP（面向对象）&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;ming-ci-jie-shi&quot;&gt;名词解释&lt;&#x2F;h2&gt;
-&lt;p&gt;Entity，实体。可以近似理解为 OOP 中的对象。Entity 由 Component 组成，此外不含有其他任何成分。可以理解为一个 Entity 编号为e1，他身上所有组件都被标记为e1，并且具体实现中 Entity 通常也只是一个用于标记的id。&lt;&#x2F;p&gt;
-&lt;p&gt;Component，组件。存储数据，例如 Position 组件中会有x, y, z 表示一个实体的位置。&lt;&#x2F;p&gt;
-&lt;p&gt;System，系统。不含数据，只处理逻辑，固定帧率调用。且它会筛选拥有指定若干 Component 的Entity 并对指定的 Component 进行读写。&lt;&#x2F;p&gt;
+&lt;p&gt;Entity，实体。可以近似理解为 OOP 中的对象。Entity 由 Component 组成，此外不含有其他任何成分。可以理解为一个 Entity 编号为 e1，他身上所有组件都被标记为 e1，并且具体实现中 Entity 通常也只是一个用于标记的 id。&lt;&#x2F;p&gt;
+&lt;p&gt;Component，组件。存储数据，例如 Position 组件中会有 x, y, z 表示一个实体的位置。&lt;&#x2F;p&gt;
+&lt;p&gt;System，系统。不含数据，只处理逻辑，固定帧率调用。且它会筛选拥有指定若干 Component 的 Entity 并对指定的 Component 进行读写。&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;ju-ge-li-zi-miao-shu-yi-xia-ecs-de-yun-zuo&quot;&gt;举个例子描述一下 ECS 的运作&lt;&#x2F;h2&gt;
 &lt;p&gt;从前有一只鸭子 Entity 叫「老王」，它由「嘴」、「双脚」、「位置」几个 Component 组成。&lt;br &#x2F;&gt;
-另外有一只大头鱼 Entity 叫「老鱼」，显然它没有脚，它只有「嘴巴」和「位置」两个Component。&lt;br &#x2F;&gt;
-然后有「叫系统」、「跑系统」两个System。&lt;&#x2F;p&gt;
+另外有一只大头鱼 Entity 叫「老鱼」，显然它没有脚，它只有「嘴巴」和「位置」两个 Component。&lt;br &#x2F;&gt;
+然后有「叫系统」、「跑系统」两个 System。&lt;&#x2F;p&gt;
 &lt;p&gt;「叫系统」以「嘴」组件为筛选条件。显然「老王」和「老鱼」都满足要求。它从这个组件中获取了「老王」的音量是100以及声音“嘎嘎”，然后每帧都调用系统 API 播放音量为100的“嘎嘎”的声音；同样，对于「老鱼」，它获取了音量为50的“啊啊”声，于是也播放相应的声音。&lt;&#x2F;p&gt;
 &lt;p&gt;「跑系统」以「双脚」和「位置」组件为筛选条件。因为「老鱼」没有脚，所以它只会对「老王」作出反应。它从「双脚」中拿到「老王」的奔跑速度，每一帧根据 DeltaTime 和速度计算出「老王」的位移并更新老王的「位置」。&lt;&#x2F;p&gt;
 &lt;p&gt;这样，两个简陋的 System 控制着「老王」一边向前奔跑一边嘎嘎叫，而「老鱼」只会“啊啊”叫。&lt;&#x2F;p&gt;
 &lt;p&gt;其中理解 ECS 的重点有两个。&lt;&#x2F;p&gt;
-&lt;p&gt;一个是数据存储，即 Entity 由多个不同种的Component 组成。&lt;&#x2F;p&gt;
-&lt;p&gt;另一个就是逻辑执行，即 System 只会筛选出拥有特定Component 的Entity，并只对那些特定的 Component 进行读写。System 针对的是 Component 而不是Entity。&lt;&#x2F;p&gt;
+&lt;p&gt;一个是数据存储，即 Entity 由多个不同种的 Component 组成。&lt;&#x2F;p&gt;
+&lt;p&gt;另一个就是逻辑执行，即 System 只会筛选出拥有特定 Component 的 Entity，并只对那些特定的 Component 进行读写。System 针对的是 Component 而不是 Entity。&lt;&#x2F;p&gt;
 &lt;p&gt;总结一下就是，System 执行逻辑，Component 存储数据，Entity 则是将 Component 关联起来。&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;xia-ji-ba-fen-xi&quot;&gt;瞎几把分析&lt;&#x2F;h2&gt;
 &lt;p&gt;天生对并行友好。观察不难发现，无论是「叫系统」还是「跑系统」，他们每次只会处理同一个 Entity 的某几个固定组件。&lt;br &#x2F;&gt;
-因此假设有四只鸭子和一枚四核的Intel8代酷睿i5处理器，是不是可以每个核心分别处理一只鸭子而完全不需要线程锁？（我对硬件一无所知不要打我）&lt;&#x2F;p&gt;
-&lt;p&gt;天生对缓存友好。因为 System 只关心特定的Component，因此如果将同种 Component 存储在线性内存空间里，System 遍历 Component 的时候缓存命中率会非常高。Unity 的具体实现中是将同类 Entity 的Component 连续存储，可以实现缓存完全命中&lt;&#x2F;p&gt;
-&lt;p&gt;耦合性低。理想状态下，系统只会对 Component 作出反应，因此系统之间的影响只有执行顺序，以及一些公共耦合。但是代码实现中，系统之间信息传递比较困难，不如直接调用更加高性能、高效率（省事）（包括Unity），因此需要不瞎几把乱写才能发挥 ECS 低耦合的优势。&lt;&#x2F;p&gt;
+因此假设有四只鸭子和一枚四核的 Intel8代酷睿 i5处理器，是不是可以每个核心分别处理一只鸭子而完全不需要线程锁？（我对硬件一无所知不要打我）&lt;&#x2F;p&gt;
+&lt;p&gt;天生对缓存友好。因为 System 只关心特定的 Component，因此如果将同种 Component 存储在线性内存空间里，System 遍历 Component 的时候缓存命中率会非常高。Unity 的具体实现中是将同类 Entity 的 Component 连续存储，可以实现缓存完全命中&lt;&#x2F;p&gt;
+&lt;p&gt;耦合性低。理想状态下，系统只会对 Component 作出反应，因此系统之间的影响只有执行顺序，以及一些公共耦合。但是代码实现中，系统之间信息传递比较困难，不如直接调用更加高性能、高效率（省事）（包括 Unity），因此需要不瞎几把乱写才能发挥 ECS 低耦合的优势。&lt;&#x2F;p&gt;
 &lt;p&gt;框架设计比较困难。个人感觉 ECS 有一些麻烦的地方，比如没有回调，系统执行顺序会影响实际的效果。目前成熟的 ECS 框架也不算多。&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;qi-ta-xue-xi-zi-liao&quot;&gt;其他学习资料&lt;&#x2F;h2&gt;
 &lt;p&gt;感觉我写的有一点过于简单，想要深入了解可以看看下面这些文章。&lt;&#x2F;p&gt;
@@ -1257,12 +1257,12 @@ RotationSpeedSystem.cs&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>支持.NET Core 以及 Unity 的轻量级可靠UDP 库 LiteNetLib 介绍</title>
+		<title>支持.NET Core 以及 Unity 的轻量级可靠 UDP 库 LiteNetLib 介绍</title>
 		<published>2019-12-15T20:20:31+00:00</published>
 		<updated>2019-12-15T20:20:31+00:00</updated>
 		<link href="https://paakmau.github.io/201912152020/" type="text/html"/>
 		<id>https://paakmau.github.io/201912152020/</id>
-		<content type="html">&lt;p&gt;之前做 Unity 网络游戏开发的时候，想着后端也用C#就很方便，于是看上了开源跨平台的.NET Core，当时网络模块就是用了 LiteNetLib 实现的。&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;之前做 Unity 网络游戏开发的时候，想着后端也用 C#就很方便，于是看上了开源跨平台的.NET Core，当时网络模块就是用了 LiteNetLib 实现的。&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;这个东西依然支持.NET Core 3.1和.NET Framework 4.x（虽然官网都没写）。功能不多，用起来方便，很适合小规模的实时联机游戏。&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;RevenantX&#x2F;LiteNetLib&quot;&gt;https:&#x2F;&#x2F;github.com&#x2F;RevenantX&#x2F;LiteNetLib&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
@@ -1272,9 +1272,9 @@ RotationSpeedSystem.cs&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191215-201104@2x.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191215-201120@2x.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;unity-qian-duan&quot;&gt;Unity 前端&lt;&#x2F;h2&gt;
-&lt;p&gt;注意：Unity 里应当用源码而不是预编译的 DLL 文件，因为源码中使用了条件编译以避开 Unity 的Bug。&lt;&#x2F;p&gt;
-&lt;p&gt;直接从 GitHub 上Clone 下来，把其中的 LiteNetLib 拷贝到Unity 项目里就能使用了。&lt;&#x2F;p&gt;
-&lt;p&gt;为了方便，我们简单写一个实现 INetEventListener 接口的MonoBehaviour 就好，注释比较详细。&lt;&#x2F;p&gt;
+&lt;p&gt;注意：Unity 里应当用源码而不是预编译的 DLL 文件，因为源码中使用了条件编译以避开 Unity 的 Bug。&lt;&#x2F;p&gt;
+&lt;p&gt;直接从 GitHub 上 Clone 下来，把其中的 LiteNetLib 拷贝到 Unity 项目里就能使用了。&lt;&#x2F;p&gt;
+&lt;p&gt;为了方便，我们简单写一个实现 INetEventListener 接口的 MonoBehaviour 就好，注释比较详细。&lt;&#x2F;p&gt;
 &lt;p&gt;LiteNetLibHello.cs&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cs&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cs &quot;&gt;&lt;code class=&quot;language-cs&quot; data-lang=&quot;cs&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;using &lt;&#x2F;span&gt;&lt;span&gt;System.Net;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;using &lt;&#x2F;span&gt;&lt;span&gt;System.Net.Sockets;
@@ -1282,7 +1282,7 @@ RotationSpeedSystem.cs&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;using &lt;&#x2F;span&gt;&lt;span&gt;LiteNetLib.Utils;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;using &lt;&#x2F;span&gt;&lt;span&gt;UnityEngine;
 &lt;&#x2F;span&gt;&lt;span&gt;
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F;&#x2F; &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;summary&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&amp;gt; 作为MonoBehaviour，该类也是监听器 &amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;summary&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F;&#x2F; &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;summary&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&amp;gt; 作为 MonoBehaviour，该类也是监听器 &amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;summary&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;LiteNetLibHello &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;MonoBehaviour&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;INetEventListener &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F;&#x2F; &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;summary&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&amp;gt; server 的监听端口 &amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;summary&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&amp;gt;
@@ -1300,7 +1300,7 @@ RotationSpeedSystem.cs&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F;&#x2F; &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;summary&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&amp;gt; LiteNetLib 核心的网络管理器，用来主动连接、断开、触发事件回调等 &amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;summary&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;private &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;NetManager &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;m_clientManager&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F;&#x2F; &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;summary&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&amp;gt; 服务器Peer &amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;summary&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F;&#x2F; &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;summary&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&amp;gt; 服务器 Peer &amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;summary&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;private &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;NetPeer &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;m_server&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F;&#x2F; &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;summary&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&amp;gt; Writer &amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;summary&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&amp;gt;
@@ -1329,7 +1329,7 @@ RotationSpeedSystem.cs&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;m_helloTimer &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;c_helloInterval&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;var &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;peer &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;m_clientManager&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;FirstPeer&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;peer &lt;&#x2F;span&gt;&lt;span&gt;!= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null &lt;&#x2F;span&gt;&lt;span&gt;&amp;amp;&amp;amp; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;peer&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ConnectionState &lt;&#x2F;span&gt;&lt;span&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ConnectionState&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Connected&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) { &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 若已连接到 Server 则发送HelloWorld
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;peer &lt;&#x2F;span&gt;&lt;span&gt;!= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null &lt;&#x2F;span&gt;&lt;span&gt;&amp;amp;&amp;amp; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;peer&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ConnectionState &lt;&#x2F;span&gt;&lt;span&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ConnectionState&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Connected&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) { &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 若已连接到 Server 则发送 HelloWorld
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;m_writer&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Put &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Hello, I&amp;#39;m client.&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;);
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 不可靠 UDP 方式直接发送消息
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;peer&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Send &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;m_writer&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;DeliveryMethod&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Unreliable&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;);
@@ -1446,7 +1446,7 @@ RotationSpeedSystem.cs&lt;&#x2F;p&gt;
 &lt;p&gt;会用就行，可以直接跳过&lt;&#x2F;p&gt;
 &lt;p&gt;接收信息&lt;&#x2F;p&gt;
 &lt;p&gt;首先，这个网络库使用事件监听的思路来把网络消息传递给上游模块。他会把网络消息转化为连接、断开、数据传输、网络错误等事件并适时调用上游的事件监听器的相应接口。&lt;&#x2F;p&gt;
-&lt;p&gt;然后，它开一个线程监听端口，接收消息并把转换为事件储存在队列里。上游模块需要定时PollEvent，让他一次性地访问整个队列（当然队列会被清空），根据每个事件调用监听器相应的接口。&lt;&#x2F;p&gt;
+&lt;p&gt;然后，它开一个线程监听端口，接收消息并把转换为事件储存在队列里。上游模块需要定时 PollEvent，让他一次性地访问整个队列（当然队列会被清空），根据每个事件调用监听器相应的接口。&lt;&#x2F;p&gt;
 &lt;p&gt;因此，虽然消息的获取是异步的，但事件监听是同步的，使用时不必担心线程问题。&lt;&#x2F;p&gt;
 &lt;p&gt;发送信息&lt;&#x2F;p&gt;
 &lt;p&gt;简单得多。数据发送，都被放入发送队列，然后内部有一个线程定时把整个队列发送。有兴趣去看源码，很好理解。&lt;&#x2F;p&gt;

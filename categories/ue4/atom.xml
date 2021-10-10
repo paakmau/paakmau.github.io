@@ -16,20 +16,20 @@
 		<content type="html">&lt;p&gt;UE4的材质编辑器中我们可以创建材质结点然后给它们连线来创建材质&lt;&#x2F;p&gt;
 &lt;p&gt;本文将根据源码解析材质结点在内存中的数据结构&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;uedgraph&quot;&gt;UEdGraph&lt;&#x2F;h2&gt;
-&lt;p&gt;先简单提一下UEdGraph&lt;&#x2F;p&gt;
+&lt;p&gt;先简单提一下 UEdGraph&lt;&#x2F;p&gt;
 &lt;p&gt;它用来管理一张可视化的有向图，而且其实蓝图就是用这个东西来做的&lt;br &#x2F;&gt;
-一个 UEdGraph 对象会包括图中所有的UEdGraphNode 也就是结点&lt;br &#x2F;&gt;
+一个 UEdGraph 对象会包括图中所有的 UEdGraphNode 也就是结点&lt;br &#x2F;&gt;
 一个结点包括位置等基础信息，然后它还有一个 UEdGraphPin 的指针数组&lt;br &#x2F;&gt;
 一个 UEdGraphPin 其实就是一个插槽，用一个字节表示是输入插槽还是输出插槽，然后持有它所属的 UEdGraphNode 指针，还有一个 UEdGraphNode 指针数组保存这个插槽连接到的结点&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;umaterialgraph&quot;&gt;UMaterialGraph&lt;&#x2F;h2&gt;
-&lt;p&gt;它派生自UEdGraph，保存一个材质在编辑器中的所有结点形成的有向图。虽然它主要用于管理由材质结点组成的可视化的有向图，但它也持有 UMaterial 指针用来获取材质输入插槽等信息&lt;br &#x2F;&gt;
+&lt;p&gt;它派生自 UEdGraph，保存一个材质在编辑器中的所有结点形成的有向图。虽然它主要用于管理由材质结点组成的可视化的有向图，但它也持有 UMaterial 指针用来获取材质输入插槽等信息&lt;br &#x2F;&gt;
 然后用户在编辑器中对材质的修改都会作用到这个对象上&lt;&#x2F;p&gt;
-&lt;p&gt;它有一个UMaterialGraphNode_Root 类型的成员变量RootNode，这个 RootNode 其实就是编辑器中的材质结果结点，通过这个结点向前递归我们可以找到这个材质结果结点连接的所有结点，不过其实它的基类 UEdGraph 本身就具有这样的功能&lt;&#x2F;p&gt;
+&lt;p&gt;它有一个 UMaterialGraphNode_Root 类型的成员变量 RootNode，这个 RootNode 其实就是编辑器中的材质结果结点，通过这个结点向前递归我们可以找到这个材质结果结点连接的所有结点，不过其实它的基类 UEdGraph 本身就具有这样的功能&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;umaterialgraphnode-base&quot;&gt;UMaterialGraphNode_Base&lt;&#x2F;h2&gt;
-&lt;p&gt;根据名字我们知道它是材质结点的基类，派生自UEdGraphNode&lt;&#x2F;p&gt;
-&lt;p&gt;比如前面提到的UMaterialGraphNode_Root 就是它的一个派生类；此外它的派生类还有UMaterialGraphNode，这个派生类用于管理材质结果结点之外的其他结点&lt;&#x2F;p&gt;
+&lt;p&gt;根据名字我们知道它是材质结点的基类，派生自 UEdGraphNode&lt;&#x2F;p&gt;
+&lt;p&gt;比如前面提到的 UMaterialGraphNode_Root 就是它的一个派生类；此外它的派生类还有 UMaterialGraphNode，这个派生类用于管理材质结果结点之外的其他结点&lt;&#x2F;p&gt;
 &lt;p&gt;这两个派生类之间的主要区别在于获取插槽等结点数据的方式不同&lt;&#x2F;p&gt;
-&lt;p&gt;UMaterialGraphNode_Root 获取插槽数据是通过 UEdGraphNode 的GetGraph 方法获取所属的 UEdGraph 指针，然后类型转换到 UMaterialGraph 指针，再通过 UMaterialGraph 的MaterialInputs 得到材质结果结点上的各个输入&lt;&#x2F;p&gt;
+&lt;p&gt;UMaterialGraphNode_Root 获取插槽数据是通过 UEdGraphNode 的 GetGraph 方法获取所属的 UEdGraph 指针，然后类型转换到 UMaterialGraph 指针，再通过 UMaterialGraph 的 MaterialInputs 得到材质结果结点上的各个输入&lt;&#x2F;p&gt;
 &lt;p&gt;下面贴一下它的 CreateInputPins 的实现&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span&gt;UMaterialGraphNode_Root::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;CreateInputPins&lt;&#x2F;span&gt;&lt;span&gt;()
 &lt;&#x2F;span&gt;&lt;span&gt;{
@@ -46,7 +46,7 @@
 &lt;p&gt;UMaterialExpression&lt;br &#x2F;&gt;
 结点表达式&lt;&#x2F;p&gt;
 &lt;p&gt;因为不同类型的结点会具有不同的输入输出和功能，所以一个结点就是一个具有若干输入和输出表达式&lt;&#x2F;p&gt;
-&lt;p&gt;但是 UMaterialExpression 只是一个接口，因为不同表达式的输入输出不同，因此具体的表达式都会派生自UMaterialExpression，比如 UMaterialExpressionAdd 就是具体的加法表达式&lt;&#x2F;p&gt;
+&lt;p&gt;但是 UMaterialExpression 只是一个接口，因为不同表达式的输入输出不同，因此具体的表达式都会派生自 UMaterialExpression，比如 UMaterialExpressionAdd 就是具体的加法表达式&lt;&#x2F;p&gt;
 &lt;p&gt;这里简单贴一下它的 CreateInputPins 的实现&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span&gt;UMaterialGraphNode::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;CreateInputPins&lt;&#x2F;span&gt;&lt;span&gt;()
 &lt;&#x2F;span&gt;&lt;span&gt;{
@@ -79,7 +79,7 @@
 		<updated>2020-05-11T21:50:26+00:00</updated>
 		<link href="https://paakmau.github.io/202005112150/" type="text/html"/>
 		<id>https://paakmau.github.io/202005112150/</id>
-		<content type="html">&lt;p&gt;使用UE4的材质编辑器的时候我们可以为材质的颜色、粗糙度、金属度等连接一个常量或者纹理结点，如果要实现复杂效果可能还会用到混合结点，最后就可能看到一个完整的材质其实是由一堆结点和它们之间的连线组成&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;使用 UE4的材质编辑器的时候我们可以为材质的颜色、粗糙度、金属度等连接一个常量或者纹理结点，如果要实现复杂效果可能还会用到混合结点，最后就可能看到一个完整的材质其实是由一堆结点和它们之间的连线组成&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;然后每一个结点可以理解为一段 HLSL 代码，然后结点之间的连线则是变量的传递&lt;&#x2F;p&gt;
 &lt;p&gt;比如说我们有一个材质长这样&lt;&#x2F;p&gt;
@@ -96,8 +96,8 @@
 &lt;&#x2F;span&gt;&lt;span&gt;MaterialFloat3 Local5 = (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1.00000000 &lt;&#x2F;span&gt;&lt;span&gt;- Local4);
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;我们容易发现，要把材质结点翻译成 HLSL 代码，可以从左边出发拓扑排序，也可以从右边的材质结果结点出发递归往左（显然递归比拓排好写）&lt;br &#x2F;&gt;
-然后UE4是用递归的&lt;&#x2F;p&gt;
-&lt;p&gt;接下来我们结合源码看一下UE4是怎么实现的&lt;&#x2F;p&gt;
+然后 UE4是用递归的&lt;&#x2F;p&gt;
+&lt;p&gt;接下来我们结合源码看一下 UE4是怎么实现的&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;bian-yi-guo-cheng&quot;&gt;编译过程&lt;&#x2F;h2&gt;
 &lt;p&gt;我们从 FMaterial 的一个成员函数开始&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;**
@@ -113,8 +113,8 @@
 &lt;p&gt;这个函数会把材质的编译结果放到 OutShaderMap 里&lt;br &#x2F;&gt;
 并且每个材质 ShaderMapId 都是唯一的&lt;&#x2F;p&gt;
 &lt;p&gt;它会先创建一个 FMaterialShaderMap 对象&lt;br &#x2F;&gt;
-接下来创建 FHLSLMaterialTranslator 对象并用它生成着色器的HLSL 代码&lt;br &#x2F;&gt;
-最后调用 FMaterialShaderMap 的Compile 方法编译这段代码并保存结果&lt;&#x2F;p&gt;
+接下来创建 FHLSLMaterialTranslator 对象并用它生成着色器的 HLSL 代码&lt;br &#x2F;&gt;
+最后调用 FMaterialShaderMap 的 Compile 方法编译这段代码并保存结果&lt;&#x2F;p&gt;
 &lt;p&gt;节选关键代码如下&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; ...
 &lt;&#x2F;span&gt;&lt;span&gt;
@@ -132,7 +132,7 @@
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 为材质编译着色器
 &lt;&#x2F;span&gt;&lt;span&gt;NewShaderMap-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Compile&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;this&lt;&#x2F;span&gt;&lt;span&gt;, ShaderMapId, MaterialEnvironment, NewCompilationOutput, Platform, bSynchronousCompile);
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;接下来，我们着重看 FHLSLMaterialTranslator 的Translate 方法，在里面会发现一个很显眼的东西，没错这个就是材质结果结点的各个输入插槽&lt;&#x2F;p&gt;
+&lt;p&gt;接下来，我们着重看 FHLSLMaterialTranslator 的 Translate 方法，在里面会发现一个很显眼的东西，没错这个就是材质结果结点的各个输入插槽&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Rest of properties
 &lt;&#x2F;span&gt;&lt;span&gt;Chunk[MP_EmissiveColor]= Material-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompilePropertyAndSetMaterialProperty&lt;&#x2F;span&gt;&lt;span&gt;(MP_EmissiveColor,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;this&lt;&#x2F;span&gt;&lt;span&gt;);
 &lt;&#x2F;span&gt;&lt;span&gt;Chunk[MP_DiffuseColor]= Material-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompilePropertyAndSetMaterialProperty&lt;&#x2F;span&gt;&lt;span&gt;(MP_DiffuseColor,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;this&lt;&#x2F;span&gt;&lt;span&gt;);
@@ -147,11 +147,11 @@
 &lt;&#x2F;span&gt;&lt;span&gt;Chunk[MP_WorldDisplacement]= Material-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompilePropertyAndSetMaterialProperty&lt;&#x2F;span&gt;&lt;span&gt;(MP_WorldDisplacement,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;this&lt;&#x2F;span&gt;&lt;span&gt;);
 &lt;&#x2F;span&gt;&lt;span&gt;Chunk[MP_TessellationMultiplier]= Material-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CompilePropertyAndSetMaterialProperty&lt;&#x2F;span&gt;&lt;span&gt;(MP_TessellationMultiplier,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;this&lt;&#x2F;span&gt;&lt;span&gt;);
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;于是我们去看 FMaterialResource 的CompilePropertyAndSetMaterialProperty 方法&lt;&#x2F;p&gt;
-&lt;p&gt;注意一下 FMaterialResource 是FMaterial 接口的一个实现，它里面会存一个 UMaterial 实例或者UMaterialInstance 实例，这两种实例都是继承自 UMaterialInterface 接口&lt;&#x2F;p&gt;
-&lt;p&gt;这个方法里面有一个switch，对于不同类型的输入插槽（或者说EMaterialProperty），它有不同的处理，不过基本都是调用 UMaterialInterface 的CompileProperty 方法，代码太乱就不贴了&lt;&#x2F;p&gt;
-&lt;p&gt;我们直接去看 UMaterialInterface 的CompileProperty 方法，它调用了 CompilePropertyEx 方法，这个方法是个虚函数，发现 UMaterial 和UMaterialInterface 都有自己的实现，但是 UMaterialInterface 是基于UMaterial 的因此我们直接看 UMaterial 的CompilePropertyEx 方法就行&lt;&#x2F;p&gt;
-&lt;p&gt;发现里面又是一个switch&lt;&#x2F;p&gt;
+&lt;p&gt;于是我们去看 FMaterialResource 的 CompilePropertyAndSetMaterialProperty 方法&lt;&#x2F;p&gt;
+&lt;p&gt;注意一下 FMaterialResource 是 FMaterial 接口的一个实现，它里面会存一个 UMaterial 实例或者 UMaterialInstance 实例，这两种实例都是继承自 UMaterialInterface 接口&lt;&#x2F;p&gt;
+&lt;p&gt;这个方法里面有一个 switch，对于不同类型的输入插槽（或者说 EMaterialProperty），它有不同的处理，不过基本都是调用 UMaterialInterface 的 CompileProperty 方法，代码太乱就不贴了&lt;&#x2F;p&gt;
+&lt;p&gt;我们直接去看 UMaterialInterface 的 CompileProperty 方法，它调用了 CompilePropertyEx 方法，这个方法是个虚函数，发现 UMaterial 和 UMaterialInterface 都有自己的实现，但是 UMaterialInterface 是基于 UMaterial 的因此我们直接看 UMaterial 的 CompilePropertyEx 方法就行&lt;&#x2F;p&gt;
+&lt;p&gt;发现里面又是一个 switch&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span&gt;int32 UMaterial::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;CompilePropertyEx&lt;&#x2F;span&gt;&lt;span&gt;( FMaterialCompiler* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Compiler&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const&lt;&#x2F;span&gt;&lt;span&gt; FGuid&amp;amp; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;AttributeID &lt;&#x2F;span&gt;&lt;span&gt;)
 &lt;&#x2F;span&gt;&lt;span&gt;{
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const&lt;&#x2F;span&gt;&lt;span&gt; EMaterialProperty Property = FMaterialAttributeDefinitionMap::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetProperty&lt;&#x2F;span&gt;&lt;span&gt;(AttributeID);
@@ -204,7 +204,7 @@
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; INDEX_NONE;
 &lt;&#x2F;span&gt;&lt;span&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;于是我们随便看一个插槽的 CompileWithDefault 方法，比如说BaseColor，BaseColor 变量是一个 FColorMaterialInput 类型的插槽&lt;&#x2F;p&gt;
+&lt;p&gt;于是我们随便看一个插槽的 CompileWithDefault 方法，比如说 BaseColor，BaseColor 变量是一个 FColorMaterialInput 类型的插槽&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span&gt;int32 FColorMaterialInput::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;CompileWithDefault&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class&lt;&#x2F;span&gt;&lt;span&gt; FMaterialCompiler* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Compiler&lt;&#x2F;span&gt;&lt;span&gt;, EMaterialProperty &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Property&lt;&#x2F;span&gt;&lt;span&gt;)
 &lt;&#x2F;span&gt;&lt;span&gt;{
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(UseConstant)
@@ -225,7 +225,7 @@
 &lt;&#x2F;span&gt;&lt;span&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;发现有常量和表达式两种情况，常量就是一个常量的颜色结点，表达式就是使用了混合结点或者纹理结点等等复杂的结点&lt;&#x2F;p&gt;
-&lt;p&gt;对于表达式我们看到它调用了基类 FExpressionInput 的Compile 方法&lt;&#x2F;p&gt;
+&lt;p&gt;对于表达式我们看到它调用了基类 FExpressionInput 的 Compile 方法&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span&gt;int32 FExpressionInput::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;Compile&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class&lt;&#x2F;span&gt;&lt;span&gt; FMaterialCompiler* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Compiler&lt;&#x2F;span&gt;&lt;span&gt;)
 &lt;&#x2F;span&gt;&lt;span&gt;{
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span&gt;(Expression)
@@ -250,9 +250,9 @@
 &lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; INDEX_NONE;
 &lt;&#x2F;span&gt;&lt;span&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;又调用了 FMaterialCompiler 的CallExpression 方法，而且把表达式传过去了&lt;&#x2F;p&gt;
-&lt;p&gt;在 CallExpression 方法里，它会调用表达式ExpressionKey.Expression 的 Compile 方法&lt;&#x2F;p&gt;
-&lt;p&gt;然后我们可以看到 Expression 是一个UMaterialExpression 接口的实例，它有多种实现&lt;&#x2F;p&gt;
+&lt;p&gt;又调用了 FMaterialCompiler 的 CallExpression 方法，而且把表达式传过去了&lt;&#x2F;p&gt;
+&lt;p&gt;在 CallExpression 方法里，它会调用表达式 ExpressionKey.Expression 的 Compile 方法&lt;&#x2F;p&gt;
+&lt;p&gt;然后我们可以看到 Expression 是一个 UMaterialExpression 接口的实例，它有多种实现&lt;&#x2F;p&gt;
 &lt;p&gt;稍微看一下加法表达式的 Compile 实现&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span&gt;int32 UMaterialExpressionAdd::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;Compile&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class&lt;&#x2F;span&gt;&lt;span&gt; FMaterialCompiler* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Compiler&lt;&#x2F;span&gt;&lt;span&gt;, int32 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;OutputIndex&lt;&#x2F;span&gt;&lt;span&gt;)
 &lt;&#x2F;span&gt;&lt;span&gt;{
@@ -264,9 +264,9 @@
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; Compiler-&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Add&lt;&#x2F;span&gt;&lt;span&gt;(Arg1, Arg2);
 &lt;&#x2F;span&gt;&lt;span&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;可以看到递归是在这里实现的，然后最后一行 Complier 的Add 方法是由 FHLSLMaterialTranslator 提供的&lt;br &#x2F;&gt;
+&lt;p&gt;可以看到递归是在这里实现的，然后最后一行 Complier 的 Add 方法是由 FHLSLMaterialTranslator 提供的&lt;br &#x2F;&gt;
 返回值是这个表达式的唯一索引值，可以通过索引找到表达式&lt;&#x2F;p&gt;
-&lt;p&gt;生成 HLSL 代码的逻辑就在FHLSLMaterialTranslator 的 Add 方法里，我们也可以看一下&lt;&#x2F;p&gt;
+&lt;p&gt;生成 HLSL 代码的逻辑就在 FHLSLMaterialTranslator 的 Add 方法里，我们也可以看一下&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;virtual&lt;&#x2F;span&gt;&lt;span&gt; int32 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;Add&lt;&#x2F;span&gt;&lt;span&gt;(int32 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;A&lt;&#x2F;span&gt;&lt;span&gt;,int32 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;B&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;override
 &lt;&#x2F;span&gt;&lt;span&gt;{
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span&gt;(A == INDEX_NONE  B == INDEX_NONE)
@@ -287,8 +287,8 @@
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;lei-de-guan-xi-zheng-li&quot;&gt;类的关系整理&lt;&#x2F;h2&gt;
 &lt;p&gt;最后我整理了一下上面提到的各个类之间的关系，总的来说还是比较清晰的&lt;&#x2F;p&gt;
-&lt;p&gt;FMaterial 和 FMaterialResource 是逻辑上的材质类，一个 FMaterialResource 对象可以管理一个UMaterial 实例或 UMaterialInstance 实例，UMaterial 上挂着不同类型的 FExpressionInput 插槽，这些 FExpressionInput 实现类又包含UMaterialExpression 表达式，表达式会层层嵌套形成一张有向无环图&lt;br &#x2F;&gt;
-最后 FMaterialCompiler 的实现类FHLSLMaterialTranslator 主要用于生成 HLSL 代码&lt;&#x2F;p&gt;
+&lt;p&gt;FMaterial 和 FMaterialResource 是逻辑上的材质类，一个 FMaterialResource 对象可以管理一个 UMaterial 实例或 UMaterialInstance 实例，UMaterial 上挂着不同类型的 FExpressionInput 插槽，这些 FExpressionInput 实现类又包含 UMaterialExpression 表达式，表达式会层层嵌套形成一张有向无环图&lt;br &#x2F;&gt;
+最后 FMaterialCompiler 的实现类 FHLSLMaterialTranslator 主要用于生成 HLSL 代码&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
@@ -300,14 +300,14 @@
 		<content type="html">&lt;p&gt;接下来阅读 TaskGraph 的源码来了解其实现细节&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;taskgraph-shi-xian-gai-gua&quot;&gt;TaskGraph 实现概括&lt;&#x2F;h2&gt;
 &lt;p&gt;首先是线程管理。我们创建的 TGraphTask 并不能直接运行，需要把它交给某个 FTaskThreadBase 对象来控制执行。这个 FTaskThreadBase 可以理解为一个线程，可以把很多个 TGraphTask 交给他，它会依次执行这些任务（当然也要满足依赖）&lt;&#x2F;p&gt;
-&lt;p&gt;另外注意到我们可以为 TGraphTask 指定想要让他执行的线程，于是我们发现对于游戏中的每一个线程都会产生一个 FTaskThreadBase 对象，这个对象持有他所对应的线程的指针。我们创建的 TGraphTask 对象会被交给对应的FTaskThreadBase 对象，从而在正确的线程上执行&lt;&#x2F;p&gt;
-&lt;p&gt;然后是任务之间依赖关系的处理。我们在 CreateTask 的时候看起来是把依赖传给了任务，但其实是 TGraphTask 被他所依赖的所有FGraphEvent 持有。这样在一个 TGraphTask 结束时，他就可以立刻通过 FGraphEvent 更新依赖于自己的其他TGraphTask 的依赖入度，然后如果入度为零就放入执行队列&lt;&#x2F;p&gt;
+&lt;p&gt;另外注意到我们可以为 TGraphTask 指定想要让他执行的线程，于是我们发现对于游戏中的每一个线程都会产生一个 FTaskThreadBase 对象，这个对象持有他所对应的线程的指针。我们创建的 TGraphTask 对象会被交给对应的 FTaskThreadBase 对象，从而在正确的线程上执行&lt;&#x2F;p&gt;
+&lt;p&gt;然后是任务之间依赖关系的处理。我们在 CreateTask 的时候看起来是把依赖传给了任务，但其实是 TGraphTask 被他所依赖的所有 FGraphEvent 持有。这样在一个 TGraphTask 结束时，他就可以立刻通过 FGraphEvent 更新依赖于自己的其他 TGraphTask 的依赖入度，然后如果入度为零就放入执行队列&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;xian-cheng-guan-li&quot;&gt;线程管理&lt;&#x2F;h2&gt;
 &lt;p&gt;TaskGraph 的线程管理是基于 Runnable 的，于是简单的介绍一下它&lt;&#x2F;p&gt;
-&lt;p&gt;一个线程其实是由一个 FRunnableThread 对象管理，包括了线程优先级，创建等；而我们想要在线程里执行逻辑代码就要需要通过FRunnable，把逻辑代码写在它的 Run 方法里，然后把它丢给 FRunnableThread 让真实的线程去执行它&lt;&#x2F;p&gt;
-&lt;p&gt;而 TaskGraph 里的FTaskThreadBase 其实就继承自FRunnable；它同时还持有一个 FWorkerThread 对象，这个对象又持有FRunnableThread。也就是 FTaskThreadBase 自己不但能够管理线程，同时还能控制线程去执行逻辑代码&lt;br &#x2F;&gt;
-另外所有的 FTaskThreadBase 都由一个FTaskGraphImplementation 单例持有&lt;&#x2F;p&gt;
-&lt;p&gt;最后看一下 FTaskThreadBase 的Run 方法，就是不断地执行任务&lt;br &#x2F;&gt;
+&lt;p&gt;一个线程其实是由一个 FRunnableThread 对象管理，包括了线程优先级，创建等；而我们想要在线程里执行逻辑代码就要需要通过 FRunnable，把逻辑代码写在它的 Run 方法里，然后把它丢给 FRunnableThread 让真实的线程去执行它&lt;&#x2F;p&gt;
+&lt;p&gt;而 TaskGraph 里的 FTaskThreadBase 其实就继承自 FRunnable；它同时还持有一个 FWorkerThread 对象，这个对象又持有 FRunnableThread。也就是 FTaskThreadBase 自己不但能够管理线程，同时还能控制线程去执行逻辑代码&lt;br &#x2F;&gt;
+另外所有的 FTaskThreadBase 都由一个 FTaskGraphImplementation 单例持有&lt;&#x2F;p&gt;
+&lt;p&gt;最后看一下 FTaskThreadBase 的 Run 方法，就是不断地执行任务&lt;br &#x2F;&gt;
 需要注意的是这些任务都是在满足了依赖之后才会被 Run 方法访问到，后文会详细描述&lt;br &#x2F;&gt;
 这里贴一下 Run 的源码&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;virtual&lt;&#x2F;span&gt;&lt;span&gt; uint32 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;Run&lt;&#x2F;span&gt;&lt;span&gt;() &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;override
@@ -319,9 +319,9 @@
 &lt;&#x2F;span&gt;&lt;span&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;ftaskthreadbase-de-pai-sheng-lei&quot;&gt;FTaskThreadBase 的派生类&lt;&#x2F;h2&gt;
-&lt;p&gt;查看源码我们发现这个东西有两个派生类，FTaskThreadAnyThread 和FNamedTaskThread，这里简单介绍一下&lt;&#x2F;p&gt;
+&lt;p&gt;查看源码我们发现这个东西有两个派生类，FTaskThreadAnyThread 和 FNamedTaskThread，这里简单介绍一下&lt;&#x2F;p&gt;
 &lt;p&gt;FTaskThreadAnyThread 比较符合我们的想象（如果你跟我想的一样）&lt;br &#x2F;&gt;
-它由 FTaskGraphImplementation 单例在实例化的时候创建若干个。然后这个单例维护一个待执行任务的队列，每个 FTaskThreadAnyThread 在自己的任务执行完成后不断地调用这个单例的FindWork 方法获取队列中的任务然后去执行它，可以说所有的 FTaskThreadAnyThread 共享同一个任务队列（如果不考虑优先级的话）&lt;br &#x2F;&gt;
+它由 FTaskGraphImplementation 单例在实例化的时候创建若干个。然后这个单例维护一个待执行任务的队列，每个 FTaskThreadAnyThread 在自己的任务执行完成后不断地调用这个单例的 FindWork 方法获取队列中的任务然后去执行它，可以说所有的 FTaskThreadAnyThread 共享同一个任务队列（如果不考虑优先级的话）&lt;br &#x2F;&gt;
 还是贴一下 FindWork 的源码&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span&gt;FBaseGraphTask* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;FindWork&lt;&#x2F;span&gt;&lt;span&gt;(ENamedThreads::Type &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ThreadInNeed&lt;&#x2F;span&gt;&lt;span&gt;)
 &lt;&#x2F;span&gt;&lt;span&gt;{
@@ -347,14 +347,14 @@
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;ren-wu-zhi-jian-de-yi-lai-guan-xi&quot;&gt;任务之间的依赖关系&lt;&#x2F;h2&gt;
 &lt;p&gt;上文中提到一个任务只有在满足了依赖的情况下才会被扔进任务队列里，并且任务的完成是通过 FGraphEvent 来通知依赖于自己的其他任务的&lt;&#x2F;p&gt;
-&lt;p&gt;于是我们先看看 FGraphEvent 是怎么拿到其他任务的，在 CreateTask 的时候我们会传入一个FGraphEventRef 的数组表示这个任务的依赖，然后跟随调用往下查我们发现有个 SetupPrereqs 函数它遍历了这个数组然后对每个FGraphEvent 都调用它的 AddSubsequent 方法，把任务自身扔进这些事件的 SubsequentList 里&lt;br &#x2F;&gt;
+&lt;p&gt;于是我们先看看 FGraphEvent 是怎么拿到其他任务的，在 CreateTask 的时候我们会传入一个 FGraphEventRef 的数组表示这个任务的依赖，然后跟随调用往下查我们发现有个 SetupPrereqs 函数它遍历了这个数组然后对每个 FGraphEvent 都调用它的 AddSubsequent 方法，把任务自身扔进这些事件的 SubsequentList 里&lt;br &#x2F;&gt;
 简单贴一下源码&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;bool &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;AddSubsequent&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class&lt;&#x2F;span&gt;&lt;span&gt; FBaseGraphTask* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Task&lt;&#x2F;span&gt;&lt;span&gt;)
 &lt;&#x2F;span&gt;&lt;span&gt;{
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; SubsequentList.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;PushIfNotClosed&lt;&#x2F;span&gt;&lt;span&gt;(Task);
 &lt;&#x2F;span&gt;&lt;span&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;然后在一个 TGraphTask 执行结束后，他会调用自己的 FGraphEvent 的DispatchSubsequents 方法，这个方法把 SubsequentList 里的TGraphTask 都 Pop 出来，调用它们的 ConditionalQueueTask 方法，把每个任务的依赖数（入度）减一，如果为零了意味着依赖满足，就可以把这个任务扔进任务队列里&lt;br &#x2F;&gt;
+&lt;p&gt;然后在一个 TGraphTask 执行结束后，他会调用自己的 FGraphEvent 的 DispatchSubsequents 方法，这个方法把 SubsequentList 里的 TGraphTask 都 Pop 出来，调用它们的 ConditionalQueueTask 方法，把每个任务的依赖数（入度）减一，如果为零了意味着依赖满足，就可以把这个任务扔进任务队列里&lt;br &#x2F;&gt;
 再贴一下源码&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;ConditionalQueueTask&lt;&#x2F;span&gt;&lt;span&gt;(ENamedThreads::Type &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CurrentThread&lt;&#x2F;span&gt;&lt;span&gt;)
 &lt;&#x2F;span&gt;&lt;span&gt;{
@@ -366,9 +366,9 @@
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;jie-yu&quot;&gt;结语&lt;&#x2F;h2&gt;
 &lt;p&gt;源码终于啃完了，感觉很多写法非常的牛逼&lt;br &#x2F;&gt;
-发现自己C++的高 she 级pi 用 cao 法zuo 还不是很熟悉，可能也是太久没碰UE4了，有空就去把改填的坑填了&lt;&#x2F;p&gt;
-&lt;p&gt;但是实现的思路感觉还是很好理解，甚至有一种随 xia 心ji 所 ba 欲xie 的感觉（比如 FTaskThreadAnyThread 的公共任务队列就直接扔在FTaskGraphImplementation 单例里）&lt;&#x2F;p&gt;
-&lt;p&gt;结合了 Runnable 的TaskGraph 是很好的跨平台基于任务的多线程实现方案，如果要自己写引擎的话这个很好用（抄就完事了）&lt;&#x2F;p&gt;
+发现自己 C++的高 she 级 pi 用 cao 法 zuo 还不是很熟悉，可能也是太久没碰 UE4了，有空就去把改填的坑填了&lt;&#x2F;p&gt;
+&lt;p&gt;但是实现的思路感觉还是很好理解，甚至有一种随 xia 心 ji 所 ba 欲 xie 的感觉（比如 FTaskThreadAnyThread 的公共任务队列就直接扔在 FTaskGraphImplementation 单例里）&lt;&#x2F;p&gt;
+&lt;p&gt;结合了 Runnable 的 TaskGraph 是很好的跨平台基于任务的多线程实现方案，如果要自己写引擎的话这个很好用（抄就完事了）&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
@@ -377,17 +377,17 @@
 		<updated>2020-03-19T13:21:19+00:00</updated>
 		<link href="https://paakmau.github.io/202003191321/" type="text/html"/>
 		<id>https://paakmau.github.io/202003191321/</id>
-		<content type="html">&lt;p&gt;这个东西跟 Unity 中的Job 很相似，都是基于任务的并行程序设计，可以处理资源竞争与执行顺序问题&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;这个东西跟 Unity 中的 Job 很相似，都是基于任务的并行程序设计，可以处理资源竞争与执行顺序问题&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;jian-dan-jie-shao&quot;&gt;简单介绍&lt;&#x2F;h2&gt;
 &lt;p&gt;简单说就是一张有向无环图，每一个任务是节点，任务的依赖关系是边，根据拓扑排序规划任务的执行。如果一个节点的入度为零就可以并行，并且执行完成后删掉自己的出边；否则等待入边的节点执行完成&lt;&#x2F;p&gt;
 &lt;ul&gt;
 &lt;li&gt;节点是 TGraphTask 模版类，我们需要自己实现任务类满足它的要求。重点是实现 DoTask 方法&lt;&#x2F;li&gt;
-&lt;li&gt;边是FGraphEventRef，可以在 CreateTask 之后得到，可以理解为任务完成的事件；同时在 CreateTask 的时候可以把其他任务的FGraphEventRef 以 FGraphEventArray 的形式传入以表示依赖（入边）&lt;&#x2F;li&gt;
+&lt;li&gt;边是 FGraphEventRef，可以在 CreateTask 之后得到，可以理解为任务完成的事件；同时在 CreateTask 的时候可以把其他任务的 FGraphEventRef 以 FGraphEventArray 的形式传入以表示依赖（入边）&lt;&#x2F;li&gt;
 &lt;&#x2F;ul&gt;
-&lt;p&gt;另外，任务类的 DoTask 方法参数中有一个const FGraphEventRef &amp;amp;MyCompletionGraphEvent，根据变量名我们知道它是任务自身的完成事件。于是我们还可以在这个东西上进行蛇皮操作，比如在本任务完成之前再等待另一个任务完成，但是写起来很乱&lt;&#x2F;p&gt;
+&lt;p&gt;另外，任务类的 DoTask 方法参数中有一个 const FGraphEventRef &amp;amp;MyCompletionGraphEvent，根据变量名我们知道它是任务自身的完成事件。于是我们还可以在这个东西上进行蛇皮操作，比如在本任务完成之前再等待另一个任务完成，但是写起来很乱&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;helloworld&quot;&gt;HelloWorld&lt;&#x2F;h2&gt;
 &lt;p&gt;跟随下面的指引建立两个任务类，然后通过 FGraphEventRef 指定他们的执行顺序&lt;&#x2F;p&gt;
-&lt;p&gt;准备两个任务类 TestTaskA 和TestTaskB&lt;br &#x2F;&gt;
+&lt;p&gt;准备两个任务类 TestTaskA 和 TestTaskB&lt;br &#x2F;&gt;
 TestTaskA 的代码如下，另外一个可以仿照着写&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;TestTaskA
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
@@ -418,7 +418,7 @@ TestTaskA 的代码如下，另外一个可以仿照着写&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span&gt;;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;创建一个Actor，并修改 BeginPlay 方法如下&lt;&#x2F;p&gt;
+&lt;p&gt;创建一个 Actor，并修改 BeginPlay 方法如下&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span&gt;AMyActor::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;BeginPlay&lt;&#x2F;span&gt;&lt;span&gt;()
 &lt;&#x2F;span&gt;&lt;span&gt;{
 &lt;&#x2F;span&gt;&lt;span&gt;    Super::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;BeginPlay&lt;&#x2F;span&gt;&lt;span&gt;();
@@ -430,7 +430,7 @@ TestTaskA 的代码如下，另外一个可以仿照着写&lt;&#x2F;p&gt;
 &lt;p&gt;最后在输出里看到这样的结果&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2020&#x2F;03&#x2F;image.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;parallelfor&quot;&gt;ParallelFor&lt;&#x2F;h2&gt;
-&lt;p&gt;UE4有一个ParallelFor，是对于简单遍历的并行处理，基于TaskGraph，具体去看Runtime&#x2F;Core&#x2F;Public&#x2F;Async&#x2F;ParallelFor.h&lt;br &#x2F;&gt;
+&lt;p&gt;UE4有一个 ParallelFor，是对于简单遍历的并行处理，基于 TaskGraph，具体去看 Runtime&#x2F;Core&#x2F;Public&#x2F;Async&#x2F;ParallelFor.h&lt;br &#x2F;&gt;
 下面给个简单的例子&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ParallelFor&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;100&lt;&#x2F;span&gt;&lt;span&gt;, [](int32 CurrIdx) {
 &lt;&#x2F;span&gt;&lt;span&gt;    int32 Sum = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;
@@ -438,10 +438,10 @@ TestTaskA 的代码如下，另外一个可以仿照着写&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span&gt;        Sum += FMath::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Sqrt&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1234.56&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;);
 &lt;&#x2F;span&gt;&lt;span&gt;});
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;h2 id=&quot;dui-bi-unity-c-job-system&quot;&gt;对比Unity C# Job System&lt;&#x2F;h2&gt;
+&lt;h2 id=&quot;dui-bi-unity-c-job-system&quot;&gt;对比 Unity C# Job System&lt;&#x2F;h2&gt;
 &lt;p&gt;如果抽象成一张 DAG 来看，这两个本质上其实就是同一个东西。简单说就是通过建立依赖关系避免资源竞争实现易于管理的并行&lt;&#x2F;p&gt;
-&lt;p&gt;但是Job System 相对于 TaskGraph 在用户代码中出现频率要高得多。因为Unity DOTS 天生就能很好的设计并行，甚至 Job 其实是嵌入在SystemBase 里的，对于游戏主逻辑都能被频繁使用；而UE4是OOP，个人理解的话应该主要用于耗时长的计算或者I&#x2F;O 任务等，但是把游戏主逻辑放到 TaskGraph 里是比较困难的&lt;&#x2F;p&gt;
-&lt;p&gt;另外有一个小区别，UE4的 ParallerFor 与Unity 里的 ScheduleParallel 是不一样的。UE4的 ParallelFor 其实是基于TaskGraph 的顶层；而 Unity 的ScheduleParallel 是 Job 本身自带的方法&lt;&#x2F;p&gt;
+&lt;p&gt;但是 Job System 相对于 TaskGraph 在用户代码中出现频率要高得多。因为 Unity DOTS 天生就能很好的设计并行，甚至 Job 其实是嵌入在 SystemBase 里的，对于游戏主逻辑都能被频繁使用；而 UE4是 OOP，个人理解的话应该主要用于耗时长的计算或者 I&#x2F;O 任务等，但是把游戏主逻辑放到 TaskGraph 里是比较困难的&lt;&#x2F;p&gt;
+&lt;p&gt;另外有一个小区别，UE4的 ParallerFor 与 Unity 里的 ScheduleParallel 是不一样的。UE4的 ParallelFor 其实是基于 TaskGraph 的顶层；而 Unity 的 ScheduleParallel 是 Job 本身自带的方法&lt;&#x2F;p&gt;
 </content>
 	</entry>
 </feed>

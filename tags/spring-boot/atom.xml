@@ -8,12 +8,12 @@
 	<updated>2020-07-07T18:21:46+00:00</updated>
 	<id>https://paakmau.github.io/tags/spring-boot/atom.xml</id>
 	<entry xml:lang="zh">
-		<title>基于Vue.js 和 SpringBoot 配置WebSocket</title>
+		<title>基于 Vue.js 和 SpringBoot 配置 WebSocket</title>
 		<published>2020-07-07T18:21:46+00:00</published>
 		<updated>2020-07-07T18:21:46+00:00</updated>
 		<link href="https://paakmau.github.io/202007071821/" type="text/html"/>
 		<id>https://paakmau.github.io/202007071821/</id>
-		<content type="html">&lt;p&gt;HTTP 协议中的请求只能由客户端发起，如果需要服务端主动向客户端发送信息，就会用到WebSocket&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;HTTP 协议中的请求只能由客户端发起，如果需要服务端主动向客户端发送信息，就会用到 WebSocket&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;hou-duan-bu-fen&quot;&gt;后端部分&lt;&#x2F;h2&gt;
 &lt;p&gt;首先需要一个配置类用于指定 WebSocket 的端口号&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;@&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Configuration
@@ -125,13 +125,13 @@
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>使用 Mockito 对SpringBoot 项目单元测试</title>
+		<title>使用 Mockito 对 SpringBoot 项目单元测试</title>
 		<published>2020-03-30T20:30:55+00:00</published>
 		<updated>2020-03-30T20:30:55+00:00</updated>
 		<link href="https://paakmau.github.io/202003302030/" type="text/html"/>
 		<id>https://paakmau.github.io/202003302030/</id>
 		<content type="html">&lt;p&gt;使用 Mockito 可以用来给模块打桩，实现单元测试&lt;&#x2F;p&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;zai-pom-xml-li-yin-ru-yi-lai&quot;&gt;在pom.xml 里引入依赖&lt;&#x2F;h2&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;zai-pom-xml-li-yin-ru-yi-lai&quot;&gt;在 pom.xml 里引入依赖&lt;&#x2F;h2&gt;
 &lt;pre data-lang=&quot;xml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-xml &quot;&gt;&lt;code class=&quot;language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;dependency&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;groupId&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;org.springframework.boot&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;groupId&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;artifactId&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;spring-boot-starter-test&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;artifactId&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
@@ -165,7 +165,7 @@
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;da-zhuang-bing-ce-shi&quot;&gt;打桩并测试&lt;&#x2F;h2&gt;
-&lt;p&gt;其中 MockBean 表示把Spring 注入的 Bean 改为注入由Mockito 生成的桩&lt;&#x2F;p&gt;
+&lt;p&gt;其中 MockBean 表示把 Spring 注入的 Bean 改为注入由 Mockito 生成的桩&lt;&#x2F;p&gt;
 &lt;p&gt;然后对 save 方法打桩，对于一个输入设置对应的输出&lt;br &#x2F;&gt;
 并断言该方法会被调用及调用时传入的参数&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;@&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;SpringBootTest
@@ -188,13 +188,13 @@
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>使用 MockMvc 对SpringBoot 项目集成测试</title>
+		<title>使用 MockMvc 对 SpringBoot 项目集成测试</title>
 		<published>2020-03-30T20:12:40+00:00</published>
 		<updated>2020-03-30T20:12:40+00:00</updated>
 		<link href="https://paakmau.github.io/202003302012/" type="text/html"/>
 		<id>https://paakmau.github.io/202003302012/</id>
-		<content type="html">&lt;p&gt;对后端进行集成测试的时候，我们一般都希望从发送 HTTP 请求开始对后端进行完整的测试，可能会考虑用 Postman 或者Postwoman 这类东西，但是直觉告诉我们应该也可以把集成测试写在代码里&lt;&#x2F;p&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;zai-pom-xml-li-yin-ru-yi-lai&quot;&gt;在pom.xml 里引入依赖&lt;&#x2F;h2&gt;
+		<content type="html">&lt;p&gt;对后端进行集成测试的时候，我们一般都希望从发送 HTTP 请求开始对后端进行完整的测试，可能会考虑用 Postman 或者 Postwoman 这类东西，但是直觉告诉我们应该也可以把集成测试写在代码里&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;zai-pom-xml-li-yin-ru-yi-lai&quot;&gt;在 pom.xml 里引入依赖&lt;&#x2F;h2&gt;
 &lt;pre data-lang=&quot;xml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-xml &quot;&gt;&lt;code class=&quot;language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;dependency&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;groupId&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;org.springframework.boot&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;groupId&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;artifactId&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;spring-boot-starter-test&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;artifactId&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
@@ -217,7 +217,7 @@
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;name;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;这里使用了 Lombok 插件自动生成Getter、Setter 和构造函数，并重写了 equals 方法&lt;&#x2F;p&gt;
+&lt;p&gt;这里使用了 Lombok 插件自动生成 Getter、Setter 和构造函数，并重写了 equals 方法&lt;&#x2F;p&gt;
 &lt;p&gt;BookController 如下&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;@&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;RestController
 &lt;&#x2F;span&gt;&lt;span&gt;@&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;RequestMapping&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;book&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
@@ -245,8 +245,8 @@
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;ji-cheng-ce-shi&quot;&gt;集成测试&lt;&#x2F;h2&gt;
-&lt;p&gt;我们可以使用 MockMvc 指定HTTP 请求的类型、PathVariable、RequestParam、RequestBody 等，并能使用断言验证返回的状态码、结果等&lt;br &#x2F;&gt;
-请求返回的 JSON 数据也能使用Fastjson 方便的转换为对象&lt;&#x2F;p&gt;
+&lt;p&gt;我们可以使用 MockMvc 指定 HTTP 请求的类型、PathVariable、RequestParam、RequestBody 等，并能使用断言验证返回的状态码、结果等&lt;br &#x2F;&gt;
+请求返回的 JSON 数据也能使用 Fastjson 方便的转换为对象&lt;&#x2F;p&gt;
 &lt;p&gt;不多逼逼，看代码&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;@&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;SpringBootTest
 &lt;&#x2F;span&gt;&lt;span&gt;@&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;AutoConfigureMockMvc
@@ -285,9 +285,9 @@
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;需要注意的是使用 RequestBody 接收的参数需要使用Fastjson 转换为字符串，并指定类型为APPLICATION_JSON&lt;br &#x2F;&gt;
-并且请求的返回值也可以使用 Fastjson 转换成简单的对象，比如上面代码就转成了BookVo&lt;br &#x2F;&gt;
-另外@Data 注解会为 BookVo 重写equals 方法，因此可以直接用 assertEquals 断言&lt;&#x2F;p&gt;
+&lt;p&gt;需要注意的是使用 RequestBody 接收的参数需要使用 Fastjson 转换为字符串，并指定类型为 APPLICATION_JSON&lt;br &#x2F;&gt;
+并且请求的返回值也可以使用 Fastjson 转换成简单的对象，比如上面代码就转成了 BookVo&lt;br &#x2F;&gt;
+另外@Data 注解会为 BookVo 重写 equals 方法，因此可以直接用 assertEquals 断言&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
@@ -296,9 +296,9 @@
 		<updated>2020-03-30T19:31:41+00:00</updated>
 		<link href="https://paakmau.github.io/202003301931/" type="text/html"/>
 		<id>https://paakmau.github.io/202003301931/</id>
-		<content type="html">&lt;p&gt;现在 SpringBoot 上比较主流的持久层ORM 框架应该就是 MyBatis 和JPA 了。JPA 对于简单查询（特别是作业）非常方便，可以说开箱即用，但是面对复杂查询就要稍微多学一点；而 MyBatis 写起来虽然没那么简洁，但在复杂查询的时候直接上 SQL 语句就完事了&lt;&#x2F;p&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;yin-ru-jpa-yu-mysql-yi-lai&quot;&gt;引入 JPA 与MySQL 依赖&lt;&#x2F;h2&gt;
-&lt;p&gt;在pom.xml 中添加如下两条&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;现在 SpringBoot 上比较主流的持久层 ORM 框架应该就是 MyBatis 和 JPA 了。JPA 对于简单查询（特别是作业）非常方便，可以说开箱即用，但是面对复杂查询就要稍微多学一点；而 MyBatis 写起来虽然没那么简洁，但在复杂查询的时候直接上 SQL 语句就完事了&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;yin-ru-jpa-yu-mysql-yi-lai&quot;&gt;引入 JPA 与 MySQL 依赖&lt;&#x2F;h2&gt;
+&lt;p&gt;在 pom.xml 中添加如下两条&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;xml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-xml &quot;&gt;&lt;code class=&quot;language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;dependency&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;groupId&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;mysql&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;groupId&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;artifactId&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;mysql-connector-java&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;artifactId&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
@@ -310,8 +310,8 @@
 &lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;scope&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;compile&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;scope&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;dependency&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;h2 id=&quot;pei-zhi-application-yml&quot;&gt;配置application.yml&lt;&#x2F;h2&gt;
-&lt;p&gt;提醒一下，URL 中的数据库要提前建好，比如下面示例中的数据库是library&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;pei-zhi-application-yml&quot;&gt;配置 application.yml&lt;&#x2F;h2&gt;
+&lt;p&gt;提醒一下，URL 中的数据库要提前建好，比如下面示例中的数据库是 library&lt;&#x2F;p&gt;
 &lt;p&gt;然后用户名和密码也在这里配置&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;yml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-yml &quot;&gt;&lt;code class=&quot;language-yml&quot; data-lang=&quot;yml&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;spring&lt;&#x2F;span&gt;&lt;span&gt;:
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;datasource&lt;&#x2F;span&gt;&lt;span&gt;:
@@ -340,8 +340,8 @@
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;注意：对于实体，本文都省略了Getter、Setter 和构造函数&lt;&#x2F;p&gt;
-&lt;p&gt;然后对于一个Entity，需要写一个继承自 JpaRepository 的接口供逻辑层调用，不需要写实现类&lt;&#x2F;p&gt;
+&lt;p&gt;注意：对于实体，本文都省略了 Getter、Setter 和构造函数&lt;&#x2F;p&gt;
+&lt;p&gt;然后对于一个 Entity，需要写一个继承自 JpaRepository 的接口供逻辑层调用，不需要写实现类&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public interface &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;BookRepo &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;extends &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;JpaRepository&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Book&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Long&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;&amp;gt; {
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
@@ -372,10 +372,10 @@
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;需要注意的是 JPA 的save 方法，如果实体的 ID 为空或零，他会INSERT，否则UPDATE&lt;br &#x2F;&gt;
+&lt;p&gt;需要注意的是 JPA 的 save 方法，如果实体的 ID 为空或零，他会 INSERT，否则 UPDATE&lt;br &#x2F;&gt;
 并且 save 方法的返回值才能作为最终有效的实体，作为参数传入的实体 JPA 不保证有效&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;zi-ding-yi-cha-xun&quot;&gt;自定义查询&lt;&#x2F;h2&gt;
-&lt;p&gt;根据语法提示我们发现 JpaRepository 提供了跟ID 有关的很多访问数据库的方法，但是对于其他查询就要自己写，比如使用 ID 之外的字段来查询记录&lt;&#x2F;p&gt;
+&lt;p&gt;根据语法提示我们发现 JpaRepository 提供了跟 ID 有关的很多访问数据库的方法，但是对于其他查询就要自己写，比如使用 ID 之外的字段来查询记录&lt;&#x2F;p&gt;
 &lt;p&gt;直接在方法名中写查询语句就行了，不过要注意字段名的大小写&lt;&#x2F;p&gt;
 &lt;p&gt;我们修改 BookRepo 如下&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public interface &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;BookRepo &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;extends &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;JpaRepository&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Book&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Long&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;&amp;gt; {
@@ -401,12 +401,12 @@
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;并添加一个Repo&lt;&#x2F;p&gt;
+&lt;p&gt;并添加一个 Repo&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public interface &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;AuthorRepo &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;extends &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;JpaRepository&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Author&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Long&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;&amp;gt; {
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;然后修改 Book 如下&lt;&#x2F;p&gt;
-&lt;p&gt;这里的 ManyToOne 表示多个Book 对应同一个Author，此外还有OneToMany、ManyToMany 等&lt;&#x2F;p&gt;
+&lt;p&gt;这里的 ManyToOne 表示多个 Book 对应同一个 Author，此外还有 OneToMany、ManyToMany 等&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;@&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Entity
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Book &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
@@ -450,17 +450,17 @@
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>VS Code 写一切 Maven 与Spring Boot</title>
+		<title>VS Code 写一切 Maven 与 Spring Boot</title>
 		<published>2019-12-11T15:13:45+00:00</published>
 		<updated>2019-12-11T15:13:45+00:00</updated>
 		<link href="https://paakmau.github.io/201912111513/" type="text/html"/>
 		<id>https://paakmau.github.io/201912111513/</id>
 		<content type="html">&lt;p&gt;VSC 用于开发 Maven 项目已经比较成熟&lt;br &#x2F;&gt;
 直接打开就行，没什么好说的&lt;&#x2F;p&gt;
-&lt;p&gt;因此本文介绍VS Code 创建与调试Spring Boot 项目&lt;&#x2F;p&gt;
+&lt;p&gt;因此本文介绍 VS Code 创建与调试 Spring Boot 项目&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;java-huan-jing-pei-zhi&quot;&gt;Java 环境配置&lt;&#x2F;h2&gt;
 &lt;p&gt;问题不大，xjb 装就行了&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;xu-yao-an-zhuang-de-vs-code-cha-jian&quot;&gt;需要安装的VS Code 插件&lt;&#x2F;h2&gt;
+&lt;h2 id=&quot;xu-yao-an-zhuang-de-vs-code-cha-jian&quot;&gt;需要安装的 VS Code 插件&lt;&#x2F;h2&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;Java Extension Pack&lt;&#x2F;p&gt;
@@ -469,12 +469,12 @@
 &lt;p&gt;Spring Boot Extension Pack&lt;&#x2F;p&gt;
 &lt;&#x2F;li&gt;
 &lt;&#x2F;ul&gt;
-&lt;h2 id=&quot;chuang-jian-spring-boot-xiang-mu&quot;&gt;创建Spring Boot 项目&lt;&#x2F;h2&gt;
-&lt;p&gt;按下Shift-Cmd-P 打开命令面板，输入 spring 搜索相关命令&lt;br &#x2F;&gt;
-选择Spring Initializr: Generate a Maven Project&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;chuang-jian-spring-boot-xiang-mu&quot;&gt;创建 Spring Boot 项目&lt;&#x2F;h2&gt;
+&lt;p&gt;按下 Shift-Cmd-P 打开命令面板，输入 spring 搜索相关命令&lt;br &#x2F;&gt;
+选择 Spring Initializr: Generate a Maven Project&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-145332@2x-1024x342.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;他会依次让你选择语言、Group Id、Artifact Id、Spring Boot 版本、依赖等，除了依赖我们一路回车&lt;br &#x2F;&gt;
-为了方便，依赖只选一个Spring Web&lt;&#x2F;p&gt;
+为了方便，依赖只选一个 Spring Web&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-150634@2x-1024x202.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-150641@2x-1024x127.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-150649@2x-1024x121.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
@@ -484,11 +484,11 @@
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-150514@2x-1024x600.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;然后他会在路径下生成一个 demo 文件夹&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;gong-zuo-qu-pei-zhi&quot;&gt;工作区配置&lt;&#x2F;h2&gt;
-&lt;p&gt;用 VSC 打开这个文件夹，按F5运行，配置选择Java&lt;&#x2F;p&gt;
+&lt;p&gt;用 VSC 打开这个文件夹，按 F5运行，配置选择 Java&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-151044@2x-1024x451.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
-&lt;p&gt;他会生成launch.json，跟上一篇 Java 的类似，用于确定主类，就不贴了&lt;br &#x2F;&gt;
-可以把Current File 的那条删了，因为暂时不需要单文件运行&lt;&#x2F;p&gt;
-&lt;p&gt;按F5运行，跑起来了&lt;&#x2F;p&gt;
+&lt;p&gt;他会生成 launch.json，跟上一篇 Java 的类似，用于确定主类，就不贴了&lt;br &#x2F;&gt;
+可以把 Current File 的那条删了，因为暂时不需要单文件运行&lt;&#x2F;p&gt;
+&lt;p&gt;按 F5运行，跑起来了&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-151311@2x-1024x285.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 </content>
 	</entry>

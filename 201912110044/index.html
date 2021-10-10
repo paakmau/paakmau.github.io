@@ -81,26 +81,26 @@
       <p>VSC 可以直接编译调试单个 Java 源文件（虽然没什么用）</p>
 <span id="continue-reading"></span><h2 id="java-huan-jing-pei-zhi">Java 环境配置</h2>
 <p>与 VSC 无关，但提一下 mac 的配置</p>
-<p>macOS 下用 brew 装OpenJDK</p>
+<p>macOS 下用 brew 装 OpenJDK</p>
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> brew install openjdk
 </span></code></pre>
-<p>然后根据提示创建符号链接以便系统找到JDK</p>
+<p>然后根据提示创建符号链接以便系统找到 JDK</p>
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> sudo ln</span><span style="color:#bf616a;"> -sfn</span><span> /usr/local/opt/openjdk/libexec/openjdk.jdk \
 </span><span>   /Library/Java/JavaVirtualMachines/openjdk.jdk
 </span></code></pre>
-<h2 id="xu-yao-an-zhuang-de-vs-code-cha-jian">需要安装的VS Code 插件</h2>
+<h2 id="xu-yao-an-zhuang-de-vs-code-cha-jian">需要安装的 VS Code 插件</h2>
 <ul>
 <li>Java Extension Pack</li>
 </ul>
 <h2 id="gong-zuo-qu-pei-zhi">工作区配置</h2>
-<p>打开一个空文件夹，在其中创建一个文件Hello.java，编辑内容如下</p>
+<p>打开一个空文件夹，在其中创建一个文件 Hello.java，编辑内容如下</p>
 <pre data-lang="java" style="background-color:#2b303b;color:#c0c5ce;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">Hello </span><span style="color:#eff1f5;">{
 </span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">public static void </span><span style="color:#8fa1b3;">main</span><span style="color:#eff1f5;">(</span><span style="color:#ebcb8b;">String</span><span style="color:#b48ead;">[] </span><span style="color:#bf616a;">args</span><span style="color:#eff1f5;">) {
 </span><span style="color:#eff1f5;">        </span><span style="color:#ebcb8b;">System</span><span style="color:#eff1f5;">.out.</span><span style="color:#bf616a;">print</span><span style="color:#eff1f5;">(</span><span>&quot;</span><span style="color:#a3be8c;">Hello World</span><span>&quot;</span><span style="color:#eff1f5;">);
 </span><span style="color:#eff1f5;">    }
 </span><span style="color:#eff1f5;">}
 </span></code></pre>
-<p>按F5直接运行，VSC 自动生成launch.json，有时候会失败，可以重试几遍<br />
+<p>按 F5直接运行，VSC 自动生成 launch.json，有时候会失败，可以重试几遍<br />
 内容大概如下</p>
 <pre data-lang="json" style="background-color:#2b303b;color:#c0c5ce;" class="language-json "><code class="language-json" data-lang="json"><span>{
 </span><span>    </span><span style="color:#65737e;">// Use IntelliSense to learn about possible attributes.
@@ -124,8 +124,8 @@
 </span><span>    ]
 </span><span>}
 </span></code></pre>
-<p>解释：它配置了两个launch，一个是以当前打开的 Java 源文件作为主类调试，一个是以Hello.java 作为主类进行调试</p>
-<p>切回Hello.java 按F5，得到如下输出</p>
+<p>解释：它配置了两个 launch，一个是以当前打开的 Java 源文件作为主类调试，一个是以 Hello.java 作为主类进行调试</p>
+<p>切回 Hello.java 按 F5，得到如下输出</p>
 <p><img src="https://hebomou.top/wp-content/uploads/2019/12/QQ20191221-004354@2x.png" alt="" /></p>
 
     </div>

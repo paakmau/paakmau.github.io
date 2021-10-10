@@ -8,12 +8,12 @@
 	<updated>2020-07-07T18:21:46+00:00</updated>
 	<id>https://paakmau.github.io/categories/websocket/atom.xml</id>
 	<entry xml:lang="zh">
-		<title>基于Vue.js 和 SpringBoot 配置WebSocket</title>
+		<title>基于 Vue.js 和 SpringBoot 配置 WebSocket</title>
 		<published>2020-07-07T18:21:46+00:00</published>
 		<updated>2020-07-07T18:21:46+00:00</updated>
 		<link href="https://paakmau.github.io/202007071821/" type="text/html"/>
 		<id>https://paakmau.github.io/202007071821/</id>
-		<content type="html">&lt;p&gt;HTTP 协议中的请求只能由客户端发起，如果需要服务端主动向客户端发送信息，就会用到WebSocket&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;HTTP 协议中的请求只能由客户端发起，如果需要服务端主动向客户端发送信息，就会用到 WebSocket&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;hou-duan-bu-fen&quot;&gt;后端部分&lt;&#x2F;h2&gt;
 &lt;p&gt;首先需要一个配置类用于指定 WebSocket 的端口号&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;@&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Configuration

@@ -81,19 +81,19 @@
       <p>这部分内容手册中没有，本文参考的是官方示例代码与官方论坛</p>
 <p><a href="https://github.com/Unity-Technologies/EntityComponentSystemSamples">https://github.com/Unity-Technologies/EntityComponentSystemSamples</a></p>
 <span id="continue-reading"></span>
-<p>在 OOP 的物理引擎中，碰撞发生后引擎可以通过调用用户提供的回调函数将碰撞事件传递给用户程序。而在 Unity 的ECS 框架中我们需要使用数据驱动的思路来处理碰撞<br />
+<p>在 OOP 的物理引擎中，碰撞发生后引擎可以通过调用用户提供的回调函数将碰撞事件传递给用户程序。而在 Unity 的 ECS 框架中我们需要使用数据驱动的思路来处理碰撞<br />
 但是引擎已经把事件处理封装好了，因此我们实现的时候其实看起来跟回调差不多</p>
 <h2 id="jian-jie">简介</h2>
-<p>Unity Physics 中，刚体可以通过 Trigger 或者Collision 触发事件，需要勾选Physics Shape 中的Is Trigger 或Raises Collision Events<br />
+<p>Unity Physics 中，刚体可以通过 Trigger 或者 Collision 触发事件，需要勾选 Physics Shape 中的 Is Trigger 或 Raises Collision Events<br />
 它们的区别在于 Trigger 不会引起物理上的碰撞，只产生事件</p>
 <p><img src="https://hebomou.top/wp-content/uploads/2020/02/image-1.png" alt="" /></p>
-<p>对于产生的 Trigger 事件或Collision 事件，我们可以通过 ITriggerEventsJob 或ICollisionEventsJob 来获取并处理</p>
+<p>对于产生的 Trigger 事件或 Collision 事件，我们可以通过 ITriggerEventsJob 或 ICollisionEventsJob 来获取并处理</p>
 <p>下面的例子可以实现这样的效果<br />
 开始时所有的刚体不受重力影响，但是一个刚体被 Trigger 碰到后它就会重新受到重力并下坠</p>
-<h2 id="zhun-bei-trigger">准备Trigger</h2>
-<p>首先准备一个 Entity 作为Trigger，并且让他受到键盘控制运动。<br />
-新建一个 Cube 的GameObject，移除Box Collider，添加Convert To Entity，Physics Body，Physics Shape。在Physics Body 中把重力系数设为0，在Physics Shape 中勾选Is Trigger<br />
-然后使用 Authoring 为它添加PlayerInput 组件。</p>
+<h2 id="zhun-bei-trigger">准备 Trigger</h2>
+<p>首先准备一个 Entity 作为 Trigger，并且让他受到键盘控制运动。<br />
+新建一个 Cube 的 GameObject，移除 Box Collider，添加 Convert To Entity，Physics Body，Physics Shape。在 Physics Body 中把重力系数设为0，在 Physics Shape 中勾选 Is Trigger<br />
+然后使用 Authoring 为它添加 PlayerInput 组件。</p>
 <p>保存键盘输入的组件<br />
 PlayerInput.cs</p>
 <pre data-lang="cs" style="background-color:#2b303b;color:#c0c5ce;" class="language-cs "><code class="language-cs" data-lang="cs"><span>[</span><span style="color:#bf616a;">Serializable</span><span>]
@@ -137,12 +137,12 @@ MoveSystem.cs</p>
 </span><span style="color:#eff1f5;">    }
 </span><span style="color:#eff1f5;">}
 </span></code></pre>
-<h2 id="zhun-bei-yong-yu-bei-hong-fa-de-entity">准备用于被触发的Entity</h2>
-<p>然后准备另一个用于被触发的Entity，它至少需要有Physics Shape、Physics Body<br />
-当然要在Physics Body 中将重力系数设为0</p>
+<h2 id="zhun-bei-yong-yu-bei-hong-fa-de-entity">准备用于被触发的 Entity</h2>
+<p>然后准备另一个用于被触发的 Entity，它至少需要有 Physics Shape、Physics Body<br />
+当然要在 Physics Body 中将重力系数设为0</p>
 <h2 id="chu-li-trigger-shi-jian">处理 Trigger 事件</h2>
 <p>写一个简单的 JobComponentSystem 就行了<br />
-只是其中的 Job 需要使用ITriggerEventsJob 接口，个人感觉是物理引擎 Simulate 之后会产生Trigger 事件的数组，然后通过 ITriggerEventsJob 来遍历它处理每个Trigger 事件</p>
+只是其中的 Job 需要使用 ITriggerEventsJob 接口，个人感觉是物理引擎 Simulate 之后会产生 Trigger 事件的数组，然后通过 ITriggerEventsJob 来遍历它处理每个 Trigger 事件</p>
 <p>DetectTriggerSystem.cs</p>
 <pre data-lang="cs" style="background-color:#2b303b;color:#c0c5ce;" class="language-cs "><code class="language-cs" data-lang="cs"><span>[</span><span style="color:#bf616a;">UpdateAfter</span><span> (</span><span style="color:#bf616a;">typeof</span><span> (</span><span style="color:#bf616a;">EndFramePhysicsSystem</span><span>))]
 </span><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">DetectTriggerSystem </span><span style="color:#eff1f5;">: </span><span style="color:#a3be8c;">JobComponentSystem </span><span style="color:#eff1f5;">{
@@ -174,7 +174,7 @@ MoveSystem.cs</p>
 </span><span style="color:#eff1f5;">}
 </span></code></pre>
 <h2 id="chu-li-collision-shi-jian">处理 Collision 事件</h2>
-<p>跟上文 Trigger 事件类似，也是使用JobComponentSystem，Job 需要换成 ICollisionEventsJob 接口，然后调整 Update 的顺序并使用EndFramePhysicsSystem.HandlesToWaitFor 处理同步，官方给的例子是有问题的，本文根据论坛作了一些修改</p>
+<p>跟上文 Trigger 事件类似，也是使用 JobComponentSystem，Job 需要换成 ICollisionEventsJob 接口，然后调整 Update 的顺序并使用 EndFramePhysicsSystem.HandlesToWaitFor 处理同步，官方给的例子是有问题的，本文根据论坛作了一些修改</p>
 <p>贴一下代码<br />
 DetectCollisionSystem.cs</p>
 <pre data-lang="cs" style="background-color:#2b303b;color:#c0c5ce;" class="language-cs "><code class="language-cs" data-lang="cs"><span>[</span><span style="color:#bf616a;">UpdateAfter</span><span> (</span><span style="color:#bf616a;">typeof</span><span> (</span><span style="color:#bf616a;">StepPhysicsWorld</span><span>))]

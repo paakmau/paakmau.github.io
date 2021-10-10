@@ -26,4 +26,4 @@ $ npm init
 
 console.log("Hello World")
 
-F9下断点，F5直接跑
+F9 下断点，F5 直接跑

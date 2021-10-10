@@ -77,7 +77,7 @@ void AMyActor::BeginPlay()
 
 ## ParallelFor
 
-UE4有一个 ParallelFor，是对于简单遍历的并行处理，基于 TaskGraph，具体去看 Runtime/Core/Public/Async/ParallelFor.h  
+UE4 有一个 ParallelFor，是对于简单遍历的并行处理，基于 TaskGraph，具体去看 Runtime/Core/Public/Async/ParallelFor.h  
 下面给个简单的例子
 
 ```cpp
@@ -92,6 +92,6 @@ ParallelFor(100, [](int32 CurrIdx) {
 
 如果抽象成一张 DAG 来看，这两个本质上其实就是同一个东西。简单说就是通过建立依赖关系避免资源竞争实现易于管理的并行
 
-但是 Job System 相对于 TaskGraph 在用户代码中出现频率要高得多。因为 Unity DOTS 天生就能很好的设计并行，甚至 Job 其实是嵌入在 SystemBase 里的，对于游戏主逻辑都能被频繁使用；而 UE4是 OOP，个人理解的话应该主要用于耗时长的计算或者 I/O 任务等，但是把游戏主逻辑放到 TaskGraph 里是比较困难的
+但是 Job System 相对于 TaskGraph 在用户代码中出现频率要高得多。因为 Unity DOTS 天生就能很好的设计并行，甚至 Job 其实是嵌入在 SystemBase 里的，对于游戏主逻辑都能被频繁使用；而 UE4 是 OOP，个人理解的话应该主要用于耗时长的计算或者 I/O 任务等，但是把游戏主逻辑放到 TaskGraph 里是比较困难的
 
-另外有一个小区别，UE4的 ParallerFor 与 Unity 里的 ScheduleParallel 是不一样的。UE4的 ParallelFor 其实是基于 TaskGraph 的顶层；而 Unity 的 ScheduleParallel 是 Job 本身自带的方法
+另外有一个小区别，UE4 的 ParallerFor 与 Unity 里的 ScheduleParallel 是不一样的。UE4 的 ParallelFor 其实是基于 TaskGraph 的顶层；而 Unity 的 ScheduleParallel 是 Job 本身自带的方法

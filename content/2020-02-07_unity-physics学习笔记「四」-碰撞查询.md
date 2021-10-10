@@ -26,8 +26,8 @@ categories = ["Unity"]
 这个示例项目大概是这样  
 我们可以控制一个球体移动，然后场景中有一些用于检测碰撞的立方体。当我们控制的球体移动到一个立方体的检测范围之内时，这个立方体就会作出反应以表示检测到碰撞
 
-另外，为了方便，我规定所有 Entity 都在 z=0平面上，球体也只能在这个平面上运动，下面的代码也依赖这个规定  
-因此请保证所有 Entitiy 的 z 坐标都为0
+另外，为了方便，我规定所有 Entity 都在 z=0 平面上，球体也只能在这个平面上运动，下面的代码也依赖这个规定  
+因此请保证所有 Entitiy 的 z 坐标都为 0
 
 ![](https://hebomou.top/wp-content/uploads/2020/02/2020-02-08-03-04-16.2020-02-08-03_05_22.gif)
 
@@ -97,8 +97,8 @@ public class MoveSphereAuthoring : MonoBehaviour, IConvertGameObjectToEntity {
 ```
 
 接下来是喜闻乐见的 Entity 配置环节  
-创建一个 Sphere 的 GameObject，移除 Sphere Collider，添加 Convert To Entity，添加 Physics Shape 并修改 Shape Type 为 Sphere，添加 Physics Body 并把 Gravity Factor 设为0，添加上面的 MoveSphereAuthoring 脚本  
-注意把球体的 z 坐标设为0
+创建一个 Sphere 的 GameObject，移除 Sphere Collider，添加 Convert To Entity，添加 Physics Shape 并修改 Shape Type 为 Sphere，添加 Physics Body 并把 Gravity Factor 设为 0，添加上面的 MoveSphereAuthoring 脚本  
+注意把球体的 z 坐标设为 0
 
 启动后按下 WASD，小球能相应运动
 
@@ -143,7 +143,7 @@ public class CollisionCheckerAuthoring : MonoBehaviour, IConvertGameObjectToEnti
 射线检测。  
 在立方体附近发射一条射线用于检测射线碰到的碰撞体。注意，如果没有修改 Collision Filter，请不要让这条射线碰到立方体本身
 
-下面的示例代码在立方体上面向上发送了一条长度为1的射线
+下面的示例代码在立方体上面向上发送了一条长度为 1 的射线
 
 CollisionQuerySystem.cs
 
@@ -317,7 +317,7 @@ public class CollisionQuerySystem : JobComponentSystem {
 注意两点
 
 第一是立方体的包围盒会与立方体本身重叠，所以必须修改默认的 Collision Filter  
-我们需要在立方体的 Physics Shape 组件的 Collision Filter 里把 Belongs To 修改为只有0，这样代码里就能使用 Collision Filter 避免检测到立方体本身
+我们需要在立方体的 Physics Shape 组件的 Collision Filter 里把 Belongs To 修改为只有 0，这样代码里就能使用 Collision Filter 避免检测到立方体本身
 
 第二是如果不对默认创建的立方体做旋转操作，它的 AABB 就是它本身  
 我们可以把立方体随意旋转一个角度或者把 Physics Shape 里的 Shape Type 改成别的形状以获得更明显的效果

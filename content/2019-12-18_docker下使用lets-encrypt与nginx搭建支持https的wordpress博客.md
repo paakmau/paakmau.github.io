@@ -94,8 +94,8 @@ server {
 
 解释：  
 其中 ssl\_certificate 与 ssl\_certificate\_key 设定了证书的路径，需要把 example.com 替换为你博客的域名  
-proxy\_pass 用于转发 wordpress 容器的80端口  
-最后监听本容器的80端口把 HTTP 重定向到 HTTPS
+proxy\_pass 用于转发 wordpress 容器的 80 端口  
+最后监听本容器的 80 端口把 HTTP 重定向到 HTTPS
 
 然后重启 nginx 容器就完成了
 
@@ -105,7 +105,7 @@ $ docker restart nginx
 
 ## 证书续签
 
-证书有效期只有90天，因此需要续签
+证书有效期只有 90 天，因此需要续签
 
 我们先把 nginx 停了，把端口让出来
 

@@ -45,7 +45,7 @@ Please pick a preset
 
 Check the features needed for your project  
 本文选了几个常用的  
-Babel：能够把 ES6版本的代码转换为向后兼容的 JavaScript 语法  
+Babel：能够把 ES6 版本的代码转换为向后兼容的 JavaScript 语法  
 Router：官方提供的路由管理器，用于实现单页应用  
 Vuex：官方提供的状态管理器，用于解决组件之间传递数据，共享数据的问题  
 CSS Pre-processors：CSS 预处理器，可以为 CSS 添加一些编程特性，方便 CSS 的编写，最后发布的时候再重新编译为浏览器可识别的 CSS 代码  

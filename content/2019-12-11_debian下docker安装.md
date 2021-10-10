@@ -44,7 +44,7 @@ categories = ["Docker"]
 
 ## Docker 安装
 
-这里以 Debian 10为例
+这里以 Debian 10 为例
 
 使用 apt 安装，首先根据处理器架构添加合适的 apt 仓库，然后直接 `apt install` 即可。
 

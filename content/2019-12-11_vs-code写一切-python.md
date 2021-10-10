@@ -15,7 +15,7 @@ VSC 写 Python 也挺方便的，不过功能没那么多
 ## Python 环境配置
 
 xjb 装就行了  
-macOS Catalina 自带的 Python3不建议用，brew install python3
+macOS Catalina 自带的 Python3 不建议用，brew install python3
 
 ## 需要安装的 VSC 插件
 
@@ -29,7 +29,7 @@ macOS Catalina 自带的 Python3不建议用，brew install python3
 print("Hello World")
 ```
 
-按 F5运行，配置选 Python
+按 F5 运行，配置选 Python
 
 ![](https://hebomou.top/wp-content/uploads/2019/12/QQ20191221-194755@2x.png)
 

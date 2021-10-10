@@ -34,7 +34,7 @@ $ cmake --version
 
 ### Windows
 
-使用 MSYS2安装 mingw-w64集成的 Clang 和 CMake，并把它们所在的目录添加的环境变量，如果你使用的是64位 Windows 且使用默认路径安装了 MSYS2，那么这个目录应该是 C:\\msys64\\mingw32\\bin
+使用 MSYS2 安装 mingw-w64 集成的 Clang 和 CMake，并把它们所在的目录添加的环境变量，如果你使用的是 64 位 Windows 且使用默认路径安装了 MSYS2，那么这个目录应该是 C:\\msys64\\mingw32\\bin
 
 ```sh
 $ pacman -S mingw-w64-x86_64-clang
@@ -78,6 +78,6 @@ PS cmake.exe --version
 
 ## 调试运行
 
-按下 Ctrl + F5就行了
+按下 Ctrl + F5 就行了
 
 比较折磨的是，CMake Tools 插件一开始就没有集成到 launch.json 和 tasks.json，所以需要使用它自己定的快捷键来构建和调试，但是最近已经有人提了 issue 并且受到了重视所以应该也快了吧

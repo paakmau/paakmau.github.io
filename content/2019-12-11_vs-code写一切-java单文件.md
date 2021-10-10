@@ -45,7 +45,7 @@ public class Hello {
 }
 ```
 
-按 F5直接运行，VSC 自动生成 launch.json，有时候会失败，可以重试几遍  
+按 F5 直接运行，VSC 自动生成 launch.json，有时候会失败，可以重试几遍  
 内容大概如下
 
 ```json

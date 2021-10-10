@@ -50,7 +50,7 @@ public class RandomMoveCubeAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 ## 配置 Entity
 
 新建一个立方体 GameObject，移除 Box Collider，添加 Convert To Entity、Physics Shape、Physics Body 以及我们写的 RandomMoveCubeAuthoring 脚本  
-在 Physics Body 中把重力系数设为0，线性阻尼设为0.5。其他的用默认值就行
+在 Physics Body 中把重力系数设为 0，线性阻尼设为 0.5。其他的用默认值就行
 
 这样这个 GameObject 在启动后会被自动转化为 Entity 并具有物理相关的组件以及 MoveDirection 组件
 

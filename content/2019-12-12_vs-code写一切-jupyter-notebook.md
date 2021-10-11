@@ -28,13 +28,13 @@ $ brew install python jupyter
 
 ## Notebook 创建与运行
 
-打开一个空文件夹，cmd+shift+p 呼出命令面板  
+打开一个空文件夹，cmd + shift + p 呼出命令面板  
 输入 python create 进行搜索，选择 Python: Create New Blank Jupyter Notebook
 
 ![Create Jupyter Notebook](https://hebomou.top/wp-content/uploads/2019/12/QQ20191222-011543@2x-1024x199.png)
 
 在当前目录保存为 hello.ipynb  
-然后编辑内容如下并按 ctrl+enter 运行（为什么不是 cmd+enter）
+然后编辑内容如下并按 ctrl + enter 运行（为什么不是 cmd + enter）
 
 ![Result](https://hebomou.top/wp-content/uploads/2019/12/QQ20191222-013041@2x.png)
 

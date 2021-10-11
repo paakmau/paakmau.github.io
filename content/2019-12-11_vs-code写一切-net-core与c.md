@@ -27,7 +27,7 @@ $ brew install dotnet
 
 ## .NET Core 项目创建
 
-新建一个文件夹 hello 并打开它，按下快捷键 ctrl+\`呼出终端并输入如下命令创建控制台项目
+新建一个文件夹 hello 并打开它，按下快捷键 ctrl + \` 呼出终端并输入如下命令创建控制台项目
 
 ```sh
 $ dotnet new console

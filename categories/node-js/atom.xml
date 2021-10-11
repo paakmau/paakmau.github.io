@@ -671,7 +671,7 @@ Vuex 相关，用于全局的状态管理&lt;&#x2F;p&gt;
 &lt;p&gt;MySQL 8.0.18，监听 3306 端口，认证插件为 mysql_native_password&lt;br &#x2F;&gt;
 root 账户的密码为 root&lt;&#x2F;p&gt;
 &lt;p&gt;在 MySQL 中执行以下脚本建立两个数据库，分别用于存储 Session 数据与用户数据&lt;&#x2F;p&gt;
-&lt;pre data-lang=&quot;SQL&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-SQL &quot;&gt;&lt;code class=&quot;language-SQL&quot; data-lang=&quot;SQL&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;CREATE SCHEMA &lt;&#x2F;span&gt;&lt;span&gt;`&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;hello_session&lt;&#x2F;span&gt;&lt;span&gt;` ;
+&lt;pre data-lang=&quot;sql&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sql &quot;&gt;&lt;code class=&quot;language-sql&quot; data-lang=&quot;sql&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;CREATE SCHEMA &lt;&#x2F;span&gt;&lt;span&gt;`&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;hello_session&lt;&#x2F;span&gt;&lt;span&gt;` ;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;CREATE SCHEMA &lt;&#x2F;span&gt;&lt;span&gt;`&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;hello&lt;&#x2F;span&gt;&lt;span&gt;` ;
 &lt;&#x2F;span&gt;&lt;span&gt;
 &lt;&#x2F;span&gt;&lt;span&gt;USE `&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;hello&lt;&#x2F;span&gt;&lt;span&gt;`;

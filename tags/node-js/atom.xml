@@ -25,7 +25,7 @@
 &lt;p&gt;MySQL 8.0.18，监听 3306 端口，认证插件为 mysql_native_password&lt;br &#x2F;&gt;
 root 账户的密码为 root&lt;&#x2F;p&gt;
 &lt;p&gt;在 MySQL 中执行以下脚本建立两个数据库，分别用于存储 Session 数据与用户数据&lt;&#x2F;p&gt;
-&lt;pre data-lang=&quot;SQL&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-SQL &quot;&gt;&lt;code class=&quot;language-SQL&quot; data-lang=&quot;SQL&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;CREATE SCHEMA &lt;&#x2F;span&gt;&lt;span&gt;`&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;hello_session&lt;&#x2F;span&gt;&lt;span&gt;` ;
+&lt;pre data-lang=&quot;sql&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sql &quot;&gt;&lt;code class=&quot;language-sql&quot; data-lang=&quot;sql&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;CREATE SCHEMA &lt;&#x2F;span&gt;&lt;span&gt;`&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;hello_session&lt;&#x2F;span&gt;&lt;span&gt;` ;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;CREATE SCHEMA &lt;&#x2F;span&gt;&lt;span&gt;`&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;hello&lt;&#x2F;span&gt;&lt;span&gt;` ;
 &lt;&#x2F;span&gt;&lt;span&gt;
 &lt;&#x2F;span&gt;&lt;span&gt;USE `&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;hello&lt;&#x2F;span&gt;&lt;span&gt;`;
@@ -358,9 +358,11 @@ svg-captcha 的 create 方法生成一个验证码对象&lt;br &#x2F;&gt;
 但是，对于要装各种依赖的 Node.js 项目，VSC 没有自带图形化的管理工具，重度依赖终端，有点蛋疼（虽然有插件我也不乐意装毕竟命令行多方便）&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;xiang-mu-xin-jian-yu-diao-shi&quot;&gt;项目新建与调试&lt;&#x2F;h2&gt;
 &lt;p&gt;打开一个空目录，ctrl + ` 呼出终端&lt;&#x2F;p&gt;
-&lt;p&gt;$ npm init&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; npm init
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;一路回车，然后编辑工作区中的 index.js 如下&lt;&#x2F;p&gt;
-&lt;p&gt;console.log(&amp;quot;Hello World&amp;quot;)&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;js&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-js &quot;&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;console&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;log&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Hello World&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;F9 下断点，F5 直接跑&lt;&#x2F;p&gt;
 </content>
 	</entry>

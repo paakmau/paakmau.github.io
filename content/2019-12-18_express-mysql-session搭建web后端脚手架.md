@@ -29,7 +29,7 @@ root 账户的密码为 root
 
 在 MySQL 中执行以下脚本建立两个数据库，分别用于存储 Session 数据与用户数据
 
-```SQL
+```sql
 CREATE SCHEMA `hello_session` ;
 CREATE SCHEMA `hello` ;
 

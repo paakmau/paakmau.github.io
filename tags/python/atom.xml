@@ -13,7 +13,7 @@
 		<updated>2019-12-12T01:35:40+00:00</updated>
 		<link href="https://paakmau.github.io/201912120135/" type="text/html"/>
 		<id>https://paakmau.github.io/201912120135/</id>
-		<content type="html">&lt;p&gt;因为院里不少课程要机器学习，于是 Notebook 用的挺频繁的。当时用 VSC 写还行吧，就是快捷键有点问题，语法提示不太行，现在似乎好多了&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;因为院里不少课程要炼丹，于是 Notebook 用的挺频繁的。当时用 VSC 写还行吧，就是快捷键有点问题，语法提示不太行，现在似乎好多了&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;jupyter-huan-jing-pei-zhi&quot;&gt;Jupyter 环境配置&lt;&#x2F;h2&gt;
 &lt;p&gt;安装 Python 与 Jupyter&lt;br &#x2F;&gt;
 Mac 下用 brew 安装即可&lt;&#x2F;p&gt;

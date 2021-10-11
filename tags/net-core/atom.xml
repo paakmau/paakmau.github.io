@@ -270,7 +270,7 @@ FROM&lt;br &#x2F;&gt;
 &lt;li&gt;C#&lt;&#x2F;li&gt;
 &lt;&#x2F;ul&gt;
 &lt;h2 id=&quot;net-core-xiang-mu-chuang-jian&quot;&gt;.NET Core 项目创建&lt;&#x2F;h2&gt;
-&lt;p&gt;新建一个文件夹 hello 并打开它，按下快捷键 ctrl+`呼出终端并输入如下命令创建控制台项目&lt;&#x2F;p&gt;
+&lt;p&gt;新建一个文件夹 hello 并打开它，按下快捷键 ctrl + ` 呼出终端并输入如下命令创建控制台项目&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; dotnet new console
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;看到目录中生成了一些文件，其中&lt;br &#x2F;&gt;

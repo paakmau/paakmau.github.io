@@ -73,7 +73,7 @@
 &lt;p&gt;VSC 天生支持 Node.js 不装插件就能调试&lt;br &#x2F;&gt;
 但是，对于要装各种依赖的 Node.js 项目，VSC 没有自带图形化的管理工具，重度依赖终端，有点蛋疼（虽然有插件我也不乐意装毕竟命令行多方便）&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;xiang-mu-xin-jian-yu-diao-shi&quot;&gt;项目新建与调试&lt;&#x2F;h2&gt;
-&lt;p&gt;打开一个空目录，ctrl+`呼出终端&lt;&#x2F;p&gt;
+&lt;p&gt;打开一个空目录，ctrl + ` 呼出终端&lt;&#x2F;p&gt;
 &lt;p&gt;$ npm init&lt;&#x2F;p&gt;
 &lt;p&gt;一路回车，然后编辑工作区中的 index.js 如下&lt;&#x2F;p&gt;
 &lt;p&gt;console.log(&amp;quot;Hello World&amp;quot;)&lt;&#x2F;p&gt;
@@ -98,11 +98,11 @@ Mac 下用 brew 安装即可&lt;&#x2F;p&gt;
 &lt;li&gt;VS Code Jupyter Notebook Previewer&lt;&#x2F;li&gt;
 &lt;&#x2F;ul&gt;
 &lt;h2 id=&quot;notebook-chuang-jian-yu-yun-xing&quot;&gt;Notebook 创建与运行&lt;&#x2F;h2&gt;
-&lt;p&gt;打开一个空文件夹，cmd+shift+p 呼出命令面板&lt;br &#x2F;&gt;
+&lt;p&gt;打开一个空文件夹，cmd + shift + p 呼出命令面板&lt;br &#x2F;&gt;
 输入 python create 进行搜索，选择 Python: Create New Blank Jupyter Notebook&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191222-011543@2x-1024x199.png&quot; alt=&quot;Create Jupyter Notebook&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;在当前目录保存为 hello.ipynb&lt;br &#x2F;&gt;
-然后编辑内容如下并按 ctrl+enter 运行（为什么不是 cmd+enter）&lt;&#x2F;p&gt;
+然后编辑内容如下并按 ctrl + enter 运行（为什么不是 cmd + enter）&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191222-013041@2x.png&quot; alt=&quot;Result&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;操作跟 web 版的差不多但是 Mac 下快捷键很蛋疼就这样吧&lt;&#x2F;p&gt;
 </content>
@@ -147,7 +147,7 @@ macOS Catalina 自带的 Python3 不建议用，brew install python3&lt;&#x2F;p&
 &lt;li&gt;C#&lt;&#x2F;li&gt;
 &lt;&#x2F;ul&gt;
 &lt;h2 id=&quot;net-core-xiang-mu-chuang-jian&quot;&gt;.NET Core 项目创建&lt;&#x2F;h2&gt;
-&lt;p&gt;新建一个文件夹 hello 并打开它，按下快捷键 ctrl+`呼出终端并输入如下命令创建控制台项目&lt;&#x2F;p&gt;
+&lt;p&gt;新建一个文件夹 hello 并打开它，按下快捷键 ctrl + ` 呼出终端并输入如下命令创建控制台项目&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; dotnet new console
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;看到目录中生成了一些文件，其中&lt;br &#x2F;&gt;

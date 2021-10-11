@@ -20,10 +20,14 @@ VSC 天生支持 Node.js 不装插件就能调试
 
 打开一个空目录，ctrl + \` 呼出终端
 
+```sh
 $ npm init
+```
 
 一路回车，然后编辑工作区中的 index.js 如下
 
+```js
 console.log("Hello World")
+```
 
 F9 下断点，F5 直接跑

@@ -8,7 +8,7 @@
 	<updated>2020-12-12T02:39:41+00:00</updated>
 	<id>https://paakmau.github.io/tags/cmake/atom.xml</id>
 	<entry xml:lang="zh">
-		<title>C++依赖包管理解决方案对比</title>
+		<title>C++ 依赖包管理解决方案对比</title>
 		<published>2020-12-12T02:39:41+00:00</published>
 		<updated>2020-12-12T02:39:41+00:00</updated>
 		<link href="https://paakmau.github.io/202012120239/" type="text/html"/>
@@ -27,7 +27,7 @@
 防出去以后自然是传统编程以点到为止我用 #include 加宏手放键盘上没有用 CMake 构建。
 我笑一下准备关掉 VS Code。
 由于这时间，按照传统编程点到为止他已经输了。
-如果这一构建下去，编译完立刻链接就直接把他的 Runtime 打骨折了。
+如果这一构建下去，编译完链接立刻运行当场就能直接把他的 Runtime 打骨折了。
 他也承认我先导入的依赖库。
 啊，我关掉 VS Code 的时候不构建了，他突然袭击连续导了几个包来编译。
 我大意了啊，没有闪，当时就流眼泪了。
@@ -42,37 +42,47 @@
 我 69 岁的老同志。
 这好吗，这不好。
 我劝，这两位年轻人耗子尾汁，好好反思，以后不要再犯，这样的聪明，小聪明啊。&lt;&#x2F;p&gt;
-&lt;p&gt;许多高级语言都有方便的包管理器，比如 Java 的 Maven 和 Gradle、.NET 的 NuGet、node.js 的 npm、Rust 的 Cargo，它们具备多版本管理功能，可以控制项目依赖特定版本的包&lt;&#x2F;p&gt;
-&lt;p&gt;但是一般来说 C++项目通常使用 CMake 来构建，CMake 具备一定的包管理功能，但是会比较弱鸡，可以配合其他软件来使用，也可以直接抛弃 CMake 这个又陈旧又臃肿的构建工具，使用其他更先进的集成了包管理器的构建工具&lt;&#x2F;p&gt;
-&lt;p&gt;接下来介绍几种解决方案&lt;&#x2F;p&gt;
+&lt;p&gt;现代语言基本上都有很舒适的依赖管理，比如 Java 的 Maven 和 Gradle、.NET 的 NuGet、node.js 的 npm、Rust 的 Cargo。
+目前可以称为成熟且主流的 C++ 构建工具只有 CMake。~~VS 给我滚。~~然而 CMake 的依赖管理非常弱鸡。
+一般来说更好的方法是使用一些集成到 CMake 上的包管理工具；也可以抛弃这个又陈旧又臃肿的 CMake，直接使用更先进的构建工具。&lt;&#x2F;p&gt;
+&lt;p&gt;接下来介绍几种解决方案。&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;pei-he-xi-tong-bao-guan-li-qi-shi-yong-find-package&quot;&gt;配合系统包管理器使用 find_package&lt;&#x2F;h2&gt;
-&lt;p&gt;find_package 是 CMake 的一个指令，重度依赖 apt、pacman、brew 这类能把包装到系统里的包管理器，而且不能控制依赖包的版本&lt;&#x2F;p&gt;
-&lt;p&gt;对于有 brew 而且还是类 UNIX 的 macOS 来说还好，对于没有自带包管理器就而且算有也不知道包要装到哪里去的 Windows 来说，使用 find_package 是一件非常折磨的事情&lt;&#x2F;p&gt;
+&lt;p&gt;find_package 是 CMake 的一个指令，重度依赖 apt、pacman、brew 这些能把类库直接安装到系统里的包管理器，而且不能控制依赖包的多个版本。&lt;&#x2F;p&gt;
+&lt;p&gt;如果是 macOS，那还好。
+起码有 brew，而且还是类 UNIX，装好的类库也都能找到在哪，勉强算能用。&lt;&#x2F;p&gt;
+&lt;p&gt;如果是 Windows，那就很操蛋了。
+系统包管理确实也算有几个，但是都奇奇怪怪。
+我用过的 MSYS2 其实还算可以，但是会有一些兼容性问题。
+总体来说还是太折磨了，建议直接用 WSL。&lt;&#x2F;p&gt;
 &lt;p&gt;非常易用&lt;br &#x2F;&gt;
-不支持多版本包管理&lt;br &#x2F;&gt;
+不支持版本管理&lt;br &#x2F;&gt;
 只能导入支持 CMake 的用系统包管理器安装的包&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;zhi-jie-ba-wai-bu-ku-yuan-ma-reng-jin-xiang-mu-li&quot;&gt;直接把外部库源码扔进项目里&lt;&#x2F;h2&gt;
 &lt;p&gt;其实也是最常见的解决方法，把外部库源码都扔进一个例如 external 文件夹里。
-可以手动魔改外部库的编译和链接，还可以去掉外部库里用不到的东西。
-优点是学习成本低，并且魔改十分方便。
-缺点是更新外部库时需要重新下载源码，然后再一通爆改，而且外部库还会占用额外的空间。&lt;&#x2F;p&gt;
+单论 add_subdirectory 的话，学习成本很低。
+但是如果要这样引库，首先要先学会这个库怎么编译，然后要简化编译的流程。
+有些该死的库的构建甚至会用到 Python。
+很有可能会需要对这些库进行一顿乱七八糟的魔改，或者在外面写一堆该死的脚本。
+更新外部库时还要重新下载源码，然后再一通爆改。
+如果外部库的构建产生了变动，那真的就是世界末日。
+而且外部库还会占用远程仓库额外的空间。&lt;&#x2F;p&gt;
 &lt;p&gt;非常原始，比较麻烦&lt;br &#x2F;&gt;
-支持多版本包管理&lt;br &#x2F;&gt;
+支持版本管理&lt;br &#x2F;&gt;
 可以导入所有项目&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;git-submodules&quot;&gt;Git Submodules&lt;&#x2F;h2&gt;
-&lt;p&gt;跟手动扔进项目里差不多，但是这样不方便魔改。
-通常情况下只能对依赖设置一些 CMake 变量来管理构建。
+&lt;p&gt;跟手动扔进项目里差不多，但是这样基本不允许魔改。
+通常情况下只能在外面搞些小动作，比如设一些 CMake 变量来控制依赖的构建啥的。
 不过这样外部库就不会占用空间了。
-而且更新外部库版本十分方便。&lt;&#x2F;p&gt;
+而且更新外部库版本很方便。&lt;&#x2F;p&gt;
 &lt;p&gt;比较麻烦&lt;br &#x2F;&gt;
-支持多版本包管理&lt;br &#x2F;&gt;
-可以导入所有托管的项目&lt;&#x2F;p&gt;
+支持版本管理&lt;br &#x2F;&gt;
+可以导入一部分托管项目&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;fetchcontent&quot;&gt;FetchContent&lt;&#x2F;h2&gt;
 &lt;p&gt;FetchContent 是 CMake 自带的功能，可以在构建之前下载外部库的源代码。
 这种方法跟 Git Submodules 几乎没有区别。&lt;&#x2F;p&gt;
 &lt;p&gt;比较麻烦&lt;br &#x2F;&gt;
-支持多版本包管理&lt;br &#x2F;&gt;
-可以导入所有项目&lt;&#x2F;p&gt;
+支持版本管理&lt;br &#x2F;&gt;
+可以导入一部分托管项目&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;vcpkg&quot;&gt;Vcpkg&lt;&#x2F;h2&gt;
 &lt;p&gt;微软写的，需要安装，没有构建功能，可以配合 CMake。
 有一点类似 apt、pacman 这些东西，但是不支持版本控制。
@@ -83,22 +93,22 @@
 这样对于每个项目都安装一个 vcpkg 就能实现版本管理。
 这是一种非常蛇皮而且折磨的解决方法，但是它竟然被写到了微软的官方文档里。&lt;&#x2F;p&gt;
 &lt;p&gt;还算易用&lt;br &#x2F;&gt;
-对于包依赖的多版本管理有非常脑瘫的支持，截止到发文，它还在试图实现多版本管理&lt;br &#x2F;&gt;
+对于依赖的版本管理有非常脑瘫的支持，截止到发文，它还在试图真正实现版本管理&lt;br &#x2F;&gt;
 支持的依赖包较多&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;conan&quot;&gt;Conan&lt;&#x2F;h2&gt;
 &lt;p&gt;跟 vcpkg 差不多，也是依赖 CMake。
 但是会好一点，因为具有版本管理功能，就是支持的包的数量少一点。&lt;&#x2F;p&gt;
 &lt;p&gt;还算易用&lt;br &#x2F;&gt;
-支持多版本管理&lt;br &#x2F;&gt;
+支持版本管理&lt;br &#x2F;&gt;
 支持的依赖包较少&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;hunter&quot;&gt;Hunter&lt;&#x2F;h2&gt;
 &lt;p&gt;看起来像是正统的 CMake 上包管理解决方法。
 它不需要安装，直接在 CMakeLists.txt 里添加代码就可以了。
-本人其实已经使用过一段时间，但是发现它支持的包比较少，而且版本更新不够及时，但是交 PR 的回复还挺快。&lt;&#x2F;p&gt;
+我其实已经使用过一段时间，但是发现它支持的包比较少，而且版本更新不够及时，但是交 PR 的回复还挺快。&lt;&#x2F;p&gt;
 &lt;p&gt;非常易用&lt;br &#x2F;&gt;
-支持多版本管理&lt;br &#x2F;&gt;
+支持版本管理&lt;br &#x2F;&gt;
 支持的包也比较少&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;xmake&quot;&gt;xmake&lt;&#x2F;h2&gt;
+&lt;h2 id=&quot;xmake&quot;&gt;Xmake&lt;&#x2F;h2&gt;
 &lt;p&gt;国人大佬写的，不依赖 CMake，能够独立构建项目。
 它使用内嵌的 Lua 来配置项目。
 具有依赖包多版本管理功能。
@@ -111,10 +121,10 @@
 &lt;p&gt;比较易用&lt;br &#x2F;&gt;
 比较高雅&lt;br &#x2F;&gt;
 多种 IDE 插件支持&lt;br &#x2F;&gt;
-支持多版本包管理&lt;br &#x2F;&gt;
+支持版本管理&lt;br &#x2F;&gt;
 支持的包非常多，但是原生包很少&lt;br &#x2F;&gt;
 发展初期，前景未知&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;build2&quot;&gt;build2&lt;&#x2F;h2&gt;
+&lt;h2 id=&quot;build2&quot;&gt;Build2&lt;&#x2F;h2&gt;
 &lt;p&gt;似乎是唯一正统的全新的 C++ 构建工具，未来之星，明日之子，人类最后的希望。&lt;br &#x2F;&gt;
 项目组里的人都是神仙级大佬。
 文档也写的看起来非常牛逼。
@@ -130,7 +140,7 @@
 &lt;del&gt;虽然可能它是不乐意的。&lt;&#x2F;del&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;勉强算易用吧&lt;br &#x2F;&gt;
 比较高雅&lt;br &#x2F;&gt;
-支持多版本包管理&lt;br &#x2F;&gt;
+支持版本管理&lt;br &#x2F;&gt;
 支持的包太少了&lt;br &#x2F;&gt;
 还在发展初期，前景未知&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;spack&quot;&gt;Spack&lt;&#x2F;h2&gt;
@@ -142,7 +152,7 @@ Windows 的支持似乎受到了重视，现在有个好心人在试图添加 Mi
 有个问题是它依赖 Python，而且用户需要手动安装，这可能会导致一些 Python 版本的兼容性问题。&lt;&#x2F;p&gt;
 &lt;p&gt;比较易用&lt;br &#x2F;&gt;
 比较高雅&lt;br &#x2F;&gt;
-支持多版本包管理&lt;br &#x2F;&gt;
+支持版本管理&lt;br &#x2F;&gt;
 支持的包很多&lt;br &#x2F;&gt;
 暂不支持 Windows&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;ge-ren-jian-yi&quot;&gt;个人建议&lt;&#x2F;h2&gt;
@@ -152,11 +162,12 @@ Windows 的支持似乎受到了重视，现在有个好心人在试图添加 Mi
 这个解决方案可以很好的保持包的版本依赖。
 并且可以在未来很长一段时间内不用改动。&lt;&#x2F;p&gt;
 &lt;p&gt;不嫌麻烦的可以用 Conan。
-Vcpkg 也跟 Conan 一样麻烦，如果多版本包管理的 feature 加好了那就比 Conan 好一点吧。&lt;&#x2F;p&gt;
+Vcpkg 也跟 Conan 一样麻烦，如果多版本包管理的 feature 加好了那就比 Conan 好一点吧。
+Hunter 也是一个比较好的选择，使用起来很简单，但是包还是少，而且包的版本更新缓慢。&lt;&#x2F;p&gt;
 &lt;p&gt;激进一点可以试试 XMake 和 Spack。&lt;br &#x2F;&gt;
 反正 XMake 可以偷 vcpkg 和 Conan 的包来用，如果想用原生包还能自己提 PR，作者都会很快回复，而且有中文文档上手非常简单。&lt;br &#x2F;&gt;
 Spack 的话，如果主力开发环境不在 Windows 的话也可以先试试，因为原生包真的非常多，Windows 的支持估计也快了。&lt;&#x2F;p&gt;
-&lt;p&gt;build2 暂时还不建议用，因为支持的包太少了，而且包的增加也很缓慢。
+&lt;p&gt;Build2 暂时还不建议用，因为支持的包太少了，而且包的增加也很缓慢。
 如果要自己提交包的话，虽然非常麻烦，但最好还是遵守 build2 对包的项目结构的建议性要求。&lt;&#x2F;p&gt;
 </content>
 	</entry>

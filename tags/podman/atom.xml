@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh">
+	<title>泊谋 - podman</title>
+	<subtitle>随便写写，开心就行。</subtitle>
+	<link href="https://paakmau.github.io/tags/podman/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://paakmau.github.io"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2021-11-01T12:19:55+00:00</updated>
+	<id>https://paakmau.github.io/tags/podman/atom.xml</id>
+	<entry xml:lang="zh">
+		<title>基于 WSL2 安装 minikube</title>
+		<published>2021-11-01T12:19:55+00:00</published>
+		<updated>2021-11-01T12:19:55+00:00</updated>
+		<link href="https://paakmau.github.io/202111011219/" type="text/html"/>
+		<id>https://paakmau.github.io/202111011219/</id>
+		<content type="html">&lt;p&gt;体验 k8s 比较省事的一个的方法就是直接装 minikube 单机部署。
+为了更省事，可以考虑直接在 WSL2 中操作。
+本文将使用 Podman 作为 minikube 的驱动，而非 Docker。&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;现在安装 WSL2 已经非常方便了，直接在微软商店下载即可。
+本文使用的是 Debian 11。
+不过我认为本文应该也同样适用于 Ubuntu。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;geng-xin-ruan-jian-bao&quot;&gt;更新软件包&lt;&#x2F;h2&gt;
+&lt;p&gt;直接更新系统中所有的软件包，这个好习惯可以避免许多陈年老坑。
+&lt;del&gt;但是这也会带来更多的新坑。&lt;&#x2F;del&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; sudo apt update
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; sudo apt upgrade
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;zhun-bei-gong-zuo&quot;&gt;准备工作&lt;&#x2F;h2&gt;
+&lt;p&gt;安装一些基础软件包，如果你没有的话。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; sudo apt install curl ca-certificates
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;an-zhuang-podman&quot;&gt;安装 Podman&lt;&#x2F;h2&gt;
+&lt;p&gt;Podman 的安装比 Docker 方便很多，直接一行命令就好了。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; sudo apt install podman
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;an-zhuang-minikube&quot;&gt;安装 minikube&lt;&#x2F;h2&gt;
+&lt;p&gt;也很方便，直接下载二进制可执行文件扔进 &lt;code&gt;&#x2F;usr&#x2F;local&#x2F;bin&lt;&#x2F;code&gt; 里就行了。&lt;&#x2F;p&gt;
+&lt;p&gt;如果你可以科学上网，那么直接使用官网提供的这两行命令。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; curl&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -LO&lt;&#x2F;span&gt;&lt;span&gt; https:&#x2F;&#x2F;storage.googleapis.com&#x2F;minikube&#x2F;releases&#x2F;latest&#x2F;minikube-linux-amd64
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; sudo install minikube-linux-amd64 &#x2F;usr&#x2F;local&#x2F;bin&#x2F;minikube
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;或者可以使用阿里云团队构建的版本。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; curl&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -Lo&lt;&#x2F;span&gt;&lt;span&gt; minikube https:&#x2F;&#x2F;kubernetes.oss-cn-hangzhou.aliyuncs.com&#x2F;minikube&#x2F;releases&#x2F;v1.23.1&#x2F;minikube-linux-amd64 &amp;amp;&amp;amp; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;chmod&lt;&#x2F;span&gt;&lt;span&gt; +x minikube &amp;amp;&amp;amp; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sudo&lt;&#x2F;span&gt;&lt;span&gt; mv minikube &#x2F;usr&#x2F;local&#x2F;bin&#x2F;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;至于为什么这两段命令明明可以统一成同一种写法然而并没有，是因为我是直接照搬相应文档中的原文。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;xiu-gai-sudoers&quot;&gt;修改 sudoers&lt;&#x2F;h2&gt;
+&lt;p&gt;有一个莫名其妙的问题是，minikube 本身不需要 sudo 权限，Podman 也可以不需要，但是奇怪的是启动 minikube 的时候会去跑 rootfull 的 Podman。
+我看到有人提了这个 issue，应该是短时间内无法解决。
+官方文档则是建议修改 &lt;code&gt;&#x2F;etc&#x2F;sudoers&lt;&#x2F;code&gt; 为 &lt;code&gt;podman&lt;&#x2F;code&gt; 命令配置 sudo 免密。
+于是我不想深究这个问题，我决定直接配置所有的命令都 sudo 免密。&lt;&#x2F;p&gt;
+&lt;p&gt;于是打开 &lt;code&gt;&#x2F;etc&#x2F;sudoers&#x2F;&lt;&#x2F;code&gt;，找到 &lt;code&gt;sudo&lt;&#x2F;code&gt; 的用户组并配置免密。
+大致如下：&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;conf&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-conf &quot;&gt;&lt;code class=&quot;language-conf&quot; data-lang=&quot;conf&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;%sudo   &lt;&#x2F;span&gt;&lt;span&gt;ALL=(ALL:ALL) NOPASSWD: ALL
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;xiu-gai-podman-pei-zhi&quot;&gt;修改 Podman 配置&lt;&#x2F;h2&gt;
+&lt;p&gt;目前 minikube 只支持使用 rootfull 的 Podman。
+于是我们先直接偷一份 Podman 提供的默认配置文件拷贝到 rootfull 模式的配置目录下。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; sudo cp &#x2F;usr&#x2F;share&#x2F;containers&#x2F;containers.conf &#x2F;etc&#x2F;containers&#x2F;containers.conf
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;然后因为 WSL2 的环境比较离谱，它没有 systemd。
+所以我们需要修改这个配置文件中的一些内容：&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;cgroup_manager&lt;&#x2F;code&gt; 设置为 &lt;code&gt;cgroupfs&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;events_logger&lt;&#x2F;code&gt; 设置为 &lt;code&gt;file&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;xiu-gai-iptables&quot;&gt;修改 iptables&lt;&#x2F;h2&gt;
+&lt;p&gt;Debian 10 之后就把 iptables 改为了 nftables。
+但是无论是 Docker 还是 Podman 暂时都不支持 nftables。
+这个问题在 Ubuntu 上也同样存在。
+因此我们先使用旧版的 iptables。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; sudo update-alternatives&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --set&lt;&#x2F;span&gt;&lt;span&gt; iptables &#x2F;usr&#x2F;sbin&#x2F;iptables-legacy
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; sudo update-alternatives&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --set&lt;&#x2F;span&gt;&lt;span&gt; ip6tables &#x2F;usr&#x2F;sbin&#x2F;ip6tables-legacy
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;qi-dong-minikube&quot;&gt;启动 minikube&lt;&#x2F;h2&gt;
+&lt;p&gt;接下来就很简单了，直接启动 minikube。
+很舒服的是 minikube 支持配置镜像。
+于是我们直接使用阿里云镜像。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; minikube start&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --image-mirror-country&lt;&#x2F;span&gt;&lt;span&gt; cn&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --registry-mirror&lt;&#x2F;span&gt;&lt;span&gt;=&amp;lt;aliyun-registry-mirror&amp;gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;其中的 &lt;code&gt;--registry-mirror&lt;&#x2F;code&gt; 参数你需要指定为你自己的阿里云镜像加速器地址，参考&lt;a href=&quot;https:&#x2F;&#x2F;cr.console.aliyun.com&#x2F;cn-hangzhou&#x2F;instances&#x2F;mirrors&quot;&gt;阿里云镜像服务&lt;&#x2F;a&gt;。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;shan-ku-pao-lu&quot;&gt;删库跑路&lt;&#x2F;h2&gt;
+&lt;p&gt;如果你在安装的过程遇到更离谱的问题，或者新版本有所不同，那么你可能很需要知道怎么把这些垃圾全部删除并恢复原状。&lt;&#x2F;p&gt;
+&lt;p&gt;删除所有的容器，以及下载下来的 Docker 镜像。&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;xie-zai-minikube&quot;&gt;卸载 minikube&lt;&#x2F;h3&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; minikube delete&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --all --purge
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;删除 minikube 的可执行文件。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; sudo rm &#x2F;usr&#x2F;local&#x2F;bin&#x2F;minikube
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;xie-zai-podman&quot;&gt;卸载 Podman&lt;&#x2F;h3&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; sudo apt purge podman
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+</content>
+	</entry>
+</feed>

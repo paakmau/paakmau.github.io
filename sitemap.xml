@@ -308,6 +308,10 @@
         <lastmod>2020-12-20T00:30:45</lastmod>
     </url>
     <url>
+        <loc>https://paakmau.github.io/202111011219/</loc>
+        <lastmod>2021-11-01T12:19:55</lastmod>
+    </url>
+    <url>
         <loc>https://paakmau.github.io/categories/</loc>
     </url>
     <url>
@@ -318,6 +322,9 @@
     </url>
     <url>
         <loc>https://paakmau.github.io/categories/docker/</loc>
+    </url>
+    <url>
+        <loc>https://paakmau.github.io/categories/k8s/</loc>
     </url>
     <url>
         <loc>https://paakmau.github.io/categories/net-core/</loc>
@@ -419,7 +426,13 @@
         <loc>https://paakmau.github.io/tags/jpa/</loc>
     </url>
     <url>
+        <loc>https://paakmau.github.io/tags/k8s/</loc>
+    </url>
+    <url>
         <loc>https://paakmau.github.io/tags/maven/</loc>
+    </url>
+    <url>
+        <loc>https://paakmau.github.io/tags/minikube/</loc>
     </url>
     <url>
         <loc>https://paakmau.github.io/tags/mockito/</loc>
@@ -441,6 +454,9 @@
     </url>
     <url>
         <loc>https://paakmau.github.io/tags/perforce/</loc>
+    </url>
+    <url>
+        <loc>https://paakmau.github.io/tags/podman/</loc>
     </url>
     <url>
         <loc>https://paakmau.github.io/tags/python/</loc>

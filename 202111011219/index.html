@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>泊谋</title>
+
+      
+
+      
+          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+    
+        
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io">
+                                <span itemprop="name">主页
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
+                                <span itemprop="name">分类
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
+                                <span itemprop="name">标签
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
+                                <span itemprop="name">GitHub
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">基于 WSL2 安装 minikube</h1>
+        <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>5 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2021-11-01
+</span>
+    </header>
+    <div itemprop="articleBody">
+      <p>体验 k8s 比较省事的一个的方法就是直接装 minikube 单机部署。
+为了更省事，可以考虑直接在 WSL2 中操作。
+本文将使用 Podman 作为 minikube 的驱动，而非 Docker。</p>
+<span id="continue-reading"></span>
+<p>现在安装 WSL2 已经非常方便了，直接在微软商店下载即可。
+本文使用的是 Debian 11。
+不过我认为本文应该也同样适用于 Ubuntu。</p>
+<h2 id="geng-xin-ruan-jian-bao">更新软件包</h2>
+<p>直接更新系统中所有的软件包，这个好习惯可以避免许多陈年老坑。
+<del>但是这也会带来更多的新坑。</del></p>
+<pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> sudo apt update
+</span><span style="color:#bf616a;">$</span><span> sudo apt upgrade
+</span></code></pre>
+<h2 id="zhun-bei-gong-zuo">准备工作</h2>
+<p>安装一些基础软件包，如果你没有的话。</p>
+<pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> sudo apt install curl ca-certificates
+</span></code></pre>
+<h2 id="an-zhuang-podman">安装 Podman</h2>
+<p>Podman 的安装比 Docker 方便很多，直接一行命令就好了。</p>
+<pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> sudo apt install podman
+</span></code></pre>
+<h2 id="an-zhuang-minikube">安装 minikube</h2>
+<p>也很方便，直接下载二进制可执行文件扔进 <code>/usr/local/bin</code> 里就行了。</p>
+<p>如果你可以科学上网，那么直接使用官网提供的这两行命令。</p>
+<pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> curl</span><span style="color:#bf616a;"> -LO</span><span> https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+</span><span style="color:#bf616a;">$</span><span> sudo install minikube-linux-amd64 /usr/local/bin/minikube
+</span></code></pre>
+<p>或者可以使用阿里云团队构建的版本。</p>
+<pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> curl</span><span style="color:#bf616a;"> -Lo</span><span> minikube https://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/releases/v1.23.1/minikube-linux-amd64 &amp;&amp; </span><span style="color:#bf616a;">chmod</span><span> +x minikube &amp;&amp; </span><span style="color:#bf616a;">sudo</span><span> mv minikube /usr/local/bin/
+</span></code></pre>
+<p>至于为什么这两段命令明明可以统一成同一种写法然而并没有，是因为我是直接照搬相应文档中的原文。</p>
+<h2 id="xiu-gai-sudoers">修改 sudoers</h2>
+<p>有一个莫名其妙的问题是，minikube 本身不需要 sudo 权限，Podman 也可以不需要，但是奇怪的是启动 minikube 的时候会去跑 rootfull 的 Podman。
+我看到有人提了这个 issue，应该是短时间内无法解决。
+官方文档则是建议修改 <code>/etc/sudoers</code> 为 <code>podman</code> 命令配置 sudo 免密。
+于是我不想深究这个问题，我决定直接配置所有的命令都 sudo 免密。</p>
+<p>于是打开 <code>/etc/sudoers/</code>，找到 <code>sudo</code> 的用户组并配置免密。
+大致如下：</p>
+<pre data-lang="conf" style="background-color:#2b303b;color:#c0c5ce;" class="language-conf "><code class="language-conf" data-lang="conf"><span style="color:#b48ead;">%sudo   </span><span>ALL=(ALL:ALL) NOPASSWD: ALL
+</span></code></pre>
+<h2 id="xiu-gai-podman-pei-zhi">修改 Podman 配置</h2>
+<p>目前 minikube 只支持使用 rootfull 的 Podman。
+于是我们先直接偷一份 Podman 提供的默认配置文件拷贝到 rootfull 模式的配置目录下。</p>
+<pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> sudo cp /usr/share/containers/containers.conf /etc/containers/containers.conf
+</span></code></pre>
+<p>然后因为 WSL2 的环境比较离谱，它没有 systemd。
+所以我们需要修改这个配置文件中的一些内容：</p>
+<ul>
+<li><code>cgroup_manager</code> 设置为 <code>cgroupfs</code></li>
+<li><code>events_logger</code> 设置为 <code>file</code></li>
+</ul>
+<h2 id="xiu-gai-iptables">修改 iptables</h2>
+<p>Debian 10 之后就把 iptables 改为了 nftables。
+但是无论是 Docker 还是 Podman 暂时都不支持 nftables。
+这个问题在 Ubuntu 上也同样存在。
+因此我们先使用旧版的 iptables。</p>
+<pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> sudo update-alternatives</span><span style="color:#bf616a;"> --set</span><span> iptables /usr/sbin/iptables-legacy
+</span><span style="color:#bf616a;">$</span><span> sudo update-alternatives</span><span style="color:#bf616a;"> --set</span><span> ip6tables /usr/sbin/ip6tables-legacy
+</span></code></pre>
+<h2 id="qi-dong-minikube">启动 minikube</h2>
+<p>接下来就很简单了，直接启动 minikube。
+很舒服的是 minikube 支持配置镜像。
+于是我们直接使用阿里云镜像。</p>
+<pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> minikube start</span><span style="color:#bf616a;"> --image-mirror-country</span><span> cn</span><span style="color:#bf616a;"> --registry-mirror</span><span>=&lt;aliyun-registry-mirror&gt;
+</span></code></pre>
+<p>其中的 <code>--registry-mirror</code> 参数你需要指定为你自己的阿里云镜像加速器地址，参考<a href="https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors">阿里云镜像服务</a>。</p>
+<h2 id="shan-ku-pao-lu">删库跑路</h2>
+<p>如果你在安装的过程遇到更离谱的问题，或者新版本有所不同，那么你可能很需要知道怎么把这些垃圾全部删除并恢复原状。</p>
+<p>删除所有的容器，以及下载下来的 Docker 镜像。</p>
+<h3 id="xie-zai-minikube">卸载 minikube</h3>
+<pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> minikube delete</span><span style="color:#bf616a;"> --all --purge
+</span></code></pre>
+<p>删除 minikube 的可执行文件。</p>
+<pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> sudo rm /usr/local/bin/minikube
+</span></code></pre>
+<h3 id="xie-zai-podman">卸载 Podman</h3>
+<pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> sudo apt purge podman
+</span></code></pre>
+
+    </div>
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                    Published by 何泊谋
+                
+                
+                    
+                    in <a href="https://paakmau.github.io/categories/k8s/">k8s</a>
+                
+                
+                    and
+                    tagged
+                    
+                        <a href="https://paakmau.github.io/tags/k8s/">k8s</a>
+                        
+                            
+                                
+                                    ,
+                                
+                            
+                        
+                    
+                        <a href="https://paakmau.github.io/tags/minikube/">minikube</a>
+                        
+                            
+                                
+                                    and
+                                
+                            
+                        
+                    
+                        <a href="https://paakmau.github.io/tags/podman/">podman</a>
+                        
+                            
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+    </body>
+
+</html>

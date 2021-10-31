@@ -63,6 +63,11 @@ $ curl -Lo minikube https://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/rel
 
 至于为什么这两段命令明明可以统一成同一种写法然而并没有，是因为我是直接照搬相应文档中的原文。
 
+然后还有一件很重要的事情，截至发文，官方提供的最新的正式版是不能用的，参考这个 [issue](https://github.com/kubernetes/minikube/issues/12489)。
+这个问题在本文发文的五天前才刚刚被解决。
+也就是说 `v1.23.2` 这个版本是不能用的。
+于是我直接下载 beta 版。
+
 ## 修改 sudoers
 
 有一个莫名其妙的问题是，minikube 本身不需要 sudo 权限，Podman 也可以不需要，但是奇怪的是启动 minikube 的时候会去跑 rootfull 的 Podman。

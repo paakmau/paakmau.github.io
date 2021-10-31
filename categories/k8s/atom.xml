@@ -48,7 +48,6 @@
 这个问题在本文发文的五天前才刚刚被解决。
 也就是说 &lt;code&gt;v1.23.2&lt;&#x2F;code&gt; 这个版本是不能用的。
 于是我直接下载 beta 版。&lt;&#x2F;p&gt;
-&lt;p&gt;然后我又遇到了这个 &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;kubernetes&#x2F;minikube&#x2F;issues&#x2F;12738&quot;&gt;issue&lt;&#x2F;a&gt;，还在修，修完我再更新。&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;xiu-gai-sudoers&quot;&gt;修改 sudoers&lt;&#x2F;h2&gt;
 &lt;p&gt;有一个莫名其妙的问题是，minikube 本身不需要 sudo 权限，Podman 也可以不需要，但是奇怪的是启动 minikube 的时候会去跑 rootfull 的 Podman。
 我看到有人提了这个 issue，应该是短时间内无法解决。

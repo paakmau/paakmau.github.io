@@ -127,9 +127,9 @@ $ minikube start --image-mirror-country cn --registry-mirror=<aliyun-registry-mi
 
 如果你在安装的过程遇到更离谱的问题，或者新版本有所不同，那么你可能很需要知道怎么把这些垃圾全部删除并恢复原状。
 
-删除所有的容器，以及下载下来的 Docker 镜像。
-
 ### 卸载 minikube
+
+删除所有的容器，以及下载下来的 Docker 镜像。
 
 ```sh
 $ minikube delete --all --purge

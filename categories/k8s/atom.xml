@@ -86,8 +86,8 @@
 &lt;p&gt;其中的 &lt;code&gt;--registry-mirror&lt;&#x2F;code&gt; 参数你需要指定为你自己的阿里云镜像加速器地址，参考&lt;a href=&quot;https:&#x2F;&#x2F;cr.console.aliyun.com&#x2F;cn-hangzhou&#x2F;instances&#x2F;mirrors&quot;&gt;阿里云镜像服务&lt;&#x2F;a&gt;。&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;shan-ku-pao-lu&quot;&gt;删库跑路&lt;&#x2F;h2&gt;
 &lt;p&gt;如果你在安装的过程遇到更离谱的问题，或者新版本有所不同，那么你可能很需要知道怎么把这些垃圾全部删除并恢复原状。&lt;&#x2F;p&gt;
-&lt;p&gt;删除所有的容器，以及下载下来的 Docker 镜像。&lt;&#x2F;p&gt;
 &lt;h3 id=&quot;xie-zai-minikube&quot;&gt;卸载 minikube&lt;&#x2F;h3&gt;
+&lt;p&gt;删除所有的容器，以及下载下来的 Docker 镜像。&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; minikube delete&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --all --purge
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;删除 minikube 的可执行文件。&lt;&#x2F;p&gt;

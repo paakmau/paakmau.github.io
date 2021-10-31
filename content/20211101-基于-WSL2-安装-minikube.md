@@ -68,8 +68,6 @@ $ curl -Lo minikube https://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/rel
 也就是说 `v1.23.2` 这个版本是不能用的。
 于是我直接下载 beta 版。
 
-然后我又遇到了这个 [issue](https://github.com/kubernetes/minikube/issues/12738)，还在修，修完我再更新。
-
 ## 修改 sudoers
 
 有一个莫名其妙的问题是，minikube 本身不需要 sudo 权限，Podman 也可以不需要，但是奇怪的是启动 minikube 的时候会去跑 rootfull 的 Podman。

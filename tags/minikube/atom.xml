@@ -44,7 +44,7 @@
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; curl&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -Lo&lt;&#x2F;span&gt;&lt;span&gt; minikube https:&#x2F;&#x2F;kubernetes.oss-cn-hangzhou.aliyuncs.com&#x2F;minikube&#x2F;releases&#x2F;v1.23.1&#x2F;minikube-linux-amd64 &amp;amp;&amp;amp; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;chmod&lt;&#x2F;span&gt;&lt;span&gt; +x minikube &amp;amp;&amp;amp; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sudo&lt;&#x2F;span&gt;&lt;span&gt; mv minikube &#x2F;usr&#x2F;local&#x2F;bin&#x2F;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;至于为什么这两段命令明明可以统一成同一种写法然而并没有，是因为我是直接照搬相应文档中的原文。&lt;&#x2F;p&gt;
-&lt;p&gt;然后还有一件很重要的事情，截至发文，官方提供的最新的正式版是不能用的，参考这个 &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;kubernetes&#x2F;minikube&#x2F;issues&#x2F;12489&quot;&gt;issue&lt;&#x2F;a&gt;。
+&lt;p&gt;然后还有一件很重要的事情，截至发文，官方提供的最新的正式版有一点问题，参考这个 &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;kubernetes&#x2F;minikube&#x2F;issues&#x2F;12489&quot;&gt;issue&lt;&#x2F;a&gt;。
 这个问题在本文发文的五天前才刚刚被解决。
 也就是说 &lt;code&gt;v1.23.2&lt;&#x2F;code&gt; 这个版本是不能用的。
 于是我直接下载 beta 版。&lt;&#x2F;p&gt;

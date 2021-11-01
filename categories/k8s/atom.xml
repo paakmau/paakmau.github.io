@@ -49,7 +49,7 @@
 也就是说 &lt;code&gt;v1.23.2&lt;&#x2F;code&gt; 这个版本是不能用的。
 于是我直接下载 beta 版。&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;chuang-jian-lib-modules-mu-lu&quot;&gt;创建 &lt;code&gt;&#x2F;lib&#x2F;modules&lt;&#x2F;code&gt; 目录&lt;&#x2F;h2&gt;
-&lt;p&gt;WSL2 里的这个目录默认是空的，但是有的发行版（比如 Debian）可能根本没有这个目录。&lt;&#x2F;p&gt;
+&lt;p&gt;WSL2 里的这个目录默认是空的。但是有的发行版（比如 Debian）可能根本没有这个目录，然后就会报一些奇奇怪怪的错误。&lt;&#x2F;p&gt;
 &lt;p&gt;如果没有的话那就手动建一个。&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sudo&lt;&#x2F;span&gt;&lt;span&gt; mkdir &#x2F;lib&#x2F;modules
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;

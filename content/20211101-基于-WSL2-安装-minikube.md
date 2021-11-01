@@ -68,6 +68,16 @@ $ curl -Lo minikube https://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/rel
 也就是说 `v1.23.2` 这个版本是不能用的。
 于是我直接下载 beta 版。
 
+## 创建 `/lib/modules` 目录
+
+WSL2 里的这个目录默认是空的，但是有的发行版（比如 Debian）可能根本没有这个目录。
+
+如果没有的话那就手动建一个。
+
+```sh
+sudo mkdir /lib/modules
+```
+
 ## 修改 sudoers
 
 有一个莫名其妙的问题是，minikube 本身不需要 sudo 权限，Podman 也可以不需要，但是奇怪的是启动 minikube 的时候会去跑 rootfull 的 Podman。

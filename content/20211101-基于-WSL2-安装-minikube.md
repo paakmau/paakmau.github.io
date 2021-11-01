@@ -70,7 +70,7 @@ $ curl -Lo minikube https://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/rel
 
 ## 创建 `/lib/modules` 目录
 
-WSL2 里的这个目录默认是空的，但是有的发行版（比如 Debian）可能根本没有这个目录。
+WSL2 里的这个目录默认是空的。但是有的发行版（比如 Debian）可能根本没有这个目录，然后就会报一些奇奇怪怪的错误。
 
 如果没有的话那就手动建一个。
 

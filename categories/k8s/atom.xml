@@ -15,6 +15,7 @@
 		<id>https://paakmau.github.io/202111011219/</id>
 		<content type="html">&lt;p&gt;体验 k8s 比较省事的一个的方法就是直接装 minikube 单机部署。
 为了更省事，可以考虑直接在 WSL2 中操作。
+&lt;del&gt;省事个锤子，这是折磨。&lt;&#x2F;del&gt;
 本文将使用 Podman 作为 minikube 的驱动，而非 Docker。&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;现在安装 WSL2 已经非常方便了，直接在微软商店下载即可。

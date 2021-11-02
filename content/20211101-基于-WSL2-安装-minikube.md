@@ -15,8 +15,7 @@ categories = ["k8s"]
 <!-- more -->
 
 现在安装 WSL2 已经非常方便了，直接在微软商店下载即可。
-本文使用的是 Debian 11。
-不过我认为本文应该也同样适用于 Ubuntu。
+本文本来使用的是 Debian 11，然后因为坑实在才不想踩了换成了 Ubuntu 20.04。
 
 ## 更新软件包
 
@@ -38,11 +37,13 @@ $ sudo apt install curl ca-certificates
 
 ## 安装 Podman
 
-Podman 的安装比 Docker 方便很多，直接一行命令就好了。
+Podman 的安装比 Docker 方便很多，如果系统是 Debian 11 或者 Ubuntu 20.10，那么直接一行命令就好了。
 
 ```sh
 $ sudo apt install podman
 ```
+
+但是如果你的 Ubuntu 版本跟我一样为 20.04，那么就要参考[官方文档](https://podman.io/getting-started/installation)添加 Kubic 仓库的软件源。
 
 ## 安装 minikube
 
@@ -63,10 +64,11 @@ $ curl -Lo minikube https://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/rel
 
 至于为什么这两段命令明明可以统一成同一种写法然而并没有，是因为我是直接照搬相应文档中的原文。
 
-然后还有一件很重要的事情，截至发文，官方提供的最新的正式版有一点问题，参考这个 [issue](https://github.com/kubernetes/minikube/issues/12489)。
+然后如果系统是 Debian 11，那就还有一件很重要的事情。
+截至发文，官方提供的最新的正式版还有一点问题，参考这个 [issue](https://github.com/kubernetes/minikube/issues/12489)。
 这个问题在本文发文的五天前才刚刚被解决。
 也就是说 `v1.23.2` 这个版本是不能用的。
-于是我直接下载 beta 版。
+~~于是我直接下载 beta 版结果遇到了其他问题最后我选择放弃并换成了 Ubuntu。~~
 
 ## 创建 `/lib/modules` 目录
 

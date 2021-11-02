@@ -18,8 +18,7 @@
 本文将使用 Podman 作为 minikube 的驱动，而非 Docker。&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;现在安装 WSL2 已经非常方便了，直接在微软商店下载即可。
-本文使用的是 Debian 11。
-不过我认为本文应该也同样适用于 Ubuntu。&lt;&#x2F;p&gt;
+本文本来使用的是 Debian 11，然后因为坑实在才不想踩了换成了 Ubuntu 20.04。&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;geng-xin-ruan-jian-bao&quot;&gt;更新软件包&lt;&#x2F;h2&gt;
 &lt;p&gt;直接更新系统中所有的软件包，这个好习惯可以避免许多陈年老坑。
 &lt;del&gt;但是这也会带来更多的新坑。&lt;&#x2F;del&gt;&lt;&#x2F;p&gt;
@@ -31,9 +30,10 @@
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; sudo apt install curl ca-certificates
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;an-zhuang-podman&quot;&gt;安装 Podman&lt;&#x2F;h2&gt;
-&lt;p&gt;Podman 的安装比 Docker 方便很多，直接一行命令就好了。&lt;&#x2F;p&gt;
+&lt;p&gt;Podman 的安装比 Docker 方便很多，如果系统是 Debian 11 或者 Ubuntu 20.10，那么直接一行命令就好了。&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; sudo apt install podman
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;但是如果你的 Ubuntu 版本跟我一样为 20.04，那么就要参考&lt;a href=&quot;https:&#x2F;&#x2F;podman.io&#x2F;getting-started&#x2F;installation&quot;&gt;官方文档&lt;&#x2F;a&gt;添加 Kubic 仓库的软件源。&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;an-zhuang-minikube&quot;&gt;安装 minikube&lt;&#x2F;h2&gt;
 &lt;p&gt;也很方便，直接下载二进制可执行文件扔进 &lt;code&gt;&#x2F;usr&#x2F;local&#x2F;bin&lt;&#x2F;code&gt; 里就行了。&lt;&#x2F;p&gt;
 &lt;p&gt;如果你可以科学上网，那么直接使用官网提供的这两行命令。&lt;&#x2F;p&gt;
@@ -44,10 +44,11 @@
 &lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; curl&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -Lo&lt;&#x2F;span&gt;&lt;span&gt; minikube https:&#x2F;&#x2F;kubernetes.oss-cn-hangzhou.aliyuncs.com&#x2F;minikube&#x2F;releases&#x2F;v1.23.1&#x2F;minikube-linux-amd64 &amp;amp;&amp;amp; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;chmod&lt;&#x2F;span&gt;&lt;span&gt; +x minikube &amp;amp;&amp;amp; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sudo&lt;&#x2F;span&gt;&lt;span&gt; mv minikube &#x2F;usr&#x2F;local&#x2F;bin&#x2F;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;至于为什么这两段命令明明可以统一成同一种写法然而并没有，是因为我是直接照搬相应文档中的原文。&lt;&#x2F;p&gt;
-&lt;p&gt;然后还有一件很重要的事情，截至发文，官方提供的最新的正式版有一点问题，参考这个 &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;kubernetes&#x2F;minikube&#x2F;issues&#x2F;12489&quot;&gt;issue&lt;&#x2F;a&gt;。
+&lt;p&gt;然后如果系统是 Debian 11，那就还有一件很重要的事情。
+截至发文，官方提供的最新的正式版还有一点问题，参考这个 &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;kubernetes&#x2F;minikube&#x2F;issues&#x2F;12489&quot;&gt;issue&lt;&#x2F;a&gt;。
 这个问题在本文发文的五天前才刚刚被解决。
 也就是说 &lt;code&gt;v1.23.2&lt;&#x2F;code&gt; 这个版本是不能用的。
-于是我直接下载 beta 版。&lt;&#x2F;p&gt;
+&lt;del&gt;于是我直接下载 beta 版结果遇到了其他问题最后我选择放弃并换成了 Ubuntu。&lt;&#x2F;del&gt;&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;chuang-jian-lib-modules-mu-lu&quot;&gt;创建 &lt;code&gt;&#x2F;lib&#x2F;modules&lt;&#x2F;code&gt; 目录&lt;&#x2F;h2&gt;
 &lt;p&gt;WSL2 里的这个目录默认是空的。但是有的发行版（比如 Debian）可能根本没有这个目录，然后就会报一些奇奇怪怪的错误。&lt;&#x2F;p&gt;
 &lt;p&gt;如果没有的话那就手动建一个。&lt;&#x2F;p&gt;

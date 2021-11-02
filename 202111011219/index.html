@@ -83,8 +83,7 @@
 本文将使用 Podman 作为 minikube 的驱动，而非 Docker。</p>
 <span id="continue-reading"></span>
 <p>现在安装 WSL2 已经非常方便了，直接在微软商店下载即可。
-本文使用的是 Debian 11。
-不过我认为本文应该也同样适用于 Ubuntu。</p>
+本文本来使用的是 Debian 11，然后因为坑实在才不想踩了换成了 Ubuntu 20.04。</p>
 <h2 id="geng-xin-ruan-jian-bao">更新软件包</h2>
 <p>直接更新系统中所有的软件包，这个好习惯可以避免许多陈年老坑。
 <del>但是这也会带来更多的新坑。</del></p>
@@ -96,9 +95,10 @@
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> sudo apt install curl ca-certificates
 </span></code></pre>
 <h2 id="an-zhuang-podman">安装 Podman</h2>
-<p>Podman 的安装比 Docker 方便很多，直接一行命令就好了。</p>
+<p>Podman 的安装比 Docker 方便很多，如果系统是 Debian 11 或者 Ubuntu 20.10，那么直接一行命令就好了。</p>
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> sudo apt install podman
 </span></code></pre>
+<p>但是如果你的 Ubuntu 版本跟我一样为 20.04，那么就要参考<a href="https://podman.io/getting-started/installation">官方文档</a>添加 Kubic 仓库的软件源。</p>
 <h2 id="an-zhuang-minikube">安装 minikube</h2>
 <p>也很方便，直接下载二进制可执行文件扔进 <code>/usr/local/bin</code> 里就行了。</p>
 <p>如果你可以科学上网，那么直接使用官网提供的这两行命令。</p>
@@ -109,10 +109,11 @@
 <pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#bf616a;">$</span><span> curl</span><span style="color:#bf616a;"> -Lo</span><span> minikube https://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/releases/v1.23.1/minikube-linux-amd64 &amp;&amp; </span><span style="color:#bf616a;">chmod</span><span> +x minikube &amp;&amp; </span><span style="color:#bf616a;">sudo</span><span> mv minikube /usr/local/bin/
 </span></code></pre>
 <p>至于为什么这两段命令明明可以统一成同一种写法然而并没有，是因为我是直接照搬相应文档中的原文。</p>
-<p>然后还有一件很重要的事情，截至发文，官方提供的最新的正式版有一点问题，参考这个 <a href="https://github.com/kubernetes/minikube/issues/12489">issue</a>。
+<p>然后如果系统是 Debian 11，那就还有一件很重要的事情。
+截至发文，官方提供的最新的正式版还有一点问题，参考这个 <a href="https://github.com/kubernetes/minikube/issues/12489">issue</a>。
 这个问题在本文发文的五天前才刚刚被解决。
 也就是说 <code>v1.23.2</code> 这个版本是不能用的。
-于是我直接下载 beta 版。</p>
+<del>于是我直接下载 beta 版结果遇到了其他问题最后我选择放弃并换成了 Ubuntu。</del></p>
 <h2 id="chuang-jian-lib-modules-mu-lu">创建 <code>/lib/modules</code> 目录</h2>
 <p>WSL2 里的这个目录默认是空的。但是有的发行版（比如 Debian）可能根本没有这个目录，然后就会报一些奇奇怪怪的错误。</p>
 <p>如果没有的话那就手动建一个。</p>

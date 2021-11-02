@@ -18,7 +18,8 @@
 本文将使用 Podman 作为 minikube 的驱动，而非 Docker。&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;现在安装 WSL2 已经非常方便了，直接在微软商店下载即可。
-本文本来使用的是 Debian 11，然后因为坑实在才不想踩了换成了 Ubuntu 20.04。&lt;&#x2F;p&gt;
+本文本来使用的是 Debian 11，然后因为踩坑踩到心态炸了最后换成了 Ubuntu 20.04。
+另外注意，Ubuntu 不要升级，否则会跟 Debian 11 一样直接爆炸，不要问我为什么会知道。&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;geng-xin-ruan-jian-bao&quot;&gt;更新软件包&lt;&#x2F;h2&gt;
 &lt;p&gt;直接更新系统中所有的软件包，这个好习惯可以避免许多陈年老坑。
 &lt;del&gt;但是这也会带来更多的新坑。&lt;&#x2F;del&gt;&lt;&#x2F;p&gt;

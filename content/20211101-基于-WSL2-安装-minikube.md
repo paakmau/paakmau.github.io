@@ -10,6 +10,7 @@ categories = ["k8s"]
 
 体验 k8s 比较省事的一个的方法就是直接装 minikube 单机部署。
 为了更省事，可以考虑直接在 WSL2 中操作。
+~~省事个锤子，这是折磨。~~
 本文将使用 Podman 作为 minikube 的驱动，而非 Docker。
 
 <!-- more -->

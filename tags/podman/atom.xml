@@ -61,7 +61,7 @@
 我看到有人提了这个 issue，应该是短时间内无法解决。
 官方文档则是建议修改 &lt;code&gt;&#x2F;etc&#x2F;sudoers&lt;&#x2F;code&gt; 为 &lt;code&gt;podman&lt;&#x2F;code&gt; 命令配置 sudo 免密。
 于是我不想深究这个问题，我决定直接配置所有的命令都 sudo 免密。&lt;&#x2F;p&gt;
-&lt;p&gt;于是打开 &lt;code&gt;&#x2F;etc&#x2F;sudoers&#x2F;&lt;&#x2F;code&gt;，找到 &lt;code&gt;sudo&lt;&#x2F;code&gt; 的用户组并配置免密。
+&lt;p&gt;于是打开 &lt;code&gt;&#x2F;etc&#x2F;sudoers&lt;&#x2F;code&gt;，找到 &lt;code&gt;sudo&lt;&#x2F;code&gt; 的用户组并配置免密。
 大致如下：&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;conf&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-conf &quot;&gt;&lt;code class=&quot;language-conf&quot; data-lang=&quot;conf&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;%sudo   &lt;&#x2F;span&gt;&lt;span&gt;ALL=(ALL:ALL) NOPASSWD: ALL
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;

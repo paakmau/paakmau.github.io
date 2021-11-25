@@ -126,7 +126,7 @@
 我看到有人提了这个 issue，应该是短时间内无法解决。
 官方文档则是建议修改 <code>/etc/sudoers</code> 为 <code>podman</code> 命令配置 sudo 免密。
 于是我不想深究这个问题，我决定直接配置所有的命令都 sudo 免密。</p>
-<p>于是打开 <code>/etc/sudoers/</code>，找到 <code>sudo</code> 的用户组并配置免密。
+<p>于是打开 <code>/etc/sudoers</code>，找到 <code>sudo</code> 的用户组并配置免密。
 大致如下：</p>
 <pre data-lang="conf" style="background-color:#2b303b;color:#c0c5ce;" class="language-conf "><code class="language-conf" data-lang="conf"><span style="color:#b48ead;">%sudo   </span><span>ALL=(ALL:ALL) NOPASSWD: ALL
 </span></code></pre>

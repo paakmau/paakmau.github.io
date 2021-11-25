@@ -89,7 +89,7 @@ sudo mkdir /lib/modules
 官方文档则是建议修改 `/etc/sudoers` 为 `podman` 命令配置 sudo 免密。
 于是我不想深究这个问题，我决定直接配置所有的命令都 sudo 免密。
 
-于是打开 `/etc/sudoers/`，找到 `sudo` 的用户组并配置免密。
+于是打开 `/etc/sudoers`，找到 `sudo` 的用户组并配置免密。
 大致如下：
 
 ```conf

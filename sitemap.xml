@@ -308,6 +308,10 @@
         <lastmod>2021-11-01T12:19:55</lastmod>
     </url>
     <url>
+        <loc>https://paakmau.github.io/202112312231/</loc>
+        <lastmod>2021-12-31T22:31:35</lastmod>
+    </url>
+    <url>
         <loc>https://paakmau.github.io/categories/</loc>
     </url>
     <url>
@@ -351,6 +355,9 @@
     </url>
     <url>
         <loc>https://paakmau.github.io/categories/vulkan/</loc>
+    </url>
+    <url>
+        <loc>https://paakmau.github.io/categories/web/</loc>
     </url>
     <url>
         <loc>https://paakmau.github.io/categories/websocket/</loc>
@@ -455,6 +462,9 @@
         <loc>https://paakmau.github.io/tags/python/</loc>
     </url>
     <url>
+        <loc>https://paakmau.github.io/tags/rest/</loc>
+    </url>
+    <url>
         <loc>https://paakmau.github.io/tags/shu-xing-dp/</loc>
     </url>
     <url>
@@ -480,6 +490,9 @@
     </url>
     <url>
         <loc>https://paakmau.github.io/tags/vulkan/</loc>
+    </url>
+    <url>
+        <loc>https://paakmau.github.io/tags/web/</loc>
     </url>
     <url>
         <loc>https://paakmau.github.io/tags/websocket/</loc>

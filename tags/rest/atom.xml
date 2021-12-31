@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh">
+	<title>泊谋 - REST</title>
+	<subtitle>随便写写，开心就行。</subtitle>
+	<link href="https://paakmau.github.io/tags/rest/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://paakmau.github.io"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2021-12-31T22:31:35+00:00</updated>
+	<id>https://paakmau.github.io/tags/rest/atom.xml</id>
+	<entry xml:lang="zh">
+		<title>RESTful 接口设计经验总结</title>
+		<published>2021-12-31T22:31:35+00:00</published>
+		<updated>2021-12-31T22:31:35+00:00</updated>
+		<link href="https://paakmau.github.io/202112312231/" type="text/html"/>
+		<id>https://paakmau.github.io/202112312231/</id>
+		<content type="html">&lt;p&gt;本文归纳了 RESTful 接口设计实践中的一些经验。&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;post-he-put&quot;&gt;POST 和 PUT&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;stackoverflow.com&#x2F;questions&#x2F;630453&#x2F;what-is-the-difference-between-post-and-put-in-http&quot;&gt;参考资料&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;PUT 是幂等的，而 POST 不是。
+幂等意味着多次相同 PUT 请求之后系统的状态跟一次 PUT 请求的结果相同。&lt;&#x2F;p&gt;
+&lt;p&gt;这让我们容易联想到，POST 用于创建资源而 PUT 用于更新资源。
+虽然实际项目中大部分情况下确实是这样，但是这个表述是不准确的。
+在明确资源名的情况下使用 PUT 请求就可以直接创建该资源，而针对这个资源名的多次 PUT 请求也只会对这同一个资源进行操作，因此是符合幂等的。
+因此更准确的表述应该是：POST 用于创建服务端负责分配资源名的资源，而 PUT 请求用于客户端分配或已知资源名的资源的创建和更新。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;patch&quot;&gt;PATCH&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;stackoverflow.com&#x2F;questions&#x2F;28459418&#x2F;use-of-put-vs-patch-methods-in-rest-api-real-life-scenarios&quot;&gt;参考资料&lt;&#x2F;a&gt;
+&lt;a href=&quot;https:&#x2F;&#x2F;williamdurand.fr&#x2F;2014&#x2F;02&#x2F;14&#x2F;please-do-not-patch-like-an-idiot&#x2F;&quot;&gt;参考资料&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;PATCH 用于更新某个资源的部分数据，有别于 PUT 请求必须完整地更新整个资源。
+但是需要注意一点，与 PUT 不同，PATCH 没有被要求是幂等的，也就是对同一个资源的相同 PATCH 多次请求可能会导致该资源不断变化。&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;PATCH was something I created for the initial HTTP&#x2F;1.1 proposal because partial PUT is never RESTful. ;-)
+-- Roy Fielding&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;另外，PATCH 并不是设计来用于真正的 RESTful 接口。Roy Fielding（HTTP 规范的作者，也是 REST 的发起者）明确说明 PATCH 是用于 HTTP&#x2F;1.1 的，因为 REST 接口中从来没有部分更新。
+但是完整地更新整个资源显然会造成带宽的浪费，因此在实际项目中 PATCH 也时常被混合在 REST 中一起使用。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;zhuang-tai-ma&quot;&gt;状态码&lt;&#x2F;h2&gt;
+&lt;p&gt;状态码实际上非常简单，并不难理解，因此在实际项目中我们就很容易疏忽大意，最后陷入一些误区。
+这里介绍一些常见的问题。&lt;&#x2F;p&gt;
+&lt;p&gt;常见的误区就是所有的请求成功都返回 200，但是实际上只有返回的 Response 为整个资源时才能使用 200。
+而在 PUT、POST 和 DELETE 请求中我们往往不会返回完整的资源，更多的是直接 Response 为空，因此这个时候状态码应当为 204（No Content）。
+在 POST 请求（或者用于创建资源的 PUT 请求）成功后，如果需要返回完整的新对象，那么我们应当返回 201（Created）。&lt;&#x2F;p&gt;
+&lt;p&gt;不过这些状态码在实际项目中完全不够用，很多时候会自己根据业务与实现细节自己定义一整套新的状态码然后直接扔在 Response 里，还省得去啃 rfc 了。&lt;&#x2F;p&gt;
+</content>
+	</entry>
+</feed>

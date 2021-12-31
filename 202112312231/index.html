@@ -67,7 +67,7 @@
         <circle cx="16" cy="16" r="14"/>
         <path d="M16 8 L16 16 20 20"/>
     </svg>
-    <span>4 minute read</span>
+    <span>6 minute read</span>
     <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
          width="16" height="16" fill="none" stroke="currentcolor"
          stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
@@ -105,6 +105,16 @@
 而在 PUT、POST 和 DELETE 请求中我们往往不会返回完整的资源，更多的是直接 Response 为空，因此这个时候状态码应当为 204（No Content）。
 在 POST 请求（或者用于创建资源的 PUT 请求）成功后，如果需要返回完整的新对象，那么我们应当返回 201（Created）。</p>
 <p>不过这些状态码在实际项目中完全不够用，很多时候会自己根据业务与实现细节自己定义一整套新的状态码然后直接扔在 Response 里，还省得去啃 rfc 了。</p>
+<h2 id="deng-lu">登录</h2>
+<p>初学 REST 遇到一个非常操蛋的问题就是登录的接口怎么设计。
+不过实际上确实也很操蛋，应当把登录抽象为创建临时的 token，然后 POST 请求拿到 token 即为登录成功。</p>
+<h2 id="kong-zhi-ming-ling">控制命令</h2>
+<p>考虑这样一个业务需求：前端需要经过后端查询或改变一些嵌入式设备的运行状态。</p>
+<p>比较阳间的思路是把每台设备都抽象成一个资源，但是实际上发现设备向后端暴露的接口非常简洁，基本直接就是对某个寄存器的读写，并且甲方对与前端的显示暂时没有更高的要求，那么这个时候如果我们还强行做抽象就会增加系统的复杂性。
+于是我们考虑直接把控制命令抽象为资源，把寄存器的编号扔在它的属性里，极大幅度缩短了开发周期以及跟甲方扯皮的时间。
+然而最后的结果是甲方非常开心并且强化了他们的蜜汁自信，把嵌入式那边一顿爆改（甚至直接换成了 json），并且要求前端对数据分类显示。~~我的心中只有 mmp。~~不过好在按照之前说的设计这部分逻辑就没什么代码，所以也能算不亏，并且甚至可能还避开了甲方的折磨，可以算小赚。</p>
+<h2 id="you-xiu-shi-jian">优秀实践</h2>
+<p>很多时候我们也可以去参考 <a href="https://docs.github.com/en/rest">GitHub REST API</a>。</p>
 
     </div>
 

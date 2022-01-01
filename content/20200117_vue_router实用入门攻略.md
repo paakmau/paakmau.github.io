@@ -5,7 +5,7 @@ slug = "202001172006"
 
 [taxonomies]
 tags = ["Vue.js"]
-categories = ["Node.js"]
+categories = ["Web 应用"]
 +++
 
 Vue Router 是 Vue.js 官方提供的路由管理器，轻松构建单页应用  

@@ -5,7 +5,7 @@ slug = "202002082155"
 
 [taxonomies]
 tags = ["Unity ECS", "Unity Physics"]
-categories = ["Unity"]
+categories = ["游戏开发"]
 +++
 
 在编辑器为 GameObject 挂载 Physics Body 和 Physics Shape 这两个 Authoring 脚本会为转化出的 Entity 添加很多个组件

@@ -5,7 +5,7 @@ slug = "202111011219"
 
 [taxonomies]
 tags = ["k8s", "minikube", "podman"]
-categories = ["k8s"]
+categories = ["容器化"]
 +++
 
 体验 k8s 比较省事的一个的方法就是直接装 minikube 单机部署。

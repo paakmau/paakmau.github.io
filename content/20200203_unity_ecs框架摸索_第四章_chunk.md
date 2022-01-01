@@ -5,7 +5,7 @@ slug = "202002030137"
 
 [taxonomies]
 tags = ["Unity ECS"]
-categories = ["Unity"]
+categories = ["游戏开发"]
 +++
 
 本文将介绍 Unity ECS 中对于 Component 的内存管理

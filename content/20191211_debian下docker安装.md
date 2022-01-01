@@ -5,7 +5,7 @@ slug = "201912112016"
 
 [taxonomies]
 tags = ["Docker"]
-categories = ["Docker"]
+categories = ["容器化"]
 +++
 
 本文将基于 Debian 介绍 Docker 的安装

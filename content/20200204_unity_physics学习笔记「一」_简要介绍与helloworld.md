@@ -5,7 +5,7 @@ slug = "202002042209"
 
 [taxonomies]
 tags = ["Unity ECS", "Unity Physics"]
-categories = ["Unity"]
+categories = ["游戏开发"]
 +++
 
 现在 Unity 的 Package Manager 中已经有了适用于 ECS 框架的物理引擎，功能完善  

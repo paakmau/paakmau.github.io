@@ -5,7 +5,7 @@ slug = "202009042049"
 
 [taxonomies]
 tags = ["GLFW", "Vulkan"]
-categories = ["Vulkan"]
+categories = ["游戏开发"]
 +++
 
 开始一切之前，我们先引入 Vulkan 的头文件

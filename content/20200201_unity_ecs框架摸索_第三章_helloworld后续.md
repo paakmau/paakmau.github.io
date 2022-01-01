@@ -5,7 +5,7 @@ slug = "202002012034"
 
 [taxonomies]
 tags = ["Unity ECS"]
-categories = ["Unity"]
+categories = ["游戏开发"]
 +++
 
 上一章介绍了 ECS 并行处理的实现，接下来就这个 HelloWorld 进行深入的研究。

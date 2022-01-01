@@ -5,7 +5,7 @@ slug = "202002072339"
 
 [taxonomies]
 tags = ["Unity ECS", "Unity Physics"]
-categories = ["Unity"]
+categories = ["游戏开发"]
 +++
 
 跟主流物理引擎一样，Unity Physics 也具有碰撞查询的功能

@@ -5,7 +5,7 @@ slug = "201912152020"
 
 [taxonomies]
 tags = [".NET Core", "Unity ECS"]
-categories = [".NET Core"]
+categories = ["游戏开发"]
 +++
 
 之前做 Unity 网络游戏开发的时候，想着后端也用 C#就很方便，于是看上了开源跨平台的.NET Core，当时网络模块就是用了 LiteNetLib 实现的。

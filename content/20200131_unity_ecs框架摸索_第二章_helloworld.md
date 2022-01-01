@@ -5,7 +5,7 @@ slug = "202001311515"
 
 [taxonomies]
 tags = ["Unity ECS"]
-categories = ["Unity"]
+categories = ["游戏开发"]
 +++
 
 跟随本文，创建一个立方体 Entity，利用一个 System 控制它不断旋转。

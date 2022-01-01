@@ -5,7 +5,7 @@ slug = "201912232105"
 
 [taxonomies]
 tags = ["Docker"]
-categories = ["Docker"]
+categories = ["容器化"]
 +++
 
 参考的是这个项目  

@@ -5,7 +5,7 @@ slug = "202003191321"
 
 [taxonomies]
 tags = ["图论", "并发", "拓扑排序"]
-categories = ["UE4"]
+categories = ["游戏开发"]
 +++
 
 这个东西跟 Unity 中的 Job 很相似，都是基于任务的并行程序设计，可以处理资源竞争与执行顺序问题

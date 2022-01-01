@@ -4,8 +4,8 @@ date = 2019-12-11 19:14:31
 slug = "201912111914"
 
 [taxonomies]
-tags = ["Docker"]
-categories = ["Docker"]
+tags = ["Docker", "WordPress"]
+categories = ["容器化"]
 +++
 
 阅读本文了解 Docker 上的 WordPress 快速部署，及其数据备份获取

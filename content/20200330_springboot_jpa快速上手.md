@@ -5,7 +5,7 @@ slug = "202003301931"
 
 [taxonomies]
 tags = ["JPA", "Spring Boot"]
-categories = ["Spring Boot"]
+categories = ["Web 应用"]
 +++
 
 现在 SpringBoot 上比较主流的持久层 ORM 框架应该就是 MyBatis 和 JPA 了。JPA 对于简单查询（特别是作业）非常方便，可以说开箱即用，但是面对复杂查询就要稍微多学一点；而 MyBatis 写起来虽然没那么简洁，但在复杂查询的时候直接上 SQL 语句就完事了

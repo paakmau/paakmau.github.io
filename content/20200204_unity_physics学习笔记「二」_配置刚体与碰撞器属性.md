@@ -5,7 +5,7 @@ slug = "202002042356"
 
 [taxonomies]
 tags = ["Unity ECS", "Unity Physics"]
-categories = ["Unity"]
+categories = ["游戏开发"]
 +++
 
 前文展示了一个简单的 HelloWorld，本文将进一步介绍其中用到的 Physics Shape 和 Physics Body 这两个脚本的参数设置

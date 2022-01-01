@@ -5,7 +5,7 @@ slug = "202003302012"
 
 [taxonomies]
 tags = ["MockMvc", "Spring Boot"]
-categories = ["Spring Boot"]
+categories = ["Web 应用"]
 +++
 
 对后端进行集成测试的时候，我们一般都希望从发送 HTTP 请求开始对后端进行完整的测试，可能会考虑用 Postman 或者 Postwoman 这类东西，但是直觉告诉我们应该也可以把集成测试写在代码里

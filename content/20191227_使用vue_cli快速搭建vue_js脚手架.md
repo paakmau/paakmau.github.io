@@ -5,7 +5,7 @@ slug = "201912271024"
 
 [taxonomies]
 tags = ["Vue.js"]
-categories = ["Node.js"]
+categories = ["Web 应用"]
 +++
 
 Vue CLI 是 Vue.js 提供的命令行工具  

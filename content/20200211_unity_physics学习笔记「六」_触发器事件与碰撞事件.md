@@ -5,7 +5,7 @@ slug = "202002110101"
 
 [taxonomies]
 tags = ["Unity ECS", "Unity Physics"]
-categories = ["Unity"]
+categories = ["游戏开发"]
 +++
 
 这部分内容手册中没有，本文参考的是官方示例代码与官方论坛  

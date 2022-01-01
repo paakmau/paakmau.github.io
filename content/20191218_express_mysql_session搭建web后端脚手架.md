@@ -5,7 +5,7 @@ slug = "201912180059"
 
 [taxonomies]
 tags = ["MySQL", "Node.js", "Express"]
-categories = ["Node.js"]
+categories = ["Web 应用"]
 +++
 
 因为是我某门课的作业才顺便写的，因为感觉 js 后端偏向玩具所以不太感兴趣。但还是不得不说这玩具真好玩，贼牛逼。Express 框架用几十行代码就能搭出几乎完整的后端脚手架

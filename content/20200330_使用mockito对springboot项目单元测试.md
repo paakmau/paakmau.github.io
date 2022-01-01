@@ -5,7 +5,7 @@ slug = "202003302030"
 
 [taxonomies]
 tags = ["Mockito", "Spring Boot"]
-categories = ["Spring Boot"]
+categories = ["Web 应用"]
 +++
 
 使用 Mockito 可以用来给模块打桩，实现单元测试

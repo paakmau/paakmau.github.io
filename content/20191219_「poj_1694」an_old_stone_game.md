@@ -5,7 +5,7 @@ slug = "201912191751"
 
 [taxonomies]
 tags = ["动态规划", "树形 DP"]
-categories = ["算法", "OJ 刷题"]
+categories = ["算法"]
 +++
 
 一题简单的树形 DP

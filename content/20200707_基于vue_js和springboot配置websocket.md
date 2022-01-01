@@ -5,7 +5,7 @@ slug = "202007071821"
 
 [taxonomies]
 tags = ["Spring Boot", "Vue.js", "WebSocket"]
-categories = ["Node.js", "WebSocket"]
+categories = ["Web 应用"]
 +++
 
 HTTP 协议中的请求只能由客户端发起，如果需要服务端主动向客户端发送信息，就会用到 WebSocket

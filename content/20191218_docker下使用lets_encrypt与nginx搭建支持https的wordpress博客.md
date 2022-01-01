@@ -4,8 +4,8 @@ date = 2019-12-18 19:16:13
 slug = "201912181916"
 
 [taxonomies]
-tags = ["Docker"]
-categories = ["Docker"]
+tags = ["Docker", "Let's Encrypt", "nginx", "HTTPS", "WordPress"]
+categories = ["容器化"]
 +++
 
 Let's Encrypt 提供免费 SSL 证书的自动签发续签服务，我们可以用它来为博客启用 HTTPS

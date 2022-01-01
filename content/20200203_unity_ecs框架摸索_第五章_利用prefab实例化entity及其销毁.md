@@ -5,7 +5,7 @@ slug = "202002031405"
 
 [taxonomies]
 tags = ["Unity ECS"]
-categories = ["Unity"]
+categories = ["游戏开发"]
 +++
 
 一般游戏中都避不开实体的动态生成与动态销毁。

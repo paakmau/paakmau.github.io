@@ -5,7 +5,7 @@ slug = "202002040315"
 
 [taxonomies]
 tags = ["Unity ECS"]
-categories = ["Unity"]
+categories = ["游戏开发"]
 +++
 
 虽然还是预览版，但我感觉它已经完整地发挥了 ECS 架构的优点，上手也很快

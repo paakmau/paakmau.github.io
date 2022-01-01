@@ -5,7 +5,7 @@ slug = "202002052342"
 
 [taxonomies]
 tags = ["Unity ECS", "Unity Physics"]
-categories = ["Unity"]
+categories = ["游戏开发"]
 +++
 
 本文介绍获取与修改刚体速度的方法  

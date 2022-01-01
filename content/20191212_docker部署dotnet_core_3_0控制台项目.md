@@ -5,7 +5,7 @@ slug = "201912121724"
 
 [taxonomies]
 tags = [".NET Core", "Docker"]
-categories = [".NET Core", "Docker"]
+categories = ["容器化"]
 +++
 
 本文将光速创建一个 HelloWorld，然后使用 Docker 进行部署

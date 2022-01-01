@@ -321,46 +321,16 @@
         <loc>https://paakmau.github.io/categories/c/</loc>
     </url>
     <url>
-        <loc>https://paakmau.github.io/categories/docker/</loc>
-    </url>
-    <url>
-        <loc>https://paakmau.github.io/categories/k8s/</loc>
-    </url>
-    <url>
-        <loc>https://paakmau.github.io/categories/net-core/</loc>
-    </url>
-    <url>
-        <loc>https://paakmau.github.io/categories/node-js/</loc>
-    </url>
-    <url>
-        <loc>https://paakmau.github.io/categories/oj-shua-ti/</loc>
-    </url>
-    <url>
-        <loc>https://paakmau.github.io/categories/she-pi-suan-fa/</loc>
-    </url>
-    <url>
-        <loc>https://paakmau.github.io/categories/spring-boot/</loc>
+        <loc>https://paakmau.github.io/categories/rong-qi-hua/</loc>
     </url>
     <url>
         <loc>https://paakmau.github.io/categories/suan-fa/</loc>
     </url>
     <url>
-        <loc>https://paakmau.github.io/categories/ue4/</loc>
-    </url>
-    <url>
-        <loc>https://paakmau.github.io/categories/unity/</loc>
-    </url>
-    <url>
         <loc>https://paakmau.github.io/categories/vs-code/</loc>
     </url>
     <url>
-        <loc>https://paakmau.github.io/categories/vulkan/</loc>
-    </url>
-    <url>
-        <loc>https://paakmau.github.io/categories/web/</loc>
-    </url>
-    <url>
-        <loc>https://paakmau.github.io/categories/websocket/</loc>
+        <loc>https://paakmau.github.io/categories/web-ying-yong/</loc>
     </url>
     <url>
         <loc>https://paakmau.github.io/categories/you-xi-kai-fa/</loc>
@@ -417,6 +387,9 @@
         <loc>https://paakmau.github.io/tags/glfw/</loc>
     </url>
     <url>
+        <loc>https://paakmau.github.io/tags/https/</loc>
+    </url>
+    <url>
         <loc>https://paakmau.github.io/tags/imgui/</loc>
     </url>
     <url>
@@ -427,6 +400,9 @@
     </url>
     <url>
         <loc>https://paakmau.github.io/tags/k8s/</loc>
+    </url>
+    <url>
+        <loc>https://paakmau.github.io/tags/let-s-encrypt/</loc>
     </url>
     <url>
         <loc>https://paakmau.github.io/tags/maven/</loc>
@@ -445,6 +421,9 @@
     </url>
     <url>
         <loc>https://paakmau.github.io/tags/net-core/</loc>
+    </url>
+    <url>
+        <loc>https://paakmau.github.io/tags/nginx/</loc>
     </url>
     <url>
         <loc>https://paakmau.github.io/tags/node-js/</loc>
@@ -492,10 +471,13 @@
         <loc>https://paakmau.github.io/tags/vulkan/</loc>
     </url>
     <url>
-        <loc>https://paakmau.github.io/tags/web/</loc>
+        <loc>https://paakmau.github.io/tags/web-ying-yong/</loc>
     </url>
     <url>
         <loc>https://paakmau.github.io/tags/websocket/</loc>
+    </url>
+    <url>
+        <loc>https://paakmau.github.io/tags/wordpress/</loc>
     </url>
     <url>
         <loc>https://paakmau.github.io/tags/xuan-ran/</loc>

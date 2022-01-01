@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh">
+	<title>泊谋 - HTTPS</title>
+	<subtitle>随便写写，开心就行。</subtitle>
+	<link href="https://paakmau.github.io/tags/https/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://paakmau.github.io"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2019-12-18T19:16:13+00:00</updated>
+	<id>https://paakmau.github.io/tags/https/atom.xml</id>
+	<entry xml:lang="zh">
+		<title>Docker 下使用 Let&#x27;s Encrypt 与 nginx 搭建支持 HTTPS 的 WordPress 博客</title>
+		<published>2019-12-18T19:16:13+00:00</published>
+		<updated>2019-12-18T19:16:13+00:00</updated>
+		<link href="https://paakmau.github.io/201912181916/" type="text/html"/>
+		<id>https://paakmau.github.io/201912181916/</id>
+		<content type="html">&lt;p&gt;Let&#x27;s Encrypt 提供免费 SSL 证书的自动签发续签服务，我们可以用它来为博客启用 HTTPS&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;qian-fa-zheng-shu&quot;&gt;签发证书&lt;&#x2F;h2&gt;
+&lt;p&gt;我们使用 certbot&#x2F;certbot 镜像构建一次性容器签发证书&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; docker volume create data_letsencrypt
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; docker run&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --rm -p&lt;&#x2F;span&gt;&lt;span&gt; 80:80&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -p&lt;&#x2F;span&gt;&lt;span&gt; 443:443 \
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;   -v&lt;&#x2F;span&gt;&lt;span&gt; data_letsencrypt:&#x2F;etc&#x2F;letsencrypt \
+&lt;&#x2F;span&gt;&lt;span&gt;   certbot&#x2F;certbot auth&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --standalone &lt;&#x2F;span&gt;&lt;span&gt;\
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;   -m&lt;&#x2F;span&gt;&lt;span&gt; yourname@email.com&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --agree-tos &lt;&#x2F;span&gt;&lt;span&gt;\
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;   -d&lt;&#x2F;span&gt;&lt;span&gt; example.com
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;解释：&lt;br &#x2F;&gt;
+--rm 表示容器结束后就自动删除&lt;&#x2F;p&gt;
+&lt;p&gt;其中 yourname@email.com 为你的邮箱&lt;br &#x2F;&gt;
+example.com 为博客的域名&lt;br &#x2F;&gt;
+证书会被生成在 data_letsencrypt 数据卷下的 live&#x2F;example.com 目录中&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;bu-shu-mysql-yu-wordpress&quot;&gt;部署 MySQL 与 WordPress&lt;&#x2F;h2&gt;
+&lt;p&gt;基本正常部署&lt;br &#x2F;&gt;
+但由于我们使用 nginx 反向代理，所以 WordPress 不需要做端口映射&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; docker volume create data_mysql_wordpress
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; docker volume create data_wordpress
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; docker run&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -d --name&lt;&#x2F;span&gt;&lt;span&gt; mysql_wordpress \
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;   -v&lt;&#x2F;span&gt;&lt;span&gt; data_mysql_wordpress:&#x2F;var&#x2F;lib&#x2F;mysql \
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;   -e&lt;&#x2F;span&gt;&lt;span&gt; MYSQL_ROOT_PASSWORD=root \
+&lt;&#x2F;span&gt;&lt;span&gt;   mysql&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --default-authentication-plugin&lt;&#x2F;span&gt;&lt;span&gt;=mysql_native_password
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; docker run&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -d --name&lt;&#x2F;span&gt;&lt;span&gt; wordpress \
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;   -v&lt;&#x2F;span&gt;&lt;span&gt; data_wordpress:&#x2F;var&#x2F;www&#x2F;html \
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;   --link&lt;&#x2F;span&gt;&lt;span&gt; mysql_wordpress:mysql wordpress
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;shi-yong-nginx-fan-xiang-dai-li&quot;&gt;使用 nginx 反向代理&lt;&#x2F;h2&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; docker volume create data_nginx_conf
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; docker run&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -d --name&lt;&#x2F;span&gt;&lt;span&gt; nginx \
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;   -v&lt;&#x2F;span&gt;&lt;span&gt; data_nginx_conf:&#x2F;etc&#x2F;nginx&#x2F;conf.d \
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;   -v&lt;&#x2F;span&gt;&lt;span&gt; data_letsencrypt:&#x2F;etc&#x2F;letsencrypt \
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;   --link&lt;&#x2F;span&gt;&lt;span&gt; wordpress:wordpress \
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;   -p&lt;&#x2F;span&gt;&lt;span&gt; 80:80&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -p&lt;&#x2F;span&gt;&lt;span&gt; 443:443 nginx
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;解释：&lt;br &#x2F;&gt;
+nginx 的配置文件会被放在 data_nginx_conf 数据卷中&lt;br &#x2F;&gt;
+映射 data_letsencrypt 数据卷以获取证书&lt;br &#x2F;&gt;
+链接 wordpress 容器用于代理转发&lt;&#x2F;p&gt;
+&lt;p&gt;进入 data_nginx_conf 数据卷并修改 default.conf 如下&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;conf&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-conf &quot;&gt;&lt;code class=&quot;language-conf&quot; data-lang=&quot;conf&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;server &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;listen &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;443&lt;&#x2F;span&gt;&lt;span&gt; ssl;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;server_name &lt;&#x2F;span&gt;&lt;span&gt;example.com;
+&lt;&#x2F;span&gt;&lt;span&gt; 
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ssl_certificate &lt;&#x2F;span&gt;&lt;span&gt;&#x2F;etc&#x2F;letsencrypt&#x2F;live&#x2F;example.com&#x2F;fullchain.pem;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ssl_certificate_key &lt;&#x2F;span&gt;&lt;span&gt;&#x2F;etc&#x2F;letsencrypt&#x2F;live&#x2F;example.com&#x2F;privkey.pem;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ssl_protocols &lt;&#x2F;span&gt;&lt;span&gt;TLSv1 TLSv1.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt; TLSv1.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;2&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt; 
+&lt;&#x2F;span&gt;&lt;span&gt; 
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;    location &lt;&#x2F;span&gt;&lt;span&gt;&#x2F; {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;proxy_set_header &lt;&#x2F;span&gt;&lt;span&gt;Host &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$host&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;proxy_set_header &lt;&#x2F;span&gt;&lt;span&gt;X-Real-IP &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$remote_addr&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;proxy_set_header &lt;&#x2F;span&gt;&lt;span&gt;X-Forwarded-For &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$proxy_add_x_forwarded_for&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;proxy_set_header &lt;&#x2F;span&gt;&lt;span&gt;X-Forwarded-Proto &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;$scheme&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;proxy_pass &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;http:&#x2F;&#x2F;wordpress:80&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;server &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;listen &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;80&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;301 https:&#x2F;&#x2F;$host$request_uri&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;解释：&lt;br &#x2F;&gt;
+其中 ssl_certificate 与 ssl_certificate_key 设定了证书的路径，需要把 example.com 替换为你博客的域名&lt;br &#x2F;&gt;
+proxy_pass 用于转发 wordpress 容器的 80 端口&lt;br &#x2F;&gt;
+最后监听本容器的 80 端口把 HTTP 重定向到 HTTPS&lt;&#x2F;p&gt;
+&lt;p&gt;然后重启 nginx 容器就完成了&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; docker restart nginx
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;zheng-shu-xu-qian&quot;&gt;证书续签&lt;&#x2F;h2&gt;
+&lt;p&gt;证书有效期只有 90 天，因此需要续签&lt;&#x2F;p&gt;
+&lt;p&gt;我们先把 nginx 停了，把端口让出来&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; docker stop nginx
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;然后再次使用 certbot&#x2F;certbot 进行续签&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; docker run&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --rm -p&lt;&#x2F;span&gt;&lt;span&gt; 80:80&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -p&lt;&#x2F;span&gt;&lt;span&gt; 443:443 \
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;   -v&lt;&#x2F;span&gt;&lt;span&gt; data_letsencrypt:&#x2F;etc&#x2F;letsencrypt \
+&lt;&#x2F;span&gt;&lt;span&gt;   certbot&#x2F;certbot renew&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --standalone
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;之后再启动 nginx 就行了&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; docker start nginx
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;然后可以用 crontab 创建定时任务自动续签&lt;&#x2F;p&gt;
+</content>
+	</entry>
+</feed>

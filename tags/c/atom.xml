@@ -5,8 +5,184 @@
 	<link href="https://paakmau.github.io/tags/c/atom.xml" rel="self" type="application/atom+xml"/>
   <link href="https://paakmau.github.io"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
-	<updated>2020-12-20T00:30:45+00:00</updated>
+	<updated>2022-01-04T23:38:42+00:00</updated>
 	<id>https://paakmau.github.io/tags/c/atom.xml</id>
+	<entry xml:lang="zh">
+		<title>现代 CMake 项目的正确姿势</title>
+		<published>2022-01-04T23:38:42+00:00</published>
+		<updated>2022-01-04T23:38:42+00:00</updated>
+		<link href="https://paakmau.github.io/202201042338/" type="text/html"/>
+		<id>https://paakmau.github.io/202201042338/</id>
+		<content type="html">&lt;p&gt;本文总结了现代 CMake 项目实践中的一些经验。&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;这里贴一个比较完善的模板项目。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;paakmau&#x2F;modern-cmake-template&quot;&gt;Modern CMake Template&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;zhi-ding-cmake-ban-ben&quot;&gt;指定 CMake 版本&lt;&#x2F;h2&gt;
+&lt;p&gt;首先需要在根目录的 CMakeLists.txt 中指定项目所需的 CMake 版本。
+下面这个例子指定项目所需的 CMake 最低版本为 3.15。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cmake&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cmake &quot;&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;cmake_minimum_required&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VERSION &lt;&#x2F;span&gt;&lt;span&gt;3.15)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;在 3.12 之后，CMake 还支持指定最高版本。
+例如下面的例子不仅指定了最低版本为 3.15，还指定了最高为 3.21。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cmake&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cmake &quot;&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;cmake_minimum_required&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VERSION &lt;&#x2F;span&gt;&lt;span&gt;3.15...3.21)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;不过 CMake 大版本中的小版本应该都是向下兼容的，所以要求不高的情况下也可以仅指定最低版本。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;project&quot;&gt;Project&lt;&#x2F;h2&gt;
+&lt;p&gt;我觉得没什么好说的，可以直接看示例。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cmake&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cmake &quot;&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;project&lt;&#x2F;span&gt;&lt;span&gt;(
+&lt;&#x2F;span&gt;&lt;span&gt;  hello
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;VERSION &lt;&#x2F;span&gt;&lt;span&gt;0.0.1
+&lt;&#x2F;span&gt;&lt;span&gt;  DESCRIPTION &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;A simple hello world&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;LANGUAGES &lt;&#x2F;span&gt;&lt;span&gt;CXX)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;target&quot;&gt;Target&lt;&#x2F;h2&gt;
+&lt;p&gt;一个基于 CMake 的构建系统是由若干个逻辑上的 Target 组织起来的。
+每个 Target 对应到一个可执行文件或一个类库，又或者是包含一些自定义命令的自定义 Target。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;executable&quot;&gt;Executable&lt;&#x2F;h2&gt;
+&lt;p&gt;一个 executable target 最后构建的产物是一个可执行文件。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cmake&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cmake &quot;&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;add_executable&lt;&#x2F;span&gt;&lt;span&gt;(hello src&#x2F;hello.cpp include&#x2F;hello.h)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;上面这个例子中，hello 既是目标名，也是最终构建出的可执行文件的名称。
+而紧随其后的 hello.cpp 和 hello.h 则是它的源文件和头文件。
+实际上头文件并不需要添加在目标中，因为在编译目标时，CMake 只是把这些文件一起传递给编译器，编译器只会编译源文件，会直接忽略掉这些头文件。
+但是有个问题是某些 IDE 会读取目标中的文件，如果不把头文件一起添加进去，它们可能会被 IDE 忽略。
+因此仍然建议把头文件添加进目标中。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;library&quot;&gt;Library&lt;&#x2F;h2&gt;
+&lt;p&gt;一个 library target 最后构建的产物是一个类库。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cmake&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cmake &quot;&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;add_library&lt;&#x2F;span&gt;&lt;span&gt;(hello src&#x2F;hello.cpp include&#x2F;hello.h)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;同样的，hello 既是目标名，也是编译出的类库不含扩展名和 lib 前缀的文件名。
+至于扩展名是什么，取决于库是动态库还是静态库，当然也跟操作系统有关。&lt;&#x2F;p&gt;
+&lt;p&gt;如果不手动指定，默认是静态库。
+如果想修改默认行为，可以使用 CMake 提供的 &lt;a href=&quot;https:&#x2F;&#x2F;cmake.org&#x2F;cmake&#x2F;help&#x2F;latest&#x2F;variable&#x2F;BUILD_SHARED_LIBS.html#variable:BUILD_SHARED_LIBS&quot;&gt;BUILD_SHARED_LIBS&lt;&#x2F;a&gt; 全局变量。
+不过我们也可以显式指定静态库，这样就不会受到 &lt;code&gt;BUILD_SHARED_LIBS&lt;&#x2F;code&gt; 影响。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cmake&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cmake &quot;&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;add_library&lt;&#x2F;span&gt;&lt;span&gt;(hello &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;STATIC &lt;&#x2F;span&gt;&lt;span&gt;src&#x2F;hello.cpp include&#x2F;hello.h)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;对于普通的类库，STATIC 可以换成 SHARED 和 MODULE。
+前两个分别是静态链接和动态链接。
+MODULE 则是不会在构建时链接，但是运行时可能通过类似 dlopen 的函数加载。&lt;&#x2F;p&gt;
+&lt;p&gt;特别的，我们可以用 INTERFACE 指定一个 header-only 的类库，它不需要编译。&lt;&#x2F;p&gt;
+&lt;p&gt;更特别的，我们可以用 ALIAS 为一个 library target 添加别名。
+常见的情况是我们会用它来给目标套上一个命名空间。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;zi-dong-tian-jia-wen-jian&quot;&gt;自动添加文件&lt;&#x2F;h2&gt;
+&lt;p&gt;问题来了，源文件很多我不想一个一个手写怎么办？
+CMake 提供了一个命令，可以找出某个目录下的所有源文件，扔进一个变量里。
+那么我们上面的例子就可以写成这样。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cmake&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cmake &quot;&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;aux_source_directory&lt;&#x2F;span&gt;&lt;span&gt;(src SOURCE_LIST)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;add_executable&lt;&#x2F;span&gt;&lt;span&gt;(hello ${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;SOURCE_LIST&lt;&#x2F;span&gt;&lt;span&gt;} include&#x2F;hello.h)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;那么问题又来了，头文件怎么办？
+很遗憾 CMake 没有找头文件的命令。
+那我们只能使用 file 命令手动找了。
+最后可以写成这样。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cmake&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cmake &quot;&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;file&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GLOB &lt;&#x2F;span&gt;&lt;span&gt;HEADER_LIST include&#x2F;*.h)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;aux_source_directory&lt;&#x2F;span&gt;&lt;span&gt;(src SOURCE_LIST)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;add_executable&lt;&#x2F;span&gt;&lt;span&gt;(hello ${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;SOURCE_LIST&lt;&#x2F;span&gt;&lt;span&gt;} ${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;HEADER_LIST&lt;&#x2F;span&gt;&lt;span&gt;})
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;但是需要注意，根据&lt;a href=&quot;https:&#x2F;&#x2F;cmake.org&#x2F;cmake&#x2F;help&#x2F;latest&#x2F;command&#x2F;file.html#filesystem&quot;&gt;文档&lt;&#x2F;a&gt;，CMake 不提倡使用 GLOB 或者 aux_source_directory 来自动添加文件。
+因为在新增或删除文件时，CMakeLists.txt 没有发生改变，于是 CMake 也就无法自动重新生成构建系统。
+没错，也就是说，正确的做法是像最开始那样手动添加每一个文件。
+是的，这非常的离谱。
+不过有些 IDE 会自动处理这些问题，勇敢无畏的程序员也可以很轻松地手动重新生成。
+所以我认为这也不是太大的问题。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;zhi-ding-tou-wen-jian-mu-lu&quot;&gt;指定头文件目录&lt;&#x2F;h2&gt;
+&lt;p&gt;对于这个目标，我们可以指定它的头文件目录。
+这个目录会在编译的时候被用到。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cmake&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cmake &quot;&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;target_include_directories&lt;&#x2F;span&gt;&lt;span&gt;(hello &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;PUBLIC &lt;&#x2F;span&gt;&lt;span&gt;include)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;提一下 PUBLIC、PRIVATE 和 INTERFACE 的区别。
+PUBLIC 的目录会被暴露给链接到该目标的其他目标，对于 executable target 而言 PUBLIC 是没有意义的。
+PRIVATE 则是该目标的私有头文件目录。
+INTERFACE 则是会暴露给其他目标，但不会用于该目标的编译，一般只用于 header-only 的类库。
+具体来说， PUBLIC 和 PRIVATE 产生 &lt;a href=&quot;https:&#x2F;&#x2F;cmake.org&#x2F;cmake&#x2F;help&#x2F;latest&#x2F;prop_tgt&#x2F;INCLUDE_DIRECTORIES.html#prop_tgt:INCLUDE_DIRECTORIES&quot;&gt;INCLUDE_DIRECTORIES&lt;&#x2F;a&gt; 属性，该属性最终传递给编译器；PUBLIC 和 INTERFACE 会产生 &lt;a href=&quot;https:&#x2F;&#x2F;cmake.org&#x2F;cmake&#x2F;help&#x2F;latest&#x2F;prop_tgt&#x2F;INTERFACE_INCLUDE_DIRECTORIES.html#prop_tgt:INTERFACE_INCLUDE_DIRECTORIES&quot;&gt;INTERFACE_INCLUDE_DIRECTORIES&lt;&#x2F;a&gt; 属性，最终传递给依赖该目标的其他目标。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;lian-jie-lei-ku&quot;&gt;链接类库&lt;&#x2F;h2&gt;
+&lt;p&gt;这个功能非常重要，链接一个类库，就可以得到它的 PUBLIC 头文件，在编译后也会链接到这个类库。
+链接也分为 PUBLIC 和 PRIVATE，区别在于链接是否会传递。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cmake&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cmake &quot;&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;target_link_libraries&lt;&#x2F;span&gt;&lt;span&gt;(other_target &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;PRIVATE &lt;&#x2F;span&gt;&lt;span&gt;hello)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;find-package&quot;&gt;find_package&lt;&#x2F;h2&gt;
+&lt;p&gt;我们在需要一些外部库的时候，可能会使用系统包管理来直接安装，比如直接用 apt 安装 glm。
+这些库或者发行版的维护者可能会提供 CMake 支持。
+这个时候我们只需要使用 find_package 命令就能把这些外部库导入成一个目标了。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cmake&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cmake &quot;&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;find_package&lt;&#x2F;span&gt;&lt;span&gt;(glm &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;REQUIRED&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;target_link_libraries&lt;&#x2F;span&gt;&lt;span&gt;(hello &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;PRIVATE &lt;&#x2F;span&gt;&lt;span&gt;glm::glm)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;an-zhuang&quot;&gt;安装&lt;&#x2F;h2&gt;
+&lt;p&gt;那么对于自己实现的可执行文件或类库，我们也可以使用 CMake 来配置安装。&lt;&#x2F;p&gt;
+&lt;p&gt;首先我们要修改一下头文件目录的指定。
+因为头文件目录的相对路径在构建与安装中是不同的。
+于是我们使用 BUILD_INTERFACE 与 INSTALL_INTERFACE 来区分对待构建与安装情况下的头文件目录。
+有一点类似条件编译，构造时我们使用 CMAKE_CURRENT_SOURCE_DIR 变量找到头文件目录，安装时我们直接相对于安装前缀找到头文件目录的路径。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cmake&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cmake &quot;&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;target_include_directories&lt;&#x2F;span&gt;&lt;span&gt;(
+&lt;&#x2F;span&gt;&lt;span&gt;  hello &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;PUBLIC
+&lt;&#x2F;span&gt;&lt;span&gt;  $&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;BUILD_INTERFACE&lt;&#x2F;span&gt;&lt;span&gt;:${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CMAKE_CURRENT_SOURCE_DIR&lt;&#x2F;span&gt;&lt;span&gt;}&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;include&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  $&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;INSTALL_INTERFACE&lt;&#x2F;span&gt;&lt;span&gt;:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;include&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;然后我们安装类库编译出来的二进制文件。&lt;&#x2F;p&gt;
+&lt;p&gt;其中 EXPORT 是用于支持 find_package 的。
+它必须写在其他的选项之前。
+但是它不会直接安装具体的 export 文件，我们需要再写一个 install(EXPORT) 命令来完成它，具体见后文。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cmake&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cmake &quot;&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;install&lt;&#x2F;span&gt;&lt;span&gt;(
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;TARGETS &lt;&#x2F;span&gt;&lt;span&gt;hello
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;EXPORT &lt;&#x2F;span&gt;&lt;span&gt;helloConfig
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ARCHIVE
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;LIBRARY
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;RUNTIME&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;ARCHIVE 基本上是静态库，默认安装在 lib 中；LIBRARY 基本上是动态库，默认安装在 lib 中；RUNTIME 基本上是可执行文件，默认安装在 bin 中。&lt;&#x2F;p&gt;
+&lt;p&gt;需要注意的是，头文件我们需要手动把头文件的目录安装到指定路径下，一般是 include。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cmake&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cmake &quot;&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;install&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;DIRECTORY &lt;&#x2F;span&gt;&lt;span&gt;include &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;DESTINATION &lt;&#x2F;span&gt;&lt;span&gt;include)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;接下来我们安装 export 文件，这样就能支持其他项目使用 find_package 导入我们的目标了。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cmake&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cmake &quot;&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;install&lt;&#x2F;span&gt;&lt;span&gt;(
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;EXPORT &lt;&#x2F;span&gt;&lt;span&gt;helloConfig
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;DESTINATION &lt;&#x2F;span&gt;&lt;span&gt;lib&#x2F;cmake&#x2F;hello
+&lt;&#x2F;span&gt;&lt;span&gt;  NAMESPACE hello::
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;FILE &lt;&#x2F;span&gt;&lt;span&gt;helloConfig.cmake)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;不过要注意一下，这个命令给我们的目标加上了命名空间，所以导入的目标名应该是 hello::hello。
+另外，有一些奇妙的流派可能会更喜欢用下划线而不是冒号。&lt;&#x2F;p&gt;
+&lt;p&gt;最后我们创建并安装包的版本文件。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cmake&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cmake &quot;&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;include&lt;&#x2F;span&gt;&lt;span&gt;(CMakePackageConfigHelpers)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;write_basic_package_version_file&lt;&#x2F;span&gt;&lt;span&gt;(
+&lt;&#x2F;span&gt;&lt;span&gt;  helloConfigVersion.cmake
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;COMPATIBILITY &lt;&#x2F;span&gt;&lt;span&gt;AnyNewerVersion)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;install&lt;&#x2F;span&gt;&lt;span&gt;(
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;FILES &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;{&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;PROJECT_BINARY_DIR&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;}&#x2F;helloConfigVersion.cmake&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;DESTINATION &lt;&#x2F;span&gt;&lt;span&gt;lib&#x2F;cmake&#x2F;hello)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;对于 write_basic_package_version_file 命令，如果不指定 VERSION 参数，默认会使用 PROJECT_VERSION，但是如果项目的版本也没有指定，CMake 就会报错。&lt;&#x2F;p&gt;
+&lt;p&gt;另外提一嘴，如果需要安装的库使用 find_package 依赖了系统中其他外部库，这个时候就比较复杂了。
+我们就不能简单的直接导出最终的 helloConfig.cmake，需要先导出一个 helloTargets.cmake。
+还要写一个 &lt;code&gt;.in&lt;&#x2F;code&gt; 文件，在里面导入依赖，再引入这个 helloTargets.cmake。
+使用 configure_file 命令根据这个 &lt;code&gt;.in&lt;&#x2F;code&gt; 文件生成最终的 helloConfig.cmake，才可以安装它。
+这个东西非常折磨，虽然说我们可以不使用系统提供的库，但是有时候可怜的程序员会陷入纠结，比如 boost。
+有的外部库还提供了一些清奇的思路，比如 vulkan 就是在程序运行时动态加载的。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;fetchcontent&quot;&gt;FetchContent&lt;&#x2F;h2&gt;
+&lt;p&gt;之前说的都是把库安装到系统中，但是库的版本不好控制。
+于是我们考虑直接把库的指定版本下载下来。
+这是 CMake 原生支持的比较没那么折磨的导入外部库的一种方式了。&lt;&#x2F;p&gt;
+&lt;p&gt;比如导入 Google Benchmark 就可以像这样。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cmake&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cmake &quot;&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;FetchContent_Declare&lt;&#x2F;span&gt;&lt;span&gt;(
+&lt;&#x2F;span&gt;&lt;span&gt;  googlebenchmark
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GIT_REPOSITORY &lt;&#x2F;span&gt;&lt;span&gt;https:&#x2F;&#x2F;github.com&#x2F;google&#x2F;benchmark.git
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GIT_TAG &lt;&#x2F;span&gt;&lt;span&gt;v1.6.0)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;set&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;BENCHMARK_ENABLE_TESTING &lt;&#x2F;span&gt;&lt;span&gt;OFF &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CACHE &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;BOOL &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;FORCE&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;set&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;BENCHMARK_ENABLE_INSTALL &lt;&#x2F;span&gt;&lt;span&gt;OFF &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CACHE &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;BOOL &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;FORCE&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;FetchContent_MakeAvailable&lt;&#x2F;span&gt;&lt;span&gt;(googlebenchmark)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;需要注意就是这样下载下来经常需要把测试和安装关掉，不然你会很痛苦。&lt;&#x2F;p&gt;
+&lt;p&gt;接下来正常链接就可以了。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cmake&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cmake &quot;&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;add_executable&lt;&#x2F;span&gt;&lt;span&gt;(Benches BenchSimple.cpp)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;target_link_libraries&lt;&#x2F;span&gt;&lt;span&gt;(Benches hello benchmark::benchmark_main)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;can-kao-zi-liao&quot;&gt;参考资料&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;gitlab.com&#x2F;CLIUtils&#x2F;modern-cmake&quot;&gt;Modern CMake&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;cmake.org&#x2F;cmake&#x2F;help&#x2F;latest&#x2F;&quot;&gt;CMake Reference Documentation&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+</content>
+	</entry>
 	<entry xml:lang="zh">
 		<title>C++ Core Guidelines 命名与布局规则</title>
 		<published>2020-12-20T00:30:45+00:00</published>

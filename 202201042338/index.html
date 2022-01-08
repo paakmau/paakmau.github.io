@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>泊谋</title>
+
+      
+
+      
+          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+    
+        
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io">
+                                <span itemprop="name">主页
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
+                                <span itemprop="name">分类
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
+                                <span itemprop="name">标签
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
+                                <span itemprop="name">GitHub
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">现代 CMake 项目的正确姿势</h1>
+        <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>12 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2022-01-04
+</span>
+    </header>
+    <div itemprop="articleBody">
+      <p>本文总结了现代 CMake 项目实践中的一些经验。</p>
+<span id="continue-reading"></span>
+<p>这里贴一个比较完善的模板项目。</p>
+<p><a href="https://github.com/paakmau/modern-cmake-template">Modern CMake Template</a></p>
+<h2 id="zhi-ding-cmake-ban-ben">指定 CMake 版本</h2>
+<p>首先需要在根目录的 CMakeLists.txt 中指定项目所需的 CMake 版本。
+下面这个例子指定项目所需的 CMake 最低版本为 3.15。</p>
+<pre data-lang="cmake" style="background-color:#2b303b;color:#c0c5ce;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span style="color:#96b5b4;">cmake_minimum_required</span><span>(</span><span style="color:#bf616a;">VERSION </span><span>3.15)
+</span></code></pre>
+<p>在 3.12 之后，CMake 还支持指定最高版本。
+例如下面的例子不仅指定了最低版本为 3.15，还指定了最高为 3.21。</p>
+<pre data-lang="cmake" style="background-color:#2b303b;color:#c0c5ce;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span style="color:#96b5b4;">cmake_minimum_required</span><span>(</span><span style="color:#bf616a;">VERSION </span><span>3.15...3.21)
+</span></code></pre>
+<p>不过 CMake 大版本中的小版本应该都是向下兼容的，所以要求不高的情况下也可以仅指定最低版本。</p>
+<h2 id="project">Project</h2>
+<p>我觉得没什么好说的，可以直接看示例。</p>
+<pre data-lang="cmake" style="background-color:#2b303b;color:#c0c5ce;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span style="color:#96b5b4;">project</span><span>(
+</span><span>  hello
+</span><span>  </span><span style="color:#bf616a;">VERSION </span><span>0.0.1
+</span><span>  DESCRIPTION &quot;</span><span style="color:#a3be8c;">A simple hello world</span><span>&quot;
+</span><span>  </span><span style="color:#bf616a;">LANGUAGES </span><span>CXX)
+</span></code></pre>
+<h2 id="target">Target</h2>
+<p>一个基于 CMake 的构建系统是由若干个逻辑上的 Target 组织起来的。
+每个 Target 对应到一个可执行文件或一个类库，又或者是包含一些自定义命令的自定义 Target。</p>
+<h2 id="executable">Executable</h2>
+<p>一个 executable target 最后构建的产物是一个可执行文件。</p>
+<pre data-lang="cmake" style="background-color:#2b303b;color:#c0c5ce;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span style="color:#96b5b4;">add_executable</span><span>(hello src/hello.cpp include/hello.h)
+</span></code></pre>
+<p>上面这个例子中，hello 既是目标名，也是最终构建出的可执行文件的名称。
+而紧随其后的 hello.cpp 和 hello.h 则是它的源文件和头文件。
+实际上头文件并不需要添加在目标中，因为在编译目标时，CMake 只是把这些文件一起传递给编译器，编译器只会编译源文件，会直接忽略掉这些头文件。
+但是有个问题是某些 IDE 会读取目标中的文件，如果不把头文件一起添加进去，它们可能会被 IDE 忽略。
+因此仍然建议把头文件添加进目标中。</p>
+<h2 id="library">Library</h2>
+<p>一个 library target 最后构建的产物是一个类库。</p>
+<pre data-lang="cmake" style="background-color:#2b303b;color:#c0c5ce;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span style="color:#96b5b4;">add_library</span><span>(hello src/hello.cpp include/hello.h)
+</span></code></pre>
+<p>同样的，hello 既是目标名，也是编译出的类库不含扩展名和 lib 前缀的文件名。
+至于扩展名是什么，取决于库是动态库还是静态库，当然也跟操作系统有关。</p>
+<p>如果不手动指定，默认是静态库。
+如果想修改默认行为，可以使用 CMake 提供的 <a href="https://cmake.org/cmake/help/latest/variable/BUILD_SHARED_LIBS.html#variable:BUILD_SHARED_LIBS">BUILD_SHARED_LIBS</a> 全局变量。
+不过我们也可以显式指定静态库，这样就不会受到 <code>BUILD_SHARED_LIBS</code> 影响。</p>
+<pre data-lang="cmake" style="background-color:#2b303b;color:#c0c5ce;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span style="color:#96b5b4;">add_library</span><span>(hello </span><span style="color:#bf616a;">STATIC </span><span>src/hello.cpp include/hello.h)
+</span></code></pre>
+<p>对于普通的类库，STATIC 可以换成 SHARED 和 MODULE。
+前两个分别是静态链接和动态链接。
+MODULE 则是不会在构建时链接，但是运行时可能通过类似 dlopen 的函数加载。</p>
+<p>特别的，我们可以用 INTERFACE 指定一个 header-only 的类库，它不需要编译。</p>
+<p>更特别的，我们可以用 ALIAS 为一个 library target 添加别名。
+常见的情况是我们会用它来给目标套上一个命名空间。</p>
+<h2 id="zi-dong-tian-jia-wen-jian">自动添加文件</h2>
+<p>问题来了，源文件很多我不想一个一个手写怎么办？
+CMake 提供了一个命令，可以找出某个目录下的所有源文件，扔进一个变量里。
+那么我们上面的例子就可以写成这样。</p>
+<pre data-lang="cmake" style="background-color:#2b303b;color:#c0c5ce;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span style="color:#96b5b4;">aux_source_directory</span><span>(src SOURCE_LIST)
+</span><span style="color:#96b5b4;">add_executable</span><span>(hello ${</span><span style="color:#bf616a;">SOURCE_LIST</span><span>} include/hello.h)
+</span></code></pre>
+<p>那么问题又来了，头文件怎么办？
+很遗憾 CMake 没有找头文件的命令。
+那我们只能使用 file 命令手动找了。
+最后可以写成这样。</p>
+<pre data-lang="cmake" style="background-color:#2b303b;color:#c0c5ce;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span style="color:#96b5b4;">file</span><span>(</span><span style="color:#bf616a;">GLOB </span><span>HEADER_LIST include/*.h)
+</span><span style="color:#96b5b4;">aux_source_directory</span><span>(src SOURCE_LIST)
+</span><span style="color:#96b5b4;">add_executable</span><span>(hello ${</span><span style="color:#bf616a;">SOURCE_LIST</span><span>} ${</span><span style="color:#bf616a;">HEADER_LIST</span><span>})
+</span></code></pre>
+<p>但是需要注意，根据<a href="https://cmake.org/cmake/help/latest/command/file.html#filesystem">文档</a>，CMake 不提倡使用 GLOB 或者 aux_source_directory 来自动添加文件。
+因为在新增或删除文件时，CMakeLists.txt 没有发生改变，于是 CMake 也就无法自动重新生成构建系统。
+没错，也就是说，正确的做法是像最开始那样手动添加每一个文件。
+是的，这非常的离谱。
+不过有些 IDE 会自动处理这些问题，勇敢无畏的程序员也可以很轻松地手动重新生成。
+所以我认为这也不是太大的问题。</p>
+<h2 id="zhi-ding-tou-wen-jian-mu-lu">指定头文件目录</h2>
+<p>对于这个目标，我们可以指定它的头文件目录。
+这个目录会在编译的时候被用到。</p>
+<pre data-lang="cmake" style="background-color:#2b303b;color:#c0c5ce;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span style="color:#96b5b4;">target_include_directories</span><span>(hello </span><span style="color:#bf616a;">PUBLIC </span><span>include)
+</span></code></pre>
+<p>提一下 PUBLIC、PRIVATE 和 INTERFACE 的区别。
+PUBLIC 的目录会被暴露给链接到该目标的其他目标，对于 executable target 而言 PUBLIC 是没有意义的。
+PRIVATE 则是该目标的私有头文件目录。
+INTERFACE 则是会暴露给其他目标，但不会用于该目标的编译，一般只用于 header-only 的类库。
+具体来说， PUBLIC 和 PRIVATE 产生 <a href="https://cmake.org/cmake/help/latest/prop_tgt/INCLUDE_DIRECTORIES.html#prop_tgt:INCLUDE_DIRECTORIES">INCLUDE_DIRECTORIES</a> 属性，该属性最终传递给编译器；PUBLIC 和 INTERFACE 会产生 <a href="https://cmake.org/cmake/help/latest/prop_tgt/INTERFACE_INCLUDE_DIRECTORIES.html#prop_tgt:INTERFACE_INCLUDE_DIRECTORIES">INTERFACE_INCLUDE_DIRECTORIES</a> 属性，最终传递给依赖该目标的其他目标。</p>
+<h2 id="lian-jie-lei-ku">链接类库</h2>
+<p>这个功能非常重要，链接一个类库，就可以得到它的 PUBLIC 头文件，在编译后也会链接到这个类库。
+链接也分为 PUBLIC 和 PRIVATE，区别在于链接是否会传递。</p>
+<pre data-lang="cmake" style="background-color:#2b303b;color:#c0c5ce;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span style="color:#96b5b4;">target_link_libraries</span><span>(other_target </span><span style="color:#bf616a;">PRIVATE </span><span>hello)
+</span></code></pre>
+<h2 id="find-package">find_package</h2>
+<p>我们在需要一些外部库的时候，可能会使用系统包管理来直接安装，比如直接用 apt 安装 glm。
+这些库或者发行版的维护者可能会提供 CMake 支持。
+这个时候我们只需要使用 find_package 命令就能把这些外部库导入成一个目标了。</p>
+<pre data-lang="cmake" style="background-color:#2b303b;color:#c0c5ce;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span style="color:#96b5b4;">find_package</span><span>(glm </span><span style="color:#bf616a;">REQUIRED</span><span>)
+</span><span style="color:#96b5b4;">target_link_libraries</span><span>(hello </span><span style="color:#bf616a;">PRIVATE </span><span>glm::glm)
+</span></code></pre>
+<h2 id="an-zhuang">安装</h2>
+<p>那么对于自己实现的可执行文件或类库，我们也可以使用 CMake 来配置安装。</p>
+<p>首先我们要修改一下头文件目录的指定。
+因为头文件目录的相对路径在构建与安装中是不同的。
+于是我们使用 BUILD_INTERFACE 与 INSTALL_INTERFACE 来区分对待构建与安装情况下的头文件目录。
+有一点类似条件编译，构造时我们使用 CMAKE_CURRENT_SOURCE_DIR 变量找到头文件目录，安装时我们直接相对于安装前缀找到头文件目录的路径。</p>
+<pre data-lang="cmake" style="background-color:#2b303b;color:#c0c5ce;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span style="color:#96b5b4;">target_include_directories</span><span>(
+</span><span>  hello </span><span style="color:#bf616a;">PUBLIC
+</span><span>  $&lt;</span><span style="color:#bf616a;">BUILD_INTERFACE</span><span>:${</span><span style="color:#bf616a;">CMAKE_CURRENT_SOURCE_DIR</span><span>}/</span><span style="color:#bf616a;">include</span><span>&gt;
+</span><span>  $&lt;</span><span style="color:#bf616a;">INSTALL_INTERFACE</span><span>:</span><span style="color:#bf616a;">include</span><span>&gt;)
+</span></code></pre>
+<p>然后我们安装类库编译出来的二进制文件。</p>
+<p>其中 EXPORT 是用于支持 find_package 的。
+它必须写在其他的选项之前。
+但是它不会直接安装具体的 export 文件，我们需要再写一个 install(EXPORT) 命令来完成它，具体见后文。</p>
+<pre data-lang="cmake" style="background-color:#2b303b;color:#c0c5ce;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span style="color:#96b5b4;">install</span><span>(
+</span><span>  </span><span style="color:#bf616a;">TARGETS </span><span>hello
+</span><span>  </span><span style="color:#bf616a;">EXPORT </span><span>helloConfig
+</span><span>  </span><span style="color:#bf616a;">ARCHIVE
+</span><span>  </span><span style="color:#bf616a;">LIBRARY
+</span><span>  </span><span style="color:#bf616a;">RUNTIME</span><span>)
+</span></code></pre>
+<p>ARCHIVE 基本上是静态库，默认安装在 lib 中；LIBRARY 基本上是动态库，默认安装在 lib 中；RUNTIME 基本上是可执行文件，默认安装在 bin 中。</p>
+<p>需要注意的是，头文件我们需要手动把头文件的目录安装到指定路径下，一般是 include。</p>
+<pre data-lang="cmake" style="background-color:#2b303b;color:#c0c5ce;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span style="color:#96b5b4;">install</span><span>(</span><span style="color:#bf616a;">DIRECTORY </span><span>include </span><span style="color:#bf616a;">DESTINATION </span><span>include)
+</span></code></pre>
+<p>接下来我们安装 export 文件，这样就能支持其他项目使用 find_package 导入我们的目标了。</p>
+<pre data-lang="cmake" style="background-color:#2b303b;color:#c0c5ce;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span style="color:#96b5b4;">install</span><span>(
+</span><span>  </span><span style="color:#bf616a;">EXPORT </span><span>helloConfig
+</span><span>  </span><span style="color:#bf616a;">DESTINATION </span><span>lib/cmake/hello
+</span><span>  NAMESPACE hello::
+</span><span>  </span><span style="color:#bf616a;">FILE </span><span>helloConfig.cmake)
+</span></code></pre>
+<p>不过要注意一下，这个命令给我们的目标加上了命名空间，所以导入的目标名应该是 hello::hello。
+另外，有一些奇妙的流派可能会更喜欢用下划线而不是冒号。</p>
+<p>最后我们创建并安装包的版本文件。</p>
+<pre data-lang="cmake" style="background-color:#2b303b;color:#c0c5ce;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span style="color:#b48ead;">include</span><span>(CMakePackageConfigHelpers)
+</span><span>
+</span><span style="color:#bf616a;">write_basic_package_version_file</span><span>(
+</span><span>  helloConfigVersion.cmake
+</span><span>  </span><span style="color:#bf616a;">COMPATIBILITY </span><span>AnyNewerVersion)
+</span><span>
+</span><span style="color:#96b5b4;">install</span><span>(
+</span><span>  </span><span style="color:#bf616a;">FILES </span><span>&quot;$</span><span style="color:#a3be8c;">{</span><span style="color:#bf616a;">PROJECT_BINARY_DIR</span><span style="color:#a3be8c;">}/helloConfigVersion.cmake</span><span>&quot;
+</span><span>  </span><span style="color:#bf616a;">DESTINATION </span><span>lib/cmake/hello)
+</span></code></pre>
+<p>对于 write_basic_package_version_file 命令，如果不指定 VERSION 参数，默认会使用 PROJECT_VERSION，但是如果项目的版本也没有指定，CMake 就会报错。</p>
+<p>另外提一嘴，如果需要安装的库使用 find_package 依赖了系统中其他外部库，这个时候就比较复杂了。
+我们就不能简单的直接导出最终的 helloConfig.cmake，需要先导出一个 helloTargets.cmake。
+还要写一个 <code>.in</code> 文件，在里面导入依赖，再引入这个 helloTargets.cmake。
+使用 configure_file 命令根据这个 <code>.in</code> 文件生成最终的 helloConfig.cmake，才可以安装它。
+这个东西非常折磨，虽然说我们可以不使用系统提供的库，但是有时候可怜的程序员会陷入纠结，比如 boost。
+有的外部库还提供了一些清奇的思路，比如 vulkan 就是在程序运行时动态加载的。</p>
+<h2 id="fetchcontent">FetchContent</h2>
+<p>之前说的都是把库安装到系统中，但是库的版本不好控制。
+于是我们考虑直接把库的指定版本下载下来。
+这是 CMake 原生支持的比较没那么折磨的导入外部库的一种方式了。</p>
+<p>比如导入 Google Benchmark 就可以像这样。</p>
+<pre data-lang="cmake" style="background-color:#2b303b;color:#c0c5ce;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span style="color:#bf616a;">FetchContent_Declare</span><span>(
+</span><span>  googlebenchmark
+</span><span>  </span><span style="color:#bf616a;">GIT_REPOSITORY </span><span>https://github.com/google/benchmark.git
+</span><span>  </span><span style="color:#bf616a;">GIT_TAG </span><span>v1.6.0)
+</span><span style="color:#96b5b4;">set</span><span>(</span><span style="color:#bf616a;">BENCHMARK_ENABLE_TESTING </span><span>OFF </span><span style="color:#bf616a;">CACHE </span><span style="color:#b48ead;">BOOL </span><span>&quot;&quot; </span><span style="color:#bf616a;">FORCE</span><span>)
+</span><span style="color:#96b5b4;">set</span><span>(</span><span style="color:#bf616a;">BENCHMARK_ENABLE_INSTALL </span><span>OFF </span><span style="color:#bf616a;">CACHE </span><span style="color:#b48ead;">BOOL </span><span>&quot;&quot; </span><span style="color:#bf616a;">FORCE</span><span>)
+</span><span style="color:#bf616a;">FetchContent_MakeAvailable</span><span>(googlebenchmark)
+</span></code></pre>
+<p>需要注意就是这样下载下来经常需要把测试和安装关掉，不然你会很痛苦。</p>
+<p>接下来正常链接就可以了。</p>
+<pre data-lang="cmake" style="background-color:#2b303b;color:#c0c5ce;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span style="color:#96b5b4;">add_executable</span><span>(Benches BenchSimple.cpp)
+</span><span style="color:#96b5b4;">target_link_libraries</span><span>(Benches hello benchmark::benchmark_main)
+</span></code></pre>
+<h2 id="can-kao-zi-liao">参考资料</h2>
+<p><a href="https://gitlab.com/CLIUtils/modern-cmake">Modern CMake</a></p>
+<p><a href="https://cmake.org/cmake/help/latest/">CMake Reference Documentation</a></p>
+
+    </div>
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                    Published by 何泊谋
+                
+                
+                    
+                    in <a href="https://paakmau.github.io/categories/c/">C++</a>
+                
+                
+                    and
+                    tagged
+                    
+                        <a href="https://paakmau.github.io/tags/c/">C++</a>
+                        
+                            
+                                
+                                    and
+                                
+                            
+                        
+                    
+                        <a href="https://paakmau.github.io/tags/cmake/">CMake</a>
+                        
+                            
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+    </body>
+
+</html>

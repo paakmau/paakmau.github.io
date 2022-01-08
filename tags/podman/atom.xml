@@ -58,7 +58,7 @@
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;xiu-gai-sudoers&quot;&gt;修改 sudoers&lt;&#x2F;h2&gt;
 &lt;p&gt;有一个莫名其妙的问题是，minikube 本身不需要 sudo 权限，Podman 也可以不需要，但是奇怪的是启动 minikube 的时候会去跑 rootfull 的 Podman。
-我看到有人提了这个 issue，应该是短时间内无法解决。
+我看到有人提了这个 &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;kubernetes&#x2F;minikube&#x2F;issues&#x2F;8719&quot;&gt;issue&lt;&#x2F;a&gt;，应该还需要一段时间解决。
 官方文档则是建议修改 &lt;code&gt;&#x2F;etc&#x2F;sudoers&lt;&#x2F;code&gt; 为 &lt;code&gt;podman&lt;&#x2F;code&gt; 命令配置 sudo 免密。
 于是我不想深究这个问题，我决定直接配置所有的命令都 sudo 免密。&lt;&#x2F;p&gt;
 &lt;p&gt;于是打开 &lt;code&gt;&#x2F;etc&#x2F;sudoers&lt;&#x2F;code&gt;，找到 &lt;code&gt;sudo&lt;&#x2F;code&gt; 的用户组并配置免密。

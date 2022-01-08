@@ -85,7 +85,7 @@ sudo mkdir /lib/modules
 ## 修改 sudoers
 
 有一个莫名其妙的问题是，minikube 本身不需要 sudo 权限，Podman 也可以不需要，但是奇怪的是启动 minikube 的时候会去跑 rootfull 的 Podman。
-我看到有人提了这个 issue，应该是短时间内无法解决。
+我看到有人提了这个 [issue](https://github.com/kubernetes/minikube/issues/8719)，应该还需要一段时间解决。
 官方文档则是建议修改 `/etc/sudoers` 为 `podman` 命令配置 sudo 免密。
 于是我不想深究这个问题，我决定直接配置所有的命令都 sudo 免密。
 

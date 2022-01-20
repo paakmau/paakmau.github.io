@@ -1,5 +1,5 @@
 +++
-title = "UE4 TaskGraph 学习笔记「下」 源码浅析"
+title = "UE4 TaskGraph 学习笔记 源码浅析"
 date = 2020-03-22 20:52:18
 slug = "202003222052"
 
@@ -8,7 +8,7 @@ tags = ["图论", "并发", "拓扑排序"]
 categories = ["游戏开发"]
 +++
 
-接下来阅读 TaskGraph 的源码来了解其实现细节
+跟随本文阅读 TaskGraph 的源码来了解其实现细节
 
 <!-- more -->
 

@@ -59,7 +59,7 @@
 
 <article itemscope itemtype="http://schema.org/BlogPosting">
     <header>
-        <h1 itemprop="headline">UE4 TaskGraph 学习笔记「下」 源码浅析</h1>
+        <h1 itemprop="headline">UE4 TaskGraph 学习笔记 源码浅析</h1>
         <span class="muted">
     <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
          width="16" height="16" fill="none" stroke="currentcolor"
@@ -78,7 +78,7 @@
 </span>
     </header>
     <div itemprop="articleBody">
-      <p>接下来阅读 TaskGraph 的源码来了解其实现细节</p>
+      <p>跟随本文阅读 TaskGraph 的源码来了解其实现细节</p>
 <span id="continue-reading"></span><h2 id="taskgraph-shi-xian-gai-gua">TaskGraph 实现概括</h2>
 <p>首先是线程管理。我们创建的 TGraphTask 并不能直接运行，需要把它交给某个 FTaskThreadBase 对象来控制执行。这个 FTaskThreadBase 可以理解为一个线程，可以把很多个 TGraphTask 交给他，它会依次执行这些任务（当然也要满足依赖）</p>
 <p>另外注意到我们可以为 TGraphTask 指定想要让他执行的线程，于是我们发现对于游戏中的每一个线程都会产生一个 FTaskThreadBase 对象，这个对象持有他所对应的线程的指针。我们创建的 TGraphTask 对象会被交给对应的 FTaskThreadBase 对象，从而在正确的线程上执行</p>

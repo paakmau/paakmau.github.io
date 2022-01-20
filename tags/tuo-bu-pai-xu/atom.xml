@@ -8,12 +8,12 @@
 	<updated>2020-03-22T20:52:18+00:00</updated>
 	<id>https://paakmau.github.io/tags/tuo-bu-pai-xu/atom.xml</id>
 	<entry xml:lang="zh">
-		<title>UE4 TaskGraph 学习笔记「下」 源码浅析</title>
+		<title>UE4 TaskGraph 学习笔记 源码浅析</title>
 		<published>2020-03-22T20:52:18+00:00</published>
 		<updated>2020-03-22T20:52:18+00:00</updated>
 		<link href="https://paakmau.github.io/202003222052/" type="text/html"/>
 		<id>https://paakmau.github.io/202003222052/</id>
-		<content type="html">&lt;p&gt;接下来阅读 TaskGraph 的源码来了解其实现细节&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;跟随本文阅读 TaskGraph 的源码来了解其实现细节&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;taskgraph-shi-xian-gai-gua&quot;&gt;TaskGraph 实现概括&lt;&#x2F;h2&gt;
 &lt;p&gt;首先是线程管理。我们创建的 TGraphTask 并不能直接运行，需要把它交给某个 FTaskThreadBase 对象来控制执行。这个 FTaskThreadBase 可以理解为一个线程，可以把很多个 TGraphTask 交给他，它会依次执行这些任务（当然也要满足依赖）&lt;&#x2F;p&gt;
 &lt;p&gt;另外注意到我们可以为 TGraphTask 指定想要让他执行的线程，于是我们发现对于游戏中的每一个线程都会产生一个 FTaskThreadBase 对象，这个对象持有他所对应的线程的指针。我们创建的 TGraphTask 对象会被交给对应的 FTaskThreadBase 对象，从而在正确的线程上执行&lt;&#x2F;p&gt;
@@ -88,7 +88,7 @@
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>UE4 TaskGraph 学习笔记「上」 介绍与实践</title>
+		<title>UE4 TaskGraph 学习笔记 介绍与实践</title>
 		<published>2020-03-19T13:21:19+00:00</published>
 		<updated>2020-03-19T13:21:19+00:00</updated>
 		<link href="https://paakmau.github.io/202003191321/" type="text/html"/>

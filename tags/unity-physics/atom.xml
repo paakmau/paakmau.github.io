@@ -8,7 +8,7 @@
 	<updated>2020-03-15T22:07:48+00:00</updated>
 	<id>https://paakmau.github.io/tags/unity-physics/atom.xml</id>
 	<entry xml:lang="zh">
-		<title>Unity Physics 学习笔记「七」 精确的碰撞管理</title>
+		<title>Unity Physics 学习笔记 第七章 精确的碰撞管理</title>
 		<published>2020-03-15T22:07:48+00:00</published>
 		<updated>2020-03-15T22:07:48+00:00</updated>
 		<link href="https://paakmau.github.io/202003152207/" type="text/html"/>
@@ -57,7 +57,7 @@
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Unity Physics 学习笔记「六」 触发器事件与碰撞事件</title>
+		<title>Unity Physics 学习笔记 第六章 触发器事件与碰撞事件</title>
 		<published>2020-02-11T01:01:00+00:00</published>
 		<updated>2020-02-11T01:01:00+00:00</updated>
 		<link href="https://paakmau.github.io/202002110101/" type="text/html"/>
@@ -197,7 +197,7 @@ DetectCollisionSystem.cs&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Unity Physics 学习笔记「五」 核心组件详解</title>
+		<title>Unity Physics 学习笔记 第五章 核心组件详解</title>
 		<published>2020-02-08T21:55:32+00:00</published>
 		<updated>2020-02-08T21:55:32+00:00</updated>
 		<link href="https://paakmau.github.io/202002082155/" type="text/html"/>
@@ -238,7 +238,7 @@ DetectCollisionSystem.cs&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Unity Physics 学习笔记「四」 碰撞查询</title>
+		<title>Unity Physics 学习笔记 第四章 碰撞查询</title>
 		<published>2020-02-07T23:39:46+00:00</published>
 		<updated>2020-02-07T23:39:46+00:00</updated>
 		<link href="https://paakmau.github.io/202002072339/" type="text/html"/>
@@ -524,7 +524,7 @@ DetectCollisionSystem.cs&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Unity Physics 学习笔记「三」 刚体的运动状态</title>
+		<title>Unity Physics 学习笔记 第三章 刚体的运动状态</title>
 		<published>2020-02-05T23:42:00+00:00</published>
 		<updated>2020-02-05T23:42:00+00:00</updated>
 		<link href="https://paakmau.github.io/202002052342/" type="text/html"/>
@@ -611,7 +611,7 @@ DetectCollisionSystem.cs&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Unity Physics 学习笔记「二」 配置刚体与碰撞器属性</title>
+		<title>Unity Physics 学习笔记 第二章 配置刚体与碰撞器属性</title>
 		<published>2020-02-04T23:56:57+00:00</published>
 		<updated>2020-02-04T23:56:57+00:00</updated>
 		<link href="https://paakmau.github.io/202002042356/" type="text/html"/>
@@ -654,7 +654,7 @@ Static，静态。无法运动的刚体，可以理解为质量无穷大&lt;&#x2
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Unity Physics 学习笔记「一」 简要介绍与 HelloWorld</title>
+		<title>Unity Physics 学习笔记 第一章 简要介绍与 HelloWorld</title>
 		<published>2020-02-04T22:09:43+00:00</published>
 		<updated>2020-02-04T22:09:43+00:00</updated>
 		<link href="https://paakmau.github.io/202002042209/" type="text/html"/>

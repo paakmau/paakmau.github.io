@@ -692,7 +692,7 @@
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Vulkan 画三角形「十」 着色器模块</title>
+		<title>Vulkan 画三角形 第十章 着色器模块</title>
 		<published>2020-09-12T00:28:34+00:00</published>
 		<updated>2020-09-12T00:28:34+00:00</updated>
 		<link href="https://paakmau.github.io/202009120028/" type="text/html"/>
@@ -797,7 +797,7 @@
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Vulkan 画三角形「九」 渲染路径</title>
+		<title>Vulkan 画三角形 第九章 渲染路径</title>
 		<published>2020-09-11T14:30:21+00:00</published>
 		<updated>2020-09-11T14:30:21+00:00</updated>
 		<link href="https://paakmau.github.io/202009111430/" type="text/html"/>
@@ -939,7 +939,7 @@
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Vulkan 画三角形「八」 图形流水线介绍</title>
+		<title>Vulkan 画三角形 第八章 图形流水线介绍</title>
 		<published>2020-09-08T23:50:04+00:00</published>
 		<updated>2020-09-08T23:50:04+00:00</updated>
 		<link href="https://paakmau.github.io/202009082350/" type="text/html"/>
@@ -970,7 +970,7 @@
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Vulkan 画三角形「七」 创建图像视图</title>
+		<title>Vulkan 画三角形 第七章 创建图像视图</title>
 		<published>2020-09-08T23:04:35+00:00</published>
 		<updated>2020-09-08T23:04:35+00:00</updated>
 		<link href="https://paakmau.github.io/202009082304/" type="text/html"/>
@@ -1039,7 +1039,7 @@
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Vulkan 画三角形「六」 创建交换链</title>
+		<title>Vulkan 画三角形 第六章 创建交换链</title>
 		<published>2020-09-08T20:23:43+00:00</published>
 		<updated>2020-09-08T20:23:43+00:00</updated>
 		<link href="https://paakmau.github.io/202009082023/" type="text/html"/>
@@ -1200,7 +1200,7 @@
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Vulkan 画三角形「五」 创建逻辑设备</title>
+		<title>Vulkan 画三角形 第五章 创建逻辑设备</title>
 		<published>2020-09-08T00:19:25+00:00</published>
 		<updated>2020-09-08T00:19:25+00:00</updated>
 		<link href="https://paakmau.github.io/202009080019/" type="text/html"/>
@@ -1274,7 +1274,7 @@
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Vulkan 画三角形「四」 选取物理设备</title>
+		<title>Vulkan 画三角形 第四章 选取物理设备</title>
 		<published>2020-09-06T00:59:35+00:00</published>
 		<updated>2020-09-06T00:59:35+00:00</updated>
 		<link href="https://paakmau.github.io/202009060059/" type="text/html"/>
@@ -1417,7 +1417,7 @@
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Vulkan 画三角形「三」 创建窗体表面</title>
+		<title>Vulkan 画三角形 第三章 创建窗体表面</title>
 		<published>2020-09-05T23:02:56+00:00</published>
 		<updated>2020-09-05T23:02:56+00:00</updated>
 		<link href="https://paakmau.github.io/202009052302/" type="text/html"/>
@@ -1457,7 +1457,7 @@
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Vulkan 画三角形「二」 创建 Vulkan 实例</title>
+		<title>Vulkan 画三角形 第二章 创建 Vulkan 实例</title>
 		<published>2020-09-04T20:49:09+00:00</published>
 		<updated>2020-09-04T20:49:09+00:00</updated>
 		<link href="https://paakmau.github.io/202009042049/" type="text/html"/>
@@ -1550,7 +1550,7 @@
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Vulkan 画三角形「一」 概要与环境配置</title>
+		<title>Vulkan 画三角形 第一章 概要与环境配置</title>
 		<published>2020-09-03T20:23:56+00:00</published>
 		<updated>2020-09-03T20:23:56+00:00</updated>
 		<link href="https://paakmau.github.io/202009032023/" type="text/html"/>
@@ -2218,12 +2218,12 @@ Decal 纹理：木头上大的裂纹或图案&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>UE4 TaskGraph 学习笔记「下」 源码浅析</title>
+		<title>UE4 TaskGraph 学习笔记 源码浅析</title>
 		<published>2020-03-22T20:52:18+00:00</published>
 		<updated>2020-03-22T20:52:18+00:00</updated>
 		<link href="https://paakmau.github.io/202003222052/" type="text/html"/>
 		<id>https://paakmau.github.io/202003222052/</id>
-		<content type="html">&lt;p&gt;接下来阅读 TaskGraph 的源码来了解其实现细节&lt;&#x2F;p&gt;
+		<content type="html">&lt;p&gt;跟随本文阅读 TaskGraph 的源码来了解其实现细节&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;taskgraph-shi-xian-gai-gua&quot;&gt;TaskGraph 实现概括&lt;&#x2F;h2&gt;
 &lt;p&gt;首先是线程管理。我们创建的 TGraphTask 并不能直接运行，需要把它交给某个 FTaskThreadBase 对象来控制执行。这个 FTaskThreadBase 可以理解为一个线程，可以把很多个 TGraphTask 交给他，它会依次执行这些任务（当然也要满足依赖）&lt;&#x2F;p&gt;
 &lt;p&gt;另外注意到我们可以为 TGraphTask 指定想要让他执行的线程，于是我们发现对于游戏中的每一个线程都会产生一个 FTaskThreadBase 对象，这个对象持有他所对应的线程的指针。我们创建的 TGraphTask 对象会被交给对应的 FTaskThreadBase 对象，从而在正确的线程上执行&lt;&#x2F;p&gt;
@@ -2298,7 +2298,7 @@ Decal 纹理：木头上大的裂纹或图案&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>UE4 TaskGraph 学习笔记「上」 介绍与实践</title>
+		<title>UE4 TaskGraph 学习笔记 介绍与实践</title>
 		<published>2020-03-19T13:21:19+00:00</published>
 		<updated>2020-03-19T13:21:19+00:00</updated>
 		<link href="https://paakmau.github.io/202003191321/" type="text/html"/>
@@ -2371,7 +2371,7 @@ TestTaskA 的代码如下，另外一个可以仿照着写&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Unity Physics 学习笔记「七」 精确的碰撞管理</title>
+		<title>Unity Physics 学习笔记 第七章 精确的碰撞管理</title>
 		<published>2020-03-15T22:07:48+00:00</published>
 		<updated>2020-03-15T22:07:48+00:00</updated>
 		<link href="https://paakmau.github.io/202003152207/" type="text/html"/>
@@ -2420,7 +2420,7 @@ TestTaskA 的代码如下，另外一个可以仿照着写&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Unity Physics 学习笔记「六」 触发器事件与碰撞事件</title>
+		<title>Unity Physics 学习笔记 第六章 触发器事件与碰撞事件</title>
 		<published>2020-02-11T01:01:00+00:00</published>
 		<updated>2020-02-11T01:01:00+00:00</updated>
 		<link href="https://paakmau.github.io/202002110101/" type="text/html"/>
@@ -2560,7 +2560,7 @@ DetectCollisionSystem.cs&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Unity Physics 学习笔记「五」 核心组件详解</title>
+		<title>Unity Physics 学习笔记 第五章 核心组件详解</title>
 		<published>2020-02-08T21:55:32+00:00</published>
 		<updated>2020-02-08T21:55:32+00:00</updated>
 		<link href="https://paakmau.github.io/202002082155/" type="text/html"/>
@@ -2601,7 +2601,7 @@ DetectCollisionSystem.cs&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Unity Physics 学习笔记「四」 碰撞查询</title>
+		<title>Unity Physics 学习笔记 第四章 碰撞查询</title>
 		<published>2020-02-07T23:39:46+00:00</published>
 		<updated>2020-02-07T23:39:46+00:00</updated>
 		<link href="https://paakmau.github.io/202002072339/" type="text/html"/>
@@ -2887,7 +2887,7 @@ DetectCollisionSystem.cs&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Unity Physics 学习笔记「三」 刚体的运动状态</title>
+		<title>Unity Physics 学习笔记 第三章 刚体的运动状态</title>
 		<published>2020-02-05T23:42:00+00:00</published>
 		<updated>2020-02-05T23:42:00+00:00</updated>
 		<link href="https://paakmau.github.io/202002052342/" type="text/html"/>
@@ -2974,7 +2974,7 @@ DetectCollisionSystem.cs&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Unity Physics 学习笔记「二」 配置刚体与碰撞器属性</title>
+		<title>Unity Physics 学习笔记 第二章 配置刚体与碰撞器属性</title>
 		<published>2020-02-04T23:56:57+00:00</published>
 		<updated>2020-02-04T23:56:57+00:00</updated>
 		<link href="https://paakmau.github.io/202002042356/" type="text/html"/>
@@ -3017,7 +3017,7 @@ Static，静态。无法运动的刚体，可以理解为质量无穷大&lt;&#x2
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Unity Physics 学习笔记「一」 简要介绍与 HelloWorld</title>
+		<title>Unity Physics 学习笔记 第一章 简要介绍与 HelloWorld</title>
 		<published>2020-02-04T22:09:43+00:00</published>
 		<updated>2020-02-04T22:09:43+00:00</updated>
 		<link href="https://paakmau.github.io/202002042209/" type="text/html"/>

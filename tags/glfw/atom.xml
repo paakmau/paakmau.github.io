@@ -8,7 +8,7 @@
 	<updated>2020-09-05T23:02:56+00:00</updated>
 	<id>https://paakmau.github.io/tags/glfw/atom.xml</id>
 	<entry xml:lang="zh">
-		<title>Vulkan 画三角形「三」 创建窗体表面</title>
+		<title>Vulkan 画三角形 第三章 创建窗体表面</title>
 		<published>2020-09-05T23:02:56+00:00</published>
 		<updated>2020-09-05T23:02:56+00:00</updated>
 		<link href="https://paakmau.github.io/202009052302/" type="text/html"/>
@@ -48,7 +48,7 @@
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Vulkan 画三角形「二」 创建 Vulkan 实例</title>
+		<title>Vulkan 画三角形 第二章 创建 Vulkan 实例</title>
 		<published>2020-09-04T20:49:09+00:00</published>
 		<updated>2020-09-04T20:49:09+00:00</updated>
 		<link href="https://paakmau.github.io/202009042049/" type="text/html"/>
@@ -141,7 +141,7 @@
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Vulkan 画三角形「一」 概要与环境配置</title>
+		<title>Vulkan 画三角形 第一章 概要与环境配置</title>
 		<published>2020-09-03T20:23:56+00:00</published>
 		<updated>2020-09-03T20:23:56+00:00</updated>
 		<link href="https://paakmau.github.io/202009032023/" type="text/html"/>

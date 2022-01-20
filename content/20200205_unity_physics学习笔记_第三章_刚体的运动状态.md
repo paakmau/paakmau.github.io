@@ -1,5 +1,5 @@
 +++
-title = "Unity Physics 学习笔记「三」 刚体的运动状态"
+title = "Unity Physics 学习笔记 第三章 刚体的运动状态"
 date = 2020-02-05 23:42:00
 slug = "202002052342"
 

@@ -1,5 +1,5 @@
 +++
-title = "Unity Physics 学习笔记「六」 触发器事件与碰撞事件"
+title = "Unity Physics 学习笔记 第六章 触发器事件与碰撞事件"
 date = 2020-02-11 01:01:00
 slug = "202002110101"
 

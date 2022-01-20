@@ -1,5 +1,5 @@
 +++
-title = "Unity Physics 学习笔记「七」 精确的碰撞管理"
+title = "Unity Physics 学习笔记 第七章 精确的碰撞管理"
 date = 2020-03-15 22:07:48
 slug = "202003152207"
 

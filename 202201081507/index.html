@@ -118,7 +118,7 @@
 </span><span>    </span><span style="color:#bf616a;">add_includedirs</span><span>(&quot;</span><span style="color:#a3be8c;">include</span><span>&quot;, { </span><span style="color:#a3be8c;">public </span><span>= </span><span style="color:#d08770;">true </span><span>})
 </span><span>    </span><span style="color:#bf616a;">add_headerfiles</span><span>(&quot;</span><span style="color:#a3be8c;">include/(HelloLib/*.h)</span><span>&quot;)
 </span></code></pre>
-<p>注意， add_includedirs 是用于添加头文件搜索路径，而 add_headerfiles 则是需要安装的头文件。</p>
+<p>注意， <code>add_includedirs</code> 是用于添加头文件搜索路径，而 <code>add_headerfiles</code> 则是需要安装的头文件。</p>
 <h2 id="mu-biao-yi-lai">目标依赖</h2>
 <p>如果需要 Hello 目标依赖 HelloLib 这个类库目标并暴露类库的公有头文件，那就可以这样写。</p>
 <pre data-lang="lua" style="background-color:#2b303b;color:#c0c5ce;" class="language-lua "><code class="language-lua" data-lang="lua"><span style="color:#bf616a;">target</span><span>(&quot;</span><span style="color:#a3be8c;">Hello</span><span>&quot;)
@@ -135,11 +135,11 @@
 <pre data-lang="lua" style="background-color:#2b303b;color:#c0c5ce;" class="language-lua "><code class="language-lua" data-lang="lua"><span style="color:#bf616a;">add_requires</span><span>(&quot;</span><span style="color:#a3be8c;">gtest 1.11.0</span><span>&quot;)
 </span></code></pre>
 <p>其次定义一个 Tests 的可执行文件目标。
-其中我们用 set_default 把这个目标设为非默认目标，这样就把这个测试跟类库本身区分开。
+其中我们用 <code>set_default</code> 把这个目标设为非默认目标，这样就把这个测试跟类库本身区分开。
 链接到我们需要测试的 HelloLib。
 添加测试的源文件。
 在 Windows 下我们需要特判一下加一个链接器标记，因为我们不想手写 main 函数，直接用 gtest 的类库里提供的。
-用 add_package 把 gtest 这个包链接到我们的 Tests 目标上。</p>
+用 <code>add_package</code> 把 gtest 这个包链接到我们的 Tests 目标上。</p>
 <pre data-lang="lua" style="background-color:#2b303b;color:#c0c5ce;" class="language-lua "><code class="language-lua" data-lang="lua"><span style="color:#bf616a;">target</span><span>(&quot;</span><span style="color:#a3be8c;">Tests</span><span>&quot;)
 </span><span>    </span><span style="color:#bf616a;">set_kind</span><span>(&quot;</span><span style="color:#a3be8c;">binary</span><span>&quot;)
 </span><span>    </span><span style="color:#bf616a;">set_default</span><span>(</span><span style="color:#d08770;">false</span><span>)

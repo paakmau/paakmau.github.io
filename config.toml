@@ -2,7 +2,7 @@
 base_url = "https://paakmau.github.io"
 
 # The site title and description; used in feeds by default.
-title = "泊谋"
+title = "寂虑"
 description = "随便写写，开心就行。"
 
 # The default language; used in feeds.
@@ -40,4 +40,4 @@ after_dark_menu = [
     { url = "$BASE_URL/tags", name = "标签" },
     { url = "https://github.com/paakmau", name = "GitHub" },
 ]
-after_dark_title = "泊谋"
+after_dark_title = "寂虑"

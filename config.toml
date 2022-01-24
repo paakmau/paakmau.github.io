@@ -3,7 +3,7 @@ base_url = "https://paakmau.github.io"
 
 # The site title and description; used in feeds by default.
 title = "寂虑"
-description = "随便写写，开心就行。"
+description = "记一下我都整了些什么玩意。"
 
 # The default language; used in feeds.
 default_language = "zh"

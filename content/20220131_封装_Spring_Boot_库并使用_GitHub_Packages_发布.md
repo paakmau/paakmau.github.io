@@ -235,7 +235,7 @@ dependencies {
 这个时候，请移步[讨论区](https://github.community/t/download-from-github-package-registry-without-authentication/14407/106)。
 可以看到因为这个问题 GitHub 已经被吐槽了两年多了。
 其中有一个 GitHub 员工提出的比较好的解决方案是配置一个机器人账号并直接明文使用它的 `read:packages` 权限的 token。
-不过也有邪恶的人指出可以发布到的 GitLab 上，因为 GitLab 对公开的依赖包的访问不需要授权，并且还给出了详细的示例。
+不过也有邪恶的人指出可以发布到 GitLab 上，因为 GitLab 对公开的依赖包的访问不需要授权，并且还给出了详细的示例。
 
 ## 完整实例
 

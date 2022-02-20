@@ -208,7 +208,7 @@ jobs:
 
 最后我们就可以在其他项目中引入这个依赖了。
 
-```build.gradle
+```gradle
 repositories {
     maven {
         url = uri("https://maven.pkg.github.com/owner/lib-spring-boot-starter")

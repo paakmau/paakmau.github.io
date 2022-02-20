@@ -192,7 +192,7 @@
 这个时候，请移步&lt;a href=&quot;https:&#x2F;&#x2F;github.community&#x2F;t&#x2F;download-from-github-package-registry-without-authentication&#x2F;14407&#x2F;106&quot;&gt;讨论区&lt;&#x2F;a&gt;。
 可以看到因为这个问题 GitHub 已经被吐槽了两年多了。
 其中有一个 GitHub 员工提出的比较好的解决方案是配置一个机器人账号并直接明文使用它的 &lt;code&gt;read:packages&lt;&#x2F;code&gt; 权限的 token。
-不过也有邪恶的人指出可以发布到的 GitLab 上，因为 GitLab 对公开的依赖包的访问不需要授权，并且还给出了详细的示例。&lt;&#x2F;p&gt;
+不过也有邪恶的人指出可以使用 GitHub Actions 发布到 GitLab 上，因为 GitLab 对公开的依赖包的访问不需要授权，并且还给出了详细的示例。&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;wan-zheng-shi-li&quot;&gt;完整实例&lt;&#x2F;h2&gt;
 &lt;p&gt;最近比较忙，有空再补上去。&lt;&#x2F;p&gt;
 </content>

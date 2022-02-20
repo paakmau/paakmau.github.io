@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh">
-	<title>寂虑 - Java</title>
+	<title>寂虑 - Gradle</title>
 	<subtitle>记一下我都整了些什么玩意。</subtitle>
-	<link href="https://paakmau.github.io/tags/java/atom.xml" rel="self" type="application/atom+xml"/>
+	<link href="https://paakmau.github.io/tags/gradle/atom.xml" rel="self" type="application/atom+xml"/>
   <link href="https://paakmau.github.io"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
 	<updated>2022-01-31T21:33:14+00:00</updated>
-	<id>https://paakmau.github.io/tags/java/atom.xml</id>
+	<id>https://paakmau.github.io/tags/gradle/atom.xml</id>
 	<entry xml:lang="zh">
 		<title>封装 Spring Boot 库并使用 GitHub Packages 发布</title>
 		<published>2022-01-31T21:33:14+00:00</published>
@@ -195,106 +195,6 @@
 不过也有邪恶的人指出可以发布到的 GitLab 上，因为 GitLab 对公开的依赖包的访问不需要授权，并且还给出了详细的示例。&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;wan-zheng-shi-li&quot;&gt;完整实例&lt;&#x2F;h2&gt;
 &lt;p&gt;最近比较忙，有空再补上去。&lt;&#x2F;p&gt;
-</content>
-	</entry>
-	<entry xml:lang="zh">
-		<title>VS Code 写一切 Maven 与 Spring Boot</title>
-		<published>2019-12-11T15:13:45+00:00</published>
-		<updated>2019-12-11T15:13:45+00:00</updated>
-		<link href="https://paakmau.github.io/201912111513/" type="text/html"/>
-		<id>https://paakmau.github.io/201912111513/</id>
-		<content type="html">&lt;p&gt;VSC 用于开发 Maven 项目已经比较成熟&lt;br &#x2F;&gt;
-直接打开就行，没什么好说的&lt;&#x2F;p&gt;
-&lt;p&gt;因此本文介绍 VS Code 创建与调试 Spring Boot 项目&lt;&#x2F;p&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;java-huan-jing-pei-zhi&quot;&gt;Java 环境配置&lt;&#x2F;h2&gt;
-&lt;p&gt;问题不大，xjb 装就行了&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;xu-yao-an-zhuang-de-vs-code-cha-jian&quot;&gt;需要安装的 VS Code 插件&lt;&#x2F;h2&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;Java Extension Pack&lt;&#x2F;p&gt;
-&lt;&#x2F;li&gt;
-&lt;li&gt;
-&lt;p&gt;Spring Boot Extension Pack&lt;&#x2F;p&gt;
-&lt;&#x2F;li&gt;
-&lt;&#x2F;ul&gt;
-&lt;h2 id=&quot;chuang-jian-spring-boot-xiang-mu&quot;&gt;创建 Spring Boot 项目&lt;&#x2F;h2&gt;
-&lt;p&gt;按下 Shift-Cmd-P 打开命令面板，输入 spring 搜索相关命令&lt;br &#x2F;&gt;
-选择 Spring Initializr: Generate a Maven Project&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-145332@2x-1024x342.png&quot; alt=&quot;Gen Maven project&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
-&lt;p&gt;他会依次让你选择语言、Group Id、Artifact Id、Spring Boot 版本、依赖等，除了依赖我们一路回车&lt;br &#x2F;&gt;
-为了方便，依赖只选一个 Spring Web&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-150634@2x-1024x202.png&quot; alt=&quot;Specify lang&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-150641@2x-1024x127.png&quot; alt=&quot;Input Group Id&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-150649@2x-1024x121.png&quot; alt=&quot;Input Artifact Id&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-150659@2x-1024x241.png&quot; alt=&quot;Specify Spring Boot version&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-150304@2x-1024x620.png&quot; alt=&quot;Select deps&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
-&lt;p&gt;接下来选择项目生成路径&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-150514@2x-1024x600.png&quot; alt=&quot;Select project directory&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
-&lt;p&gt;然后他会在路径下生成一个 demo 文件夹&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;gong-zuo-qu-pei-zhi&quot;&gt;工作区配置&lt;&#x2F;h2&gt;
-&lt;p&gt;用 VSC 打开这个文件夹，按 F5 运行，配置选择 Java&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-151044@2x-1024x451.png&quot; alt=&quot;Select env&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
-&lt;p&gt;他会生成 launch.json，跟上一篇 Java 的类似，用于确定主类，就不贴了&lt;br &#x2F;&gt;
-可以把 Current File 的那条删了，因为暂时不需要单文件运行&lt;&#x2F;p&gt;
-&lt;p&gt;按 F5 运行，跑起来了&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-151311@2x-1024x285.png&quot; alt=&quot;Result&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
-</content>
-	</entry>
-	<entry xml:lang="zh">
-		<title>VS Code 写一切 Java 单文件</title>
-		<published>2019-12-11T00:44:50+00:00</published>
-		<updated>2019-12-11T00:44:50+00:00</updated>
-		<link href="https://paakmau.github.io/201912110044/" type="text/html"/>
-		<id>https://paakmau.github.io/201912110044/</id>
-		<content type="html">&lt;p&gt;VSC 可以直接编译调试单个 Java 源文件（虽然没什么用）&lt;&#x2F;p&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;java-huan-jing-pei-zhi&quot;&gt;Java 环境配置&lt;&#x2F;h2&gt;
-&lt;p&gt;与 VSC 无关，但提一下 mac 的配置&lt;&#x2F;p&gt;
-&lt;p&gt;macOS 下用 brew 装 OpenJDK&lt;&#x2F;p&gt;
-&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; brew install openjdk
-&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;然后根据提示创建符号链接以便系统找到 JDK&lt;&#x2F;p&gt;
-&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; sudo ln&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -sfn&lt;&#x2F;span&gt;&lt;span&gt; &#x2F;usr&#x2F;local&#x2F;opt&#x2F;openjdk&#x2F;libexec&#x2F;openjdk.jdk \
-&lt;&#x2F;span&gt;&lt;span&gt;   &#x2F;Library&#x2F;Java&#x2F;JavaVirtualMachines&#x2F;openjdk.jdk
-&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;h2 id=&quot;xu-yao-an-zhuang-de-vs-code-cha-jian&quot;&gt;需要安装的 VS Code 插件&lt;&#x2F;h2&gt;
-&lt;ul&gt;
-&lt;li&gt;Java Extension Pack&lt;&#x2F;li&gt;
-&lt;&#x2F;ul&gt;
-&lt;h2 id=&quot;gong-zuo-qu-pei-zhi&quot;&gt;工作区配置&lt;&#x2F;h2&gt;
-&lt;p&gt;打开一个空文件夹，在其中创建一个文件 Hello.java，编辑内容如下&lt;&#x2F;p&gt;
-&lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Hello &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public static void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;[] &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;args&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;System&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;.out.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Hello World&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;);
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
-&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;按 F5 直接运行，VSC 自动生成 launch.json，有时候会失败，可以重试几遍&lt;br &#x2F;&gt;
-内容大概如下&lt;&#x2F;p&gt;
-&lt;pre data-lang=&quot;json&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-json &quot;&gt;&lt;code class=&quot;language-json&quot; data-lang=&quot;json&quot;&gt;&lt;span&gt;{
-&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Use IntelliSense to learn about possible attributes.
-&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Hover to view descriptions of existing attributes.
-&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; For more information, visit: https:&#x2F;&#x2F;go.microsoft.com&#x2F;fwlink&#x2F;?linkid=830387
-&lt;&#x2F;span&gt;&lt;span&gt;    &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;version&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;0.2.0&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
-&lt;&#x2F;span&gt;&lt;span&gt;    &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;configurations&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: [
-&lt;&#x2F;span&gt;&lt;span&gt;        {
-&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;java&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
-&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Debug (Launch) - Current File&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
-&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;request&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;launch&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
-&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;mainClass&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;${file}&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
-&lt;&#x2F;span&gt;&lt;span&gt;        },
-&lt;&#x2F;span&gt;&lt;span&gt;        {
-&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;java&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
-&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Debug (Launch)-Hello&amp;lt;java_single_file_9fc652ff&amp;gt;&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
-&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;request&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;launch&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
-&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;mainClass&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Hello&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
-&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;projectName&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;java_single_file_9fc652ff&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
-&lt;&#x2F;span&gt;&lt;span&gt;        }
-&lt;&#x2F;span&gt;&lt;span&gt;    ]
-&lt;&#x2F;span&gt;&lt;span&gt;}
-&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;解释：它配置了两个 launch，一个是以当前打开的 Java 源文件作为主类调试，一个是以 Hello.java 作为主类进行调试&lt;&#x2F;p&gt;
-&lt;p&gt;切回 Hello.java 按 F5，得到如下输出&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;hebomou.top&#x2F;wp-content&#x2F;uploads&#x2F;2019&#x2F;12&#x2F;QQ20191221-004354@2x.png&quot; alt=&quot;Result&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 </content>
 	</entry>
 </feed>

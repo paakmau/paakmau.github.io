@@ -5,8 +5,198 @@
 	<link href="https://paakmau.github.io/tags/maven/atom.xml" rel="self" type="application/atom+xml"/>
   <link href="https://paakmau.github.io"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
-	<updated>2019-12-11T15:13:45+00:00</updated>
+	<updated>2022-01-31T21:33:14+00:00</updated>
 	<id>https://paakmau.github.io/tags/maven/atom.xml</id>
+	<entry xml:lang="zh">
+		<title>封装 Spring Boot 库并使用 GitHub Packages 发布</title>
+		<published>2022-01-31T21:33:14+00:00</published>
+		<updated>2022-01-31T21:33:14+00:00</updated>
+		<link href="https://paakmau.github.io/202201312133/" type="text/html"/>
+		<id>https://paakmau.github.io/202201312133/</id>
+		<content type="html">&lt;p&gt;后端写多了一些常用的东西可以封装成一个库，最好还能发布到什么地方直接加个仓库就能加依赖。
+因为我的项目大部分是托管在 GitHub 上的，于是可以考虑直接使用 GitHub Packages 进行发布。&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;这样的好处在于，源码与发布都集中在同一个地方，方便管理。
+&lt;del&gt;更重要的是还不用担心自己的屎山污染中央仓库从而受到他人的谴责。&lt;&#x2F;del&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;需要注意一点是，如果库需要依赖 Spring Boot，那么打包的和发布都会跟普通的 Java 库有一点区别。&lt;&#x2F;p&gt;
+&lt;p&gt;另外，本文使用的构建工具是 Gradle。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;can-kao-zi-liao&quot;&gt;参考资料&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;spring.io&#x2F;guides&#x2F;gs&#x2F;multi-module&#x2F;&quot;&gt;Creating a Multi Module Project&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;piotrminkowski.com&#x2F;2020&#x2F;08&#x2F;04&#x2F;guide-to-building-spring-boot-library&#x2F;&quot;&gt;Guide to building Spring Boot library&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;docs.spring.io&#x2F;spring-boot&#x2F;docs&#x2F;2.6.3&#x2F;reference&#x2F;html&#x2F;features.html#features.developing-auto-configuration&quot;&gt;Creating Your Own Auto-configuration&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;docs.github.com&#x2F;en&#x2F;actions&#x2F;publishing-packages&#x2F;publishing-java-packages-with-gradle&quot;&gt;Publishing Java packages with Gradle&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;feng-zhuang-dong-ji&quot;&gt;封装动机&lt;&#x2F;h2&gt;
+&lt;p&gt;考虑这样一个典中典场景：假设我是开外包公司的，我们要做好几个换壳应用，但是对于不同的甲方，这些应用会有一些功能上的小修改，而且根据报价和需求还会有功能上的删减。
+&lt;del&gt;于是显而易见每次外包就直接 fork 下来摁改就完事了。&lt;&#x2F;del&gt;
+合理的做法是把核心封装成若干个高度内聚的库，根据甲方的需要引相应库的依赖就好了。
+接下来我们又发现，普通的 Maven 库不够爽，每次我还是要在 Spring Boot 应用里面手动配置一遍 Service 啥的再把库里的东西拉出来搞七搞八。
+那么我们就考虑再开一个库，这个库依赖那个普通的 Maven 库，里面直接配置好 Spring Bean。
+只要引入这个库的依赖，我们就可以在应用里面直接自动注入这些 Bean 了。
+这个基于 Spring Boot 的库我们就称之为启动器（starter）。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;ji-yu-spring-boot-de-ku&quot;&gt;基于 Spring Boot 的库&lt;&#x2F;h2&gt;
+&lt;p&gt;一个基于 Spring Boot 的库会有一些坑。
+我们需要依赖 Spring Boot 的 Gradle 插件，但是这个插件默认执行 bootJar 任务，这个东西要求我们提供一个 main 函数，显然一个库不应当有 main 函数。
+于是我们需要把 Spring Boot 的 Gradle 插件禁用掉，但是仍然保留它的引入，因为我们需要它的依赖管理功能。&lt;&#x2F;p&gt;
+&lt;p&gt;最后大致的 &lt;code&gt;build.gradle&lt;&#x2F;code&gt; 就会长这样。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;gradle&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-gradle &quot;&gt;&lt;code class=&quot;language-gradle&quot; data-lang=&quot;gradle&quot;&gt;&lt;span&gt;plugins {
+&lt;&#x2F;span&gt;&lt;span&gt;    id &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;org.springframework.boot&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39; version &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;2.6.3&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39; apply &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;false
+&lt;&#x2F;span&gt;&lt;span&gt;    id &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;io.spring.dependency-management&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39; version &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;1.0.11.RELEASE&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span&gt;    id &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;java&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;group = &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;com.example&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span&gt;version = &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;0.0.1-SNAPSHOT&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span&gt;sourceCompatibility = &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;11&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;repositories {
+&lt;&#x2F;span&gt;&lt;span&gt;    mavenCentral()
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;dependencyManagement {
+&lt;&#x2F;span&gt;&lt;span&gt;    imports {
+&lt;&#x2F;span&gt;&lt;span&gt;        mavenBom &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;org.springframework.boot.gradle.plugin.SpringBootPlugin&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;BOM_COORDINATES
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;dependencies {
+&lt;&#x2F;span&gt;&lt;span&gt;    implementation &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;org.springframework.boot:spring-boot-starter&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span&gt;    testImplementation &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;org.springframework.boot:spring-boot-starter-test&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;至于其他人说的禁用 bootJar 任务，启用 jar 任务应该也是可行的，但是在官方文档中被改成了现在这个版本。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;qi-dong-qi&quot;&gt;启动器&lt;&#x2F;h2&gt;
+&lt;p&gt;根据 Spring 的官方文档，一个自定义的启动器可以包含两个东西：自动配置模块和启动器模块。&lt;&#x2F;p&gt;
+&lt;p&gt;自动配置模块其实就是把需要集成到 Spring 上的 Maven 库提供的接口封装进 Spring Bean 里。
+当然一般还需要定义一些可选的配置键。
+此外，还可以定义可选依赖，比如有时候对于同一个功能我们会封装一个适配器，可以在若干个外部依赖中选择一个作为具体实现。&lt;&#x2F;p&gt;
+&lt;p&gt;而启动器模块只是引入了自动配置模块，当然还有普通的 Maven 库，此外还引入了自动配置模块提供的可选依赖中一些最常用的依赖库。
+简单地说就是启动器模块就只是做默认的依赖引入，从而实现开箱即用。
+用户在使用的时候也可以不选择这个启动器模块，而是自行引入自动配置模块以及其他的可选依赖，也就是自定义的启动器模块。&lt;&#x2F;p&gt;
+&lt;p&gt;不过这两个模块的划分并不是必要的，因为有些时候我们发现我们的库可能根本没那么复杂，也不需要什么可选依赖，那么官方的推荐做法就是把自动配置模块直接合并到启动器模块中。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;ming-ming&quot;&gt;命名&lt;&#x2F;h2&gt;
+&lt;p&gt;对于需要集成到 Spring 上的 Maven 库，自动配置模块我们命名为 xxx-spring-boot-autoconfigure，启动器模块我们命名为 xxx-spring-boot-starter。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;pei-zhi-jian&quot;&gt;配置键&lt;&#x2F;h2&gt;
+&lt;p&gt;在使用这个库的时候我们可能希望进行一些自定义配置，比如对于一些网络服务我们可能会想要修改默认的监听端口。
+这个时候我们就要自定义一些配置键，这样我们的 Spring Bean 就能够读取到它们。
+我们可以使用 &lt;code&gt;@ConfigurationProperties&lt;&#x2F;code&gt; 来定义配置键。
+需要注意的是一定要给每个属性添加 javadoc 以保证文档化。
+另外根据实践经验，配置键的前缀应当使用自定义的命名空间，不要跟 Spring Boot 用的命名空间揉在一起。&lt;&#x2F;p&gt;
+&lt;p&gt;比如在下面这个例子中，我们添加了一个 &lt;code&gt;lib.port&lt;&#x2F;code&gt; 的整型配置键，默认值为 8082。
+于是我们就可以使用 &lt;code&gt;@Autowired&lt;&#x2F;code&gt; 在其他 Bean 中自动注入这个东西获取配置键的实际值。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;@&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ConfigurationProperties&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;lib&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;LibProperties &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;**
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;     * The listen port.
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;     *&#x2F;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;    private int port = 8082;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;    &#x2F;&#x2F; getters&#x2F;setters ...
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;另外需要注意的是，我们需要生成一些元数据供 IDE 识别，这样 IDE 才能在 application properties 文件中对这些自定义的配置键提供自动补齐等支持。
+于是我们需要引入 spring-boot-configuration-processor 依赖。
+使用下面的例子引入即可，具体的解释可以参考 &lt;a href=&quot;https:&#x2F;&#x2F;docs.spring.io&#x2F;spring-boot&#x2F;docs&#x2F;2.6.3&#x2F;reference&#x2F;html&#x2F;configuration-metadata.html#configuration-metadata.annotation-processor&quot;&gt;Generating Your Own Metadata by Using the Annotation Processor&lt;&#x2F;a&gt;。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;gradle&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-gradle &quot;&gt;&lt;code class=&quot;language-gradle&quot; data-lang=&quot;gradle&quot;&gt;&lt;span&gt;dependencies {
+&lt;&#x2F;span&gt;&lt;span&gt;    annotationProcessor &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;org.springframework.boot:spring-boot-configuration-processor&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;compileJava.dependsOn(processResources)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;然而有一个遗憾的事情是，如果你在 VS Code 上用 Gradle，这个操作是无效的。
+因为 VS Code 的 Java 插件用 Eclipse JDT 来提供 Gradle 支持，然后 Gradle 不对 Eclipse 提供注解处理配置的支持。
+可以参考这个 &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;spring-projects&#x2F;sts4&#x2F;issues&#x2F;585&quot;&gt;issue&lt;&#x2F;a&gt;。
+不过也有好消息，如果用 Maven 的话就没有这个问题。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;fa-bu-yu-yin-ru&quot;&gt;发布与引入&lt;&#x2F;h2&gt;
+&lt;p&gt;一般依赖包发布的地方跟代码托管的地方保持一致会令人觉得很爽。
+好消息是 GitHub 和 GitLab 都集成了免费的 Maven 仓库。
+于是这里我们以发布到 GitHub Packages 为例。&lt;&#x2F;p&gt;
+&lt;p&gt;首先看一下构建脚本，也就是 &lt;code&gt;build.gradle&lt;&#x2F;code&gt;，大概长这样。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;gradle&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-gradle &quot;&gt;&lt;code class=&quot;language-gradle&quot; data-lang=&quot;gradle&quot;&gt;&lt;span&gt;plugins {
+&lt;&#x2F;span&gt;&lt;span&gt;  ...
+&lt;&#x2F;span&gt;&lt;span&gt;  id &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;maven-publish&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;publishing {
+&lt;&#x2F;span&gt;&lt;span&gt;  ...
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  repositories {
+&lt;&#x2F;span&gt;&lt;span&gt;    maven {
+&lt;&#x2F;span&gt;&lt;span&gt;      name = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;GitHubPackages&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;      url = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;https:&#x2F;&#x2F;maven.pkg.github.com&#x2F;owner&#x2F;lib-spring-boot-starter&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;      credentials {
+&lt;&#x2F;span&gt;&lt;span&gt;        username = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;System&lt;&#x2F;span&gt;&lt;span&gt;.getenv(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;GITHUB_ACTOR&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
+&lt;&#x2F;span&gt;&lt;span&gt;        password = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;System&lt;&#x2F;span&gt;&lt;span&gt;.getenv(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;GITHUB_TOKEN&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
+&lt;&#x2F;span&gt;&lt;span&gt;      }
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;  }
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;注意到这个 &lt;code&gt;url&lt;&#x2F;code&gt; 参数前缀是固定的，然后 owner 可以是个人的用户名也可以是组织名，后面跟着就是项目名。&lt;&#x2F;p&gt;
+&lt;p&gt;然后写一个持续集成脚本就行了，命名为 &lt;code&gt;publish.yml&lt;&#x2F;code&gt;。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;yml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-yml &quot;&gt;&lt;code class=&quot;language-yml&quot; data-lang=&quot;yml&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# This workflow uses actions that are not certified by GitHub.
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# They are provided by a third-party and are governed by
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# separate terms of service, privacy policy, and support
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# documentation.
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Publish package to GitHub Packages
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;on&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;push&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;tags&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;      - &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;v[0-9]+.[0-9]+.[0-9]+&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;jobs&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;publish&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;runs-on&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;ubuntu-latest 
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;permissions&lt;&#x2F;span&gt;&lt;span&gt;: 
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;contents&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;read
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;packages&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;write 
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;steps&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;      - &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;uses&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;actions&#x2F;checkout@v2
+&lt;&#x2F;span&gt;&lt;span&gt;      - &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;uses&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;actions&#x2F;setup-java@v2
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;with&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;java-version&lt;&#x2F;span&gt;&lt;span&gt;: &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;11&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span&gt;          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;distribution&lt;&#x2F;span&gt;&lt;span&gt;: &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;adopt&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span&gt;      - &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Validate Gradle wrapper
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;uses&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;gradle&#x2F;wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
+&lt;&#x2F;span&gt;&lt;span&gt;      - &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Publish package
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;uses&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;gradle&#x2F;gradle-build-action@4137be6a8bf7d7133955359dbd952c0ca73b1021
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;with&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;arguments&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;publish
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;env&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GITHUB_TOKEN&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;${{ secrets.GITHUB_TOKEN }}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;这个东西的触发条件是有满足 &lt;code&gt;v[0-9]+.[0-9]+.[0-9]+&lt;&#x2F;code&gt; 正则表达式的 tag 的 push。&lt;&#x2F;p&gt;
+&lt;p&gt;最后我们就可以在其他项目中引入这个依赖了。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;build.gradle&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-build.gradle &quot;&gt;&lt;code class=&quot;language-build.gradle&quot; data-lang=&quot;build.gradle&quot;&gt;&lt;span&gt;repositories {
+&lt;&#x2F;span&gt;&lt;span&gt;    maven {
+&lt;&#x2F;span&gt;&lt;span&gt;        url = uri(&amp;quot;https:&#x2F;&#x2F;maven.pkg.github.com&#x2F;owner&#x2F;lib-spring-boot-starter&amp;quot;)
+&lt;&#x2F;span&gt;&lt;span&gt;        credentials {
+&lt;&#x2F;span&gt;&lt;span&gt;            username = &amp;quot;your-name&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;            password = &amp;quot;your-token&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;        }
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;dependencies {
+&lt;&#x2F;span&gt;&lt;span&gt;    implementation &amp;#39;com.example:lib-spring-boot-starter:0.0.1-SNAPSHOT&amp;#39;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;首先就是添加 GitHub Packages 提供的 Maven 仓库。
+同样注意到这个 &lt;code&gt;url&lt;&#x2F;code&gt; 参数跟我们发布时是相同的。
+但是根据 GitHub 员工所述，项目名并不重要，直接用 &lt;code&gt;owner&#x2F;*&lt;&#x2F;code&gt; 即可，注意 &lt;code&gt;*&lt;&#x2F;code&gt; 是必要的。
+另外 &lt;code&gt;password&lt;&#x2F;code&gt; 参数不能使用真实的密码，应当在用户的设置界面申请一个具有 &lt;code&gt;read:packages&lt;&#x2F;code&gt; 权限的 token，并使用这个 token。
+尽管这个 token 只具有访问依赖包的权限，但是最好还是使用 actions secrets 避免明文挂在仓库中。
+最后正常引入依赖就行了。&lt;&#x2F;p&gt;
+&lt;p&gt;于是问题来了，我的仓库是开源的，发布的依赖包也是公开的，为什么访问一个公开的依赖包也需要身份认证？
+这个时候，请移步&lt;a href=&quot;https:&#x2F;&#x2F;github.community&#x2F;t&#x2F;download-from-github-package-registry-without-authentication&#x2F;14407&#x2F;106&quot;&gt;讨论区&lt;&#x2F;a&gt;。
+可以看到因为这个问题 GitHub 已经被吐槽了两年多了。
+其中有一个 GitHub 员工提出的比较好的解决方案是配置一个机器人账号并直接明文使用它的 &lt;code&gt;read:packages&lt;&#x2F;code&gt; 权限的 token。
+不过也有邪恶的人指出可以发布到的 GitLab 上，因为 GitLab 对公开的依赖包的访问不需要授权，并且还给出了详细的示例。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;wan-zheng-shi-li&quot;&gt;完整实例&lt;&#x2F;h2&gt;
+&lt;p&gt;最近比较忙，有空再补上去。&lt;&#x2F;p&gt;
+</content>
+	</entry>
 	<entry xml:lang="zh">
 		<title>VS Code 写一切 Maven 与 Spring Boot</title>
 		<published>2019-12-11T15:13:45+00:00</published>

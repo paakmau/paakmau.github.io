@@ -320,6 +320,10 @@
         <lastmod>2022-01-08T15:07:52</lastmod>
     </url>
     <url>
+        <loc>https://paakmau.github.io/202201312133/</loc>
+        <lastmod>2022-01-31T21:33:14</lastmod>
+    </url>
+    <url>
         <loc>https://paakmau.github.io/categories/</loc>
     </url>
     <url>
@@ -392,7 +396,13 @@
         <loc>https://paakmau.github.io/tags/express/</loc>
     </url>
     <url>
+        <loc>https://paakmau.github.io/tags/github-packages/</loc>
+    </url>
+    <url>
         <loc>https://paakmau.github.io/tags/glfw/</loc>
+    </url>
+    <url>
+        <loc>https://paakmau.github.io/tags/gradle/</loc>
     </url>
     <url>
         <loc>https://paakmau.github.io/tags/https/</loc>

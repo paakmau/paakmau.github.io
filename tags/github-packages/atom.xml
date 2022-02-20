@@ -168,18 +168,18 @@
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;这个东西的触发条件是有满足 &lt;code&gt;v[0-9]+.[0-9]+.[0-9]+&lt;&#x2F;code&gt; 正则表达式的 tag 的 push。&lt;&#x2F;p&gt;
 &lt;p&gt;最后我们就可以在其他项目中引入这个依赖了。&lt;&#x2F;p&gt;
-&lt;pre data-lang=&quot;build.gradle&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-build.gradle &quot;&gt;&lt;code class=&quot;language-build.gradle&quot; data-lang=&quot;build.gradle&quot;&gt;&lt;span&gt;repositories {
+&lt;pre data-lang=&quot;gradle&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-gradle &quot;&gt;&lt;code class=&quot;language-gradle&quot; data-lang=&quot;gradle&quot;&gt;&lt;span&gt;repositories {
 &lt;&#x2F;span&gt;&lt;span&gt;    maven {
-&lt;&#x2F;span&gt;&lt;span&gt;        url = uri(&amp;quot;https:&#x2F;&#x2F;maven.pkg.github.com&#x2F;owner&#x2F;lib-spring-boot-starter&amp;quot;)
+&lt;&#x2F;span&gt;&lt;span&gt;        url = uri(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;https:&#x2F;&#x2F;maven.pkg.github.com&#x2F;owner&#x2F;lib-spring-boot-starter&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
 &lt;&#x2F;span&gt;&lt;span&gt;        credentials {
-&lt;&#x2F;span&gt;&lt;span&gt;            username = &amp;quot;your-name&amp;quot;
-&lt;&#x2F;span&gt;&lt;span&gt;            password = &amp;quot;your-token&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;            username = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;your-name&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;            password = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;your-token&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
 &lt;&#x2F;span&gt;&lt;span&gt;        }
 &lt;&#x2F;span&gt;&lt;span&gt;    }
 &lt;&#x2F;span&gt;&lt;span&gt;}
 &lt;&#x2F;span&gt;&lt;span&gt;
 &lt;&#x2F;span&gt;&lt;span&gt;dependencies {
-&lt;&#x2F;span&gt;&lt;span&gt;    implementation &amp;#39;com.example:lib-spring-boot-starter:0.0.1-SNAPSHOT&amp;#39;
+&lt;&#x2F;span&gt;&lt;span&gt;    implementation &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;com.example:lib-spring-boot-starter:0.0.1-SNAPSHOT&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
 &lt;&#x2F;span&gt;&lt;span&gt;}
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;首先就是添加 GitHub Packages 提供的 Maven 仓库。

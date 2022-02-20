@@ -233,18 +233,18 @@
 </span></code></pre>
 <p>这个东西的触发条件是有满足 <code>v[0-9]+.[0-9]+.[0-9]+</code> 正则表达式的 tag 的 push。</p>
 <p>最后我们就可以在其他项目中引入这个依赖了。</p>
-<pre data-lang="build.gradle" style="background-color:#2b303b;color:#c0c5ce;" class="language-build.gradle "><code class="language-build.gradle" data-lang="build.gradle"><span>repositories {
+<pre data-lang="gradle" style="background-color:#2b303b;color:#c0c5ce;" class="language-gradle "><code class="language-gradle" data-lang="gradle"><span>repositories {
 </span><span>    maven {
-</span><span>        url = uri(&quot;https://maven.pkg.github.com/owner/lib-spring-boot-starter&quot;)
+</span><span>        url = uri(&quot;</span><span style="color:#a3be8c;">https://maven.pkg.github.com/owner/lib-spring-boot-starter</span><span>&quot;)
 </span><span>        credentials {
-</span><span>            username = &quot;your-name&quot;
-</span><span>            password = &quot;your-token&quot;
+</span><span>            username = &quot;</span><span style="color:#a3be8c;">your-name</span><span>&quot;
+</span><span>            password = &quot;</span><span style="color:#a3be8c;">your-token</span><span>&quot;
 </span><span>        }
 </span><span>    }
 </span><span>}
 </span><span>
 </span><span>dependencies {
-</span><span>    implementation &#39;com.example:lib-spring-boot-starter:0.0.1-SNAPSHOT&#39;
+</span><span>    implementation &#39;</span><span style="color:#a3be8c;">com.example:lib-spring-boot-starter:0.0.1-SNAPSHOT</span><span>&#39;
 </span><span>}
 </span></code></pre>
 <p>首先就是添加 GitHub Packages 提供的 Maven 仓库。

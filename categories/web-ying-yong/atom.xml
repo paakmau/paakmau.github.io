@@ -212,6 +212,15 @@
 虽然实际项目中大部分情况下确实是这样，但是这个表述是不准确的。
 在明确资源名的情况下使用 PUT 请求就可以直接创建该资源，而针对这个资源名的多次 PUT 请求也只会对这同一个资源进行操作，因此是符合幂等的。
 因此更准确的表述应该是：POST 用于创建服务端负责分配资源名的资源，而 PUT 请求用于客户端分配或已知资源名的资源的创建和更新。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;lu-jing-bian-liang-yu-qing-qiu-can-shu&quot;&gt;路径变量与请求参数&lt;&#x2F;h2&gt;
+&lt;p&gt;路径变量与请求参数是在 URL 中传递数据的两种方式。
+它们的区别在于路径变量应当用于指定唯一的资源，而请求参数用于指定筛选资源的条件。&lt;&#x2F;p&gt;
+&lt;p&gt;使用路径变量应当能够定位到明确的资源。
+路径变量通常是 ID 或者唯一的资源名。
+如果没有该资源我们就应该返回 404 错误。&lt;&#x2F;p&gt;
+&lt;p&gt;而请求参数筛选到资源可以有多个，也可以没有。
+请求参数一般用于筛选某些字段或进行分页。
+对于找不到资源的情况我们返回一个空列表就可以了。&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;patch&quot;&gt;PATCH&lt;&#x2F;h2&gt;
 &lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;stackoverflow.com&#x2F;questions&#x2F;28459418&#x2F;use-of-put-vs-patch-methods-in-rest-api-real-life-scenarios&quot;&gt;参考资料&lt;&#x2F;a&gt;
 &lt;a href=&quot;https:&#x2F;&#x2F;williamdurand.fr&#x2F;2014&#x2F;02&#x2F;14&#x2F;please-do-not-patch-like-an-idiot&#x2F;&quot;&gt;参考资料&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;

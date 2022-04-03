@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh">
+	<title>寂虑 - 腐乳</title>
+	<subtitle>记一下我都整了些什么玩意。</subtitle>
+	<link href="https://paakmau.github.io/tags/fu-ru/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://paakmau.github.io"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2022-04-03T19:44:45+00:00</updated>
+	<id>https://paakmau.github.io/tags/fu-ru/atom.xml</id>
+	<entry xml:lang="zh">
+		<title>腐乳空心菜</title>
+		<published>2022-04-03T19:44:45+00:00</published>
+		<updated>2022-04-03T19:44:45+00:00</updated>
+		<link href="https://paakmau.github.io/202204031944/" type="text/html"/>
+		<id>https://paakmau.github.io/202204031944/</id>
+		<content type="html">&lt;p&gt;空心菜、油、盐、生抽、蒜。&lt;&#x2F;p&gt;
+&lt;p&gt;口味咸。&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;pai-suan&quot;&gt;拍蒜&lt;&#x2F;h2&gt;
+&lt;p&gt;拍一两颗蒜瓣。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;fu-ru-jiang-zhi&quot;&gt;腐乳酱汁&lt;&#x2F;h2&gt;
+&lt;p&gt;一块腐乳打碎，加点水，微量盐，微量生抽。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;chao-kong-xin-cai&quot;&gt;炒空心菜&lt;&#x2F;h2&gt;
+&lt;p&gt;中火。
+热油下蒜瓣爆香，下空心菜，炒至菜叶微皱。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;xia-fu-ru&quot;&gt;下腐乳&lt;&#x2F;h2&gt;
+&lt;p&gt;小火。
+下入腐乳酱汁，炒至空心菜茎变软，出锅。&lt;&#x2F;p&gt;
+</content>
+	</entry>
+</feed>

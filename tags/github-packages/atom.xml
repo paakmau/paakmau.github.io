@@ -194,7 +194,7 @@
 其中有一个 GitHub 员工提出的比较好的解决方案是配置一个机器人账号并直接明文使用它的 &lt;code&gt;read:packages&lt;&#x2F;code&gt; 权限的 token。
 不过也有邪恶的人指出可以使用 GitHub Actions 发布到 GitLab 上，因为 GitLab 对公开的依赖包的访问不需要授权，并且还给出了详细的示例。&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;wan-zheng-shi-li&quot;&gt;完整实例&lt;&#x2F;h2&gt;
-&lt;p&gt;最近比较忙，有空再补上去。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;paakmau&#x2F;spring-boot-starter-template&quot;&gt;https:&#x2F;&#x2F;github.com&#x2F;paakmau&#x2F;spring-boot-starter-template&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
 </content>
 	</entry>
 </feed>

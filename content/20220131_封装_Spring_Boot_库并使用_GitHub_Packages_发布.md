@@ -239,4 +239,4 @@ dependencies {
 
 ## 完整实例
 
-最近比较忙，有空再补上去。
+<https://github.com/paakmau/spring-boot-starter-template>

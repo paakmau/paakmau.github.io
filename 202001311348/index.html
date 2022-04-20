@@ -1,84 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer-when-downgrade">
 
-      <!-- Enable responsiveness on mobile devices-->
-      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <title>Unity ECS 框架摸索 第一章 ECS 简介</title>
+    <meta name="description" content="记一下我都整了些什么玩意。">
 
-      <title>泊谋</title>
+    <link rel="stylesheet" href="https://paakmau.github.io/main.css">
 
-      
-
-      
-          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
-      
-
-      
-      
-    </head>
-
-    <body class="hack dark main container">
-        
     
-        
+
+    
+    
+</head>
+<body>
+    <a class="skip-main" href="#main">Skip to content</a>
+    <div class="container">
+        <header> 
+            <h1 class="site-header">
+                <a href="https:&#x2F;&#x2F;paakmau.github.io">泊谋</a>
+            </h1>
+            <nav>
                 
-                    <header>
-                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
-                        
-                            <a itemprop="url"
-                               class=""
-                               href="https:&#x2F;&#x2F;paakmau.github.io">
-                                <span itemprop="name">主页
-                                </span></a>
-                        
-                            <a itemprop="url"
-                               class=""
-                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
-                                <span itemprop="name">分类
-                                </span></a>
-                        
-                            <a itemprop="url"
-                               class=""
-                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
-                                <span itemprop="name">标签
-                                </span></a>
-                        
-                            <a itemprop="url"
-                               class=""
-                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
-                                <span itemprop="name">GitHub
-                                </span></a>
-                        
-                        </nav>
-                    </header>
                 
+                
+                <a  href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">分类</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">标签</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">GitHub</a>
+                
+                
+            </nav>
+        </header>
+        <main id="main" tabindex="-1">
             
-    
 
-<article itemscope itemtype="http://schema.org/BlogPosting">
+<article class="post">
     <header>
-        <h1 itemprop="headline">Unity ECS 框架摸索 第一章 ECS 简介</h1>
-        <span class="muted">
-    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
-         width="16" height="16" fill="none" stroke="currentcolor"
-         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
-        <circle cx="16" cy="16" r="14"/>
-        <path d="M16 8 L16 16 20 20"/>
-    </svg>
-    <span>6 minute read</span>
-    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
-         width="16" height="16" fill="none" stroke="currentcolor"
-         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
-        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
-    </svg>
-
-    Published: 2020-01-31
-</span>
+        <h1>Unity ECS 框架摸索 第一章 ECS 简介</h1>
     </header>
-    <div itemprop="articleBody">
-      <p>之前接触 ECS 是因为看了守望先锋的架构分析。了解了一下发现这种架构天生支持多线程，而且对缓存非常友好，似乎做联网同步也很方便，感觉这应该是个挺有前途的设计思路。</p>
+    <div class="content">
+        <p>之前接触 ECS 是因为看了守望先锋的架构分析。了解了一下发现这种架构天生支持多线程，而且对缓存非常友好，似乎做联网同步也很方便，感觉这应该是个挺有前途的设计思路。</p>
 <span id="continue-reading"></span>
 <p>这几天翻了一下 Unity 官网，看到 ECS 有文档了，例子也更新了许多，突然兴奋，准备写个 Demo 试试。顺便想记录看看 Unity 的正式版 api 能改成个什么鬼样子（大雾）</p>
 <p>本系列基于 Entities 0.5.1-preview.11，并非正式版。<br />
@@ -114,32 +82,42 @@
     </div>
 
     
-        <footer>
-            <hr>
-            <p>
-                
-                    Published by 何泊谋
-                
-                
+    <div class="article-info">
+        
+        <div class="article-date">31 January 2020</div>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
                     
-                    in <a href="https://paakmau.github.io/categories/you-xi-kai-fa/">游戏开发</a>
-                
-                
-                    and
-                    tagged
+                    <li><a href="https://paakmau.github.io/categories/you-xi-kai-fa/">游戏开发</a></li>
                     
-                        <a href="https://paakmau.github.io/tags/unity-ecs/">Unity ECS</a>
-                        
-                    
-                
-            </p>
+                </ul>
             
             
-        </footer>
-    
+                <ul class="article-tags">
+                    
+                    <li><a href="https://paakmau.github.io/tags/unity-ecs/">#Unity ECS</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
 </article>
 
 
-    </body>
-
+        </main>
+        <footer>
+            <p>
+                © 泊谋 2022<br>
+                Powered by <a target="_blank" href="https://getzola.org/">Zola</a>, Theme <a target="_blank" href="https://github.com/zbrox/anpu-zola-theme">Anpu</a>.
+            </p>
+            <p>
+                
+                
+            </p>
+        </footer>
+    </div>
+</body>
 </html>

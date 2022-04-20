@@ -1,84 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer-when-downgrade">
 
-      <!-- Enable responsiveness on mobile devices-->
-      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <title>Unity ECS 框架摸索 第六章 更灵活的筛选与遍历</title>
+    <meta name="description" content="记一下我都整了些什么玩意。">
 
-      <title>泊谋</title>
+    <link rel="stylesheet" href="https://paakmau.github.io/main.css">
 
-      
-
-      
-          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
-      
-
-      
-      
-    </head>
-
-    <body class="hack dark main container">
-        
     
-        
+
+    
+    
+</head>
+<body>
+    <a class="skip-main" href="#main">Skip to content</a>
+    <div class="container">
+        <header> 
+            <h1 class="site-header">
+                <a href="https:&#x2F;&#x2F;paakmau.github.io">泊谋</a>
+            </h1>
+            <nav>
                 
-                    <header>
-                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
-                        
-                            <a itemprop="url"
-                               class=""
-                               href="https:&#x2F;&#x2F;paakmau.github.io">
-                                <span itemprop="name">主页
-                                </span></a>
-                        
-                            <a itemprop="url"
-                               class=""
-                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
-                                <span itemprop="name">分类
-                                </span></a>
-                        
-                            <a itemprop="url"
-                               class=""
-                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
-                                <span itemprop="name">标签
-                                </span></a>
-                        
-                            <a itemprop="url"
-                               class=""
-                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
-                                <span itemprop="name">GitHub
-                                </span></a>
-                        
-                        </nav>
-                    </header>
                 
+                
+                <a  href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">分类</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">标签</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">GitHub</a>
+                
+                
+            </nav>
+        </header>
+        <main id="main" tabindex="-1">
             
-    
 
-<article itemscope itemtype="http://schema.org/BlogPosting">
+<article class="post">
     <header>
-        <h1 itemprop="headline">Unity ECS 框架摸索 第六章 更灵活的筛选与遍历</h1>
-        <span class="muted">
-    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
-         width="16" height="16" fill="none" stroke="currentcolor"
-         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
-        <circle cx="16" cy="16" r="14"/>
-        <path d="M16 8 L16 16 20 20"/>
-    </svg>
-    <span>4 minute read</span>
-    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
-         width="16" height="16" fill="none" stroke="currentcolor"
-         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
-        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
-    </svg>
-
-    Published: 2020-02-04
-</span>
+        <h1>Unity ECS 框架摸索 第六章 更灵活的筛选与遍历</h1>
     </header>
-    <div itemprop="articleBody">
-      <p>前文中我们用 IJobForEach 或者 JobComponentSystem.Entities.ForEach 都只能筛选并遍历具有特定 Component 的 Entity，但其实有更灵活且同样高效的方式</p>
+    <div class="content">
+        <p>前文中我们用 IJobForEach 或者 JobComponentSystem.Entities.ForEach 都只能筛选并遍历具有特定 Component 的 Entity，但其实有更灵活且同样高效的方式</p>
 <span id="continue-reading"></span><h2 id="entityquery">EntityQuery</h2>
 <p>Unity 提供了 EntityQuery 用于精确筛选 Entity，并且文档中提到 IJobForEach 与 JobComponentSystem.Entities.ForEach 的内部实现其实都是 EntityQuery</p>
 <h3 id="getentityquery">GetEntityQuery</h3>
@@ -164,32 +132,42 @@
     </div>
 
     
-        <footer>
-            <hr>
-            <p>
-                
-                    Published by 何泊谋
-                
-                
+    <div class="article-info">
+        
+        <div class="article-date"> 4 February 2020</div>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
                     
-                    in <a href="https://paakmau.github.io/categories/you-xi-kai-fa/">游戏开发</a>
-                
-                
-                    and
-                    tagged
+                    <li><a href="https://paakmau.github.io/categories/you-xi-kai-fa/">游戏开发</a></li>
                     
-                        <a href="https://paakmau.github.io/tags/unity-ecs/">Unity ECS</a>
-                        
-                    
-                
-            </p>
+                </ul>
             
             
-        </footer>
-    
+                <ul class="article-tags">
+                    
+                    <li><a href="https://paakmau.github.io/tags/unity-ecs/">#Unity ECS</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
 </article>
 
 
-    </body>
-
+        </main>
+        <footer>
+            <p>
+                © 泊谋 2022<br>
+                Powered by <a target="_blank" href="https://getzola.org/">Zola</a>, Theme <a target="_blank" href="https://github.com/zbrox/anpu-zola-theme">Anpu</a>.
+            </p>
+            <p>
+                
+                
+            </p>
+        </footer>
+    </div>
+</body>
 </html>

@@ -1,84 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer-when-downgrade">
 
-      <!-- Enable responsiveness on mobile devices-->
-      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <title>Vulkan 画三角形 第十章 着色器模块</title>
+    <meta name="description" content="记一下我都整了些什么玩意。">
 
-      <title>泊谋</title>
+    <link rel="stylesheet" href="https://paakmau.github.io/main.css">
 
-      
-
-      
-          <link rel="stylesheet" href="https://paakmau.github.io/site.css">
-      
-
-      
-      
-    </head>
-
-    <body class="hack dark main container">
-        
     
-        
+
+    
+    
+</head>
+<body>
+    <a class="skip-main" href="#main">Skip to content</a>
+    <div class="container">
+        <header> 
+            <h1 class="site-header">
+                <a href="https:&#x2F;&#x2F;paakmau.github.io">泊谋</a>
+            </h1>
+            <nav>
                 
-                    <header>
-                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
-                        
-                            <a itemprop="url"
-                               class=""
-                               href="https:&#x2F;&#x2F;paakmau.github.io">
-                                <span itemprop="name">主页
-                                </span></a>
-                        
-                            <a itemprop="url"
-                               class=""
-                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">
-                                <span itemprop="name">分类
-                                </span></a>
-                        
-                            <a itemprop="url"
-                               class=""
-                               href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">
-                                <span itemprop="name">标签
-                                </span></a>
-                        
-                            <a itemprop="url"
-                               class=""
-                               href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">
-                                <span itemprop="name">GitHub
-                                </span></a>
-                        
-                        </nav>
-                    </header>
                 
+                
+                <a  href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">分类</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">标签</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">GitHub</a>
+                
+                
+            </nav>
+        </header>
+        <main id="main" tabindex="-1">
             
-    
 
-<article itemscope itemtype="http://schema.org/BlogPosting">
+<article class="post">
     <header>
-        <h1 itemprop="headline">Vulkan 画三角形 第十章 着色器模块</h1>
-        <span class="muted">
-    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
-         width="16" height="16" fill="none" stroke="currentcolor"
-         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
-        <circle cx="16" cy="16" r="14"/>
-        <path d="M16 8 L16 16 20 20"/>
-    </svg>
-    <span>13 minute read</span>
-    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
-         width="16" height="16" fill="none" stroke="currentcolor"
-         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
-        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
-    </svg>
-
-    Published: 2020-09-12
-</span>
+        <h1>Vulkan 画三角形 第十章 着色器模块</h1>
     </header>
-    <div itemprop="articleBody">
-      <p>与早期 API 不同，Vulkan 中的着色器代码必须要以字节码的格式指定，而不是像 GLSL、HLSL 这样人类可读的语法。这种字节码格式是 SPIR-V，它可以用于 Vulkan 和 OpenCL。它是一个用来写图形与计算着色器的格式，但是现在我们只关心可用于 Vulkan 图形流水线的着色器</p>
+    <div class="content">
+        <p>与早期 API 不同，Vulkan 中的着色器代码必须要以字节码的格式指定，而不是像 GLSL、HLSL 这样人类可读的语法。这种字节码格式是 SPIR-V，它可以用于 Vulkan 和 OpenCL。它是一个用来写图形与计算着色器的格式，但是现在我们只关心可用于 Vulkan 图形流水线的着色器</p>
 <span id="continue-reading"></span>
 <p>使用字节码的优点在于 GPU 厂商自己写的编译器把着色器代码编译为原生代码会非常简单。过去的经验告诉我们，对于像是 GLSL 这样的人类可读的语法，GPU 厂商在对标准的解释上会有更大的灵活性。如果你正在写一些非常复杂的着色器，那么有可能存在这样的风险，在你的开发机上可以正常运行，但在其他 GPU 厂商提供的驱动上可能因为语法错误等问题而无法使用这些着色器。而使用简单的 SPIR-V 这样的字节码格式就可以避免这样的问题</p>
 <p>然而这并不意味着我们需要手写字节码。Khronos 已经发布了他们自己的独立于厂商的编译器，用于把 GLSL 编译为 SPIR-V。这个编译器可以验证你的着色器代码是否满足标准，然后生成一个 SPIR-V 的二进制文件，你可以把这个文件用于你自己的应用程序。你同样可以引入这个编译器作为类库，从而在运行时产生 SPIR-V，当然这不在本系列文章范围之内。尽管 glslangValidator 可以直接用来编译，但这里我们还是使用谷歌提供的 glslc。glslc 的优点在于它的参数格式与 GCC、Clang 等众所周知的编译器类似，并且添加了一些额外功能。这两个工具都已经被包含在 Vulkan SDK 中，所以我们不需要额外下载任何东西</p>
@@ -179,43 +147,44 @@
     </div>
 
     
-        <footer>
-            <hr>
-            <p>
-                
-                    Published by 何泊谋
-                
-                
+    <div class="article-info">
+        
+        <div class="article-date">12 September 2020</div>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
                     
-                    in <a href="https://paakmau.github.io/categories/you-xi-kai-fa/">游戏开发</a>
-                
-                
-                    and
-                    tagged
+                    <li><a href="https://paakmau.github.io/categories/you-xi-kai-fa/">游戏开发</a></li>
                     
-                        <a href="https://paakmau.github.io/tags/vulkan/">Vulkan</a>
-                        
-                            
-                                
-                                    and
-                                
-                            
-                        
-                    
-                        <a href="https://paakmau.github.io/tags/zhao-se-qi/">着色器</a>
-                        
-                            
-                        
-                    
-                
-            </p>
+                </ul>
             
             
-        </footer>
-    
+                <ul class="article-tags">
+                    
+                    <li><a href="https://paakmau.github.io/tags/vulkan/">#Vulkan</a></li>
+                    
+                    <li><a href="https://paakmau.github.io/tags/zhao-se-qi/">#着色器</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
 </article>
 
 
-    </body>
-
+        </main>
+        <footer>
+            <p>
+                © 泊谋 2022<br>
+                Powered by <a target="_blank" href="https://getzola.org/">Zola</a>, Theme <a target="_blank" href="https://github.com/zbrox/anpu-zola-theme">Anpu</a>.
+            </p>
+            <p>
+                
+                
+            </p>
+        </footer>
+    </div>
+</body>
 </html>

@@ -340,6 +340,10 @@
         <lastmod>2022-04-16T19:21:55</lastmod>
     </url>
     <url>
+        <loc>https://paakmau.github.io/202204171923/</loc>
+        <lastmod>2022-04-17T19:23:42</lastmod>
+    </url>
+    <url>
         <loc>https://paakmau.github.io/categories/</loc>
     </url>
     <url>
@@ -347,6 +351,9 @@
     </url>
     <url>
         <loc>https://paakmau.github.io/categories/c/</loc>
+    </url>
+    <url>
+        <loc>https://paakmau.github.io/categories/ce-shi/</loc>
     </url>
     <url>
         <loc>https://paakmau.github.io/categories/rong-qi-hua/</loc>
@@ -452,6 +459,9 @@
     </url>
     <url>
         <loc>https://paakmau.github.io/tags/jpa/</loc>
+    </url>
+    <url>
+        <loc>https://paakmau.github.io/tags/junit/</loc>
     </url>
     <url>
         <loc>https://paakmau.github.io/tags/k8s/</loc>

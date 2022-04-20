@@ -9,7 +9,7 @@ description = "记一下我都整了些什么玩意。"
 default_language = "zh"
 
 # The site theme to use.
-theme = "after-dark"
+theme = "anpu"
 
 # Whether to automatically compile all Sass files in the sass directory.
 compile_sass = false
@@ -34,8 +34,7 @@ highlight_code = true
 [extra]
 # Put all your custom variables here
 author = "何泊谋"
-after_dark_menu = [
-    { url = "$BASE_URL", name = "主页" },
+anpu_menu_links = [
     { url = "$BASE_URL/categories", name = "分类" },
     { url = "$BASE_URL/tags", name = "标签" },
     { url = "https://github.com/paakmau", name = "GitHub" },

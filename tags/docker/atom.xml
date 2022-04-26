@@ -154,7 +154,7 @@ proxy_pass 用于转发 wordpress 容器的 80 端口&lt;br &#x2F;&gt;
 </content>
 	</entry>
 	<entry xml:lang="zh">
-		<title>Docker 部署.NET Core 3.0 控制台项目</title>
+		<title>Docker 部署 .NET Core 3.0 控制台项目</title>
 		<published>2019-12-12T17:24:24+00:00</published>
 		<updated>2019-12-12T17:24:24+00:00</updated>
 		<link href="https://paakmau.github.io/201912121724/" type="text/html"/>

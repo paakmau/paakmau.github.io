@@ -8,7 +8,7 @@
 	<updated>2020-03-31T23:47:45+00:00</updated>
 	<id>https://paakmau.github.io/tags/opengl/atom.xml</id>
 	<entry xml:lang="zh">
-		<title>Mac 下使用 Makefile 基于 GLFW 配置 Dear ImGui</title>
+		<title>macOS 下使用 Makefile 基于 GLFW 配置 Dear ImGui</title>
 		<published>2020-03-31T23:47:45+00:00</published>
 		<updated>2020-03-31T23:47:45+00:00</updated>
 		<link href="https://paakmau.github.io/202003312347/" type="text/html"/>

@@ -352,6 +352,10 @@
         <lastmod>2022-04-25T23:13:27</lastmod>
     </url>
     <url>
+        <loc>https://paakmau.github.io/202204261508/</loc>
+        <lastmod>2022-04-26T15:08:36</lastmod>
+    </url>
+    <url>
         <loc>https://paakmau.github.io/categories/</loc>
     </url>
     <url>
@@ -479,6 +483,9 @@
     </url>
     <url>
         <loc>https://paakmau.github.io/tags/k8s/</loc>
+    </url>
+    <url>
+        <loc>https://paakmau.github.io/tags/kademlia/</loc>
     </url>
     <url>
         <loc>https://paakmau.github.io/tags/kong-xin-cai/</loc>

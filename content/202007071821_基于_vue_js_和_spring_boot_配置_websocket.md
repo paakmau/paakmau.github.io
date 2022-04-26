@@ -1,5 +1,5 @@
 +++
-title = "基于 Vue.js 和 SpringBoot 配置 WebSocket"
+title = "基于 Vue.js 和 Spring Boot 配置 WebSocket"
 date = 2020-07-07 18:21:46
 slug = "202007071821"
 

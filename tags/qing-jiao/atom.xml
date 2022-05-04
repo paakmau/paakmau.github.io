@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh">
-	<title>泊谋 - 蛋</title>
+	<title>泊谋 - 青椒</title>
 	<subtitle>记一下我都整了些什么玩意。</subtitle>
-	<link href="https://paakmau.github.io/tags/dan/atom.xml" rel="self" type="application/atom+xml"/>
+	<link href="https://paakmau.github.io/tags/qing-jiao/atom.xml" rel="self" type="application/atom+xml"/>
   <link href="https://paakmau.github.io"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
 	<updated>2022-05-04T20:50:28+00:00</updated>
-	<id>https://paakmau.github.io/tags/dan/atom.xml</id>
+	<id>https://paakmau.github.io/tags/qing-jiao/atom.xml</id>
 	<entry xml:lang="zh">
 		<title>青椒炒蛋炒蛋</title>
 		<published>2022-05-04T20:50:28+00:00</published>
@@ -33,33 +33,6 @@
 &lt;h2 id=&quot;chao-dan&quot;&gt;炒蛋&lt;&#x2F;h2&gt;
 &lt;p&gt;全程保持小火。
 下蛋液，等底部蛋液成形后，将底部鸡蛋翻起，上部蛋液流到底部，成形后继续翻起，循环直至仅剩余少量蛋液未成形，大概是翻三次。&lt;&#x2F;p&gt;
-</content>
-	</entry>
-	<entry xml:lang="zh">
-		<title>番茄炒蛋</title>
-		<published>2022-04-05T22:27:48+00:00</published>
-		<updated>2022-04-05T22:27:48+00:00</updated>
-		<link href="https://paakmau.github.io/202204052227/" type="text/html"/>
-		<id>https://paakmau.github.io/202204052227/</id>
-		<content type="html">&lt;p&gt;蛋、番茄、油、盐、糖、葱、蒜。&lt;&#x2F;p&gt;
-&lt;p&gt;咸，甜。&lt;&#x2F;p&gt;
-&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;cong&quot;&gt;葱&lt;&#x2F;h2&gt;
-&lt;p&gt;葱白切段用于爆香，葱绿切成葱花。&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;suan-ban&quot;&gt;蒜瓣&lt;&#x2F;h2&gt;
-&lt;p&gt;拍一两颗蒜瓣，切小块。&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;fan-qie-ding&quot;&gt;番茄丁&lt;&#x2F;h2&gt;
-&lt;p&gt;为了避免爆出一堆水，番茄切小丁，便于快速出锅。
-但是炒的快容易不熟，切番茄的时候注意不要接触生肉这类危险的东西。&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;dan-ye&quot;&gt;蛋液&lt;&#x2F;h2&gt;
-&lt;p&gt;打几个鸡蛋，加入适量糖和盐，搅拌好。&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;chao-dan&quot;&gt;炒蛋&lt;&#x2F;h2&gt;
-&lt;p&gt;全程保持小火。
-热油，下葱段和蒜瓣爆香，油需要精确把控，少了蛋液会糊底，多了不健康。
-下蛋液，等底部蛋液成形后，将底部鸡蛋翻起，上部蛋液流到底部，成形后继续翻起，循环直至仅剩余少量蛋液未成形，大概是翻三次。&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;xia-fan-qie-he-cong-lu&quot;&gt;下番茄和葱绿&lt;&#x2F;h2&gt;
-&lt;p&gt;调成中火。
-下番茄丁和葱花翻炒，盖盖子闷一下或者不闷。
-凭感觉，番茄丁快要爆水了就出锅。&lt;&#x2F;p&gt;
 </content>
 	</entry>
 </feed>

@@ -46,6 +46,54 @@
     <article class="post-list">
         <header> 
             <h1>
+                <a href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;202111011219&#x2F;">基于 WSL2 安装 minikube</a>
+            </h1>
+        </header>
+
+        
+        <div class="content post-summary">
+            <p>体验 k8s 比较省事的一个的方法就是直接装 minikube 单机部署。
+为了更省事，可以考虑直接在 WSL2 中操作。
+<del>省事个锤子，这是折磨。</del>
+本文将使用 Podman 作为 minikube 的驱动，而非 Docker。</p>
+
+        </div>
+        
+        
+        
+    <div class="article-info">
+        
+        <div class="article-date"> 1 November 2021</div>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://paakmau.github.io/categories/rong-qi-hua/">容器化</a></li>
+                    
+                </ul>
+            
+            
+                <ul class="article-tags">
+                    
+                    <li><a href="https://paakmau.github.io/tags/k8s/">#k8s</a></li>
+                    
+                    <li><a href="https://paakmau.github.io/tags/minikube/">#minikube</a></li>
+                    
+                    <li><a href="https://paakmau.github.io/tags/podman/">#podman</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
+    </article>
+
+                
+                    
+    <article class="post-list">
+        <header> 
+            <h1>
                 <a href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;202012200030&#x2F;">C++ Core Guidelines 命名与布局规则</a>
             </h1>
         </header>
@@ -598,47 +646,6 @@
         
         <div class="content post-summary">
             <p>为了能够使用 VkImage，包括交换链中的在内，我们需要在渲染管线中创建 VkImageView。一个图像视图真的就是字面意思的图像的视图。它描述了如何访问这个图像以及访问这个图像的哪个部分，例如图像可能被当作不需要 Mipmap 的二维深度贴图</p>
-
-        </div>
-        
-        
-        
-    <div class="article-info">
-        
-        <div class="article-date"> 8 September 2020</div>
-        
-        <div class="article-taxonomies">
-            
-                <ul class="article-categories">
-                    
-                    <li><a href="https://paakmau.github.io/categories/you-xi-kai-fa/">游戏开发</a></li>
-                    
-                </ul>
-            
-            
-                <ul class="article-tags">
-                    
-                    <li><a href="https://paakmau.github.io/tags/vulkan/">#Vulkan</a></li>
-                    
-                </ul>
-            
-        </div>
-    </div>
-
-    </article>
-
-                
-                    
-    <article class="post-list">
-        <header> 
-            <h1>
-                <a href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;202009082023&#x2F;">Vulkan 画三角形 第六章 创建交换链</a>
-            </h1>
-        </header>
-
-        
-        <div class="content post-summary">
-            <p>我们在把图像展示到屏幕之前，需要先把它们渲染到缓冲区中，而交换链就是存放缓冲区的地方。交换链本质上是一个存放需要展示到屏幕的图像的队列。我们的应用程序要做的就是从这个队列中取出一个图像，然后在上面渲染，最后再返回给队列。这个队列是怎么工作的以及队列中的图像什么时候展示到屏幕上，它们都取决于交换链是怎么创建的，但是交换链一般的目的都是同步图像展示和屏幕刷新率</p>
 
         </div>
         

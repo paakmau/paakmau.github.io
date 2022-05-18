@@ -50,8 +50,8 @@
 这里以 C++为例，C 同理</p>
 <span id="continue-reading"></span><h2 id="c-c-huan-jing-pei-zhi">C/C++环境配置</h2>
 <p>跟 VS Code 无关，但还是提一下</p>
-<p>Win 下可以装 MinGW<br />
-Max 下装 Xcode 自带 Clang<br />
+<p>Win 下可以装 MinGW 或者 Clang
+Max 下装 Xcode 自带 Clang
 只要环境变量中有 C/C++的编译器就行了</p>
 <h2 id="xu-yao-an-zhuang-de-vs-code-cha-jian">需要安装的 VS Code 插件</h2>
 <ul>
@@ -138,7 +138,58 @@ preLaunchTask 表示 launch 之前执行的 task</p>
 <h2 id="codelldb-cha-jian">CodeLLDB 插件</h2>
 <p>也可以使用这个插件调试 C/C++程序，它能在集成终端中进行输入<br />
 但调试控制台使用的是 lldb 命令就比较蛋疼</p>
-<p>另外升级 macOS Catalina 之后似乎 C/C++插件出了点问题暂时不能调试，换成这个插件就行</p>
+<p>另外升级 macOS Catalina 之后似乎 C/C++ 插件出了点问题暂时不能调试，换成这个插件就行</p>
+<h2 id="msvc">MSVC</h2>
+<p>Windows 下也可以使用微软提供的编译器。
+去 VS 的官网找到 Build Tools，然后安装的时候勾选 MSVC 的 Buildtools 的某一个比较新的版本就行了。</p>
+<p>这个时候我们就可以使用 <code>cl.exe</code> 来编译源文件。
+但是注意到 <code>cl.exe</code> 以及标准库啥的都不会被自动添加到环境变量中，所以直接在终端输入 <code>cl</code> 会发现找不到。
+我们需要使用微软提供的 Developer Command Prompt for VS 或者 Developer PowerShell for VS。
+它们会自动配好环境变量，这个时候我们在里面输入 <code>cl</code> 就能看到版本号了。
+因此我们需要在这玩意里面输入 <code>code</code> 打开 VS Code 才能找到 <code>cl.exe</code> 以及相关的库。</p>
+<p>那么 <code>tasks.json</code> 就大概长这样。</p>
+<pre data-lang="json" style="background-color:#2b303b;color:#c0c5ce;" class="language-json "><code class="language-json" data-lang="json"><span>{
+</span><span>    </span><span style="color:#65737e;">// See https://go.microsoft.com/fwlink/?LinkId=733558
+</span><span>    </span><span style="color:#65737e;">// for the documentation about the tasks.json format
+</span><span>    &quot;</span><span style="color:#a3be8c;">version</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">2.0.0</span><span>&quot;,
+</span><span>    &quot;</span><span style="color:#a3be8c;">tasks</span><span>&quot;: [
+</span><span>        {
+</span><span>            &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">shell</span><span>&quot;,
+</span><span>            &quot;</span><span style="color:#a3be8c;">label</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">C/C++: cl.exe build active file</span><span>&quot;,
+</span><span>            &quot;</span><span style="color:#a3be8c;">command</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">cl.exe</span><span>&quot;,
+</span><span>            &quot;</span><span style="color:#a3be8c;">args</span><span>&quot;: [
+</span><span>                &quot;</span><span style="color:#a3be8c;">/Zi</span><span>&quot;,
+</span><span>                &quot;</span><span style="color:#a3be8c;">/EHsc</span><span>&quot;,
+</span><span>                &quot;</span><span style="color:#a3be8c;">/Fe:</span><span>&quot;,
+</span><span>                &quot;</span><span style="color:#a3be8c;">${fileDirname}</span><span style="color:#96b5b4;">\\</span><span style="color:#a3be8c;">build</span><span style="color:#96b5b4;">\\</span><span style="color:#a3be8c;">${fileBasenameNoExtension}.exe</span><span>&quot;,
+</span><span>                &quot;</span><span style="color:#a3be8c;">${file}</span><span>&quot;
+</span><span>            ]
+</span><span>        }
+</span><span>    ]
+</span><span>}
+</span></code></pre>
+<p>于是 <code>launch.json</code> 大概长这样。</p>
+<pre data-lang="json" style="background-color:#2b303b;color:#c0c5ce;" class="language-json "><code class="language-json" data-lang="json"><span>{
+</span><span>    </span><span style="color:#65737e;">// Use IntelliSense to learn about possible attributes.
+</span><span>    </span><span style="color:#65737e;">// Hover to view descriptions of existing attributes.
+</span><span>    </span><span style="color:#65737e;">// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+</span><span>    &quot;</span><span style="color:#a3be8c;">version</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">0.2.0</span><span>&quot;,
+</span><span>    &quot;</span><span style="color:#a3be8c;">configurations</span><span>&quot;: [
+</span><span>        {
+</span><span>            &quot;</span><span style="color:#a3be8c;">name</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">(Windows) 启动</span><span>&quot;,
+</span><span>            &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">cppvsdbg</span><span>&quot;,
+</span><span>            &quot;</span><span style="color:#a3be8c;">request</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">launch</span><span>&quot;,
+</span><span>            &quot;</span><span style="color:#a3be8c;">program</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">${workspaceFolder}/build/${fileBasenameNoExtension}.exe</span><span>&quot;,
+</span><span>            &quot;</span><span style="color:#a3be8c;">args</span><span>&quot;: [],
+</span><span>            &quot;</span><span style="color:#a3be8c;">stopAtEntry</span><span>&quot;: </span><span style="color:#d08770;">false</span><span>,
+</span><span>            &quot;</span><span style="color:#a3be8c;">cwd</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">${workspaceFolder}</span><span>&quot;,
+</span><span>            &quot;</span><span style="color:#a3be8c;">environment</span><span>&quot;: [],
+</span><span>            &quot;</span><span style="color:#a3be8c;">console</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">integratedTerminal</span><span>&quot;,
+</span><span>            &quot;</span><span style="color:#a3be8c;">preLaunchTask</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">C/C++: cl.exe build active file</span><span>&quot;
+</span><span>        }
+</span><span>    ]
+</span><span>}
+</span></code></pre>
 
     </div>
 

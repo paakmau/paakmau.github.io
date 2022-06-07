@@ -33,7 +33,6 @@ highlight_code = true
 
 [extra]
 # Put all your custom variables here
-author = "Celestial"
 anpu_menu_links = [
     { url = "$BASE_URL/categories", name = "分类" },
     { url = "$BASE_URL/tags", name = "标签" },

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+
+    <title>MassEntity_学习</title>
+    <meta name="description" content="记一下我都整了些什么玩意。">
+
+    <link rel="stylesheet" href="https://paakmau.github.io/main.css">
+
+    
+
+    
+    
+</head>
+<body>
+    <a class="skip-main" href="#main">Skip to content</a>
+    <div class="container">
+        <header> 
+            <h1 class="site-header">
+                <a href="https:&#x2F;&#x2F;paakmau.github.io">门泊吴船亦已谋</a>
+            </h1>
+            <nav>
+                
+                
+                
+                <a  href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;categories">分类</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;paakmau.github.io&#x2F;tags">标签</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;github.com&#x2F;paakmau">GitHub</a>
+                
+                
+            </nav>
+        </header>
+        <main id="main" tabindex="-1">
+            
+
+<article class="post">
+    <header>
+        <h1>MassEntity_学习</h1>
+    </header>
+    <div class="content">
+        <p>MassEntity 是 UE5 里面一个面向数据的框架，与 Unity DOTS 非常相似。
+引入 ECS 的主要目的也是要充分利用多核 CPU 的并行能力，发挥缓存的优势，从而提高性能。</p>
+<span id="continue-reading"></span><h2 id="gai-nian-jian-jie">概念简介</h2>
+<p>这里针对虚幻引擎中提出的相关概念进行介绍，实际上发现跟 Unity DOTS 有很多重合的地方。</p>
+<ul>
+<li>Entity。
+即是 ECS 中的 Entity，类似于 OOP 中的对象。</li>
+<li>Fragment。
+其实是 ECS 中的 Component，一个 Entity 会由若干个 Fragment 组合而成。</li>
+<li>Archetype。
+跟 Unity DOTS 中提出的 Archetype 基本上差不多。
+一个 Archetype 即是拥有相同 Fragment 组合的实体集合。
+相当于根据 Fragment 组合的不同而对这些实体进行分类。</li>
+<li>Chunk。
+太典了，Unity 中也有类似的概念。
+Archetype 中的实体是按照一个一个的 Chunk 组织起来的。
+与 Unity 一样，UE 中 Chunk 的目的也是为了发挥缓存优势，提高在同一个 Archetype 中连续访问 Fragment 时的性能。</li>
+<li>Processor。
+起到 ECS 中 System 的作用。
+是一个仅针对 Fragment 处理逻辑的无状态类。</li>
+<li>EntityQuery。
+也很眼熟，跟 Unity 里的差不多，目的也是为了筛选出特定的 Entity。
+Processor 使用它筛选出合适的 Entity 之后就可以遍历所需的组件执行它的逻辑了。</li>
+<li>Tag。
+可以理解成一个不含数据的 Fragment。
+可以用于特殊的筛选条件。
+因为不含数据，所以引擎可以对它做一些特殊优化。</li>
+<li>ChunkFragment。
+是一种蛇皮优化，与 Entity 无关，每个 Chunk 上都会有一个这玩意。
+可以利用这玩意在 Chunk 做一些统计性的处理。
+文档说它属于实体的组合的一部分，我猜测它想说的是 Archetype 的一部分，但是没资料没啃源码我也不敢断定。</li>
+<li>Trait。
+是一些相关性较高的 Fragment 的组合，应该可以理解成对 Fragment 进行某种意义上的分组。</li>
+</ul>
+<h2 id="hello-world">Hello World</h2>
+<p>这玩意跟 Unity 的差不多，直接莽就完了。</p>
+<h3 id="can-kao-zi-liao">参考资料</h3>
+<p><a href="https://www.youtube.com/watch?v=f9q8A-9DvPo&amp;ab_channel=UnrealEngine">Large Numbers of Entities with Mass in UE5 | Feature Highlight | State of Unreal 2022</a></p>
+<h3 id="an-zhuang-cha-jian">安装插件</h3>
+<p>这堆东西目前还是实验性的，想要在 UE5 中体验 MassEntity，需要先安装相应的插件。
+在菜单中依次选择 Edit -&gt; Plugins，进行搜索，添加 <code>MassAI</code>、<code>MassCrowd</code>、<code>MassEntity</code>、<code>MassGameplay</code>，随后根据提示重启 UE5。</p>
+<h3 id="chuang-jian-yu-she-ti">创建预设体</h3>
+<p>在内容浏览器中创建一个 <code>DataAsset</code>，其中类选择 <code>MassEntityConfigAsset</code>。
+这玩意类似于配置一种预设体，根据这个东西可以实例化出具体的 Entity。
+然后双击打开，往 Traits 中添加一个 Debug Visualization。
+其中网格体随便选一个以便于生成实例之后观察。</p>
+<h3 id="entity-sheng-cheng-qi">Entity 生成器</h3>
+<p>在关卡中添加一个 <code>MassSpawner</code> 用于根据预设体实例化出一些 Entity。</p>
+<p>设置生成数量为 100 个。
+Entity Types 用于指定生成的 Entity 类型，给它添加一个元素，Entity Config 设置为刚刚创建的 <code>DataAsset</code>。
+Spawn Data Generators 用于指定 Entity 生成器，生成器决定 Entity 的生成位置，给它添加一个元素，类型指定为 EQS SpawnPoints Generator，Query Template 点进去直接创建新的资源并使用。
+记得勾上 Auto Spawn on Begin Play。
+最后启动即可观察到这个 <code>MassSpawner</code> 附近生成了 100 个 Entity。</p>
+<h3 id="zi-ding-yi-trait">自定义 Trait</h3>
+<p>在内容浏览器中创建一个 C++ 类，父类选择 <code>MassEntityTraitBase</code>。
+于是我们就考虑自定义一个 Fragment，并给它添加到这个 Trait 中。
+Fragment 是一个结构体，所以我们直接在刚刚定义的 Trait 前面定义 Fragment 就行了。
+接着重载 <code>UMassEntityTraitBase</code> 的一个方法，就可以把这个 Fragment 加进去。
+最后大概长这样</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">#pragma</span><span> once
+</span><span>
+</span><span style="color:#b48ead;">#include </span><span>&quot;</span><span style="color:#a3be8c;">CoreMinimal.h</span><span>&quot;
+</span><span style="color:#b48ead;">#include </span><span>&quot;</span><span style="color:#a3be8c;">MassEntityTypes.h</span><span>&quot;
+</span><span style="color:#b48ead;">#include </span><span>&quot;</span><span style="color:#a3be8c;">MassEntityTraitBase.h</span><span>&quot;
+</span><span style="color:#b48ead;">#include </span><span>&quot;</span><span style="color:#a3be8c;">SimpleRandomMovementTrait.generated.h</span><span>&quot;
+</span><span>
+</span><span style="color:#bf616a;">USTRUCT</span><span>()
+</span><span style="color:#b48ead;">struct </span><span>FSimpleMovementFragment : </span><span style="color:#b48ead;">public </span><span style="color:#a3be8c;">FMassFragment
+</span><span>{
+</span><span>	</span><span style="color:#bf616a;">GENERATED_BODY</span><span>()
+</span><span>
+</span><span>	FVector Target;
+</span><span>};
+</span><span>
+</span><span style="color:#bf616a;">UCLASS</span><span>()
+</span><span style="color:#b48ead;">class </span><span style="color:#eff1f5;">HELLOWORLD_API </span><span style="color:#ebcb8b;">USimpleRandomMovementTrait </span><span style="color:#eff1f5;">: </span><span style="color:#b48ead;">public </span><span style="color:#a3be8c;">UMassEntityTraitBase
+</span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">	</span><span style="color:#bf616a;">GENERATED_BODY</span><span style="color:#eff1f5;">()
+</span><span style="color:#eff1f5;">
+</span><span style="color:#b48ead;">protected</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">	</span><span style="color:#b48ead;">virtual void </span><span style="color:#8fa1b3;">BuildTemplate</span><span style="color:#eff1f5;">(FMassEntityTemplateBuildContext </span><span>&amp;</span><span style="color:#bf616a;">BuildContext</span><span style="color:#eff1f5;">, UWorld </span><span>&amp;</span><span style="color:#bf616a;">World</span><span style="color:#eff1f5;">) </span><span style="color:#b48ead;">const override</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">}</span><span>;
+</span></code></pre>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">#include </span><span>&quot;</span><span style="color:#a3be8c;">SimpleRandomMovementTrait.h</span><span>&quot;
+</span><span>
+</span><span style="color:#b48ead;">#include </span><span>&quot;</span><span style="color:#a3be8c;">MassEntityTemplateRegistry.h</span><span>&quot;
+</span><span>
+</span><span style="color:#b48ead;">void </span><span>USimpleRandomMovementTrait::</span><span style="color:#8fa1b3;">BuildTemplate</span><span>(FMassEntityTemplateBuildContext &amp;</span><span style="color:#bf616a;">BuildContext</span><span>, UWorld &amp;</span><span style="color:#bf616a;">world</span><span>) </span><span style="color:#b48ead;">const
+</span><span>{
+</span><span>    BuildContext.</span><span style="color:#bf616a;">AddFragment</span><span>&lt;FSimpleMovementFragment&gt;();
+</span><span>}
+</span></code></pre>
+<p>有可能会报链接错误，可以参考<a href="https://forums.unrealengine.com/t/unresolved-reference-fmassfragment/572465">这个</a>去修改相应的 <code>XXX.Build.cs</code> 文件添加相应的依赖模块。</p>
+<h3 id="zi-ding-yi-processor">自定义 Processor</h3>
+<p>在内容浏览器中创建一个 C++ 类，父类选 MassProcessor，构造函数里赋值一些属性，再给它重载几个虚函数。
+跟 Unity 非常类似，往虚函数里摁填就行了，单看函数名就知道它想干什么。</p>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">#pragma</span><span> once
+</span><span>
+</span><span style="color:#b48ead;">#include </span><span>&quot;</span><span style="color:#a3be8c;">CoreMinimal.h</span><span>&quot;
+</span><span style="color:#b48ead;">#include </span><span>&quot;</span><span style="color:#a3be8c;">MassEntityQuery.h</span><span>&quot;
+</span><span style="color:#b48ead;">#include </span><span>&quot;</span><span style="color:#a3be8c;">MassProcessor.h</span><span>&quot;
+</span><span style="color:#b48ead;">#include </span><span>&quot;</span><span style="color:#a3be8c;">SimpleRandomMovementProcessor.generated.h</span><span>&quot;
+</span><span>
+</span><span style="color:#bf616a;">UCLASS</span><span>()
+</span><span style="color:#b48ead;">class </span><span style="color:#eff1f5;">HELLOWORLD_API </span><span style="color:#ebcb8b;">USimpleRandomMovementProcessor </span><span style="color:#eff1f5;">: </span><span style="color:#b48ead;">public </span><span style="color:#a3be8c;">UMassProcessor
+</span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">	</span><span style="color:#bf616a;">GENERATED_BODY</span><span style="color:#eff1f5;">()
+</span><span style="color:#eff1f5;">
+</span><span style="color:#b48ead;">public</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">	</span><span style="color:#8fa1b3;">USimpleRandomMovementProcessor</span><span style="color:#eff1f5;">();
+</span><span style="color:#eff1f5;">
+</span><span style="color:#b48ead;">protected</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">	</span><span style="color:#b48ead;">virtual void </span><span style="color:#8fa1b3;">ConfigureQueries</span><span style="color:#eff1f5;">() </span><span style="color:#b48ead;">override</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">	</span><span style="color:#b48ead;">virtual void </span><span style="color:#8fa1b3;">Execute</span><span style="color:#eff1f5;">(UMassEntitySubsystem </span><span>&amp;</span><span style="color:#bf616a;">EntitySubsystem</span><span style="color:#eff1f5;">, FMassExecutionContext </span><span>&amp;</span><span style="color:#bf616a;">Context</span><span style="color:#eff1f5;">) </span><span style="color:#b48ead;">override</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">
+</span><span style="color:#b48ead;">private</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">	FMassEntityQuery EntityQuery;
+</span><span style="color:#eff1f5;">}</span><span>;
+</span></code></pre>
+<pre data-lang="cpp" style="background-color:#2b303b;color:#c0c5ce;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#b48ead;">#include </span><span>&quot;</span><span style="color:#a3be8c;">SimpleRandomMovementProcessor.h</span><span>&quot;
+</span><span>
+</span><span style="color:#b48ead;">#include </span><span>&quot;</span><span style="color:#a3be8c;">MassCommonFragments.h</span><span>&quot;
+</span><span style="color:#b48ead;">#include </span><span>&quot;</span><span style="color:#a3be8c;">SimpleRandomMovementTrait.h</span><span>&quot;
+</span><span>
+</span><span>USimpleRandomMovementProcessor::</span><span style="color:#8fa1b3;">USimpleRandomMovementProcessor</span><span>()
+</span><span>{
+</span><span>    bAutoRegisterWithProcessingPhases = </span><span style="color:#d08770;">true</span><span>;
+</span><span>    ExecutionFlags = (int32)EProcessorExecutionFlags::All;
+</span><span>}
+</span><span>
+</span><span style="color:#b48ead;">void </span><span>USimpleRandomMovementProcessor::</span><span style="color:#8fa1b3;">ConfigureQueries</span><span>()
+</span><span>{
+</span><span>    EntityQuery.</span><span style="color:#bf616a;">AddRequirement</span><span>&lt;FTransformFragment&gt;(EMassFragmentAccess::ReadWrite);
+</span><span>    EntityQuery.</span><span style="color:#bf616a;">AddRequirement</span><span>&lt;FSimpleMovementFragment&gt;(EMassFragmentAccess::ReadWrite);
+</span><span>}
+</span><span>
+</span><span style="color:#b48ead;">void </span><span>USimpleRandomMovementProcessor::</span><span style="color:#8fa1b3;">Execute</span><span>(UMassEntitySubsystem &amp;</span><span style="color:#bf616a;">EntitySubsystem</span><span>, FMassExecutionContext &amp;</span><span style="color:#bf616a;">Context</span><span>)
+</span><span>{
+</span><span>    EntityQuery.</span><span style="color:#bf616a;">ForEachEntityChunk</span><span>(EntitySubsystem, Context, [</span><span style="color:#bf616a;">this</span><span>](FMassExecutionContext &amp;Context) {
+</span><span>        </span><span style="color:#b48ead;">const</span><span> TArrayView&lt;FTransformFragment&gt; TransformList = Context.</span><span style="color:#bf616a;">GetMutableFragmentView</span><span>&lt;FTransformFragment&gt;();
+</span><span>        </span><span style="color:#b48ead;">const</span><span> TArrayView&lt;FSimpleMovementFragment&gt; SimpleMovementList =
+</span><span>            Context.</span><span style="color:#bf616a;">GetMutableFragmentView</span><span>&lt;FSimpleMovementFragment&gt;();
+</span><span>        </span><span style="color:#b48ead;">const float</span><span> WorldDeltaTime = Context.</span><span style="color:#bf616a;">GetDeltaTimeSeconds</span><span>();
+</span><span>
+</span><span>        </span><span style="color:#b48ead;">for </span><span>(int32 EntityIndex = </span><span style="color:#d08770;">0</span><span>; EntityIndex &lt; Context.</span><span style="color:#bf616a;">GetNumEntities</span><span>(); EntityIndex++)
+</span><span>        {
+</span><span>            FTransform &amp;Transform = TransformList[EntityIndex].</span><span style="color:#bf616a;">GetMutableTransform</span><span>();
+</span><span>            FVector &amp;MoveTarget = SimpleMovementList[EntityIndex].</span><span style="color:#bf616a;">Target</span><span>;
+</span><span>
+</span><span>            FVector CurrentLocation = Transform.</span><span style="color:#bf616a;">GetLocation</span><span>();
+</span><span>            FVector TargetVector = MoveTarget - CurrentLocation;
+</span><span>
+</span><span>            </span><span style="color:#b48ead;">if </span><span>(TargetVector.</span><span style="color:#bf616a;">Size</span><span>() &lt;= </span><span style="color:#d08770;">20.</span><span style="color:#b48ead;">f</span><span>)
+</span><span>                MoveTarget = </span><span style="color:#bf616a;">FVector</span><span>(FMath::</span><span style="color:#bf616a;">RandRange</span><span>(-</span><span style="color:#d08770;">1.</span><span style="color:#b48ead;">f</span><span>, </span><span style="color:#d08770;">1.</span><span style="color:#b48ead;">f</span><span>) * </span><span style="color:#d08770;">1000.</span><span style="color:#b48ead;">f</span><span>, FMath::</span><span style="color:#bf616a;">RandRange</span><span>(-</span><span style="color:#d08770;">1.</span><span style="color:#b48ead;">f</span><span>, </span><span style="color:#d08770;">1.</span><span style="color:#b48ead;">f</span><span>) * </span><span style="color:#d08770;">1000.</span><span style="color:#b48ead;">f</span><span>,
+</span><span>                                     CurrentLocation.</span><span style="color:#bf616a;">Z</span><span>);
+</span><span>            </span><span style="color:#b48ead;">else
+</span><span>                Transform.</span><span style="color:#bf616a;">SetLocation</span><span>(CurrentLocation + TargetVector.</span><span style="color:#bf616a;">GetSafeNormal</span><span>() * </span><span style="color:#d08770;">400.</span><span style="color:#b48ead;">f </span><span>* WorldDeltaTime);
+</span><span>        }
+</span><span>    });
+</span><span>}
+</span></code></pre>
+<h3 id="xiu-gai-yu-she-ti">修改预设体</h3>
+<p>往之前创建的 <code>DataAsset</code> 的 Traits 里加上我们自定义的那个 Simple Random Movement Trait 就行了。</p>
+<h3 id="yun-xing-jie-guo">运行结果</h3>
+<p>再次运行，就发现这些 Entity 按照预期在 xjb 乱动。</p>
+
+    </div>
+
+    
+    <div class="article-info">
+        
+        <div class="article-date">13 May 2022</div>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://paakmau.github.io/categories/you-xi-kai-fa/">游戏开发</a></li>
+                    
+                </ul>
+            
+            
+                <ul class="article-tags">
+                    
+                    <li><a href="https://paakmau.github.io/tags/massentity/">#MassEntity</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
+</article>
+
+
+        </main>
+        <footer>
+            <p>
+                © 门泊吴船亦已谋 2022<br>
+                Powered by <a target="_blank" href="https://getzola.org/">Zola</a>, Theme <a target="_blank" href="https://github.com/zbrox/anpu-zola-theme">Anpu</a>.
+            </p>
+            <p>
+                
+                
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

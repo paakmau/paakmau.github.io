@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh">
+	<title>门泊吴船亦已谋 - MassEntity</title>
+	<subtitle>记一下我都整了些什么玩意。</subtitle>
+	<link href="https://paakmau.github.io/tags/massentity/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://paakmau.github.io"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2022-05-13T14:35:45+00:00</updated>
+	<id>https://paakmau.github.io/tags/massentity/atom.xml</id>
+	<entry xml:lang="zh">
+		<title>MassEntity_学习</title>
+		<published>2022-05-13T14:35:45+00:00</published>
+		<updated>2022-05-13T14:35:45+00:00</updated>
+		<link href="https://paakmau.github.io/202205131435/" type="text/html"/>
+		<id>https://paakmau.github.io/202205131435/</id>
+		<content type="html">&lt;p&gt;MassEntity 是 UE5 里面一个面向数据的框架，与 Unity DOTS 非常相似。
+引入 ECS 的主要目的也是要充分利用多核 CPU 的并行能力，发挥缓存的优势，从而提高性能。&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;gai-nian-jian-jie&quot;&gt;概念简介&lt;&#x2F;h2&gt;
+&lt;p&gt;这里针对虚幻引擎中提出的相关概念进行介绍，实际上发现跟 Unity DOTS 有很多重合的地方。&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Entity。
+即是 ECS 中的 Entity，类似于 OOP 中的对象。&lt;&#x2F;li&gt;
+&lt;li&gt;Fragment。
+其实是 ECS 中的 Component，一个 Entity 会由若干个 Fragment 组合而成。&lt;&#x2F;li&gt;
+&lt;li&gt;Archetype。
+跟 Unity DOTS 中提出的 Archetype 基本上差不多。
+一个 Archetype 即是拥有相同 Fragment 组合的实体集合。
+相当于根据 Fragment 组合的不同而对这些实体进行分类。&lt;&#x2F;li&gt;
+&lt;li&gt;Chunk。
+太典了，Unity 中也有类似的概念。
+Archetype 中的实体是按照一个一个的 Chunk 组织起来的。
+与 Unity 一样，UE 中 Chunk 的目的也是为了发挥缓存优势，提高在同一个 Archetype 中连续访问 Fragment 时的性能。&lt;&#x2F;li&gt;
+&lt;li&gt;Processor。
+起到 ECS 中 System 的作用。
+是一个仅针对 Fragment 处理逻辑的无状态类。&lt;&#x2F;li&gt;
+&lt;li&gt;EntityQuery。
+也很眼熟，跟 Unity 里的差不多，目的也是为了筛选出特定的 Entity。
+Processor 使用它筛选出合适的 Entity 之后就可以遍历所需的组件执行它的逻辑了。&lt;&#x2F;li&gt;
+&lt;li&gt;Tag。
+可以理解成一个不含数据的 Fragment。
+可以用于特殊的筛选条件。
+因为不含数据，所以引擎可以对它做一些特殊优化。&lt;&#x2F;li&gt;
+&lt;li&gt;ChunkFragment。
+是一种蛇皮优化，与 Entity 无关，每个 Chunk 上都会有一个这玩意。
+可以利用这玩意在 Chunk 做一些统计性的处理。
+文档说它属于实体的组合的一部分，我猜测它想说的是 Archetype 的一部分，但是没资料没啃源码我也不敢断定。&lt;&#x2F;li&gt;
+&lt;li&gt;Trait。
+是一些相关性较高的 Fragment 的组合，应该可以理解成对 Fragment 进行某种意义上的分组。&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;hello-world&quot;&gt;Hello World&lt;&#x2F;h2&gt;
+&lt;p&gt;这玩意跟 Unity 的差不多，直接莽就完了。&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;can-kao-zi-liao&quot;&gt;参考资料&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;www.youtube.com&#x2F;watch?v=f9q8A-9DvPo&amp;amp;ab_channel=UnrealEngine&quot;&gt;Large Numbers of Entities with Mass in UE5 | Feature Highlight | State of Unreal 2022&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;an-zhuang-cha-jian&quot;&gt;安装插件&lt;&#x2F;h3&gt;
+&lt;p&gt;这堆东西目前还是实验性的，想要在 UE5 中体验 MassEntity，需要先安装相应的插件。
+在菜单中依次选择 Edit -&amp;gt; Plugins，进行搜索，添加 &lt;code&gt;MassAI&lt;&#x2F;code&gt;、&lt;code&gt;MassCrowd&lt;&#x2F;code&gt;、&lt;code&gt;MassEntity&lt;&#x2F;code&gt;、&lt;code&gt;MassGameplay&lt;&#x2F;code&gt;，随后根据提示重启 UE5。&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;chuang-jian-yu-she-ti&quot;&gt;创建预设体&lt;&#x2F;h3&gt;
+&lt;p&gt;在内容浏览器中创建一个 &lt;code&gt;DataAsset&lt;&#x2F;code&gt;，其中类选择 &lt;code&gt;MassEntityConfigAsset&lt;&#x2F;code&gt;。
+这玩意类似于配置一种预设体，根据这个东西可以实例化出具体的 Entity。
+然后双击打开，往 Traits 中添加一个 Debug Visualization。
+其中网格体随便选一个以便于生成实例之后观察。&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;entity-sheng-cheng-qi&quot;&gt;Entity 生成器&lt;&#x2F;h3&gt;
+&lt;p&gt;在关卡中添加一个 &lt;code&gt;MassSpawner&lt;&#x2F;code&gt; 用于根据预设体实例化出一些 Entity。&lt;&#x2F;p&gt;
+&lt;p&gt;设置生成数量为 100 个。
+Entity Types 用于指定生成的 Entity 类型，给它添加一个元素，Entity Config 设置为刚刚创建的 &lt;code&gt;DataAsset&lt;&#x2F;code&gt;。
+Spawn Data Generators 用于指定 Entity 生成器，生成器决定 Entity 的生成位置，给它添加一个元素，类型指定为 EQS SpawnPoints Generator，Query Template 点进去直接创建新的资源并使用。
+记得勾上 Auto Spawn on Begin Play。
+最后启动即可观察到这个 &lt;code&gt;MassSpawner&lt;&#x2F;code&gt; 附近生成了 100 个 Entity。&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;zi-ding-yi-trait&quot;&gt;自定义 Trait&lt;&#x2F;h3&gt;
+&lt;p&gt;在内容浏览器中创建一个 C++ 类，父类选择 &lt;code&gt;MassEntityTraitBase&lt;&#x2F;code&gt;。
+于是我们就考虑自定义一个 Fragment，并给它添加到这个 Trait 中。
+Fragment 是一个结构体，所以我们直接在刚刚定义的 Trait 前面定义 Fragment 就行了。
+接着重载 &lt;code&gt;UMassEntityTraitBase&lt;&#x2F;code&gt; 的一个方法，就可以把这个 Fragment 加进去。
+最后大概长这样&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#pragma&lt;&#x2F;span&gt;&lt;span&gt; once
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;CoreMinimal.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;MassEntityTypes.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;MassEntityTraitBase.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;SimpleRandomMovementTrait.generated.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;USTRUCT&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct &lt;&#x2F;span&gt;&lt;span&gt;FSimpleMovementFragment : &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;FMassFragment
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GENERATED_BODY&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;	FVector Target;
+&lt;&#x2F;span&gt;&lt;span&gt;};
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;UCLASS&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;HELLOWORLD_API &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;USimpleRandomMovementTrait &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;UMassEntityTraitBase
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GENERATED_BODY&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;()
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;protected&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;:
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;virtual void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;BuildTemplate&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(FMassEntityTemplateBuildContext &lt;&#x2F;span&gt;&lt;span&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;BuildContext&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, UWorld &lt;&#x2F;span&gt;&lt;span&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;World&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const override&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;SimpleRandomMovementTrait.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;MassEntityTemplateRegistry.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span&gt;USimpleRandomMovementTrait::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;BuildTemplate&lt;&#x2F;span&gt;&lt;span&gt;(FMassEntityTemplateBuildContext &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;BuildContext&lt;&#x2F;span&gt;&lt;span&gt;, UWorld &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;world&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    BuildContext.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;AddFragment&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;FSimpleMovementFragment&amp;gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;有可能会报链接错误，可以参考&lt;a href=&quot;https:&#x2F;&#x2F;forums.unrealengine.com&#x2F;t&#x2F;unresolved-reference-fmassfragment&#x2F;572465&quot;&gt;这个&lt;&#x2F;a&gt;去修改相应的 &lt;code&gt;XXX.Build.cs&lt;&#x2F;code&gt; 文件添加相应的依赖模块。&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;zi-ding-yi-processor&quot;&gt;自定义 Processor&lt;&#x2F;h3&gt;
+&lt;p&gt;在内容浏览器中创建一个 C++ 类，父类选 MassProcessor，构造函数里赋值一些属性，再给它重载几个虚函数。
+跟 Unity 非常类似，往虚函数里摁填就行了，单看函数名就知道它想干什么。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#pragma&lt;&#x2F;span&gt;&lt;span&gt; once
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;CoreMinimal.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;MassEntityQuery.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;MassProcessor.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;SimpleRandomMovementProcessor.generated.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;UCLASS&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;HELLOWORLD_API &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;USimpleRandomMovementProcessor &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;UMassProcessor
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GENERATED_BODY&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;()
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;:
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;USimpleRandomMovementProcessor&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;();
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;protected&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;:
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;virtual void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;ConfigureQueries&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;() &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;override&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;virtual void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;Execute&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(UMassEntitySubsystem &lt;&#x2F;span&gt;&lt;span&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;EntitySubsystem&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, FMassExecutionContext &lt;&#x2F;span&gt;&lt;span&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Context&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;override&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;private&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;:
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;	FMassEntityQuery EntityQuery;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;pre data-lang=&quot;cpp&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-cpp &quot;&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;SimpleRandomMovementProcessor.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;MassCommonFragments.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;SimpleRandomMovementTrait.h&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;USimpleRandomMovementProcessor::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;USimpleRandomMovementProcessor&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    bAutoRegisterWithProcessingPhases = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;true&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;    ExecutionFlags = (int32)EProcessorExecutionFlags::All;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span&gt;USimpleRandomMovementProcessor::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;ConfigureQueries&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    EntityQuery.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;AddRequirement&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;FTransformFragment&amp;gt;(EMassFragmentAccess::ReadWrite);
+&lt;&#x2F;span&gt;&lt;span&gt;    EntityQuery.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;AddRequirement&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;FSimpleMovementFragment&amp;gt;(EMassFragmentAccess::ReadWrite);
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span&gt;USimpleRandomMovementProcessor::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;Execute&lt;&#x2F;span&gt;&lt;span&gt;(UMassEntitySubsystem &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;EntitySubsystem&lt;&#x2F;span&gt;&lt;span&gt;, FMassExecutionContext &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Context&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    EntityQuery.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ForEachEntityChunk&lt;&#x2F;span&gt;&lt;span&gt;(EntitySubsystem, Context, [&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;this&lt;&#x2F;span&gt;&lt;span&gt;](FMassExecutionContext &amp;amp;Context) {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const&lt;&#x2F;span&gt;&lt;span&gt; TArrayView&amp;lt;FTransformFragment&amp;gt; TransformList = Context.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetMutableFragmentView&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;FTransformFragment&amp;gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const&lt;&#x2F;span&gt;&lt;span&gt; TArrayView&amp;lt;FSimpleMovementFragment&amp;gt; SimpleMovementList =
+&lt;&#x2F;span&gt;&lt;span&gt;            Context.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetMutableFragmentView&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;FSimpleMovementFragment&amp;gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const float&lt;&#x2F;span&gt;&lt;span&gt; WorldDeltaTime = Context.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetDeltaTimeSeconds&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;(int32 EntityIndex = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;; EntityIndex &amp;lt; Context.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetNumEntities&lt;&#x2F;span&gt;&lt;span&gt;(); EntityIndex++)
+&lt;&#x2F;span&gt;&lt;span&gt;        {
+&lt;&#x2F;span&gt;&lt;span&gt;            FTransform &amp;amp;Transform = TransformList[EntityIndex].&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetMutableTransform&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;            FVector &amp;amp;MoveTarget = SimpleMovementList[EntityIndex].&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Target&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;            FVector CurrentLocation = Transform.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetLocation&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;            FVector TargetVector = MoveTarget - CurrentLocation;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(TargetVector.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Size&lt;&#x2F;span&gt;&lt;span&gt;() &amp;lt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;20.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;                MoveTarget = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;FVector&lt;&#x2F;span&gt;&lt;span&gt;(FMath::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;RandRange&lt;&#x2F;span&gt;&lt;span&gt;(-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;) * &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1000.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;, FMath::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;RandRange&lt;&#x2F;span&gt;&lt;span&gt;(-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;) * &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1000.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;                                     CurrentLocation.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Z&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;else
+&lt;&#x2F;span&gt;&lt;span&gt;                Transform.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;SetLocation&lt;&#x2F;span&gt;&lt;span&gt;(CurrentLocation + TargetVector.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetSafeNormal&lt;&#x2F;span&gt;&lt;span&gt;() * &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;400.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f &lt;&#x2F;span&gt;&lt;span&gt;* WorldDeltaTime);
+&lt;&#x2F;span&gt;&lt;span&gt;        }
+&lt;&#x2F;span&gt;&lt;span&gt;    });
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;xiu-gai-yu-she-ti&quot;&gt;修改预设体&lt;&#x2F;h3&gt;
+&lt;p&gt;往之前创建的 &lt;code&gt;DataAsset&lt;&#x2F;code&gt; 的 Traits 里加上我们自定义的那个 Simple Random Movement Trait 就行了。&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;yun-xing-jie-guo&quot;&gt;运行结果&lt;&#x2F;h3&gt;
+&lt;p&gt;再次运行，就发现这些 Entity 按照预期在 xjb 乱动。&lt;&#x2F;p&gt;
+</content>
+	</entry>
+</feed>

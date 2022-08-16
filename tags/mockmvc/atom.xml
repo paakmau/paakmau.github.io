@@ -11,7 +11,7 @@
 		<title>使用 MockMvc 对 SpringBoot 项目集成测试</title>
 		<published>2020-03-30T20:12:40+00:00</published>
 		<updated>2020-03-30T20:12:40+00:00</updated>
-		<link href="https://paakmau.github.io/202003302012/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202003302012/" type="text/html"/>
 		<id>https://paakmau.github.io/202003302012/</id>
 		<content type="html">&lt;p&gt;对后端进行集成测试的时候，我们一般都希望从发送 HTTP 请求开始对后端进行完整的测试，可能会考虑用 Postman 或者 Postwoman 这类东西，但是直觉告诉我们应该也可以把集成测试写在代码里&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;zai-pom-xml-li-yin-ru-yi-lai&quot;&gt;在 pom.xml 里引入依赖&lt;&#x2F;h2&gt;

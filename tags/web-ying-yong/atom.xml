@@ -11,7 +11,7 @@
 		<title>RESTful 接口设计经验总结</title>
 		<published>2021-12-31T22:31:35+00:00</published>
 		<updated>2021-12-31T22:31:35+00:00</updated>
-		<link href="https://paakmau.github.io/202112312231/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202112312231/" type="text/html"/>
 		<id>https://paakmau.github.io/202112312231/</id>
 		<content type="html">&lt;p&gt;本文归纳了 RESTful 接口设计实践中的一些经验。&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;post-he-put&quot;&gt;POST 和 PUT&lt;&#x2F;h2&gt;

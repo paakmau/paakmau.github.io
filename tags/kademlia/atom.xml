@@ -11,7 +11,7 @@
 		<title>Kademlia 算法详解</title>
 		<published>2022-04-26T15:08:36+00:00</published>
 		<updated>2022-04-26T15:08:36+00:00</updated>
-		<link href="https://paakmau.github.io/202204261508/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202204261508/" type="text/html"/>
 		<id>https://paakmau.github.io/202204261508/</id>
 		<content type="html">&lt;p&gt;建立 P2P 网络时我们需要面对的一个问题就是一个节点如何高效访问网络中的其他节点中存储的资源。
 Kademlia 算法在各个节点上使用某种策略建立路由表以支持节点之间的高效访问，并且支持在网络中进行资源存储与访问。&lt;&#x2F;p&gt;

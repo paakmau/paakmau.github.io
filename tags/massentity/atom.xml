@@ -11,7 +11,7 @@
 		<title>MassEntity 学习</title>
 		<published>2022-05-13T14:35:45+00:00</published>
 		<updated>2022-05-13T14:35:45+00:00</updated>
-		<link href="https://paakmau.github.io/202205131435/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202205131435/" type="text/html"/>
 		<id>https://paakmau.github.io/202205131435/</id>
 		<content type="html">&lt;p&gt;MassEntity 是 UE5 里面一个面向数据的框架，与 Unity DOTS 非常相似。
 引入 ECS 的主要目的也是要充分利用多核 CPU 的并行能力，发挥缓存的优势，从而提高性能。&lt;&#x2F;p&gt;

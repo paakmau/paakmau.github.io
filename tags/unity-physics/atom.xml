@@ -11,7 +11,7 @@
 		<title>Unity Physics 学习笔记 第七章 精确的碰撞管理</title>
 		<published>2020-03-15T22:07:48+00:00</published>
 		<updated>2020-03-15T22:07:48+00:00</updated>
-		<link href="https://paakmau.github.io/202003152207/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202003152207/" type="text/html"/>
 		<id>https://paakmau.github.io/202003152207/</id>
 		<content type="html">&lt;p&gt;官方手册里有提到，但是没有具体描述。本文主要基于官方示例代码与实践&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;yu-dao-de-wen-ti&quot;&gt;遇到的问题&lt;&#x2F;h2&gt;
@@ -60,7 +60,7 @@
 		<title>Unity Physics 学习笔记 第六章 触发器事件与碰撞事件</title>
 		<published>2020-02-11T01:01:00+00:00</published>
 		<updated>2020-02-11T01:01:00+00:00</updated>
-		<link href="https://paakmau.github.io/202002110101/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202002110101/" type="text/html"/>
 		<id>https://paakmau.github.io/202002110101/</id>
 		<content type="html">&lt;p&gt;这部分内容手册中没有，本文参考的是官方示例代码与官方论坛&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;Unity-Technologies&#x2F;EntityComponentSystemSamples&quot;&gt;https:&#x2F;&#x2F;github.com&#x2F;Unity-Technologies&#x2F;EntityComponentSystemSamples&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
@@ -200,7 +200,7 @@ DetectCollisionSystem.cs&lt;&#x2F;p&gt;
 		<title>Unity Physics 学习笔记 第五章 核心组件详解</title>
 		<published>2020-02-08T21:55:32+00:00</published>
 		<updated>2020-02-08T21:55:32+00:00</updated>
-		<link href="https://paakmau.github.io/202002082155/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202002082155/" type="text/html"/>
 		<id>https://paakmau.github.io/202002082155/</id>
 		<content type="html">&lt;p&gt;在编辑器为 GameObject 挂载 Physics Body 和 Physics Shape 这两个 Authoring 脚本会为转化出的 Entity 添加很多个组件&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
@@ -241,7 +241,7 @@ DetectCollisionSystem.cs&lt;&#x2F;p&gt;
 		<title>Unity Physics 学习笔记 第四章 碰撞查询</title>
 		<published>2020-02-07T23:39:46+00:00</published>
 		<updated>2020-02-07T23:39:46+00:00</updated>
-		<link href="https://paakmau.github.io/202002072339/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202002072339/" type="text/html"/>
 		<id>https://paakmau.github.io/202002072339/</id>
 		<content type="html">&lt;p&gt;跟主流物理引擎一样，Unity Physics 也具有碰撞查询的功能&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
@@ -527,7 +527,7 @@ DetectCollisionSystem.cs&lt;&#x2F;p&gt;
 		<title>Unity Physics 学习笔记 第三章 刚体的运动状态</title>
 		<published>2020-02-05T23:42:00+00:00</published>
 		<updated>2020-02-05T23:42:00+00:00</updated>
-		<link href="https://paakmau.github.io/202002052342/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202002052342/" type="text/html"/>
 		<id>https://paakmau.github.io/202002052342/</id>
 		<content type="html">&lt;p&gt;本文介绍获取与修改刚体速度的方法&lt;br &#x2F;&gt;
 并实现控制立方体每隔一段时间朝随机方向运动，具有匀速运动与施加冲量两种方式&lt;&#x2F;p&gt;
@@ -614,7 +614,7 @@ DetectCollisionSystem.cs&lt;&#x2F;p&gt;
 		<title>Unity Physics 学习笔记 第二章 配置刚体与碰撞器属性</title>
 		<published>2020-02-04T23:56:57+00:00</published>
 		<updated>2020-02-04T23:56:57+00:00</updated>
-		<link href="https://paakmau.github.io/202002042356/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202002042356/" type="text/html"/>
 		<id>https://paakmau.github.io/202002042356/</id>
 		<content type="html">&lt;p&gt;前文展示了一个简单的 HelloWorld，本文将进一步介绍其中用到的 Physics Shape 和 Physics Body 这两个脚本的参数设置&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
@@ -657,7 +657,7 @@ Static，静态。无法运动的刚体，可以理解为质量无穷大&lt;&#x2
 		<title>Unity Physics 学习笔记 第一章 简要介绍与 HelloWorld</title>
 		<published>2020-02-04T22:09:43+00:00</published>
 		<updated>2020-02-04T22:09:43+00:00</updated>
-		<link href="https://paakmau.github.io/202002042209/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202002042209/" type="text/html"/>
 		<id>https://paakmau.github.io/202002042209/</id>
 		<content type="html">&lt;p&gt;现在 Unity 的 Package Manager 中已经有了适用于 ECS 框架的物理引擎，功能完善&lt;br &#x2F;&gt;
 可以说 Unity 的 DOTS（面向数据技术栈）已经能够用于制作大部分游戏类型&lt;&#x2F;p&gt;

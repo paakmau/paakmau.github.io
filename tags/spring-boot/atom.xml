@@ -11,7 +11,7 @@
 		<title>Spring Boot 测试经验总结</title>
 		<published>2022-04-17T19:23:42+00:00</published>
 		<updated>2022-04-17T19:23:42+00:00</updated>
-		<link href="https://paakmau.github.io/202204171923/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202204171923/" type="text/html"/>
 		<id>https://paakmau.github.io/202204171923/</id>
 		<content type="html">&lt;p&gt;总结一下 Spring Boot 中写单元测试和集成测试的经验。&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;wu-zhuang-tai-yu-bu-ke-bian&quot;&gt;无状态与不可变&lt;&#x2F;h2&gt;
@@ -81,7 +81,7 @@
 		<title>基于 Vue.js 和 Spring Boot 配置 WebSocket</title>
 		<published>2020-07-07T18:21:46+00:00</published>
 		<updated>2020-07-07T18:21:46+00:00</updated>
-		<link href="https://paakmau.github.io/202007071821/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202007071821/" type="text/html"/>
 		<id>https://paakmau.github.io/202007071821/</id>
 		<content type="html">&lt;p&gt;HTTP 协议中的请求只能由客户端发起，如果需要服务端主动向客户端发送信息，就会用到 WebSocket&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;hou-duan-bu-fen&quot;&gt;后端部分&lt;&#x2F;h2&gt;
@@ -198,7 +198,7 @@
 		<title>使用 Mockito 对 SpringBoot 项目单元测试</title>
 		<published>2020-03-30T20:30:55+00:00</published>
 		<updated>2020-03-30T20:30:55+00:00</updated>
-		<link href="https://paakmau.github.io/202003302030/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202003302030/" type="text/html"/>
 		<id>https://paakmau.github.io/202003302030/</id>
 		<content type="html">&lt;p&gt;使用 Mockito 可以用来给模块打桩，实现单元测试&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;zai-pom-xml-li-yin-ru-yi-lai&quot;&gt;在 pom.xml 里引入依赖&lt;&#x2F;h2&gt;
@@ -261,7 +261,7 @@
 		<title>使用 MockMvc 对 SpringBoot 项目集成测试</title>
 		<published>2020-03-30T20:12:40+00:00</published>
 		<updated>2020-03-30T20:12:40+00:00</updated>
-		<link href="https://paakmau.github.io/202003302012/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202003302012/" type="text/html"/>
 		<id>https://paakmau.github.io/202003302012/</id>
 		<content type="html">&lt;p&gt;对后端进行集成测试的时候，我们一般都希望从发送 HTTP 请求开始对后端进行完整的测试，可能会考虑用 Postman 或者 Postwoman 这类东西，但是直觉告诉我们应该也可以把集成测试写在代码里&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;zai-pom-xml-li-yin-ru-yi-lai&quot;&gt;在 pom.xml 里引入依赖&lt;&#x2F;h2&gt;
@@ -364,7 +364,7 @@
 		<title>SpringBoot JPA 快速上手</title>
 		<published>2020-03-30T19:31:41+00:00</published>
 		<updated>2020-03-30T19:31:41+00:00</updated>
-		<link href="https://paakmau.github.io/202003301931/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202003301931/" type="text/html"/>
 		<id>https://paakmau.github.io/202003301931/</id>
 		<content type="html">&lt;p&gt;现在 SpringBoot 上比较主流的持久层 ORM 框架应该就是 MyBatis 和 JPA 了。JPA 对于简单查询（特别是作业）非常方便，可以说开箱即用，但是面对复杂查询就要稍微多学一点；而 MyBatis 写起来虽然没那么简洁，但在复杂查询的时候直接上 SQL 语句就完事了&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;yin-ru-jpa-yu-mysql-yi-lai&quot;&gt;引入 JPA 与 MySQL 依赖&lt;&#x2F;h2&gt;
@@ -523,7 +523,7 @@
 		<title>VS Code 写一切 Maven 与 Spring Boot</title>
 		<published>2019-12-11T15:13:45+00:00</published>
 		<updated>2019-12-11T15:13:45+00:00</updated>
-		<link href="https://paakmau.github.io/201912111513/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/201912111513/" type="text/html"/>
 		<id>https://paakmau.github.io/201912111513/</id>
 		<content type="html">&lt;p&gt;VSC 用于开发 Maven 项目已经比较成熟&lt;br &#x2F;&gt;
 直接打开就行，没什么好说的&lt;&#x2F;p&gt;

@@ -11,7 +11,7 @@
 		<title>使用 xmake 管理 C++ 项目</title>
 		<published>2022-01-08T15:07:52+00:00</published>
 		<updated>2022-01-08T15:07:52+00:00</updated>
-		<link href="https://paakmau.github.io/202201081507/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202201081507/" type="text/html"/>
 		<id>https://paakmau.github.io/202201081507/</id>
 		<content type="html">&lt;p&gt;受够了 CMake 的折磨，用了 xmake 之后我的心中只剩下感恩。&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;

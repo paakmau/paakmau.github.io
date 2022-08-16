@@ -11,7 +11,7 @@
 		<title>并发环境下实现懒加载</title>
 		<published>2020-07-14T17:56:04+00:00</published>
 		<updated>2020-07-14T17:56:04+00:00</updated>
-		<link href="https://paakmau.github.io/202007141756/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202007141756/" type="text/html"/>
 		<id>https://paakmau.github.io/202007141756/</id>
 		<content type="html">&lt;p&gt;懒加载是指在用到某个变量时才进行初始化&lt;br &#x2F;&gt;
 然后并发环境下懒加载可能会有访问冲突、重复初始化等问题，很容易爆炸&lt;br &#x2F;&gt;
@@ -111,7 +111,7 @@
 		<title>乒乓缓存与伪共享</title>
 		<published>2020-04-20T16:18:27+00:00</published>
 		<updated>2020-04-20T16:18:27+00:00</updated>
-		<link href="https://paakmau.github.io/202004201618/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202004201618/" type="text/html"/>
 		<id>https://paakmau.github.io/202004201618/</id>
 		<content type="html">&lt;p&gt;这两个东西都是并行程序设计中必须考虑的问题&lt;br &#x2F;&gt;
 他跟多核 CPU 的缓存机制有关&lt;&#x2F;p&gt;
@@ -141,7 +141,7 @@
 		<title>Lock-free 数据结构设计</title>
 		<published>2020-04-06T00:19:29+00:00</published>
 		<updated>2020-04-06T00:19:29+00:00</updated>
-		<link href="https://paakmau.github.io/202004060019/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202004060019/" type="text/html"/>
 		<id>https://paakmau.github.io/202004060019/</id>
 		<content type="html">&lt;p&gt;根据名字我们知道它的内部没有使用锁，可以通过原语和一些蛇皮操作来实现&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;wu-suo-yu-wu-deng-dai&quot;&gt;无锁与无等待&lt;&#x2F;h2&gt;

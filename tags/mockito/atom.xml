@@ -11,7 +11,7 @@
 		<title>使用 Mockito 对 SpringBoot 项目单元测试</title>
 		<published>2020-03-30T20:30:55+00:00</published>
 		<updated>2020-03-30T20:30:55+00:00</updated>
-		<link href="https://paakmau.github.io/202003302030/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202003302030/" type="text/html"/>
 		<id>https://paakmau.github.io/202003302030/</id>
 		<content type="html">&lt;p&gt;使用 Mockito 可以用来给模块打桩，实现单元测试&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;zai-pom-xml-li-yin-ru-yi-lai&quot;&gt;在 pom.xml 里引入依赖&lt;&#x2F;h2&gt;

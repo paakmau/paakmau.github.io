@@ -11,7 +11,7 @@
 		<title>Spring Boot 测试经验总结</title>
 		<published>2022-04-17T19:23:42+00:00</published>
 		<updated>2022-04-17T19:23:42+00:00</updated>
-		<link href="https://paakmau.github.io/202204171923/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202204171923/" type="text/html"/>
 		<id>https://paakmau.github.io/202204171923/</id>
 		<content type="html">&lt;p&gt;总结一下 Spring Boot 中写单元测试和集成测试的经验。&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;wu-zhuang-tai-yu-bu-ke-bian&quot;&gt;无状态与不可变&lt;&#x2F;h2&gt;

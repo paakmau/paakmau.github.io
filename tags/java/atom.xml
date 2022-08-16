@@ -11,7 +11,7 @@
 		<title>Spring Boot 测试经验总结</title>
 		<published>2022-04-17T19:23:42+00:00</published>
 		<updated>2022-04-17T19:23:42+00:00</updated>
-		<link href="https://paakmau.github.io/202204171923/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202204171923/" type="text/html"/>
 		<id>https://paakmau.github.io/202204171923/</id>
 		<content type="html">&lt;p&gt;总结一下 Spring Boot 中写单元测试和集成测试的经验。&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;wu-zhuang-tai-yu-bu-ke-bian&quot;&gt;无状态与不可变&lt;&#x2F;h2&gt;
@@ -81,7 +81,7 @@
 		<title>封装 Spring Boot 库并使用 GitHub Packages 发布</title>
 		<published>2022-01-31T21:33:14+00:00</published>
 		<updated>2022-01-31T21:33:14+00:00</updated>
-		<link href="https://paakmau.github.io/202201312133/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202201312133/" type="text/html"/>
 		<id>https://paakmau.github.io/202201312133/</id>
 		<content type="html">&lt;p&gt;后端写多了一些常用的东西可以封装成一个库，最好还能发布到什么地方直接加个仓库就能加依赖。
 因为我的项目大部分是托管在 GitHub 上的，于是可以考虑直接使用 GitHub Packages 进行发布。&lt;&#x2F;p&gt;
@@ -271,7 +271,7 @@
 		<title>VS Code 写一切 Maven 与 Spring Boot</title>
 		<published>2019-12-11T15:13:45+00:00</published>
 		<updated>2019-12-11T15:13:45+00:00</updated>
-		<link href="https://paakmau.github.io/201912111513/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/201912111513/" type="text/html"/>
 		<id>https://paakmau.github.io/201912111513/</id>
 		<content type="html">&lt;p&gt;VSC 用于开发 Maven 项目已经比较成熟&lt;br &#x2F;&gt;
 直接打开就行，没什么好说的&lt;&#x2F;p&gt;
@@ -314,7 +314,7 @@
 		<title>VS Code 写一切 Java 单文件</title>
 		<published>2019-12-11T00:44:50+00:00</published>
 		<updated>2019-12-11T00:44:50+00:00</updated>
-		<link href="https://paakmau.github.io/201912110044/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/201912110044/" type="text/html"/>
 		<id>https://paakmau.github.io/201912110044/</id>
 		<content type="html">&lt;p&gt;VSC 可以直接编译调试单个 Java 源文件（虽然没什么用）&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;java-huan-jing-pei-zhi&quot;&gt;Java 环境配置&lt;&#x2F;h2&gt;

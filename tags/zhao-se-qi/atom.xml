@@ -11,7 +11,7 @@
 		<title>Vulkan 画三角形 第十章 着色器模块</title>
 		<published>2020-09-12T00:28:34+00:00</published>
 		<updated>2020-09-12T00:28:34+00:00</updated>
-		<link href="https://paakmau.github.io/202009120028/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202009120028/" type="text/html"/>
 		<id>https://paakmau.github.io/202009120028/</id>
 		<content type="html">&lt;p&gt;与早期 API 不同，Vulkan 中的着色器代码必须要以字节码的格式指定，而不是像 GLSL、HLSL 这样人类可读的语法。这种字节码格式是 SPIR-V，它可以用于 Vulkan 和 OpenCL。它是一个用来写图形与计算着色器的格式，但是现在我们只关心可用于 Vulkan 图形流水线的着色器&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;

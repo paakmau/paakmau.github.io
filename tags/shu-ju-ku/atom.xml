@@ -11,7 +11,7 @@
 		<title>数据库事务处理</title>
 		<published>2022-05-12T18:48:52+00:00</published>
 		<updated>2022-05-12T18:48:52+00:00</updated>
-		<link href="https://paakmau.github.io/202205121848/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202205121848/" type="text/html"/>
 		<id>https://paakmau.github.io/202205121848/</id>
 		<content type="html">&lt;p&gt;整理一下事务处理相关内容。&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;

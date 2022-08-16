@@ -11,7 +11,7 @@
 		<title>macOS 下使用 Makefile 基于 GLFW 配置 Dear ImGui</title>
 		<published>2020-03-31T23:47:45+00:00</published>
 		<updated>2020-03-31T23:47:45+00:00</updated>
-		<link href="https://paakmau.github.io/202003312347/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202003312347/" type="text/html"/>
 		<id>https://paakmau.github.io/202003312347/</id>
 		<content type="html">&lt;p&gt;用 Xcode 配置起来很简单，但是 OpenGL.framework 被弃用了，会爆不少警告（其实是因为我习惯了 VSC 改不过来）&lt;&#x2F;p&gt;
 &lt;p&gt;于是尝试用 Makefile 搞一搞&lt;&#x2F;p&gt;

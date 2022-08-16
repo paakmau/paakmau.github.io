@@ -11,7 +11,7 @@
 		<title>加密算法详解</title>
 		<published>2022-04-28T00:44:28+00:00</published>
 		<updated>2022-04-28T00:44:28+00:00</updated>
-		<link href="https://paakmau.github.io/202204280044/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202204280044/" type="text/html"/>
 		<id>https://paakmau.github.io/202204280044/</id>
 		<content type="html">&lt;p&gt;网络通信中我们很多时候会需要保证信息不被窃听或者不被篡改，于是就会需要对信息进行加密。&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;dui-cheng-jia-mi&quot;&gt;对称加密&lt;&#x2F;h2&gt;

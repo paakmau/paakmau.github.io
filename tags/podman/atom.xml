@@ -11,7 +11,7 @@
 		<title>基于 WSL2 安装 minikube</title>
 		<published>2021-11-01T12:19:55+00:00</published>
 		<updated>2021-11-01T12:19:55+00:00</updated>
-		<link href="https://paakmau.github.io/202111011219/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202111011219/" type="text/html"/>
 		<id>https://paakmau.github.io/202111011219/</id>
 		<content type="html">&lt;p&gt;体验 k8s 比较省事的一个的方法就是直接装 minikube 单机部署。
 为了更省事，可以考虑直接在 WSL2 中操作。

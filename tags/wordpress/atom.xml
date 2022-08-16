@@ -11,7 +11,7 @@
 		<title>Docker 下使用 Let&#x27;s Encrypt 与 nginx 搭建支持 HTTPS 的 WordPress 博客</title>
 		<published>2019-12-18T19:16:13+00:00</published>
 		<updated>2019-12-18T19:16:13+00:00</updated>
-		<link href="https://paakmau.github.io/201912181916/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/201912181916/" type="text/html"/>
 		<id>https://paakmau.github.io/201912181916/</id>
 		<content type="html">&lt;p&gt;Let&#x27;s Encrypt 提供免费 SSL 证书的自动签发续签服务，我们可以用它来为博客启用 HTTPS&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;qian-fa-zheng-shu&quot;&gt;签发证书&lt;&#x2F;h2&gt;
@@ -104,7 +104,7 @@ proxy_pass 用于转发 wordpress 容器的 80 端口&lt;br &#x2F;&gt;
 		<title>Docker 部署 WordPress 与数据备份</title>
 		<published>2019-12-11T19:14:31+00:00</published>
 		<updated>2019-12-11T19:14:31+00:00</updated>
-		<link href="https://paakmau.github.io/201912111914/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/201912111914/" type="text/html"/>
 		<id>https://paakmau.github.io/201912111914/</id>
 		<content type="html">&lt;p&gt;阅读本文了解 Docker 上的 WordPress 快速部署，及其数据备份获取&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;da-zhi-bu-zou&quot;&gt;大致步骤&lt;&#x2F;h2&gt;

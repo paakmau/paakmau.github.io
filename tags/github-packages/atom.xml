@@ -11,7 +11,7 @@
 		<title>封装 Spring Boot 库并使用 GitHub Packages 发布</title>
 		<published>2022-01-31T21:33:14+00:00</published>
 		<updated>2022-01-31T21:33:14+00:00</updated>
-		<link href="https://paakmau.github.io/202201312133/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202201312133/" type="text/html"/>
 		<id>https://paakmau.github.io/202201312133/</id>
 		<content type="html">&lt;p&gt;后端写多了一些常用的东西可以封装成一个库，最好还能发布到什么地方直接加个仓库就能加依赖。
 因为我的项目大部分是托管在 GitHub 上的，于是可以考虑直接使用 GitHub Packages 进行发布。&lt;&#x2F;p&gt;

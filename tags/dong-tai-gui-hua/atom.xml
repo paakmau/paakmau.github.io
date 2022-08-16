@@ -11,7 +11,7 @@
 		<title>「poj 1694」An Old Stone Game</title>
 		<published>2019-12-19T17:51:23+00:00</published>
 		<updated>2019-12-19T17:51:23+00:00</updated>
-		<link href="https://paakmau.github.io/201912191751/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/201912191751/" type="text/html"/>
 		<id>https://paakmau.github.io/201912191751/</id>
 		<content type="html">&lt;p&gt;一题简单的树形 DP&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;ti-mu-miao-shu&quot;&gt;题目描述&lt;&#x2F;h2&gt;
@@ -113,7 +113,7 @@ F(p)表示 p 节点最少需要的石子数&lt;&#x2F;p&gt;
 		<title>「hdu 2955」Robberies</title>
 		<published>2019-12-19T00:40:51+00:00</published>
 		<updated>2019-12-19T00:40:51+00:00</updated>
-		<link href="https://paakmau.github.io/201912190040/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/201912190040/" type="text/html"/>
 		<id>https://paakmau.github.io/201912190040/</id>
 		<content type="html">&lt;p&gt;一个 01 背包问题&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;ti-mu-miao-shu&quot;&gt;题目描述&lt;&#x2F;h2&gt;
@@ -198,7 +198,7 @@ F(i, j)表示前 i 个银行取得 j 的钱而不被抓的最大概率&lt;&#x2F;
 		<title>「luogu 1880」石子合并</title>
 		<published>2019-12-18T23:10:22+00:00</published>
 		<updated>2019-12-18T23:10:22+00:00</updated>
-		<link href="https://paakmau.github.io/201912182310/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/201912182310/" type="text/html"/>
 		<id>https://paakmau.github.io/201912182310/</id>
 		<content type="html">&lt;p&gt;退役了退役了，刷点水题准备面试&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;ti-mu-miao-shu&quot;&gt;题目描述&lt;&#x2F;h2&gt;

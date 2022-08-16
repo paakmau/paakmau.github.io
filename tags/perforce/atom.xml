@@ -11,7 +11,7 @@
 		<title>Win10 下 Perforce 命令行快速上手</title>
 		<published>2020-07-11T20:38:43+00:00</published>
 		<updated>2020-07-11T20:38:43+00:00</updated>
-		<link href="https://paakmau.github.io/202007112038/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202007112038/" type="text/html"/>
 		<id>https://paakmau.github.io/202007112038/</id>
 		<content type="html">&lt;p&gt;相对于 Git 和 SVN，Perforce 在管理二进制文件上更方便&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;

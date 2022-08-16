@@ -11,7 +11,7 @@
 		<title>VS Code 写一切 CMake</title>
 		<published>2020-12-11T21:41:47+00:00</published>
 		<updated>2020-12-11T21:41:47+00:00</updated>
-		<link href="https://paakmau.github.io/202012112141/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202012112141/" type="text/html"/>
 		<id>https://paakmau.github.io/202012112141/</id>
 		<content type="html">&lt;p&gt;VS Code 写 CMake 感觉十分舒适，比 VS 爽多了&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;huan-jing-pei-zhi&quot;&gt;环境配置&lt;&#x2F;h2&gt;
@@ -65,7 +65,7 @@
 		<title>VS Code 写一切 Node.js</title>
 		<published>2019-12-13T21:36:11+00:00</published>
 		<updated>2019-12-13T21:36:11+00:00</updated>
-		<link href="https://paakmau.github.io/201912132136/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/201912132136/" type="text/html"/>
 		<id>https://paakmau.github.io/201912132136/</id>
 		<content type="html">&lt;p&gt;开发 Node.js 项目可能还是 WebStorm 功能多一点？？&lt;br &#x2F;&gt;
 相比之下 VS Code 比较轻量级&lt;&#x2F;p&gt;
@@ -86,7 +86,7 @@
 		<title>VS Code 写一切 Jupyter Notebook</title>
 		<published>2019-12-12T01:35:40+00:00</published>
 		<updated>2019-12-12T01:35:40+00:00</updated>
-		<link href="https://paakmau.github.io/201912120135/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/201912120135/" type="text/html"/>
 		<id>https://paakmau.github.io/201912120135/</id>
 		<content type="html">&lt;p&gt;因为院里不少课程要炼丹，于是 Notebook 用的挺频繁的。当时用 VSC 写还行吧，就是快捷键有点问题，语法提示不太行，现在似乎好多了&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;jupyter-huan-jing-pei-zhi&quot;&gt;Jupyter 环境配置&lt;&#x2F;h2&gt;
@@ -113,7 +113,7 @@ Mac 下用 brew 安装即可&lt;&#x2F;p&gt;
 		<title>VS Code 写一切 Python</title>
 		<published>2019-12-11T19:48:37+00:00</published>
 		<updated>2019-12-11T19:48:37+00:00</updated>
-		<link href="https://paakmau.github.io/201912111948/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/201912111948/" type="text/html"/>
 		<id>https://paakmau.github.io/201912111948/</id>
 		<content type="html">&lt;p&gt;VSC 写 Python 也挺方便的，不过功能没那么多&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;python-huan-jing-pei-zhi&quot;&gt;Python 环境配置&lt;&#x2F;h2&gt;
@@ -136,7 +136,7 @@ macOS Catalina 自带的 Python3 不建议用，brew install python3&lt;&#x2F;p&
 		<title>VS Code 写一切 .NET Core 与 C#</title>
 		<published>2019-12-11T19:37:00+00:00</published>
 		<updated>2019-12-11T19:37:00+00:00</updated>
-		<link href="https://paakmau.github.io/201912111937/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/201912111937/" type="text/html"/>
 		<id>https://paakmau.github.io/201912111937/</id>
 		<content type="html">&lt;p&gt;开发.NET Core 项目 VSC 应该是首选了吧，毕竟跨平台而且它们还都是微软的私生子&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;net-core-huan-jing-pei-zhi&quot;&gt;.NET Core 环境配置&lt;&#x2F;h2&gt;
@@ -165,7 +165,7 @@ hello.csproj 是项目配置&lt;&#x2F;p&gt;
 		<title>VS Code 写一切 Maven 与 Spring Boot</title>
 		<published>2019-12-11T15:13:45+00:00</published>
 		<updated>2019-12-11T15:13:45+00:00</updated>
-		<link href="https://paakmau.github.io/201912111513/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/201912111513/" type="text/html"/>
 		<id>https://paakmau.github.io/201912111513/</id>
 		<content type="html">&lt;p&gt;VSC 用于开发 Maven 项目已经比较成熟&lt;br &#x2F;&gt;
 直接打开就行，没什么好说的&lt;&#x2F;p&gt;
@@ -208,7 +208,7 @@ hello.csproj 是项目配置&lt;&#x2F;p&gt;
 		<title>VS Code 写一切 Java 单文件</title>
 		<published>2019-12-11T00:44:50+00:00</published>
 		<updated>2019-12-11T00:44:50+00:00</updated>
-		<link href="https://paakmau.github.io/201912110044/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/201912110044/" type="text/html"/>
 		<id>https://paakmau.github.io/201912110044/</id>
 		<content type="html">&lt;p&gt;VSC 可以直接编译调试单个 Java 源文件（虽然没什么用）&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;java-huan-jing-pei-zhi&quot;&gt;Java 环境配置&lt;&#x2F;h2&gt;
@@ -265,7 +265,7 @@ hello.csproj 是项目配置&lt;&#x2F;p&gt;
 		<title>VS Code 写一切 C 与 C++ 单文件</title>
 		<published>2019-12-11T00:22:34+00:00</published>
 		<updated>2019-12-11T00:22:34+00:00</updated>
-		<link href="https://paakmau.github.io/201912110022/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/201912110022/" type="text/html"/>
 		<id>https://paakmau.github.io/201912110022/</id>
 		<content type="html">&lt;p&gt;配置很简单，刷题贼方便&lt;br &#x2F;&gt;
 这里以 C++为例，C 同理&lt;&#x2F;p&gt;

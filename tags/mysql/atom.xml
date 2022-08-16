@@ -11,7 +11,7 @@
 		<title>Express + MySQL + Session 搭建 Web 后端脚手架</title>
 		<published>2019-12-18T00:59:09+00:00</published>
 		<updated>2019-12-18T00:59:09+00:00</updated>
-		<link href="https://paakmau.github.io/201912180059/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/201912180059/" type="text/html"/>
 		<id>https://paakmau.github.io/201912180059/</id>
 		<content type="html">&lt;p&gt;因为是我某门课的作业才顺便写的，因为感觉 js 后端偏向玩具所以不太感兴趣。但还是不得不说这玩具真好玩，贼牛逼。Express 框架用几十行代码就能搭出几乎完整的后端脚手架&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;

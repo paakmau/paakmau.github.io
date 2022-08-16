@@ -11,7 +11,7 @@
 		<title>基于 Vue.js 和 Spring Boot 配置 WebSocket</title>
 		<published>2020-07-07T18:21:46+00:00</published>
 		<updated>2020-07-07T18:21:46+00:00</updated>
-		<link href="https://paakmau.github.io/202007071821/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202007071821/" type="text/html"/>
 		<id>https://paakmau.github.io/202007071821/</id>
 		<content type="html">&lt;p&gt;HTTP 协议中的请求只能由客户端发起，如果需要服务端主动向客户端发送信息，就会用到 WebSocket&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;hou-duan-bu-fen&quot;&gt;后端部分&lt;&#x2F;h2&gt;
@@ -128,7 +128,7 @@
 		<title>Vuex 完全学习笔记</title>
 		<published>2020-01-20T23:38:17+00:00</published>
 		<updated>2020-01-20T23:38:17+00:00</updated>
-		<link href="https://paakmau.github.io/202001202338/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202001202338/" type="text/html"/>
 		<id>https://paakmau.github.io/202001202338/</id>
 		<content type="html">&lt;p&gt;官网说，Vuex 是为 Vue.js 应用开发的状态管理模式。个人理解就是管理全局变量的单例，支持响应式，存储状态或数据&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
@@ -323,7 +323,7 @@ Mutation 中不能包含异步操作&lt;br &#x2F;&gt;
 		<title>Vue Router 入门学习笔记</title>
 		<published>2020-01-17T20:06:02+00:00</published>
 		<updated>2020-01-17T20:06:02+00:00</updated>
-		<link href="https://paakmau.github.io/202001172006/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202001172006/" type="text/html"/>
 		<id>https://paakmau.github.io/202001172006/</id>
 		<content type="html">&lt;p&gt;Vue Router 是 Vue.js 官方提供的路由管理器，轻松构建单页应用&lt;br &#x2F;&gt;
 本文基于用 Vue CLI 创建的脚手架，包括动态路径参数、嵌套路由、命名视图、懒加载&lt;&#x2F;p&gt;
@@ -579,7 +579,7 @@ router-view 是组件将会被渲染到的地方&lt;&#x2F;p&gt;
 		<title>使用 Vue CLI 快速搭建 Vue.js 脚手架</title>
 		<published>2019-12-27T10:24:33+00:00</published>
 		<updated>2019-12-27T10:24:33+00:00</updated>
-		<link href="https://paakmau.github.io/201912271024/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/201912271024/" type="text/html"/>
 		<id>https://paakmau.github.io/201912271024/</id>
 		<content type="html">&lt;p&gt;Vue CLI 是 Vue.js 提供的命令行工具&lt;br &#x2F;&gt;
 我们可以使用它来快速创建一个脚手架项目&lt;&#x2F;p&gt;

@@ -11,7 +11,7 @@
 		<title>UE4 材质结点生成 HLSL 代码 源码浅析</title>
 		<published>2020-05-11T21:50:26+00:00</published>
 		<updated>2020-05-11T21:50:26+00:00</updated>
-		<link href="https://paakmau.github.io/202005112150/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202005112150/" type="text/html"/>
 		<id>https://paakmau.github.io/202005112150/</id>
 		<content type="html">&lt;p&gt;使用 UE4 的材质编辑器的时候我们可以为材质的颜色、粗糙度、金属度等连接一个常量或者纹理结点，如果要实现复杂效果可能还会用到混合结点，最后就可能看到一个完整的材质其实是由一堆结点和它们之间的连线组成&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
@@ -229,7 +229,7 @@
 		<title>渲染管线浅析</title>
 		<published>2020-05-06T23:56:00+00:00</published>
 		<updated>2020-05-06T23:56:00+00:00</updated>
-		<link href="https://paakmau.github.io/202005062356/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202005062356/" type="text/html"/>
 		<id>https://paakmau.github.io/202005062356/</id>
 		<content type="html">&lt;p&gt;渲染管线会把内存中的三维模型输出到二维的屏幕上，它具有明显的先后顺序，每一个阶段的输出都会作为下一个阶段的输入。它也可以翻译为渲染流水线&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;

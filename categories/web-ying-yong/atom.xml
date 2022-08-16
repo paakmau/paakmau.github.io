@@ -11,7 +11,7 @@
 		<title>封装 Spring Boot 库并使用 GitHub Packages 发布</title>
 		<published>2022-01-31T21:33:14+00:00</published>
 		<updated>2022-01-31T21:33:14+00:00</updated>
-		<link href="https://paakmau.github.io/202201312133/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202201312133/" type="text/html"/>
 		<id>https://paakmau.github.io/202201312133/</id>
 		<content type="html">&lt;p&gt;后端写多了一些常用的东西可以封装成一个库，最好还能发布到什么地方直接加个仓库就能加依赖。
 因为我的项目大部分是托管在 GitHub 上的，于是可以考虑直接使用 GitHub Packages 进行发布。&lt;&#x2F;p&gt;
@@ -201,7 +201,7 @@
 		<title>RESTful 接口设计经验总结</title>
 		<published>2021-12-31T22:31:35+00:00</published>
 		<updated>2021-12-31T22:31:35+00:00</updated>
-		<link href="https://paakmau.github.io/202112312231/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202112312231/" type="text/html"/>
 		<id>https://paakmau.github.io/202112312231/</id>
 		<content type="html">&lt;p&gt;本文归纳了 RESTful 接口设计实践中的一些经验。&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;post-he-put&quot;&gt;POST 和 PUT&lt;&#x2F;h2&gt;
@@ -258,7 +258,7 @@
 		<title>基于 Vue.js 和 Spring Boot 配置 WebSocket</title>
 		<published>2020-07-07T18:21:46+00:00</published>
 		<updated>2020-07-07T18:21:46+00:00</updated>
-		<link href="https://paakmau.github.io/202007071821/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202007071821/" type="text/html"/>
 		<id>https://paakmau.github.io/202007071821/</id>
 		<content type="html">&lt;p&gt;HTTP 协议中的请求只能由客户端发起，如果需要服务端主动向客户端发送信息，就会用到 WebSocket&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;hou-duan-bu-fen&quot;&gt;后端部分&lt;&#x2F;h2&gt;
@@ -375,7 +375,7 @@
 		<title>使用 Mockito 对 SpringBoot 项目单元测试</title>
 		<published>2020-03-30T20:30:55+00:00</published>
 		<updated>2020-03-30T20:30:55+00:00</updated>
-		<link href="https://paakmau.github.io/202003302030/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202003302030/" type="text/html"/>
 		<id>https://paakmau.github.io/202003302030/</id>
 		<content type="html">&lt;p&gt;使用 Mockito 可以用来给模块打桩，实现单元测试&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;zai-pom-xml-li-yin-ru-yi-lai&quot;&gt;在 pom.xml 里引入依赖&lt;&#x2F;h2&gt;
@@ -438,7 +438,7 @@
 		<title>使用 MockMvc 对 SpringBoot 项目集成测试</title>
 		<published>2020-03-30T20:12:40+00:00</published>
 		<updated>2020-03-30T20:12:40+00:00</updated>
-		<link href="https://paakmau.github.io/202003302012/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202003302012/" type="text/html"/>
 		<id>https://paakmau.github.io/202003302012/</id>
 		<content type="html">&lt;p&gt;对后端进行集成测试的时候，我们一般都希望从发送 HTTP 请求开始对后端进行完整的测试，可能会考虑用 Postman 或者 Postwoman 这类东西，但是直觉告诉我们应该也可以把集成测试写在代码里&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;zai-pom-xml-li-yin-ru-yi-lai&quot;&gt;在 pom.xml 里引入依赖&lt;&#x2F;h2&gt;
@@ -541,7 +541,7 @@
 		<title>SpringBoot JPA 快速上手</title>
 		<published>2020-03-30T19:31:41+00:00</published>
 		<updated>2020-03-30T19:31:41+00:00</updated>
-		<link href="https://paakmau.github.io/202003301931/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202003301931/" type="text/html"/>
 		<id>https://paakmau.github.io/202003301931/</id>
 		<content type="html">&lt;p&gt;现在 SpringBoot 上比较主流的持久层 ORM 框架应该就是 MyBatis 和 JPA 了。JPA 对于简单查询（特别是作业）非常方便，可以说开箱即用，但是面对复杂查询就要稍微多学一点；而 MyBatis 写起来虽然没那么简洁，但在复杂查询的时候直接上 SQL 语句就完事了&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;yin-ru-jpa-yu-mysql-yi-lai&quot;&gt;引入 JPA 与 MySQL 依赖&lt;&#x2F;h2&gt;
@@ -700,7 +700,7 @@
 		<title>Vuex 完全学习笔记</title>
 		<published>2020-01-20T23:38:17+00:00</published>
 		<updated>2020-01-20T23:38:17+00:00</updated>
-		<link href="https://paakmau.github.io/202001202338/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202001202338/" type="text/html"/>
 		<id>https://paakmau.github.io/202001202338/</id>
 		<content type="html">&lt;p&gt;官网说，Vuex 是为 Vue.js 应用开发的状态管理模式。个人理解就是管理全局变量的单例，支持响应式，存储状态或数据&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
@@ -895,7 +895,7 @@ Mutation 中不能包含异步操作&lt;br &#x2F;&gt;
 		<title>Vue Router 入门学习笔记</title>
 		<published>2020-01-17T20:06:02+00:00</published>
 		<updated>2020-01-17T20:06:02+00:00</updated>
-		<link href="https://paakmau.github.io/202001172006/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202001172006/" type="text/html"/>
 		<id>https://paakmau.github.io/202001172006/</id>
 		<content type="html">&lt;p&gt;Vue Router 是 Vue.js 官方提供的路由管理器，轻松构建单页应用&lt;br &#x2F;&gt;
 本文基于用 Vue CLI 创建的脚手架，包括动态路径参数、嵌套路由、命名视图、懒加载&lt;&#x2F;p&gt;
@@ -1151,7 +1151,7 @@ router-view 是组件将会被渲染到的地方&lt;&#x2F;p&gt;
 		<title>使用 Vue CLI 快速搭建 Vue.js 脚手架</title>
 		<published>2019-12-27T10:24:33+00:00</published>
 		<updated>2019-12-27T10:24:33+00:00</updated>
-		<link href="https://paakmau.github.io/201912271024/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/201912271024/" type="text/html"/>
 		<id>https://paakmau.github.io/201912271024/</id>
 		<content type="html">&lt;p&gt;Vue CLI 是 Vue.js 提供的命令行工具&lt;br &#x2F;&gt;
 我们可以使用它来快速创建一个脚手架项目&lt;&#x2F;p&gt;
@@ -1229,7 +1229,7 @@ Vuex 相关，用于全局的状态管理&lt;&#x2F;p&gt;
 		<title>Express + MySQL + Session 搭建 Web 后端脚手架</title>
 		<published>2019-12-18T00:59:09+00:00</published>
 		<updated>2019-12-18T00:59:09+00:00</updated>
-		<link href="https://paakmau.github.io/201912180059/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/201912180059/" type="text/html"/>
 		<id>https://paakmau.github.io/201912180059/</id>
 		<content type="html">&lt;p&gt;因为是我某门课的作业才顺便写的，因为感觉 js 后端偏向玩具所以不太感兴趣。但还是不得不说这玩具真好玩，贼牛逼。Express 框架用几十行代码就能搭出几乎完整的后端脚手架&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;

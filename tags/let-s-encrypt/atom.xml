@@ -11,7 +11,7 @@
 		<title>Docker 下使用 Let&#x27;s Encrypt 与 nginx 搭建支持 HTTPS 的 WordPress 博客</title>
 		<published>2019-12-18T19:16:13+00:00</published>
 		<updated>2019-12-18T19:16:13+00:00</updated>
-		<link href="https://paakmau.github.io/201912181916/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/201912181916/" type="text/html"/>
 		<id>https://paakmau.github.io/201912181916/</id>
 		<content type="html">&lt;p&gt;Let&#x27;s Encrypt 提供免费 SSL 证书的自动签发续签服务，我们可以用它来为博客启用 HTTPS&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;qian-fa-zheng-shu&quot;&gt;签发证书&lt;&#x2F;h2&gt;

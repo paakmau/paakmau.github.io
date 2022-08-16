@@ -11,7 +11,7 @@
 		<title>UE4 TaskGraph 学习笔记 源码浅析</title>
 		<published>2020-03-22T20:52:18+00:00</published>
 		<updated>2020-03-22T20:52:18+00:00</updated>
-		<link href="https://paakmau.github.io/202003222052/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202003222052/" type="text/html"/>
 		<id>https://paakmau.github.io/202003222052/</id>
 		<content type="html">&lt;p&gt;跟随本文阅读 TaskGraph 的源码来了解其实现细节&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;taskgraph-shi-xian-gai-gua&quot;&gt;TaskGraph 实现概括&lt;&#x2F;h2&gt;
@@ -91,7 +91,7 @@
 		<title>UE4 TaskGraph 学习笔记 介绍与实践</title>
 		<published>2020-03-19T13:21:19+00:00</published>
 		<updated>2020-03-19T13:21:19+00:00</updated>
-		<link href="https://paakmau.github.io/202003191321/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202003191321/" type="text/html"/>
 		<id>https://paakmau.github.io/202003191321/</id>
 		<content type="html">&lt;p&gt;这个东西跟 Unity 中的 Job 很相似，都是基于任务的并行程序设计，可以处理资源竞争与执行顺序问题&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;jian-dan-jie-shao&quot;&gt;简单介绍&lt;&#x2F;h2&gt;

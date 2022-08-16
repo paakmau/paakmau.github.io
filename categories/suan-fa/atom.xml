@@ -11,7 +11,7 @@
 		<title>加密算法详解</title>
 		<published>2022-04-28T00:44:28+00:00</published>
 		<updated>2022-04-28T00:44:28+00:00</updated>
-		<link href="https://paakmau.github.io/202204280044/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202204280044/" type="text/html"/>
 		<id>https://paakmau.github.io/202204280044/</id>
 		<content type="html">&lt;p&gt;网络通信中我们很多时候会需要保证信息不被窃听或者不被篡改，于是就会需要对信息进行加密。&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;dui-cheng-jia-mi&quot;&gt;对称加密&lt;&#x2F;h2&gt;
@@ -121,7 +121,7 @@ CRC 是用于数据链路层中校验数据完整性的。
 		<title>快排的多线程优化</title>
 		<published>2020-04-21T21:39:49+00:00</published>
 		<updated>2020-04-21T21:39:49+00:00</updated>
-		<link href="https://paakmau.github.io/202004212139/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/202004212139/" type="text/html"/>
 		<id>https://paakmau.github.io/202004212139/</id>
 		<content type="html">&lt;p&gt;讲真我从高中到现在就没有手写过一次快排（是 sort 不够好吗）&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
@@ -233,7 +233,7 @@ CRC 是用于数据链路层中校验数据完整性的。
 		<title>「poj 1694」An Old Stone Game</title>
 		<published>2019-12-19T17:51:23+00:00</published>
 		<updated>2019-12-19T17:51:23+00:00</updated>
-		<link href="https://paakmau.github.io/201912191751/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/201912191751/" type="text/html"/>
 		<id>https://paakmau.github.io/201912191751/</id>
 		<content type="html">&lt;p&gt;一题简单的树形 DP&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;ti-mu-miao-shu&quot;&gt;题目描述&lt;&#x2F;h2&gt;
@@ -335,7 +335,7 @@ F(p)表示 p 节点最少需要的石子数&lt;&#x2F;p&gt;
 		<title>「hdu 2955」Robberies</title>
 		<published>2019-12-19T00:40:51+00:00</published>
 		<updated>2019-12-19T00:40:51+00:00</updated>
-		<link href="https://paakmau.github.io/201912190040/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/201912190040/" type="text/html"/>
 		<id>https://paakmau.github.io/201912190040/</id>
 		<content type="html">&lt;p&gt;一个 01 背包问题&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;ti-mu-miao-shu&quot;&gt;题目描述&lt;&#x2F;h2&gt;
@@ -420,7 +420,7 @@ F(i, j)表示前 i 个银行取得 j 的钱而不被抓的最大概率&lt;&#x2F;
 		<title>「luogu 1880」石子合并</title>
 		<published>2019-12-18T23:10:22+00:00</published>
 		<updated>2019-12-18T23:10:22+00:00</updated>
-		<link href="https://paakmau.github.io/201912182310/" type="text/html"/>
+		<link rel="alternate" href="https://paakmau.github.io/201912182310/" type="text/html"/>
 		<id>https://paakmau.github.io/201912182310/</id>
 		<content type="html">&lt;p&gt;退役了退役了，刷点水题准备面试&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;ti-mu-miao-shu&quot;&gt;题目描述&lt;&#x2F;h2&gt;

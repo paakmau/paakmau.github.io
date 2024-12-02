@@ -33,4 +33,4 @@ brew install python jupyter
 在当前目录保存为 `hello.ipynb`<br>
 然后编辑内容如下并按 `Ctrl+Enter` 运行
 
-操作跟 Web 版的差不多，但是 macOS 下快捷键很蛋疼，就这样吧
+操作跟 Web 版的差不多，但是 `macOS` 下快捷键很蛋疼，就这样吧

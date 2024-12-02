@@ -14,7 +14,7 @@ tags = [".NET Core", "C#", "VS Code"]
 ## .NET Core 环境配置
 
 到官网下安装包<br>
-或者 macOS 下
+或者 `macOS` 下
 
 ```sh
 brew install dotnet

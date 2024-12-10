@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202003312347/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202003312347/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    </head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202003312347/">`macOS` 下使用 Makefile 基于 GLFW 配置 Dear ImGui</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2020-03-31
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/c/">#C++</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/glfw/">#GLFW</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/imgui/">#ImGui</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/opengl/">#OpenGL</a></span>
+    
+
+        <div class="post-content">
+            <p>用 Xcode 配置起来很简单，但是 <code>OpenGL.framework</code> 被弃用了，会爆不少警告（其实是因为我习惯了 VSC 改不过来）<br></p>
+<p>于是尝试写个 <code>Makefile</code> 搞一搞</p>
+<span id="continue-reading"></span><h2 id="an-zhuang-glew-he-glfw">安装 GLEW 和 GLFW</h2>
+<p>使用 <code>brew</code> 安装就行，它会把对应的库和头文放在在 <code>/usr/local/lib</code> 和 <code>/usr/local/include</code> 下</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">brew</span><span> install glew
+</span><span style="color:#ffb964;">brew</span><span> install glfw
+</span></code></pre>
+<h2 id="huo-qu-dear-imgui-yuan-ma">获取 Dear ImGui 源码</h2>
+<p>我们可以直接把它的源码 Clone 下来</p>
+<p>仓库地址在这里<br>
+<a href="https://github.com/ocornut/imgui">https://github.com/ocornut/imgui</a></p>
+<p>然后其实看看 <code>examples</code> 里的例子抄抄就完事了（本文也是靠着它写的）</p>
+<h2 id="yin-ru-dear-imgui-ku">引入 Dear ImGui 库</h2>
+<p>首先建一个 <code>libs/imgui</code> 文件夹用于存放这个外部库</p>
+<p>然后把项目源码根目录下的源文件跟头文件都拷贝进去<br>
+还有 <code>examples</code> 下的 <code>imgui_impl_glfw.cpp</code>、<code>imgui_impl_glfw.h</code>、<code>imgui_impl_opengl3.cpp</code>、<code>imgui_impl_opengl3.h</code></p>
+<h2 id="makefile"><code>Makefile</code></h2>
+<pre data-lang="makefile" style="background-color:#151515;color:#e8e8d3;" class="language-makefile "><code class="language-makefile" data-lang="makefile"><span style="color:#ffb964;">EXE </span><span>= </span><span style="color:#99ad6a;">imgui_test
+</span><span style="color:#ffb964;">SOURCES </span><span>= </span><span style="color:#99ad6a;">main.cpp
+</span><span style="color:#ffb964;">SOURCES </span><span>+= </span><span style="color:#99ad6a;">imgui_impl_glfw.cpp imgui_impl_opengl3.cpp
+</span><span style="color:#ffb964;">SOURCES </span><span>+= </span><span style="color:#99ad6a;">imgui.cpp imgui_demo.cpp imgui_draw.cpp imgui_widgets.cpp
+</span><span style="color:#ffb964;">OBJS </span><span>= </span><span style="color:#99ad6a;">$(addsuffix .o, $(basename $(notdir </span><span style="color:#ffb964;">$(SOURCES)</span><span style="color:#99ad6a;">)))
+</span><span>
+</span><span style="color:#ffb964;">CXXFLAGS </span><span>= </span><span style="color:#99ad6a;">-Ilibs/imgui/
+</span><span style="color:#ffb964;">CXXFLAGS </span><span>+= </span><span style="color:#99ad6a;">-g -Wall -Wformat
+</span><span style="color:#ffb964;">CXXFLAGS </span><span>+= </span><span style="color:#99ad6a;">-I/usr/local/include
+</span><span style="color:#ffb964;">CXXFLAGS </span><span>+= </span><span style="color:#99ad6a;">-std=c++17
+</span><span>
+</span><span style="color:#ffb964;">LIBS </span><span>= </span><span style="color:#99ad6a;">-framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo
+</span><span style="color:#ffb964;">LIBS </span><span>+= </span><span style="color:#99ad6a;">-L/usr/local/lib
+</span><span style="color:#ffb964;">LIBS </span><span>+= </span><span style="color:#99ad6a;">-lGLEW
+</span><span style="color:#ffb964;">LIBS </span><span>+= </span><span style="color:#99ad6a;">-lglfw
+</span><span>
+</span><span style="color:#ffb964;">%</span><span style="color:#fad07a;">.o</span><span>:</span><span style="color:#ffb964;">%</span><span style="color:#99ad6a;">.cpp
+</span><span style="color:#ffb964;">$(CXX) $(CXXFLAGS)</span><span> -c -o </span><span style="color:#ffb964;">$@ $&lt;
+</span><span>
+</span><span style="color:#ffb964;">%</span><span style="color:#fad07a;">.o</span><span>:</span><span style="color:#99ad6a;">libs/imgui/</span><span style="color:#ffb964;">%</span><span style="color:#99ad6a;">.cpp
+</span><span style="color:#ffb964;">$(CXX) $(CXXFLAGS)</span><span> -c -o </span><span style="color:#ffb964;">$@ $&lt;
+</span><span>
+</span><span style="color:#fad07a;">all</span><span>: </span><span style="color:#ffb964;">$(EXE)
+</span><span>@echo Build complete
+</span><span>
+</span><span style="color:#ffb964;">$(EXE)</span><span>: </span><span style="color:#ffb964;">$(OBJS)
+</span><span style="color:#ffb964;">$(CXX)</span><span> -o </span><span style="color:#ffb964;">$@ $^ $(CXXFLAGS) $(LIBS)
+</span><span>
+</span><span style="color:#fad07a;">clean</span><span>:
+</span><span>rm -f </span><span style="color:#ffb964;">$(EXE) $(OBJS)
+</span></code></pre>
+<h2 id="main-cpp"><code>main.cpp</code></h2>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">#include </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">imgui.h</span><span style="color:#556633;">&quot;
+</span><span style="color:#8fbfdc;">#include </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">imgui_impl_glfw.h</span><span style="color:#556633;">&quot;
+</span><span style="color:#8fbfdc;">#include </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">imgui_impl_opengl3.h</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#8fbfdc;">#include </span><span style="color:#556633;">&lt;</span><span style="color:#99ad6a;">GL/glew.h</span><span style="color:#556633;">&gt;
+</span><span style="color:#8fbfdc;">#include </span><span style="color:#556633;">&lt;</span><span style="color:#99ad6a;">GLFW/glfw3.h</span><span style="color:#556633;">&gt;
+</span><span>
+</span><span style="color:#8fbfdc;">#include </span><span style="color:#556633;">&lt;</span><span style="color:#99ad6a;">cstdio</span><span style="color:#556633;">&gt;
+</span><span>
+</span><span style="color:#8fbfdc;">static void
+</span><span style="color:#fad07a;">glfw_error_callback</span><span>(</span><span style="color:#8fbfdc;">int </span><span style="color:#ffb964;">error</span><span>, </span><span style="color:#8fbfdc;">const char</span><span>* </span><span style="color:#ffb964;">description</span><span>)
+</span><span>{
+</span><span>    fprintf(stderr, </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Glfw Error </span><span style="color:#7697d6;">%d</span><span style="color:#99ad6a;">: </span><span style="color:#7697d6;">%s</span><span style="color:#99ad6a;">\n</span><span style="color:#556633;">&quot;</span><span>, error, description);
+</span><span>}
+</span><span>
+</span><span style="color:#8fbfdc;">int </span><span style="color:#fad07a;">main</span><span>(</span><span style="color:#ffb964;">int</span><span>, </span><span style="color:#8fbfdc;">char</span><span>**)
+</span><span>{
+</span><span>    </span><span style="color:#888888;">// Setup window
+</span><span>    </span><span style="color:#ffb964;">glfwSetErrorCallback</span><span>(glfw_error_callback);
+</span><span>    </span><span style="color:#8fbfdc;">if </span><span>(!</span><span style="color:#ffb964;">glfwInit</span><span>())
+</span><span>        </span><span style="color:#8fbfdc;">return </span><span style="color:#cf6a4c;">1</span><span>;
+</span><span>
+</span><span>    </span><span style="color:#888888;">// Decide GL+GLSL versions
+</span><span>    </span><span style="color:#8fbfdc;">const char</span><span>* glsl_version = </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">#version 150</span><span style="color:#556633;">&quot;</span><span>;
+</span><span>    </span><span style="color:#ffb964;">glfwWindowHint</span><span>(GLFW_CONTEXT_VERSION_MAJOR, </span><span style="color:#cf6a4c;">3</span><span>);
+</span><span>    </span><span style="color:#ffb964;">glfwWindowHint</span><span>(GLFW_CONTEXT_VERSION_MINOR, </span><span style="color:#cf6a4c;">2</span><span>);
+</span><span>    </span><span style="color:#ffb964;">glfwWindowHint</span><span>(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); </span><span style="color:#888888;">// 3.2+ only
+</span><span>    </span><span style="color:#ffb964;">glfwWindowHint</span><span>(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); </span><span style="color:#888888;">// Required on Mac
+</span><span>
+</span><span>    </span><span style="color:#888888;">// Create window with graphics context
+</span><span>    GLFWwindow* window = </span><span style="color:#ffb964;">glfwCreateWindow</span><span>(</span><span style="color:#cf6a4c;">1280</span><span>, </span><span style="color:#cf6a4c;">720</span><span>, </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Dear ImGui GLFW+OpenGL3 example</span><span style="color:#556633;">&quot;</span><span>, NULL, NULL);
+</span><span>    </span><span style="color:#8fbfdc;">if </span><span>(window == NULL)
+</span><span>        </span><span style="color:#8fbfdc;">return </span><span style="color:#cf6a4c;">1</span><span>;
+</span><span>    </span><span style="color:#ffb964;">glfwMakeContextCurrent</span><span>(window);
+</span><span>    </span><span style="color:#ffb964;">glfwSwapInterval</span><span>(</span><span style="color:#cf6a4c;">1</span><span>); </span><span style="color:#888888;">// Enable vsync
+</span><span>
+</span><span>    </span><span style="color:#888888;">// Initialize OpenGL loader
+</span><span>    </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">glewInit</span><span>() != GLEW_OK) {
+</span><span>        fprintf(stderr, </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Failed to initialize OpenGL loader!\n</span><span style="color:#556633;">&quot;</span><span>);
+</span><span>        </span><span style="color:#8fbfdc;">return </span><span style="color:#cf6a4c;">1</span><span>;
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#888888;">// Setup Dear ImGui context
+</span><span>    </span><span style="color:#ffb964;">IMGUI_CHECKVERSION</span><span>();
+</span><span>    ImGui::</span><span style="color:#ffb964;">CreateContext</span><span>();
+</span><span>    ImGuiIO&amp; io = ImGui::</span><span style="color:#ffb964;">GetIO</span><span>();
+</span><span>    (</span><span style="color:#8fbfdc;">void</span><span>)io;
+</span><span>
+</span><span>    </span><span style="color:#888888;">// Setup Dear ImGui style
+</span><span>    ImGui::</span><span style="color:#ffb964;">StyleColorsDark</span><span>();
+</span><span>
+</span><span>    </span><span style="color:#888888;">// Setup Platform/Renderer bindings
+</span><span>    </span><span style="color:#ffb964;">ImGui_ImplGlfw_InitForOpenGL</span><span>(window, true);
+</span><span>    </span><span style="color:#ffb964;">ImGui_ImplOpenGL3_Init</span><span>(glsl_version);
+</span><span>
+</span><span>    </span><span style="color:#888888;">// Our state
+</span><span>    </span><span style="color:#8fbfdc;">bool</span><span> show_demo_window = true;
+</span><span>    </span><span style="color:#8fbfdc;">bool</span><span> show_another_window = false;
+</span><span>    ImVec4 clear_color = </span><span style="color:#ffb964;">ImVec4</span><span>(</span><span style="color:#cf6a4c;">0.45</span><span style="color:#8fbfdc;">f</span><span>, </span><span style="color:#cf6a4c;">0.55</span><span style="color:#8fbfdc;">f</span><span>, </span><span style="color:#cf6a4c;">0.60</span><span style="color:#8fbfdc;">f</span><span>, </span><span style="color:#cf6a4c;">1.00</span><span style="color:#8fbfdc;">f</span><span>);
+</span><span>
+</span><span>    </span><span style="color:#888888;">// Main loop
+</span><span>    </span><span style="color:#8fbfdc;">while </span><span>(!</span><span style="color:#ffb964;">glfwWindowShouldClose</span><span>(window)) {
+</span><span>        </span><span style="color:#ffb964;">glfwPollEvents</span><span>();
+</span><span>
+</span><span>        </span><span style="color:#888888;">// Start the Dear ImGui frame
+</span><span>        </span><span style="color:#ffb964;">ImGui_ImplOpenGL3_NewFrame</span><span>();
+</span><span>        </span><span style="color:#ffb964;">ImGui_ImplGlfw_NewFrame</span><span>();
+</span><span>        ImGui::</span><span style="color:#ffb964;">NewFrame</span><span>();
+</span><span>
+</span><span>        </span><span style="color:#888888;">// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
+</span><span>        </span><span style="color:#8fbfdc;">if </span><span>(show_demo_window)
+</span><span>            ImGui::</span><span style="color:#ffb964;">ShowDemoWindow</span><span>(&amp;show_demo_window);
+</span><span>
+</span><span>        </span><span style="color:#888888;">// 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
+</span><span>        {
+</span><span>            </span><span style="color:#8fbfdc;">static float</span><span> f = </span><span style="color:#cf6a4c;">0.0</span><span style="color:#8fbfdc;">f</span><span>;
+</span><span>            </span><span style="color:#8fbfdc;">static int</span><span> counter = </span><span style="color:#cf6a4c;">0</span><span>;
+</span><span>
+</span><span>            ImGui::</span><span style="color:#ffb964;">Begin</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Hello, world!</span><span style="color:#556633;">&quot;</span><span>); </span><span style="color:#888888;">// Create a window called &quot;Hello, world!&quot; and append into it.
+</span><span>
+</span><span>            ImGui::</span><span style="color:#ffb964;">Text</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">This is some useful text.</span><span style="color:#556633;">&quot;</span><span>); </span><span style="color:#888888;">// Display some text (you can use a format strings too)
+</span><span>            ImGui::</span><span style="color:#ffb964;">Checkbox</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Demo Window</span><span style="color:#556633;">&quot;</span><span>, &amp;show_demo_window); </span><span style="color:#888888;">// Edit bools storing our window open/close state
+</span><span>            ImGui::</span><span style="color:#ffb964;">Checkbox</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Another Window</span><span style="color:#556633;">&quot;</span><span>, &amp;show_another_window);
+</span><span>
+</span><span>            ImGui::</span><span style="color:#ffb964;">SliderFloat</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">float</span><span style="color:#556633;">&quot;</span><span>, &amp;f, </span><span style="color:#cf6a4c;">0.0</span><span style="color:#8fbfdc;">f</span><span>, </span><span style="color:#cf6a4c;">1.0</span><span style="color:#8fbfdc;">f</span><span>); </span><span style="color:#888888;">// Edit 1 float using a slider from 0.0f to 1.0f
+</span><span>            ImGui::</span><span style="color:#ffb964;">ColorEdit3</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">clear color</span><span style="color:#556633;">&quot;</span><span>, (</span><span style="color:#8fbfdc;">float</span><span>*)&amp;clear_color); </span><span style="color:#888888;">// Edit 3 floats representing a color
+</span><span>
+</span><span>            </span><span style="color:#8fbfdc;">if </span><span>(ImGui::</span><span style="color:#ffb964;">Button</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Button</span><span style="color:#556633;">&quot;</span><span>)) </span><span style="color:#888888;">// Buttons return true when clicked (most widgets return true when edited/activated)
+</span><span>                counter++;
+</span><span>            ImGui::</span><span style="color:#ffb964;">SameLine</span><span>();
+</span><span>            ImGui::</span><span style="color:#ffb964;">Text</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">counter = </span><span style="color:#7697d6;">%d</span><span style="color:#556633;">&quot;</span><span>, counter);
+</span><span>
+</span><span>            ImGui::</span><span style="color:#ffb964;">Text</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Application average </span><span style="color:#7697d6;">%.3f</span><span style="color:#99ad6a;"> ms/frame (</span><span style="color:#7697d6;">%.1f</span><span style="color:#99ad6a;"> FPS)</span><span style="color:#556633;">&quot;</span><span>, </span><span style="color:#cf6a4c;">1000.0</span><span style="color:#8fbfdc;">f </span><span>/ ImGui::</span><span style="color:#ffb964;">GetIO</span><span>().</span><span style="color:#ffb964;">Framerate</span><span>, ImGui::</span><span style="color:#ffb964;">GetIO</span><span>().</span><span style="color:#ffb964;">Framerate</span><span>);
+</span><span>            ImGui::</span><span style="color:#ffb964;">End</span><span>();
+</span><span>        }
+</span><span>
+</span><span>        </span><span style="color:#888888;">// 3. Show another simple window.
+</span><span>        </span><span style="color:#8fbfdc;">if </span><span>(show_another_window) {
+</span><span>            ImGui::</span><span style="color:#ffb964;">Begin</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Another Window</span><span style="color:#556633;">&quot;</span><span>, &amp;show_another_window); </span><span style="color:#888888;">// Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+</span><span>            ImGui::</span><span style="color:#ffb964;">Text</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Hello from another window!</span><span style="color:#556633;">&quot;</span><span>);
+</span><span>            </span><span style="color:#8fbfdc;">if </span><span>(ImGui::</span><span style="color:#ffb964;">Button</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Close Me</span><span style="color:#556633;">&quot;</span><span>))
+</span><span>                show_another_window = false;
+</span><span>            ImGui::</span><span style="color:#ffb964;">End</span><span>();
+</span><span>        }
+</span><span>
+</span><span>        </span><span style="color:#888888;">// Rendering
+</span><span>        ImGui::</span><span style="color:#ffb964;">Render</span><span>();
+</span><span>        </span><span style="color:#8fbfdc;">int</span><span> display_w, display_h;
+</span><span>        </span><span style="color:#ffb964;">glfwGetFramebufferSize</span><span>(window, &amp;display_w, &amp;display_h);
+</span><span>        </span><span style="color:#ffb964;">glViewport</span><span>(</span><span style="color:#cf6a4c;">0</span><span>, </span><span style="color:#cf6a4c;">0</span><span>, display_w, display_h);
+</span><span>        </span><span style="color:#ffb964;">glClearColor</span><span>(clear_color.</span><span style="color:#ffb964;">x</span><span>, clear_color.</span><span style="color:#ffb964;">y</span><span>, clear_color.</span><span style="color:#ffb964;">z</span><span>, clear_color.</span><span style="color:#ffb964;">w</span><span>);
+</span><span>        </span><span style="color:#ffb964;">glClear</span><span>(GL_COLOR_BUFFER_BIT);
+</span><span>        </span><span style="color:#ffb964;">ImGui_ImplOpenGL3_RenderDrawData</span><span>(ImGui::</span><span style="color:#ffb964;">GetDrawData</span><span>());
+</span><span>
+</span><span>        </span><span style="color:#ffb964;">glfwSwapBuffers</span><span>(window);
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#888888;">// Cleanup
+</span><span>    </span><span style="color:#ffb964;">ImGui_ImplOpenGL3_Shutdown</span><span>();
+</span><span>    </span><span style="color:#ffb964;">ImGui_ImplGlfw_Shutdown</span><span>();
+</span><span>    ImGui::</span><span style="color:#ffb964;">DestroyContext</span><span>();
+</span><span>
+</span><span>    </span><span style="color:#ffb964;">glfwDestroyWindow</span><span>(window);
+</span><span>    </span><span style="color:#ffb964;">glfwTerminate</span><span>();
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">return </span><span style="color:#cf6a4c;">0</span><span>;
+</span><span>}
+</span></code></pre>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202003302030/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">使用 Mockito 对 SpringBoot 项目单元测试</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202004060019/">
+                                <span class="button__text">Lock-free 数据结构设计</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2024
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

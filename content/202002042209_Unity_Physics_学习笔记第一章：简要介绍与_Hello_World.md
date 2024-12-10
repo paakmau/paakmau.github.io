@@ -7,20 +7,17 @@ slug = "202002042209"
 tags = ["Unity ECS", "Unity Physics"]
 +++
 
-现在 Unity 的 Package Manager 中已经有了适用于 ECS 框架的物理引擎，功能完善<br>
-可以说 Unity 的 DOTS（面向数据技术栈）已经能够用于制作大部分游戏类型
+现在 Unity 的 Package Manager 中已经有了适用于 ECS 框架的物理引擎，功能比较完善。
+这个系列会介绍目前 Unity Physics 中的绝大多数内容，与 Havok Physics 关系不大。
 
 <!-- more -->
 
-这个系列会介绍目前 Unity Physics 中的绝大多数内容，与 Havok Physics 关系不大
+本系列文章使用的 package 版本：
 
-需要旧版 Unity 的基础，Unity ECS 基础，并对常见物理引擎有一定了解
+- `com.unity.entities 0.5.1-preview.11`
+- `com.unity.physics 0.2.5-preview.1`
 
-本系列文章基于<br>
-`com.unity.entities 0.5.1-preview.11`<br>
-`com.unity.physics 0.2.5-preview.1`
-
-## 相关 Package 介绍
+## 相关 package 介绍
 
 目前相关的包有两个，一个是 `com.unity.physics`，另一个是 `com.havok.physics`
 

@@ -17,7 +17,7 @@ tags = ["MySQL", "Node.js", "Express"]
 但是该脚手架缺少 Express 异常处理，感兴趣可以自行添加<br>
 而且用 MySQL 存 Session 感觉不太正常，应该换 Redis，篇幅有限就不写了（虽然已经很长了）。
 
-作为示例，本文还实现了基于 Session 的验证码认证、RESTful 风格接口与 MD5 加密的登陆注册。
+作为示例，本文还实现了使用 Session 的验证码认证、RESTful 风格接口与 MD5 加密的登陆注册。
 
 ## 环境
 
@@ -243,7 +243,7 @@ console.log(encodePassword("test_password"))
 ```
 
 得到如下密文<br>
-```
+```plain
 9c6481dbc7c568e6e0ed338c415db921
 ```
 

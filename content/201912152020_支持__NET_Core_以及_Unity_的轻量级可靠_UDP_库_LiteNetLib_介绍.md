@@ -1,5 +1,5 @@
 +++
-title = "支持.NET Core 以及 Unity 的轻量级可靠 UDP 库 LiteNetLib 介绍"
+title = "支持 .NET Core 以及 Unity 的轻量级可靠 UDP 库 LiteNetLib 介绍"
 date = 2019-12-15 20:20:31
 slug = "201912152020"
 
@@ -17,9 +17,9 @@ tags = [".NET Core", "Unity ECS"]
 
 ## 概括
 
-跟随本文实现 Unity 前端与.NET Core 后端互相发送信息
+跟随本文实现 Unity 前端与 .NET Core 后端互相发送信息
 
-Unity 的.NET 版本为.NET Framework 4.x，后端为 .NET Core 3.1，LiteNetLib 库使用 0.8.x 稳定版本
+Unity 的 .NET 版本为.NET Framework 4.x，后端为 .NET Core 3.1，LiteNetLib 库使用 0.8.x 稳定版本
 
 ## Unity 前端
 

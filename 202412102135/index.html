@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>使用火焰图分析程序性能 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="使用火焰图分析程序性能 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202412102135/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="使用火焰图分析程序性能 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202412102135/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    </head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202412102135/">使用火焰图分析程序性能</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2024-12-10
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/xing-neng-fen-xi/">#性能分析</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/huo-yan-tu/">#火焰图</a></span>
+    
+
+        <div class="post-content">
+            <p>火焰图是对层次数据的可视化。
+我们通常可以将性能分析工具采集到的调用栈信息以火焰图的方式进行可视化。
+从而直观且准确地观察到频繁调用的代码路径。</p>
+<span id="continue-reading"></span><h2 id="perf"><code>perf</code></h2>
+<p><code>perf</code> 是 Linux 系统上的性能分析工具。
+<code>perf</code> 可以周期性地产生中断，在中断处理中获取并记录当前调用栈信息。</p>
+<p>先检查一下有没有 <code>perf</code>，没有的话就安装一下：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">perf --version
+</span><span style="color:#ffb964;">dnf</span><span> install perf
+</span></code></pre>
+<h2 id="flamegraph-gong-ju">FlameGraph 工具</h2>
+<p>FlameGraph 以 <code>perf</code> 采集到的调用栈数据为输入，生成火焰图。</p>
+<p>不需要安装，直接 clone 即可：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">git</span><span> clone https://github.com/brendangregg/FlameGraph.git
+</span></code></pre>
+<h2 id="huo-yan-tu-sheng-cheng-chang-yong-ming-ling-su-cha">火焰图生成常用命令速查</h2>
+<p>注意一下，我们的工作路径需要在 clone 下来的 FlameGraph 里面。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>cd FlameGraph
+</span></code></pre>
+<p>然后可通过 <code>perf record</code> 命令采集调用栈数据，下面提供的命令会将采集结果输出到 <code>perf.data</code> 中：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">perf</span><span> record</span><span style="color:#ffb964;"> -F </span><span>&lt;frequency&gt; -a</span><span style="color:#ffb964;"> -g -p </span><span>&lt;pid&gt; -- &lt;cmd&gt;
+</span><span style="color:#ffb964;">perf</span><span> record</span><span style="color:#ffb964;"> -F</span><span> 2000</span><span style="color:#ffb964;"> -a -g -p </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$(</span><span style="color:#ffb964;">pgrep -x</span><span style="color:#99ad6a;"> mysqld</span><span style="color:#ffb964;"> -u </span><span style="color:#99ad6a;">&lt;username&gt;)</span><span style="color:#556633;">&quot;</span><span> -- mysql -e </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">select * from &lt;some-table&gt;</span><span style="color:#556633;">&quot;
+</span><span style="color:#ffb964;">perf</span><span> record</span><span style="color:#ffb964;"> -F</span><span> 2000</span><span style="color:#ffb964;"> -a -g -p </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$(</span><span style="color:#ffb964;">pgrep -x</span><span style="color:#99ad6a;"> mysqld</span><span style="color:#ffb964;"> -u </span><span style="color:#99ad6a;">&lt;username&gt;)</span><span style="color:#556633;">&quot;</span><span> -- sleep 30</span><span style="color:#556633;">&quot;
+</span></code></pre>
+<p>最后通过 FlameGraph 工具生成火焰图。
+示例中输出的文件名是 <code>perf-mysqld.svg</code>。
+这个 <code>.svg</code> 文件可直接用浏览器打开。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">perf</span><span> script | </span><span style="color:#ffb964;">./stackcollapse-perf.pl </span><span>&gt; out.perf-folded
+</span><span style="color:#ffb964;">cat</span><span> out.perf-folded | </span><span style="color:#ffb964;">./flamegraph.pl </span><span>&gt; perf-mysqld.svg
+</span></code></pre>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202411052325/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">POSIX shell 脚本使用笔记</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202412162106/">
+                                <span class="button__text">openGauss-server 构建、安装、运行与调试</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

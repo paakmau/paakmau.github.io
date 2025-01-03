@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>C++ 依赖包管理解决方案对比 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="C++ 依赖包管理解决方案对比 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202012120239/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="C++ 依赖包管理解决方案对比 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202012120239/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    </head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202012120239/">C++ 依赖包管理解决方案对比</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2020-12-12
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/c/">#C++</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/cmake/">#CMake</a></span>
+    
+
+        <div class="post-content">
+            <p>刚刚有个朋友问我加老师发生甚么事了，我说两个年轻人，一个 C#，一个 Java。</p>
+<span id="continue-reading"></span>
+<p>他们说，哎，我在加包依赖的时候冲突了，加老师你能不能教教我 CMake 功法，帮助治疗一下，我的依赖包。
+我说可以。</p>
+<p>我说你们在构建工具里练死劲不好用，他不服气。
+我说小朋友，你用两行的 <code>dependency</code>，折我一行的 <code>find_package</code>，他折不动。
+他说你这没用我说我这有用，这用了系统包管理，是化劲。
+传统编程是讲化劲的四两拨千斤，两百多斤的 <code>pip install</code> 再 <code>import</code>，都折不动我这一行从系统里拿包的 <code>find_package</code>。</p>
+<p>啊，他非和我试手。
+我说可以，啪就站起来了，很快啊！
+然后上来就是一个 <code>import</code>，一个 <code>using</code>，我全都防出去了，防出去了啊。
+防出去以后自然是传统编程以点到为止我用 <code>#include</code> 加宏手放键盘上没有用 CMake 构建。
+我笑一下准备关掉 VS Code。
+由于这时间，按照传统编程点到为止他已经输了。
+如果这一构建下去，编译完链接立刻运行当场就能直接把他的 Runtime 打骨折了。
+他也承认我先导入的依赖库。
+啊，我关掉 VS Code 的时候不构建了，他突然袭击连续导了几个包来构建。
+我大意了啊，没有闪，当时就流眼泪了。
+我说小伙子你不讲武德你懂不懂，他说加老师对不起，对不起，我不懂规矩。</p>
+<p>他说他的库是乱导的。
+他可不是乱导的啊，构建工具与包依赖集成、中央仓库、依赖包多版本管理、命令行工具，训练有素。
+后来他说他在甲骨文和微软练过三四年。
+啊，看来是有备而来！
+这两个年轻人不讲武德！
+来骗！！
+来偷袭！！
+我 69 岁的老同志。
+这好吗，这不好。
+我劝，这两位年轻人耗子尾汁，好好反思，以后不要再犯，这样的聪明，小聪明啊。</p>
+<p>现代语言基本上都有很舒适的依赖管理，比如 Java 的 Maven 和 Gradle、.NET 的 NuGet、node.js 的 npm、Rust 的 Cargo。
+目前 C++ 成熟且主流的构建工具就是 CMake 了。然而 CMake 的依赖管理非常弱。
+一般来说更好的方法是使用一些集成到 CMake 上的包管理工具；也可以抛弃这个陈旧且臃肿的 CMake，直接改用更先进的构建工具。</p>
+<p>接下来介绍几种解决方案。</p>
+<h2 id="pei-he-xi-tong-bao-guan-li-qi-shi-yong-find-package">配合系统包管理器使用 <code>find_package</code></h2>
+<p><code>find_package</code> 是 CMake 的一个指令，重度依赖 <code>apt</code>、<code>pacman</code>、<code>brew</code> 这些能把类库直接安装到系统里的包管理器，而且不能控制依赖包的多个版本。</p>
+<p>如果是 <code>macOS</code>，那还好。
+起码有 <code>brew</code>，而且还是类 UNIX，装好的类库也都能找到在哪，勉强算能用。</p>
+<p>如果是 Windows，那就很操蛋了。
+系统包管理确实也算有几个，但是都奇奇怪怪。
+我用过的 MSYS2 其实还算可以，但是会有一些兼容性问题。
+总体来说还是太折磨了，建议直接用 WSL。</p>
+<p>非常易用<br>
+不支持版本管理<br>
+只能导入支持 CMake 的用系统包管理器安装的包</p>
+<h2 id="zhi-jie-ba-wai-bu-ku-yuan-ma-reng-jin-xiang-mu-li">直接把外部库源码扔进项目里</h2>
+<p>其实也是最常见的解决方法，把外部库源码都扔进一个例如 <code>external</code> 文件夹里。
+单论 <code>add_subdirectory</code> 的话，学习成本很低。
+但是如果要这样引库，首先要先学会这个库怎么编译，然后要简化编译的流程。
+有些邪恶的库还会喜欢用 Python 来构建。
+很有可能会需要对这些库进行一顿乱七八糟的魔改，或者在外面写一堆神秘的脚本。
+更新外部库时还要重新下载源码，然后再一通爆改。
+如果外部库的构建产生了变动，那真的就是世界末日。
+而且外部库还需要占用远程仓库额外的空间。</p>
+<p>非常原始，比较麻烦<br>
+支持版本管理<br>
+可以导入所有项目</p>
+<h2 id="git-submodules">Git Submodules</h2>
+<p>跟手动扔进项目里差不多，但是这样基本不允许魔改。
+通常情况下只能在外面搞些小动作，比如设一些 CMake 变量来控制依赖的构建啥的。
+不过这样外部库就不会占用空间了。
+而且更新外部库版本很方便。</p>
+<p>比较麻烦<br>
+支持版本管理<br>
+可以导入一部分托管项目</p>
+<h2 id="fetchcontent"><code>FetchContent</code></h2>
+<p><code>FetchContent</code> 是 CMake 自带的功能，可以在构建之前下载外部库的源代码。
+这种方法跟 Git Submodules 几乎没有区别。</p>
+<p>比较麻烦<br>
+支持版本管理<br>
+可以导入一部分托管项目</p>
+<h2 id="vcpkg">Vcpkg</h2>
+<p>微软写的，需要安装，没有构建功能，可以配合 CMake。
+有一点类似 <code>apt</code>、<code>pacman</code> 这些东西，但是不支持版本控制。
+开发的初衷应该就是要解决 Windows 上没有系统包管理器的问题。
+不过值得一提的是它支持的包的数量非常多，不愧是微软爸爸啊。
+而且版本管理功能受到重视且正在被实现，估计很快就能用了。</p>
+<p>有趣的是，安装多个 vcpkg 可以使得不同 vcpkg 持有不同版本的依赖包。
+这样对于每个项目都安装一个 vcpkg 就能实现版本管理。
+这是一种非常蛇皮而且折磨的解决方法，但是它竟然被写到了微软的官方文档里。</p>
+<p>还算易用<br>
+对于依赖的版本管理有非常脑瘫的支持，截止到发文，它还在试图真正实现版本管理<br>
+支持的依赖包较多</p>
+<h2 id="conan">Conan</h2>
+<p>跟 vcpkg 差不多，也是依赖 CMake。
+但是会好一点，因为具有版本管理功能，就是支持的包的数量少一点。</p>
+<p>还算易用<br>
+支持版本管理<br>
+支持的依赖包较少</p>
+<h2 id="hunter">Hunter</h2>
+<p>看起来像是正统的 CMake 上包管理解决方法。
+它不需要安装，直接在 <code>CMakeLists.txt</code> 里添加代码就可以了。
+我其实已经使用过一段时间，但是发现它支持的包比较少，而且版本更新不够及时，但是交 PR 的回复还挺快。</p>
+<p>非常易用<br>
+支持版本管理<br>
+支持的包也比较少</p>
+<h2 id="xmake">Xmake</h2>
+<p>国人大佬写的，不依赖 CMake，能够独立构建项目。
+它使用内嵌的 Lua 来配置项目。
+具有依赖包多版本管理功能。
+在 VS Code、IDEA 等 IDE 上有插件支持。
+安装方便，Homebrew 和 AUR 的仓库里都有。
+开源社区目前正在活跃。</p>
+<p>牛逼的是可以导 vcpkg 和 conan 的包，这使得还在发展初期的 xmake 已经具备了应用于实际项目的能力。</p>
+<p>不过有一些小问题。
+目前原生支持的包还比较少。且 xmake 的 API 变化还比较剧烈。使用 Lua 语法配置项目可能会导致配置比较冗长，传参用的是字符串也不好做语法检查。</p>
+<p>比较易用<br>
+比较高雅<br>
+多种 IDE 插件支持<br>
+支持版本管理<br>
+支持的包非常多，但是原生包很少<br>
+发展初期，前景未知</p>
+<h2 id="build2">Build2</h2>
+<p>似乎是唯一正统的全新的 C++ 构建工具，未来之星，明日之子，全人类最后的希望。<br>
+项目组里的人有很多神仙级大佬。
+文档也写的看起来非常牛逼。
+但是使用独立的语法学习成本高。
+似乎作者比较刚且还要规定统一的项目规范（可能算优点也可能算缺点）。
+同样在开发初期。</p>
+<p>需要注意，C++ 开源项目的结构通常都乱七八糟，而 build2 对于依赖包的项目结构有明确的非强制性但强烈建议的要求，大量遗留的开源项目可能难以修改项目结构就导致不便于加入 build2 的包仓库中，并且这有一点强制施加个人观点的意味在里面。
+<del>难道这就是篡改信仰吗。</del>
+最关键是它生成的项目结构是真的有够丑，需要较长时间磨合或者说妥协。
+可能正是因为这样，现在支持的包非常非常少，增速也非常缓慢。<br>
+但其实统一 C++ 的项目结构是一件喜闻乐见的事情，而且 build2 默认生成的项目结构其实非常符合 C++20 的 Modules。
+另外有个好消息是它虽然限制很多，但是允许驼峰。
+<del>虽然可能它是不乐意的。</del></p>
+<p>勉强算易用吧<br>
+比较高雅<br>
+支持版本管理<br>
+支持的包太少了<br>
+还在发展初期，前景未知</p>
+<h2 id="spack">Spack</h2>
+<p>集成了多版本包管理的独立构建工具，似乎是为了超算设计的。
+支持 <code>macOS</code>，Linux，但是不支持 Windows，没想到吧。
+包也挺多，还支持把用 C / C++ / Fortran 写的类库链接到用 Python / R 写的应用上。
+社区目前非常非常活跃。<br>
+Windows 的支持似乎受到了重视，现在有个好心人在试图添加 MinGW，估计快了吧。<br>
+有个问题是它依赖 Python，而且用户需要手动安装，这可能会导致一些 Python 版本的兼容性问题。</p>
+<p>比较易用<br>
+比较高雅<br>
+支持版本管理<br>
+支持的包很多<br>
+暂不支持 Windows</p>
+<h2 id="ge-ren-jian-yi">个人建议</h2>
+<p>目前新的构建工具还没有能够广泛使用，
+所以 CMake 估计还能坚挺很长时间。</p>
+<p>所以使用 Git Submodules、<code>FetchContent</code> 又或者直接把源码扔项目里再配合 CMake 是比较稳妥的方法。
+这个解决方案可以很好的保持包的版本依赖。
+并且可以在未来很长一段时间内不用改动。</p>
+<p>不嫌麻烦的可以用 Conan。
+Vcpkg 也跟 Conan 一样麻烦，如果多版本包管理的 feature 加好了那就比 Conan 好一点吧。
+Hunter 也是一个比较好的选择，使用起来很简单，但是包还是少，而且包的版本更新缓慢。</p>
+<p>激进一点可以试试 Xmake 和 Spack。<br>
+反正 Xmake 可以偷 vcpkg 和 Conan 的包来用，如果想用原生包还能自己提 PR，作者都会很快回复，而且有中文文档上手非常简单。<br>
+Spack 的话，如果主力开发环境不在 Windows 的话也可以先试试，因为原生包真的非常多，Windows 的支持估计也快了。</p>
+<p>Build2 暂时还不建议用，因为支持的包太少了，而且包的增加也很缓慢。
+如果要自己提交包的话，虽然非常麻烦，但最好还是遵守 build2 对包的项目结构的建议性要求。</p>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202012120112/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">CMake 项目结构最佳实践</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202012200030/">
+                                <span class="button__text">C++ Core Guidelines 命名与布局规则</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

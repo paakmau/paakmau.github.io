@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>通过 MySQL Connector&#x2F;J 连接 openGauss | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="通过 MySQL Connector/J 连接 openGauss | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202501182247/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="通过 MySQL Connector/J 连接 openGauss | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202501182247/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202501182247/">通过 MySQL Connector&#x2F;J 连接 openGauss</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2025-01-18
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/java/">#Java</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/mysql/">#MySQL</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/opengauss/">#openGauss</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/shu-ju-ku/">#数据库</a></span>
+    
+
+        <div class="post-content">
+            <p>MySQL Connector/J 是 MySQL 官方的 JDBC 驱动。
+本文将记录使用该驱动连接 openGauss B 库的过程。</p>
+<span id="continue-reading"></span><h2 id="xia-zai-bing-jie-ya">下载并解压</h2>
+<p>下载链接：</p>
+<p><a href="https://downloads.mysql.com/archives/c-j/">https://downloads.mysql.com/archives/c-j/</a></p>
+<ul>
+<li><code>Product Version</code> 选择 <code>8.0.28</code>。</li>
+<li><code>Operating System</code> 选择 <code>Platform Independent</code>。</li>
+</ul>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">wget</span><span> https://downloads.mysql.com/archives/get/p/3/file/mysql-connector-java-8.0.28.tar.gz
+</span><span style="color:#ffb964;">tar -zxf</span><span> mysql-connector-java-8.0.28.tar.gz
+</span><span>
+</span><span style="color:#ffb964;">mv</span><span> mysql-connector-java-8.0.28/mysql-connector-java-8.0.28.jar ./
+</span><span>
+</span><span style="color:#ffb964;">rm -r</span><span> mysql-connector-java-8.0.28
+</span><span style="color:#ffb964;">rm</span><span> mysql-connector-java-8.0.28.tar.gz
+</span></code></pre>
+<h2 id="zhun-bei-b-ku">准备 B 库</h2>
+<p>使用默认用户连上 openGauss 之后就可以直接创建 B 库：</p>
+<pre data-lang="sql" style="background-color:#151515;color:#e8e8d3;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#888888;">-- 创建 B 库
+</span><span>CREATE DATABASE compat_b DBCOMPATIBILITY &#39;</span><span style="color:#fad07a;">B</span><span>&#39;;
+</span><span>
+</span><span style="color:#888888;">-- 配置数据库级别 B 库常用参数
+</span><span>ALTER DATABASE compat_b SET enable_set_variable_b_format TO ON;
+</span><span>ALTER DATABASE compat_b SET </span><span style="color:#7697d6;">dolphin</span><span>.</span><span style="color:#7697d6;">lower_case_table_names</span><span> TO </span><span style="color:#cf6a4c;">0</span><span>;
+</span><span>ALTER DATABASE compat_b SET </span><span style="color:#7697d6;">dolphin</span><span>.</span><span style="color:#7697d6;">b_compatibility_mode</span><span> TO ON;
+</span><span>
+</span><span style="color:#888888;">-- 配置系统级别 B 库常用参数
+</span><span>ALTER SYSTEM SET enable_dolphin_proto TO ON;
+</span><span>ALTER SYSTEM SET dolphin_server_port TO </span><span style="color:#cf6a4c;">3306</span><span>;
+</span></code></pre>
+<p>于是重启数据库：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">gs_ctl</span><span> restart
+</span></code></pre>
+<p>创建 B 库之后需要先使用默认用户连到这个库上，以加载 dolphin 插件：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">gsql -d</span><span> compat_b
+</span></code></pre>
+<p>创建数据库时的默认用户是不允许远程登陆的，因此需要创建其他用户：</p>
+<pre data-lang="sql" style="background-color:#151515;color:#e8e8d3;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#888888;">-- 创建用户 `mysql`
+</span><span>CREATE USER mysql WITH PASSWORD &#39;</span><span style="color:#fad07a;">&lt;password&gt;</span><span>&#39;;
+</span></code></pre>
+<p>可以尝试用 <code>127.0.0.1</code> 连接一下：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">gsql -h</span><span> 127.0.0.1</span><span style="color:#ffb964;"> -p </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">PGPORT</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;</span><span style="color:#ffb964;"> -U</span><span> mysql</span><span style="color:#ffb964;"> -d</span><span> compat_b
+</span></code></pre>
+<p>但这时仍然无法用 <code>mysql</code> 命令等方式直接连接到 B 库上。
+我们还需要继续为用户 <code>mysql</code> 配置兼容 MySQL 认证协议的 B 库密码。</p>
+<pre data-lang="sql" style="background-color:#151515;color:#e8e8d3;" class="language-sql "><code class="language-sql" data-lang="sql"><span>\c compat_b
+</span><span>
+</span><span style="color:#888888;">-- 以 native 认证方式为用户 `mysql` 配置 B 库密码
+</span><span>SELECT set_native_password(</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">mysql</span><span style="color:#556633;">&#39;</span><span>, </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">&lt;new-b-password&gt;</span><span style="color:#556633;">&#39;</span><span>, </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">&lt;old-b-password&gt;</span><span style="color:#556633;">&#39;</span><span>);
+</span></code></pre>
+<p>为用户设置 B 库密码时，注意到会要输入新密码与旧密码，第一次配置时旧密码可以直接为空字符串。</p>
+<p>于是就可以用 <code>mysql</code> 命令连接了：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">mysql -h</span><span> 127.0.0.1</span><span style="color:#ffb964;"> -P</span><span> 3306</span><span style="color:#ffb964;"> -u</span><span> mysql</span><span style="color:#ffb964;"> -p
+</span></code></pre>
+<h2 id="zhun-bei-java-yuan-wen-jian">准备 Java 源文件</h2>
+<pre data-lang="java" style="background-color:#151515;color:#e8e8d3;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#8fbfdc;">import </span><span>java.sql.</span><span style="color:#ffb964;">Connection</span><span>;
+</span><span style="color:#8fbfdc;">import </span><span>java.sql.</span><span style="color:#ffb964;">DriverManager</span><span>;
+</span><span style="color:#8fbfdc;">import </span><span>java.sql.</span><span style="color:#ffb964;">ResultSet</span><span>;
+</span><span style="color:#8fbfdc;">import </span><span>java.sql.</span><span style="color:#ffb964;">Statement</span><span>;
+</span><span>
+</span><span style="color:#8fbfdc;">import </span><span>com.mysql.cj.jdbc.</span><span style="color:#ffb964;">Driver</span><span>;
+</span><span>
+</span><span style="color:#8fbfdc;">public class </span><span style="color:#ffb964;">Demo </span><span>{
+</span><span>    </span><span style="color:#8fbfdc;">public static final </span><span style="color:#ffb964;">String URL </span><span>= </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">jdbc:mysql://localhost:3306/compat_b</span><span style="color:#556633;">&quot;</span><span>;
+</span><span>    </span><span style="color:#8fbfdc;">public static final </span><span style="color:#ffb964;">String USER </span><span>= </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">mysql</span><span style="color:#556633;">&quot;</span><span>;
+</span><span>    </span><span style="color:#8fbfdc;">public static final </span><span style="color:#ffb964;">String PASSWORD </span><span>= </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">&lt;b-password&gt;</span><span style="color:#556633;">&quot;</span><span>;
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">public static void </span><span style="color:#fad07a;">main</span><span>(</span><span style="color:#ffb964;">String</span><span style="color:#8fbfdc;">[] </span><span style="color:#ffb964;">args</span><span>) throws </span><span style="color:#ffb964;">Exception </span><span>{
+</span><span>        </span><span style="color:#888888;">// 注册驱动
+</span><span>        </span><span style="color:#ffb964;">DriverManager</span><span>.</span><span style="color:#ffb964;">registerDriver</span><span>(new </span><span style="color:#ffb964;">Driver</span><span>());
+</span><span>
+</span><span>        </span><span style="color:#888888;">// 创建连接
+</span><span>        </span><span style="color:#ffb964;">Connection</span><span> conn = </span><span style="color:#ffb964;">DriverManager</span><span>.</span><span style="color:#ffb964;">getConnection</span><span>(</span><span style="color:#ffb964;">URL</span><span>, </span><span style="color:#7697d6;">USER</span><span>, </span><span style="color:#7697d6;">PASSWORD</span><span>);
+</span><span>
+</span><span>        </span><span style="color:#888888;">// 执行语句并输出结果
+</span><span>        </span><span style="color:#ffb964;">Statement</span><span> stmt = conn.</span><span style="color:#ffb964;">createStatement</span><span>();
+</span><span>        </span><span style="color:#ffb964;">ResultSet</span><span> rs = stmt.</span><span style="color:#ffb964;">executeQuery</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">SELECT version();</span><span style="color:#556633;">&quot;</span><span>);
+</span><span>        </span><span style="color:#8fbfdc;">while </span><span>(rs.</span><span style="color:#ffb964;">next</span><span>()) {
+</span><span>            </span><span style="color:#ffb964;">System</span><span>.out.</span><span style="color:#ffb964;">println</span><span>(rs.</span><span style="color:#ffb964;">getString</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">version</span><span style="color:#556633;">&quot;</span><span>));
+</span><span>        }
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<h2 id="bian-yi-bing-zhi-xing">编译并执行</h2>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#888888;"># 编译
+</span><span style="color:#ffb964;">javac -cp </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">./mysql-connector-java-8.0.28.jar</span><span style="color:#556633;">&quot;</span><span> Demo.java
+</span><span>
+</span><span style="color:#888888;"># 执行
+</span><span style="color:#ffb964;">java -cp </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">.:./mysql-connector-java-8.0.28.jar</span><span style="color:#556633;">&quot;</span><span> Demo
+</span></code></pre>
+<p>注意一下 <code>-cp</code> 参数会覆盖 <code>CLASSPATH</code> 环境变量，用于指定 <code>.class</code>、<code>.jar</code> 等文件的路径，各路径之间使用 <code>:</code> 分隔。</p>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202501031929/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">MySQL Server 构建、安装、运行与调试</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202501251102/">
+                                <span class="button__text">为 openGauss 配置大页内存</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

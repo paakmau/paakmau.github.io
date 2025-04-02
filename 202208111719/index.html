@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>TCP 协议学习 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="TCP 协议学习 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202208111719/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="TCP 协议学习 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202208111719/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202208111719/">TCP 协议学习</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2022-08-11
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/tcp/">#TCP</a></span>
+    
+
+        <div class="post-content">
+            <p>TCP 是现在最常见的协议之一，比如 HTTP、MQTT 这些协议都是在 TCP 的基础上实现的。</p>
+<span id="continue-reading"></span><h2 id="ji-chu-zhi-shi">基础知识</h2>
+<p>如果想要使用 TCP 进行一些简单通讯，基本上了解这几点就够了。</p>
+<ul>
+<li>TCP 是面向连接的协议，两端进行通讯之前先要握手建立连接</li>
+<li>通讯双方的其中一端（服务端）需要监听一个端口，另一端（客户端，可以有多个）向该端口发送连接请求</li>
+<li>连接建立后两端都可以主动发送数据</li>
+<li>TCP 是可靠的流式协议，能保证传输的数据按顺序到达</li>
+</ul>
+<h2 id="san-ci-wo-shou">三次握手</h2>
+<p>服务端监听了一个端口，客户端希望跟服务端建立连接。
+握手的目的在于，双端都要互相确认连接的有效性。</p>
+<ul>
+<li>客户端主动向服务端发送 SYN 包</li>
+<li>服务端向客户端发送连接 SYN-ACK 包</li>
+<li>客户端再向服务端发送一个 ACK 包</li>
+</ul>
+<p>那么问题来了，明明两次握手就够了，为什么会要求客户端再进行一次 ACK。</p>
+<p>考虑网络状况很烂的情况，客户端发送了 SYN 包，结果一万年没有回应，它就又发了第二次 SYN。
+此时服务端终于收到了第一个 SYN，然后按照常规流程建立了 TCP 连接，传输数据，然后关闭了连接。
+然后那个第二次 SYN 终于到了，服务端发送 SYN-ACK 后，如果不要求客户端再进行 ACK，就会直接视为连接建立成功。
+实际上这个连接已经完成了，而服务端却认为客户端重新发起了一次连接。
+而服务端建立连接之后需要开辟缓冲区用于临时存储收到的包，可能还要消耗线程等其他资源。
+考虑一种 DDoS 攻击，伪造 IP 地址向服务端高频率发送 SYN，服务端的资源很快就会被耗尽，而且甚至都不知道攻击者的真实 IP。</p>
+<p>但是如果要求客户端 ACK，就能避免这个问题。
+因为服务端的 SYN-ACK 包只会发往这个伪造 IP，攻击者的机器无法收到。
+攻击者也就不知道正确的序列号，ACK 中的确认号就不知道怎么填。
+所以连接就不能成功建立。</p>
+<h2 id="si-ci-hui-shou">四次挥手</h2>
+<p>服务端和客户端交互完毕后，其中一端主动发起关闭请求，以通知另一端。
+这时挥手的目的就在于确保双方都关闭连接，并且被通知的一端数据全部发送完毕。
+一般来说最好是客户端主动关闭。
+这里我们假设主动关闭的一端是客户端。</p>
+<ul>
+<li>客户端发送 FIN 包</li>
+<li>服务端回应一个 ACK 包</li>
+<li>服务端发送 FIN 包</li>
+<li>客户端回应 ACK 包</li>
+</ul>
+<p>需要注意的一点是，服务端的 ACK 包和 FIN 包实际上是可以一起发的。
+但是通常来说，服务端收到客户端的 FIN 之后，之前客户端发过来的数据可能还没有处理完。
+服务端的 ACK 包会很快发出去，但是 FIN 包的发送需要由用户程序决定的。
+只有在用户的应用程序把缓冲区中的数据处理完毕，这里的处理可能包括向客户端继续发送数据。
+而客户端只能接收这些数据，不能向服务端发送新的数据。
+处理完毕后服务端才能发送 FIN 包，等待客户端的 ACK，才能关闭连接。</p>
+<p>还有一点需要注意，服务端只有收到客户端的 ACK 之后才能正常释放资源。
+因此客户端在发送 ACK 之后需要等待两倍的 MSL（<a href="https://en.wikipedia.org/wiki/Maximum_segment_lifetime">maximum segment lifetime</a>）。
+这个 MSL 是一个报文在网络中的最大生存时间。
+如果在一个 MSL 之内这个 ACK 丢包了，服务端就立刻补发一个 FIN 包，这个 FIN 就能在两倍 MSL 内到达客户端。
+因此如果在这段时间内再次收到服务端的 FIN，客户端就需要补发一个 ACK。</p>
+<h2 id="shu-ju-chuan-shu">数据传输</h2>
+<p>TCP 协议相比于 UDP 有许多不同点。</p>
+<h3 id="you-xu">有序</h3>
+<p>数据流中的数据被拆成一个一个的包发出去，每个包都有一个递增的序列号，用来表明在流中的顺序。
+序列号的起始值是随机决定的，出现在三次握手中的 SYN 和 SYN-ACK 包中，客户端和服务端各自都要随机生成一个以避免一些攻击。</p>
+<h3 id="diu-bao-zhong-chuan">丢包重传</h3>
+<p>数据流的每个包的序列号是递增，在正常情况下可以视为是唯一的。
+一种简单的思路就是：接收方收到包之后，可以发送一个确认包指明这个包已经收到了。
+但实际上采用的是累积确认的方式，确认包中的序列号是已经接收到的连续包中序列号最大值，也就是说小于等于这个序列号的包都已经接收到了。
+当然这是指已经把收到的包扔进流里，并不能保证用户应用程序已经读取到。
+如果发送方接收到的连续三个确认包都是同一序列号，那就可以认为下一个序列号丢包了，于是考虑重发。
+当然也有其他的确认机制，各自有各自的优势。</p>
+<p>另外发送方在发送一个包之后会开启一个计时器，如果在 RTO（retransmission timeout）内没有收到确认包就可以视为丢包，考虑重发。
+因为网络状况是不确定的，因此 RTO 肯定不是一个定值，那么应该怎么计算 RTO 呢？
+这个时候我们引入 RTT（round-trip time）的概念，它指的是一个数据包从发送到接收到确认的时间。
+当然这个时间只能用近似值来预测，我们可以每次都记录数据包传输的 RTT，然后做一些平滑运算得到 SRTT（Smoothed RTT），作为未来的估计。
+此外还需要考虑 RTT 的相对于预测值的波动。
+具体的算法在后续拥塞控制章节中会有介绍。</p>
+<h3 id="bi-mian-cuo-wu">避免错误</h3>
+<p>序列号的引入可以保证包的有序且不重复，确认机制可以处理丢包的问题。</p>
+<p>TCP 首部中有一个 16 位的 checksum 用于校验数据是否有出错。
+但这个校验实际上是比较弱的，应当与数据链路层中的 CRC 校验配合考虑，基本能发现绝大部分问题。</p>
+<h3 id="liu-liang-kong-zhi">流量控制</h3>
+<p>假设不限制发送的范围，发送方如果往发送缓冲区写入大量数据，而实际上接收方的缓冲区也不一定塞得下这么多数据，就会浪费很多流量。
+TCP 使用滑动窗口来控制流量，只有在窗口范围内的数据才会被考虑发送。
+窗口的起始指针会随着确认包中序列号的后移不断后移。
+对于已经确认被接收到的数据，它的内存会被回收。
+窗口的长度由接收方根据一定的策略以及自己的缓冲区剩余容量决定。</p>
+<p>特别的，如果接收方指定长度为零（缓冲区爆了），意味着发送方无法发送数据包。
+这个时候为了避免死锁，发送方应当定时发送一个不带实际数据的小包，以从接收方获取长度，直到不为零。</p>
+<h3 id="yong-sai-kong-zhi">拥塞控制</h3>
+<p>TCP 有一些策略可以在保证高效率的情况下，有效降低网络拥堵。</p>
+<h4 id="man-qi-dong">慢启动</h4>
+<p>在通讯刚开始时，窗口长度先设为较小的值（比如一个 MSS），因为无法确定网络状况，避免直接造成拥堵。
+每经过一个确认包，就将窗口长度翻倍。</p>
+<p>当窗口长度到达 <code>ssthresh</code>（slow start threshold），切换到拥塞避免算法，每次仅线性增长一个 MSS 的长度。</p>
+<h4 id="kuai-zhong-chuan">快重传</h4>
+<p>接收方会在接收到数据后立刻回应确认包。
+确认包会携带接收方接收到的连续数据的序列号的最大值。
+如果发送方累积收到三个确认包中的这个最大序列号都相同，意味着下一个序列号的包丢失了。
+发送方就会跳过超时机制，直接补发这个包。</p>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202205131435/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">MassEntity 学习</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202410302145/">
+                                <span class="button__text">openGauss 内存管理</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Lock-free 数据结构设计 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="Lock-free 数据结构设计 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202004060019/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="Lock-free 数据结构设计 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202004060019/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202004060019/">Lock-free 数据结构设计</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2020-04-06
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/c/">#C++</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/c-stl/">#C++ STL</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/bing-fa/">#并发</a></span>
+    
+
+        <div class="post-content">
+            <p>根据名字我们知道它的内部没有使用锁，可以通过原语和一些蛇皮操作来实现</p>
+<span id="continue-reading"></span><h2 id="wu-suo-yu-wu-deng-dai">无锁与无等待</h2>
+<p>需要注意的一个问题是无锁并不一定意味着访问一个资源的时候不需要等待<br>
+大多数情况下，无锁数据结构看起来像使用了一个自旋锁，但可以避免产生死锁</p>
+<p>不需要等待的数据结构称为无等待数据结构（废话）<br>
+无等待数据结构首先是一个无锁数据结构，然后就是访问资源时候不会有冲突，也不需要等待，通常需要很精巧的设计，比较难以实现</p>
+<h2 id="cas-yuan-yu">CAS 原语</h2>
+<p>Compare and swap，比较并交换的原语<br>
+描述起来比较绕，我们直接看看怎么用</p>
+<p>如果希望修改某个变量，我们首先对它进行备份，然后这个备份上进行修改<br>
+最后把原变量用备份的指针替换掉</p>
+<p>在最后一步的时候如果检测到这个变量已经被其他线程修改了，那就要重新对新的变量执行上述的修改，然后再检测修改尝试替换，不断重复</p>
+<p>这个检测并替换的步骤就是用 CAS 原语来实现的</p>
+<p>另外，如果多个线程同时访问同一个资源，就可能因为资源被修改而陷入重新修改资源再 CAS 的循环。这种情况被称为活锁，也就是上文中所说的「等待」<br>
+只要线程赶在其他线程修改资源之前，完成了修改，并且成功 CAS，他就解开了活锁<br>
+活锁的解开是随机的，看起来一个线程永远陷入活锁是可能的，但是一般来说线程之间竞争不会这么激烈（如果会的话那可以考虑重写了）</p>
+<h2 id="wu-suo-de-you-xu-shu-zu">无锁的有序数组</h2>
+<p>有序数组在查找的时候使用二分，复杂度 <code>O(log(n))</code>；在修改的时候需要移动数组中元素的位置，复杂度 <code>O(n)</code><br>
+其实不是那么常用，在高频访问，低频修改的情况下会比较好</p>
+<p>不过它实现无锁非常简单，因此作为例子</p>
+<p>读的时候随便读，写的时候先把原数组拷贝一份，然后修改那份拷贝，最后用原语把那份拷贝数组的指针存回去就完事了<br>
+需要注意的是数组内存的销毁问题，使用智能指针就能立刻解决这个问题</p>
+<p>然后贴一下代码</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">template </span><span>&lt;</span><span style="color:#8fbfdc;">typename</span><span> K, </span><span style="color:#8fbfdc;">typename</span><span> V&gt;
+</span><span style="color:#8fbfdc;">class </span><span style="color:#ffb964;">LockFreeOrderedArray </span><span>{
+</span><span style="color:#8fbfdc;">private</span><span>:
+</span><span>    shared_ptr&lt;vector&lt;pair&lt;K, shared_ptr&lt;V&gt;&gt;&gt;&gt; array;
+</span><span>
+</span><span style="color:#8fbfdc;">public</span><span>:
+</span><span>    </span><span style="color:#fad07a;">LockFreeOrderedArray</span><span>()
+</span><span>        : </span><span style="color:#ffb964;">array</span><span>(make_shared&lt;vector&lt;pair&lt;K, shared_ptr&lt;V&gt;&gt;&gt;&gt;()) {}
+</span><span>    </span><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">Put</span><span>(K </span><span style="color:#ffb964;">key</span><span>, shared_ptr&lt;V&gt; </span><span style="color:#ffb964;">value</span><span>) {
+</span><span>        </span><span style="color:#8fbfdc;">auto</span><span> oriArray = </span><span style="color:#ffb964;">atomic_load</span><span>(&amp;array);
+</span><span>        </span><span style="color:#8fbfdc;">auto</span><span> newArray =
+</span><span>            make_shared&lt;vector&lt;pair&lt;K, shared_ptr&lt;V&gt;&gt;&gt;&gt;(oriArray-&gt;</span><span style="color:#ffb964;">size</span><span>() + </span><span style="color:#cf6a4c;">1</span><span>);
+</span><span>        </span><span style="color:#8fbfdc;">do </span><span>{
+</span><span>            </span><span style="color:#888888;">// 不允许键值重复
+</span><span>            </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">Get</span><span>(key)) </span><span style="color:#8fbfdc;">return</span><span>;
+</span><span>            </span><span style="color:#888888;">// 构建新的数组
+</span><span>            newArray-&gt;</span><span style="color:#ffb964;">clear</span><span>();
+</span><span>            </span><span style="color:#8fbfdc;">auto</span><span> it = oriArray-&gt;</span><span style="color:#ffb964;">begin</span><span>();
+</span><span>            </span><span style="color:#8fbfdc;">for </span><span>(; it != oriArray-&gt;</span><span style="color:#ffb964;">end</span><span>() &amp;&amp; it-&gt;</span><span style="color:#ffb964;">first </span><span>&lt; key; it++)
+</span><span>                newArray-&gt;</span><span style="color:#ffb964;">push_back</span><span>(*it);
+</span><span>            newArray-&gt;</span><span style="color:#ffb964;">push_back</span><span>(</span><span style="color:#ffb964;">make_pair</span><span>(key, value));
+</span><span>            </span><span style="color:#8fbfdc;">for </span><span>(; it != oriArray-&gt;</span><span style="color:#ffb964;">end</span><span>(); it++) newArray-&gt;</span><span style="color:#ffb964;">push_back</span><span>(*it);
+</span><span>        } </span><span style="color:#8fbfdc;">while </span><span>(!</span><span style="color:#ffb964;">atomic_compare_exchange_weak</span><span>(&amp;array, &amp;oriArray, newArray));
+</span><span>    }
+</span><span>    shared_ptr&lt;V&gt; </span><span style="color:#fad07a;">Get</span><span>(K </span><span style="color:#ffb964;">key</span><span>) {
+</span><span>        </span><span style="color:#8fbfdc;">auto</span><span> oriArray = </span><span style="color:#ffb964;">atomic_load</span><span>(&amp;array);
+</span><span>        </span><span style="color:#8fbfdc;">auto</span><span> res = </span><span style="color:#ffb964;">lower_bound</span><span>(
+</span><span>            oriArray-&gt;</span><span style="color:#ffb964;">begin</span><span>(), oriArray-&gt;</span><span style="color:#ffb964;">end</span><span>(), </span><span style="color:#ffb964;">make_pair</span><span>(key, </span><span style="color:#ffb964;">shared_ptr</span><span>&lt;V&gt;()),
+</span><span>            [](</span><span style="color:#8fbfdc;">auto</span><span> a, </span><span style="color:#8fbfdc;">auto</span><span> b) { </span><span style="color:#8fbfdc;">return</span><span> a.</span><span style="color:#ffb964;">first </span><span>&lt; b.</span><span style="color:#ffb964;">first</span><span>; });
+</span><span>        </span><span style="color:#8fbfdc;">if </span><span>(res == oriArray-&gt;</span><span style="color:#ffb964;">end</span><span>()  res-&gt;</span><span style="color:#ffb964;">first </span><span>!= key)
+</span><span>            </span><span style="color:#8fbfdc;">return </span><span style="color:#ffb964;">shared_ptr</span><span>&lt;V&gt;();
+</span><span>        </span><span style="color:#8fbfdc;">return</span><span> res-&gt;</span><span style="color:#ffb964;">second</span><span>;
+</span><span>    }
+</span><span>};
+</span></code></pre>
+<h2 id="wu-suo-de-zhan">无锁的栈</h2>
+<p>我们可以用邻接链表来实现</p>
+<p>读的时候 xjb 读<br>
+写的时候生成一个新的 head，然后用 CAS 不停的尝试把当前的 head 替换掉，同时注意保证新的 head 指向当前的 head</p>
+<p>下面是代码</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">template </span><span>&lt;</span><span style="color:#8fbfdc;">typename</span><span> T&gt;
+</span><span style="color:#8fbfdc;">class </span><span style="color:#ffb964;">LockFreeStack </span><span>{
+</span><span>    </span><span style="color:#8fbfdc;">struct </span><span style="color:#ffb964;">Node </span><span>{
+</span><span>        shared_ptr&lt;T&gt; content;
+</span><span>        shared_ptr&lt;Node&gt; next;
+</span><span>        </span><span style="color:#fad07a;">Node</span><span>(shared_ptr&lt;T&gt; </span><span style="color:#ffb964;">content</span><span>, shared_ptr&lt;Node&gt; </span><span style="color:#ffb964;">next</span><span>)
+</span><span>            : </span><span style="color:#ffb964;">content</span><span>(content), </span><span style="color:#ffb964;">next</span><span>(next) {}
+</span><span>    };
+</span><span>
+</span><span style="color:#8fbfdc;">private</span><span>:
+</span><span>    shared_ptr&lt;Node&gt; head;
+</span><span>
+</span><span style="color:#8fbfdc;">public</span><span>:
+</span><span>    </span><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">Push</span><span>(shared_ptr&lt;T&gt; </span><span style="color:#ffb964;">value</span><span>) {
+</span><span>        </span><span style="color:#8fbfdc;">auto</span><span> newHead = </span><span style="color:#ffb964;">make_shared</span><span>&lt;Node&gt;(value, </span><span style="color:#ffb964;">atomic_load</span><span>(&amp;head));
+</span><span>        </span><span style="color:#8fbfdc;">while </span><span>(!</span><span style="color:#ffb964;">atomic_compare_exchange_weak</span><span>(&amp;head, &amp;newHead-&gt;</span><span style="color:#ffb964;">next</span><span>, newHead))
+</span><span>            ;
+</span><span>    }
+</span><span>    shared_ptr&lt;T&gt; </span><span style="color:#fad07a;">Pop</span><span>() {
+</span><span>        </span><span style="color:#8fbfdc;">auto</span><span> oriHead = </span><span style="color:#ffb964;">atomic_load</span><span>(&amp;head);
+</span><span>        </span><span style="color:#8fbfdc;">while </span><span>(oriHead &amp;&amp;
+</span><span>               !</span><span style="color:#ffb964;">atomic_compare_exchange_weak</span><span>(&amp;head, &amp;oriHead, oriHead-&gt;</span><span style="color:#ffb964;">next</span><span>))
+</span><span>            ;
+</span><span>        </span><span style="color:#8fbfdc;">return</span><span> oriHead ? oriHead-&gt;</span><span style="color:#ffb964;">content </span><span>: </span><span style="color:#ffb964;">shared_ptr</span><span>&lt;T&gt;();
+</span><span>    }
+</span><span>    shared_ptr&lt;T&gt; </span><span style="color:#fad07a;">Top</span><span>() {
+</span><span>        </span><span style="color:#8fbfdc;">auto</span><span> top = </span><span style="color:#ffb964;">atomic_load</span><span>(&amp;head);
+</span><span>        </span><span style="color:#8fbfdc;">return</span><span> top ? top-&gt;</span><span style="color:#ffb964;">content </span><span>: </span><span style="color:#ffb964;">shared_ptr</span><span>&lt;T&gt;();
+</span><span>    }
+</span><span>};
+</span></code></pre>
+<h2 id="yi-xie-xu-yao-zhu-yi-de-di-fang">一些需要注意的地方</h2>
+<p>上面代码中操作 <code>shared_ptr</code> 的原语内部可能不是无锁的<br>
+因为 <code>shared_ptr</code> 的内部存了两个指针，而目前在硬件层面上对两个指针进行 CAS 操作还不太能实现（据说 TSX 指令集支持但是效率不高）</p>
+<p>另外操作 <code>shared_ptr</code> 的 <code>atomic</code> 模版方法在 C++20 中已经弃用，以后应当用 <code>atomic</code> 模板类（然而国内普及 C++20 可能要等到 2200 年）</p>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202003302030/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">使用 Mockito 对 SpringBoot 项目单元测试</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202004060221/">
+                                <span class="button__text">C++ 右值引用与转移语义简要介绍</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

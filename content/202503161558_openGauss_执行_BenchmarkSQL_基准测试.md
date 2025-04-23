@@ -213,6 +213,34 @@ Term-00, Running Average tpmTOTAL: 98607.17    Current tpmTOTAL: 1306284    Memo
 11:38:09,554 [Thread-7] INFO   jTPCC : Term-00, Transaction Count = 197224
 ```
 
+观察到 BenchmarkSQL 执行输出过程中会不断地刷新当前的指标，这实际上是通过往 stdout 输出退格符（在同一行中）实现的。
+退格符在 C/C++ 中是 `\b`，ASCII 码为 0x08。
+当我们尝试将这些输出重定向到文件时，就会发现这些退格符也被写入文件了。
+于是可以使用 `tr` 命令，把连续的退格符替换为换行符（`\n`）：
+
+```sh
+./runBenchmark.sh og.properties \
+  | tr -s '\b' '\n'
+```
+
+但这些不断刷新的指标太多了，我们可以用 `awk` 命令控制每五行仅输出一行。
+这里注意一下 `tr` 命令的输出，需要使用 `stdbuf` 将 stdout 缓冲模式修改为逐行缓冲。
+
+```sh
+./runBenchmark.sh og.properties \
+  | stdbuf -oL tr -s '\b' '\n' \
+  | awk '/^Term-/{ if (++i % 5 == 1) print; next } 1'
+```
+
+最后使用 `tee` 命令，在写入文件的同时输出到 stdout 中，同样需要注意缓冲模式：
+
+```sh
+./runBenchmark.sh og.properties \
+  | stdbuf -oL tr -s '\b' '\n' \
+  | stdbuf -oL awk '/^Term-/{ if (++i % 5 == 1) print; next } 1' \
+  | tee bmsql.out
+```
+
 ## 清除数据集
 
 这个脚本会删除掉装载数据集时创建的表和存储过程。

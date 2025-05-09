@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>C++ Lambda 快速上手 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="C++ Lambda 快速上手 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202003222302/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="C++ Lambda 快速上手 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202003222302/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202003222302/">C++ Lambda 快速上手</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2020-03-22
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/c/">#C++</a></span>
+    
+
+        <div class="post-content">
+            <p>Lambda 听起来非常的牛逼，很容易就会联想到函数式编程或者 Lambda 演算这样的东西。但是在 C++ 里，没那么复杂，就把它当匿名函数用就好了</p>
+<span id="continue-reading"></span><h2 id="hello-world">Hello World</h2>
+<p>对于降序排序，我们可以这样写（难道 <code>std::greater</code> 不好吗）</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">int</span><span> arr[] = {</span><span style="color:#cf6a4c;">2</span><span>, </span><span style="color:#cf6a4c;">4</span><span>, </span><span style="color:#cf6a4c;">5</span><span>, </span><span style="color:#cf6a4c;">0</span><span>, </span><span style="color:#cf6a4c;">3</span><span>, </span><span style="color:#cf6a4c;">1</span><span>};
+</span><span style="color:#ffb964;">sort</span><span>(arr, arr + </span><span style="color:#cf6a4c;">6</span><span>, [](</span><span style="color:#8fbfdc;">int</span><span> a, </span><span style="color:#8fbfdc;">int</span><span> b) { </span><span style="color:#8fbfdc;">return</span><span> a &gt; b; });
+</span></code></pre>
+<h2 id="an-zhi-bu-huo">按值捕获</h2>
+<p>在 Lambda 函数中，如果想要访问变量，就需要用到变量捕获</p>
+<p>我们把想要捕获的东西写在 Lambda 的中括号里，然后函数体里就能直接使用这些变量了</p>
+<p>下面给个示范代码</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">int</span><span> num = </span><span style="color:#cf6a4c;">233</span><span>;
+</span><span style="color:#8fbfdc;">auto</span><span> func = [num]() { printf(</span><span style="color:#556633;">&quot;</span><span style="color:#7697d6;">%d</span><span style="color:#99ad6a;">\n</span><span style="color:#556633;">&quot;</span><span>, num); };
+</span><span style="color:#ffb964;">func</span><span>();
+</span></code></pre>
+<p>执行后发现终端输出了 <code>233</code></p>
+<p>但需要注意的是，这里只是捕获了 <code>num</code> 的值，相当于拷贝了一份 <code>num</code><br>
+在 Lambda 里也无法对 <code>num</code> 进行修改，原本的 <code>num</code> 这个局部变量也不会变化</p>
+<p>如果想要在 Lambda 里修改 <code>num</code> 这个局部变量，就要捕获它的引用</p>
+<h2 id="an-yin-yong-bu-huo">按引用捕获</h2>
+<p>能够捕获到变量的引用</p>
+<p>看代码就完事了</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">int</span><span> num = </span><span style="color:#cf6a4c;">233</span><span>;
+</span><span style="color:#8fbfdc;">auto</span><span> func = [&amp;num]() { num++; };
+</span><span style="color:#ffb964;">func</span><span>();
+</span><span style="color:#ffb964;">printf</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#7697d6;">%d</span><span style="color:#99ad6a;">\n</span><span style="color:#556633;">&quot;</span><span>, num);
+</span></code></pre>
+<p>看到终端里输出了 <code>234</code>，<code>num</code> 的值被修改了</p>
+<h2 id="xuan-kong-yin-yong">悬空引用</h2>
+<p>C++ 跟某些高级语言不一样，捕获引用的时候真的就只是捕获变量的引用。如果变量被销毁，Lambda 里捕获到的引用就失效了</p>
+<p>举个例子（危险操作请勿效仿）：</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">auto </span><span style="color:#fad07a;">getFunc</span><span>() {
+</span><span>    string str = </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Boomb!</span><span style="color:#556633;">&quot;</span><span>;
+</span><span>    </span><span style="color:#8fbfdc;">auto</span><span> res = [&amp;str]() { printf(</span><span style="color:#556633;">&quot;</span><span style="color:#7697d6;">%s</span><span style="color:#99ad6a;">\n</span><span style="color:#556633;">&quot;</span><span>, str.</span><span style="color:#ffb964;">c_str</span><span>()); };
+</span><span>    </span><span style="color:#ffb964;">res</span><span>();
+</span><span>    </span><span style="color:#8fbfdc;">return</span><span> res;
+</span><span>}
+</span><span>
+</span><span style="color:#8fbfdc;">int </span><span style="color:#fad07a;">main</span><span>() {
+</span><span>    </span><span style="color:#8fbfdc;">auto</span><span> func = </span><span style="color:#ffb964;">getFunc</span><span>();
+</span><span>    </span><span style="color:#ffb964;">func</span><span>();
+</span><span>    </span><span style="color:#8fbfdc;">return </span><span style="color:#cf6a4c;">0</span><span>;
+</span><span>}
+</span></code></pre>
+<p>这个字符串在函数退出之前都是正常的，第一次调用 Lambda 也是正常的，但是函数退出之后这个字符串就被销毁了，因此在 <code>main</code> 里调用这个 Lambda 函数会爆炸</p>
+<h2 id="chu-shi-hua-bu-huo">初始化捕获</h2>
+<p>C++14 的特性，可以捕获经过处理的变量，捕获类型由编译器自动推断，能使代码更加简洁</p>
+<p>举个例子</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">int</span><span> a = </span><span style="color:#cf6a4c;">1</span><span>, b = </span><span style="color:#cf6a4c;">3</span><span>;
+</span><span style="color:#8fbfdc;">auto</span><span> func = [sum = a + b]() { printf(</span><span style="color:#556633;">&quot;</span><span style="color:#7697d6;">%d</span><span style="color:#99ad6a;">\n</span><span style="color:#556633;">&quot;</span><span>, sum); };
+</span><span style="color:#ffb964;">func</span><span>();
+</span></code></pre>
+<h2 id="bu-huo-cheng-yuan-bian-liang">捕获成员变量</h2>
+<p>如果需要捕获成员变量，需要在捕获列表中使用 <code>this</code></p>
+<p>不跟他多逼逼，看代码</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">struct </span><span style="color:#ffb964;">Test </span><span>{
+</span><span>    </span><span style="color:#8fbfdc;">int</span><span> num;
+</span><span>    </span><span style="color:#fad07a;">Test</span><span>(</span><span style="color:#8fbfdc;">int </span><span style="color:#ffb964;">num</span><span>) : </span><span style="color:#ffb964;">num</span><span>(num) {}
+</span><span>    </span><span style="color:#8fbfdc;">auto </span><span style="color:#fad07a;">GetFunc</span><span>() {
+</span><span>        </span><span style="color:#8fbfdc;">return </span><span>[</span><span style="color:#ffb964;">this</span><span>]() { printf(</span><span style="color:#556633;">&quot;</span><span style="color:#7697d6;">%d</span><span style="color:#99ad6a;">\n</span><span style="color:#556633;">&quot;</span><span>, num); };
+</span><span>    }
+</span><span>};
+</span><span>
+</span><span style="color:#8fbfdc;">int </span><span style="color:#fad07a;">main</span><span>() {
+</span><span>    Test t = </span><span style="color:#ffb964;">Test</span><span>(</span><span style="color:#cf6a4c;">233</span><span>);
+</span><span>    </span><span style="color:#8fbfdc;">auto</span><span> func = t.</span><span style="color:#ffb964;">GetFunc</span><span>();
+</span><span>    </span><span style="color:#ffb964;">func</span><span>();
+</span><span>    </span><span style="color:#8fbfdc;">return </span><span style="color:#cf6a4c;">0</span><span>;
+</span><span>}
+</span></code></pre>
+<h2 id="bu-huo-quan-bu-bian-liang">捕获全部变量</h2>
+<p>Lambda 函数有个蛇皮操作，可以捕获所有的变量。在捕获列表里用 <code>=</code> 和 <code>&amp;</code> 分别表示按值和按引用捕获全部变量</p>
+<p>举个例子</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">int</span><span> a = </span><span style="color:#cf6a4c;">1</span><span>, b = </span><span style="color:#cf6a4c;">3</span><span>;
+</span><span style="color:#8fbfdc;">auto</span><span> func = [=]() { printf(</span><span style="color:#556633;">&quot;</span><span style="color:#7697d6;">%d %d</span><span style="color:#99ad6a;">\n</span><span style="color:#556633;">&quot;</span><span>, a, b); };
+</span><span style="color:#ffb964;">func</span><span>();
+</span></code></pre>
+<p>但是出于安全性和可维护性的考虑不建议使用这两个东西</p>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202003222052/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">UE4 TaskGraph 学习笔记：源码阅读</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202003271333/">
+                                <span class="button__text">C++ 标准库笔记：智能指针</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

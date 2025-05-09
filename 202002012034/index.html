@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Unity ECS 框架摸索第三章：Hello World 后续 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="Unity ECS 框架摸索第三章：Hello World 后续 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202002012034/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="Unity ECS 框架摸索第三章：Hello World 后续 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202002012034/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202002012034/">Unity ECS 框架摸索第三章：Hello World 后续</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2020-02-01
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/unity-ecs/">#Unity ECS</a></span>
+    
+
+        <div class="post-content">
+            <p>上一章介绍了 ECS 并行处理的实现，接下来就这个 Hello World 进行更进一步的摸索。</p>
+<span id="continue-reading"></span><h2 id="tian-jia-component-de-ji-qiao">添加 Component 的技巧</h2>
+<p>第二章中为 Entity 添加 Component 的方式是直接在 GameObject 上挂载脚本，但是 Unity 编辑器目前并非为 ECS 设计，如果为每一个 Component 都挂载一个脚本会很麻烦，所以考虑使用代码添加组件。</p>
+<p>我们编写如下脚本，把它挂载在 <code>Cube</code> 上，它就能为 <code>Cube</code> 生成的 Entity 添加 <code>RotationSpeed</code> 组件。<br>
+<code>RotatingCubeAuthoring.cs</code></p>
+<pre data-lang="cs" style="background-color:#151515;color:#e8e8d3;" class="language-cs "><code class="language-cs" data-lang="cs"><span>[</span><span style="color:#ffb964;">RequiresEntityConversion</span><span>]
+</span><span style="color:#8fbfdc;">public class </span><span style="color:#ffb964;">RotatingCubeAuthoring </span><span>: </span><span style="color:#ffb964;">MonoBehaviour</span><span>, </span><span style="color:#ffb964;">IConvertGameObjectToEntity </span><span>{
+</span><span>    </span><span style="color:#8fbfdc;">public float </span><span style="color:#ffb964;">DegreePerSecond </span><span>= </span><span style="color:#cf6a4c;">180</span><span>;
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">public void </span><span style="color:#fad07a;">Convert </span><span>(Entity </span><span style="color:#ffb964;">entity</span><span>, EntityManager </span><span style="color:#ffb964;">dstManager</span><span>, GameObjectConversionSystem </span><span style="color:#ffb964;">conversionSystem</span><span>) {
+</span><span>        </span><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">rotationSpeedCmpt </span><span>= new RotationSpeed { </span><span style="color:#ffb964;">RadiansPerSecond </span><span>= </span><span style="color:#ffb964;">math</span><span>.</span><span style="color:#ffb964;">radians </span><span>(</span><span style="color:#ffb964;">DegreePerSecond</span><span>) };
+</span><span>        </span><span style="color:#ffb964;">dstManager</span><span>.</span><span style="color:#ffb964;">AddComponentData </span><span>(</span><span style="color:#ffb964;">entity</span><span>, </span><span style="color:#ffb964;">rotationSpeedCmpt</span><span>);
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>解释：<br>
+<code>IConvertGameObjectToEntity</code> 接口的 <code>Convert</code> 方法会在 GameObject 转换的过程中被调用。
+可以在其中直接用 <code>EntityManager</code> 为 Entity 添加任意 Component，并能对其赋值，更加灵活。<br>
+在该段代码中我们就把直观的 <code>Degree</code> 转换成了 <code>Radian</code>。</p>
+<p>再把之前的 <code>RotationSpeed</code> 组件修改一下<br>
+<code>RotationSpeed.cs</code></p>
+<pre data-lang="cs" style="background-color:#151515;color:#e8e8d3;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#888888;">// 修改前
+</span><span>[</span><span style="color:#ffb964;">GenerateAuthoringComponent</span><span>]
+</span><span style="color:#8fbfdc;">public struct </span><span style="color:#ffb964;">RotationSpeed </span><span>: </span><span style="color:#ffb964;">IComponentData
+</span><span>{
+</span><span>    </span><span style="color:#8fbfdc;">public float </span><span style="color:#ffb964;">RadiansPerSecond</span><span>;
+</span><span>}
+</span><span>
+</span><span style="color:#888888;">// 修改后
+</span><span>[</span><span style="color:#ffb964;">Serializable</span><span>]
+</span><span style="color:#8fbfdc;">public struct </span><span style="color:#ffb964;">RotationSpeed </span><span>: </span><span style="color:#ffb964;">IComponentData
+</span><span>{
+</span><span>    </span><span style="color:#8fbfdc;">public float </span><span style="color:#ffb964;">RadiansPerSecond</span><span>;
+</span><span>}
+</span></code></pre>
+<p>解释：
+原本的 <code>GenerateAuthoringComponent</code> 特性被改成了 <code>Serializable</code>。
+<code>GenerateAuthoringComponent</code> 的作用是允许 ECS 的组件直接挂载在 GameObject 上。
+但是使用代码添加组件时不需要这个特性，因此只需要 <code>Serializable</code> 即可。</p>
+<p>在编辑器中修改 <code>Cube</code> 的 <code>RotatingCubeAuthoring</code> 的旋转速度为每秒 180 度，如下</p>
+<h2 id="ijobforeach"><code>IJobForEach</code></h2>
+<p>上一章中，我们使用 Lambda 对 Entity 进行了遍历，写法很简洁。但是这样的写法会产生 GC，为了更好的性能，可以使用 <code>IJobForEach</code> 接口进行遍历。</p>
+<p>修改 <code>RotationSpeedSystem</code> 为如下代码</p>
+<pre data-lang="cs" style="background-color:#151515;color:#e8e8d3;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#888888;">// 修改后
+</span><span style="color:#8fbfdc;">public class </span><span style="color:#ffb964;">RotateSpeedSystem </span><span>: </span><span style="color:#ffb964;">JobComponentSystem </span><span>{
+</span><span>    [</span><span style="color:#ffb964;">BurstCompile</span><span>]
+</span><span>    </span><span style="color:#8fbfdc;">struct </span><span style="color:#ffb964;">RotationJob </span><span>: </span><span style="color:#ffb964;">IJobForEach</span><span>&lt;Rotation, RotationSpeed&gt; {
+</span><span>        </span><span style="color:#8fbfdc;">public float </span><span style="color:#ffb964;">DeltaTime</span><span>;
+</span><span>        </span><span style="color:#8fbfdc;">public void </span><span style="color:#fad07a;">Execute </span><span>(</span><span style="color:#8fbfdc;">ref </span><span>Rotation </span><span style="color:#ffb964;">rotation</span><span>, [</span><span style="color:#ffb964;">ReadOnly</span><span>] </span><span style="color:#8fbfdc;">ref </span><span>RotationSpeed </span><span style="color:#ffb964;">rotationSpeed</span><span>) {
+</span><span>            </span><span style="color:#ffb964;">rotation </span><span>= new Rotation {
+</span><span>                </span><span style="color:#ffb964;">Value </span><span>= </span><span style="color:#ffb964;">math</span><span>.</span><span style="color:#ffb964;">mul </span><span>(</span><span style="color:#ffb964;">math</span><span>.</span><span style="color:#ffb964;">normalize </span><span>(</span><span style="color:#ffb964;">rotation</span><span>.</span><span style="color:#ffb964;">Value</span><span>), </span><span style="color:#ffb964;">quaternion</span><span>.</span><span style="color:#ffb964;">AxisAngle </span><span>(</span><span style="color:#ffb964;">math</span><span>.</span><span style="color:#ffb964;">up </span><span>(), </span><span style="color:#ffb964;">rotationSpeed</span><span>.</span><span style="color:#ffb964;">RadiansPerSecond </span><span>* </span><span style="color:#ffb964;">DeltaTime</span><span>))
+</span><span>            };
+</span><span>        }
+</span><span>    }
+</span><span>    </span><span style="color:#8fbfdc;">protected override </span><span>JobHandle </span><span style="color:#fad07a;">OnUpdate </span><span>(JobHandle </span><span style="color:#ffb964;">inputDeps</span><span>) {
+</span><span>        </span><span style="color:#8fbfdc;">return </span><span>new RotationJob { </span><span style="color:#ffb964;">DeltaTime </span><span>= </span><span style="color:#ffb964;">Time</span><span>.</span><span style="color:#ffb964;">DeltaTime </span><span>}.</span><span style="color:#ffb964;">Schedule </span><span>(</span><span style="color:#ffb964;">this</span><span>, </span><span style="color:#ffb964;">inputDeps</span><span>);
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>解释：
+原本使用 Lambda 对 Job 进行规划。
+修改后使用一个结构体实现 <code>IJobForEach</code> 接口。
+在其中规定了 Entity 的筛选条件为拥有 <code>Rotation</code> 和 <code>RotationSpeed</code> 组件，并实现 <code>Execute</code> 方法规划 Job。
+有效减少了 GC。</p>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202001311515/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">Unity ECS 框架摸索第二章：Hello World</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202002030137/">
+                                <span class="button__text">Unity ECS 框架摸索第四章：Chunk</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

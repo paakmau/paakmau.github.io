@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>C++ Core Guidelines 命名与布局规则 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="C++ Core Guidelines 命名与布局规则 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202012200030/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="C++ Core Guidelines 命名与布局规则 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202012200030/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202012200030/">C++ Core Guidelines 命名与布局规则</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2020-12-20
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/c/">#C++</a></span>
+    
+
+        <div class="post-content">
+            <p>C++ Core Guidelines 是现代 C++（目前是 C++17）的一套核心指导方针，考虑了未来的增强与 ISO 技术规格。</p>
+<span id="continue-reading"></span>
+<p>本文翻译了 NL（Naming and layout rules）部分，原文在这里 <a href="https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#nl-naming-and-layout-rules">C++ Core Guidelines Naming and layout rules</a></p>
+<p>统一的命名与布局非常有帮助。因为它最小化了「我的风格比你的风格更好」的争论。然而，目前有非常非常多的不同风格，人们对于它们也很热情（积极或消极）。并且，大多数现实世界的项目会包括许多不同来源的代码，因此对所有的代码使用单一风格进行标准化通常是不可能的。在用户对于指导方针的多次要求之后，ISO C++ 提出了一套规则供用户在没有更好的想法的情况下使用，但是真正的目标是统一风格而不是要提出某个特定的规则。</p>
+<h2 id="nl-1-ru-guo-dai-ma-neng-biao-da-qing-chu-jiu-bu-yao-yong-zhu-shi">NL.1 如果代码能表达清楚就不要用注释</h2>
+<p><strong>理由</strong> IDE 不会读注释。注释不够代码精确。注释不会更新得像代码一样连贯。</p>
+<p><strong>反面例子</strong></p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">auto</span><span> x = m * v1 + vv;   </span><span style="color:#888888;">// multiply m with v1 and add the result to vv
+</span></code></pre>
+<p><strong>强制措施</strong> 去写一个理解英语口语的 AI 程序，看看能不能比 C++ 更容易解读</p>
+<h2 id="nl-2-zai-zhu-shi-zhong-biao-da-yi-tu">NL.2 在注释中表达意图</h2>
+<p><strong>理由</strong> 代码描述的是具体做了什么事情，而不会描述这么做的目的。通常来说，比起代码实现，使用注释能够更加清晰和准确地表达意图。</p>
+<p><strong>例子</strong></p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">stable_sort</span><span>(Sortable&amp; </span><span style="color:#ffb964;">c</span><span>)
+</span><span>    </span><span style="color:#888888;">// sort c in the order determined by &lt;, keep equal elements (as defined by ==) in
+</span><span>    </span><span style="color:#888888;">// their original relative order
+</span><span>{
+</span><span>    </span><span style="color:#888888;">// ... quite a few lines of non-trivial code ...
+</span><span>}
+</span></code></pre>
+<p><strong>注意</strong> 如果代码的行为跟注释不一致，错误可能在于注释也可能在于代码</p>
+<h2 id="nl-3-bao-chi-zhu-shi-de-jian-ming-e-yao">NL.3 保持注释的简明扼要</h2>
+<p><strong>理由</strong> 冗长的注释不易理解，并且因为注释是穿插在源代码中的，反而导致代码不易阅读。</p>
+<p><strong>注意</strong> 使用通俗易懂的英语。我可能丹麦语更熟练，但大多数程序员也许不会；我的代码的维护者可能也不会。避免一些不正规的缩写（原文是指 SMS 用语），并且审查你的语法、标点和大小写。注释的目标是专业化而不是为了看起来酷炫。</p>
+<p><strong>强制措施</strong> 不可能。</p>
+<h2 id="nl-4-wei-hu-tong-yi-de-suo-jin-feng-ge">NL.4 维护统一的缩进风格</h2>
+<p><strong>理由</strong> 可读性。避免一些愚蠢的错误。</p>
+<p><strong>反面例子</strong></p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">int</span><span> i;
+</span><span style="color:#8fbfdc;">for </span><span>(i = </span><span style="color:#cf6a4c;">0</span><span>; i &lt; max; ++i); </span><span style="color:#888888;">// bug waiting to happen
+</span><span style="color:#8fbfdc;">if </span><span>(i == j)
+</span><span>    </span><span style="color:#8fbfdc;">return</span><span> i;
+</span></code></pre>
+<p><strong>注意</strong> 缩进 <code>if (...)</code>、<code>for (...)</code>、<code>while (...)</code> 之后的语句是一个好的想法。</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">if </span><span>(i &lt; </span><span style="color:#cf6a4c;">0</span><span>) </span><span style="color:#ffb964;">error</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">negative argument</span><span style="color:#556633;">&quot;</span><span>);
+</span><span>
+</span><span style="color:#8fbfdc;">if </span><span>(i &lt; </span><span style="color:#cf6a4c;">0</span><span>)
+</span><span>    </span><span style="color:#ffb964;">error</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">negative argument</span><span style="color:#556633;">&quot;</span><span>);
+</span></code></pre>
+<p><strong>强制措施</strong> 使用工具</p>
+<h2 id="nl-5-bi-mian-ba-lei-xing-bian-ma-dao-ming-ming-zhong">NL.5 避免把类型编码到命名中</h2>
+<p><strong>根本原因</strong> 如果命名中反映的是类型而不是功能，用于提供那种功能的类型就会难以改变。并且，如果变量的类型改变了，使用它的其他代码也需要修改。应当最小化无意的转换</p>
+<p><strong>反面例子</strong></p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">print_int</span><span>(</span><span style="color:#8fbfdc;">int </span><span style="color:#ffb964;">i</span><span>);
+</span><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">print_string</span><span>(</span><span style="color:#8fbfdc;">const char</span><span>*);
+</span><span>
+</span><span style="color:#ffb964;">print_int</span><span>(</span><span style="color:#cf6a4c;">1</span><span>);          </span><span style="color:#888888;">// repetitive, manual type matching
+</span><span style="color:#ffb964;">print_string</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">xyzzy</span><span style="color:#556633;">&quot;</span><span>); </span><span style="color:#888888;">// repetitive, manual type matching
+</span></code></pre>
+<p><strong>例子</strong></p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">print</span><span>(</span><span style="color:#8fbfdc;">int </span><span style="color:#ffb964;">i</span><span>);
+</span><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">print</span><span>(</span><span style="color:#ffb964;">string_view</span><span>);    </span><span style="color:#888888;">// also works on any string-like sequence
+</span><span>
+</span><span style="color:#ffb964;">print</span><span>(</span><span style="color:#cf6a4c;">1</span><span>);              </span><span style="color:#888888;">// clear, automatic type matching
+</span><span style="color:#ffb964;">print</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">xyzzy</span><span style="color:#556633;">&quot;</span><span>);        </span><span style="color:#888888;">// clear, automatic type matching
+</span></code></pre>
+<p><strong>注意</strong> 把类型编码到命名中不仅冗余而且还难以理解（译者注：这是什么奇怪的行为艺术吗）</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>printS  </span><span style="color:#888888;">// print a std::string
+</span><span>prints  </span><span style="color:#888888;">// print a C-style string
+</span><span>printi  </span><span style="color:#888888;">// print an int
+</span></code></pre>
+<p>需要类似匈牙利命名法来编码类型的技术已经被用于无类型的语言中，但是它在诸如 C++ 这样的强类型且是静态类型的语言中通常是不必要的而且具有极大破坏性，因为这种技术已经过时并且它们还干涉了对语言的有效利用（比如函数重载）</p>
+<p><strong>注意</strong> 一些命名风格使用非常通用（而不是只局限于类型）的前缀来表示变量的通常用途</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">auto</span><span> p = </span><span style="color:#8fbfdc;">new </span><span style="color:#ffb964;">User</span><span>();
+</span><span style="color:#8fbfdc;">auto</span><span> p = make_unique&lt;User&gt;();
+</span><span style="color:#888888;">// note: &quot;p&quot; is not being used to say &quot;raw pointer to type User,&quot;
+</span><span style="color:#888888;">//       just generally to say &quot;this is an indirection&quot;
+</span><span>
+</span><span style="color:#8fbfdc;">auto</span><span> cntHits = </span><span style="color:#ffb964;">calc_total_of_hits</span><span>(</span><span style="color:#888888;">/*...*/</span><span>);
+</span><span style="color:#888888;">// note: &quot;cnt&quot; is not being used to encode a type,
+</span><span style="color:#888888;">//       just generally to say &quot;this is a count of something&quot;
+</span></code></pre>
+<p>这样写不具有破坏性并且没有违反本指导方针因为它没有编码类型信息。</p>
+<p><strong>注意</strong> 一些命名风格区分成员变量和局部变量，可能也有全局变量</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">struct </span><span style="color:#ffb964;">S </span><span>{
+</span><span>    </span><span style="color:#8fbfdc;">int</span><span> m_;
+</span><span>    </span><span style="color:#fad07a;">S</span><span>(</span><span style="color:#8fbfdc;">int </span><span style="color:#ffb964;">m</span><span>) : </span><span style="color:#ffb964;">m_</span><span>{abs(m)} { }
+</span><span>};
+</span></code></pre>
+<p>这样写不具有破坏性并且没有违反本指导方针因为它没有编码类型信息。</p>
+<p><strong>注意</strong> 像 C++ 一样，一些风格区分类型与非类型。比如类型名的首字母大写而变量和函数不会</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">typename</span><span>&lt;</span><span style="color:#8fbfdc;">typename</span><span> T&gt;
+</span><span style="color:#8fbfdc;">class</span><span> HashTable {   </span><span style="color:#888888;">// maps string to T
+</span><span>    </span><span style="color:#888888;">// ...
+</span><span>};
+</span><span>
+</span><span>HashTable&lt;</span><span style="color:#8fbfdc;">int</span><span>&gt; index;
+</span></code></pre>
+<p>这样写不具有破坏性并且没有违反本指导方针因为它没有编码类型信息。</p>
+<h2 id="nl-7-ming-ming-de-chang-du-yao-yu-ta-suo-zai-de-zuo-yong-yu-fan-wei-cheng-da-zhi-de-bi-li">NL.7 命名的长度要与它所在的作用域范围成大致的比例</h2>
+<p><strong>根本原因</strong> 作用域范围越大，歧义和无意的命名冲突的可能性就越大。</p>
+<p><strong>例子</strong></p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">double </span><span style="color:#fad07a;">sqrt</span><span>(</span><span style="color:#8fbfdc;">double </span><span style="color:#ffb964;">x</span><span>);   </span><span style="color:#888888;">// return the square root of x; x must be non-negative
+</span><span>
+</span><span style="color:#8fbfdc;">int </span><span style="color:#fad07a;">length</span><span>(</span><span style="color:#8fbfdc;">const char</span><span>* </span><span style="color:#ffb964;">p</span><span>);  </span><span style="color:#888888;">// return the number of characters in a zero-terminated C-style string
+</span><span>
+</span><span style="color:#8fbfdc;">int </span><span style="color:#fad07a;">length_of_string</span><span>(</span><span style="color:#8fbfdc;">const char </span><span style="color:#ffb964;">zero_terminated_array_of_char</span><span>[])    </span><span style="color:#888888;">// bad: verbose
+</span><span>
+</span><span style="color:#8fbfdc;">int</span><span> g;      </span><span style="color:#888888;">// bad: global variable with a cryptic name
+</span><span>
+</span><span style="color:#8fbfdc;">int</span><span> open;   </span><span style="color:#888888;">// bad: global variable with a short, popular name
+</span></code></pre>
+<p>使用 <code>p</code> 作为指针，使用 <code>x</code> 作为浮点变量是符合习俗的且在一个局部的作用域中不会产生歧义</p>
+<p><strong>强制措施</strong> 谁知道呢</p>
+<h2 id="nl-8-shi-yong-tong-yi-de-ming-ming-feng-ge">NL.8 使用统一的命名风格</h2>
+<p><strong>根本原因</strong> 统一的命名风格提高可读性。</p>
+<p><strong>注意</strong> 命名风格有很多种且当你使用多个类库的时候，你不可能遵从它们全部的命名习惯。选择一个主体风格，导入的其他类库就保持它们原本的命名风格。</p>
+<p><strong>例子</strong> ISO Standard：使用小写字母和数字，下划线分隔单词</p>
+<ul>
+<li><code>int</code></li>
+<li><code>vector</code></li>
+<li><code>my_map</code></li>
+</ul>
+<p>避免双下划线 <code>__</code>。</p>
+<p><strong>例子</strong> <a href="http://www.stroustrup.com/Programming/PPP-style.pdf">Stroustrup</a>：自定义的类型和 concepts 的首字母大写，其他与 ISO Standard 相同。</p>
+<ul>
+<li><code>int</code></li>
+<li><code>vector</code></li>
+<li><code>My_map</code></li>
+</ul>
+<p><strong>例子</strong> 驼峰：单词的首字母大写</p>
+<ul>
+<li><code>int</code></li>
+<li><code>vector</code></li>
+<li><code>MyMap</code></li>
+<li><code>myMap</code></li>
+</ul>
+<p>有些习惯会把第一个字母也大写，有的不会</p>
+<p><strong>注意</strong> 如果你使用首字母缩写，尽量和其他标识符长度保持统一</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">int</span><span> mtbf {</span><span style="color:#cf6a4c;">12</span><span>};
+</span><span style="color:#8fbfdc;">int</span><span> mean_time_between_failures {</span><span style="color:#cf6a4c;">12</span><span>}; </span><span style="color:#888888;">// make up your mind
+</span></code></pre>
+<p><strong>强制措施</strong> 可以实现，除了使用外部库的情况</p>
+<h2 id="nl-9-zhi-you-hong-cai-neng-shi-yong-all-caps-de-xing-shi">NL.9 只有宏才能使用 <code>ALL_CAPS</code> 的形式</h2>
+<p><strong>理由</strong> 为了避免混淆宏与其他遵守了作用域和类型规则的命名。</p>
+<p><strong>例子</strong></p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">f</span><span>()
+</span><span>{
+</span><span>    </span><span style="color:#8fbfdc;">const int </span><span style="color:#ffb964;">SIZE</span><span>{</span><span style="color:#cf6a4c;">1000</span><span>};  </span><span style="color:#888888;">// Bad, use &#39;size&#39; instead
+</span><span>    </span><span style="color:#8fbfdc;">int</span><span> v[SIZE];
+</span><span>}
+</span></code></pre>
+<p><strong>注意</strong> 不是宏的符号常量也不能用全大写</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">enum </span><span style="color:#ffb964;">bad </span><span>{ BAD, WORSE, HORRIBLE }; </span><span style="color:#888888;">// BAD
+</span></code></pre>
+<p><strong>强制措施</strong></p>
+<ul>
+<li>标记出现了小写字母的宏</li>
+<li>标记使用 <code>ALL_CAPS</code> 的非宏命名</li>
+</ul>
+<h2 id="nl-10-you-xian-kao-lu-underscore-style-ming-ming">NL.10 优先考虑 <code>underscore_style</code> 命名</h2>
+<p><strong>理由</strong> 下划线命名法是最初的 C 和 C++ 风格且它也用于 C++ 标准库</p>
+<p><strong>注意</strong> 这条规则是只有在你没有其他选择的情况下的默认选项。通常来说，你没有选择而且必须遵守一种确定好的风格来保证代码的统一。对于统一的需求可能会与个人喜好冲突。</p>
+<p>这只是在你没有限制或者更好的想法的情况的一种推荐。这条规则是在对于指导方针的多次请求后才添加的。</p>
+<p><strong>例子</strong> <a href="http://www.stroustrup.com/Programming/PPP-style.pdf">Stroustrup</a>：自定义的类型和 concepts 的首字母大写，其他与 ISO Standard 相同。</p>
+<ul>
+<li><code>int</code></li>
+<li><code>vector</code></li>
+<li><code>My_map</code></li>
+</ul>
+<p><strong>强制措施</strong> 不可能。（译者注：谁都没有办法阻止我用驼峰，连 ISO C++ 都不行）</p>
+<h2 id="nl-11-bao-zheng-literal-ke-du-xing">NL.11 保证 literal 可读性</h2>
+<p><strong>理由</strong> 可读性</p>
+<p><strong>例子</strong> 使用数组分隔符来避免大段的数字字符串</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">auto</span><span> c = </span><span style="color:#cf6a4c;">299&#39;792&#39;458</span><span>; </span><span style="color:#888888;">// m/s2
+</span><span style="color:#8fbfdc;">auto</span><span> q2 = </span><span style="color:#cf6a4c;">0b0000&#39;1111&#39;0000&#39;0000</span><span>;
+</span><span style="color:#8fbfdc;">auto</span><span> ss_number = </span><span style="color:#cf6a4c;">123&#39;456&#39;7890</span><span>;
+</span></code></pre>
+<p><strong>例子</strong> 在需要声明的地方使用 literal 后缀</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">auto</span><span> hello = </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Hello!</span><span style="color:#556633;">&quot;</span><span>s; </span><span style="color:#888888;">// a std::string
+</span><span style="color:#8fbfdc;">auto</span><span> world = </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">world</span><span style="color:#556633;">&quot;</span><span>;   </span><span style="color:#888888;">// a C-style string
+</span><span style="color:#8fbfdc;">auto</span><span> interval = </span><span style="color:#cf6a4c;">100</span><span style="color:#8fbfdc;">ms</span><span>;  </span><span style="color:#888888;">// using &lt;chrono&gt;
+</span></code></pre>
+<p><strong>注意</strong> Literals 不应当作为魔法常量穿插在代码中，但是让它们在被定义的地方保持可读性仍然是一种好想法。在一长串数字的字符串中打错字符是很常见的。</p>
+<p><strong>强制措施</strong> 标记长串的数字。问题在于多长才算长；可能是 7。</p>
+<h2 id="nl-15-jin-ke-neng-shao-de-shi-yong-kong-ge">NL.15 尽可能少的使用空格</h2>
+<p><strong>理由</strong> 太多的空格使得文本变长而且会分散程序员的注意力。</p>
+<p><strong>反面例子</strong></p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">#include </span><span style="color:#556633;">&lt;</span><span style="color:#99ad6a;"> map </span><span style="color:#556633;">&gt;
+</span><span>
+</span><span style="color:#8fbfdc;">int </span><span style="color:#fad07a;">main</span><span>(</span><span style="color:#8fbfdc;">int </span><span style="color:#ffb964;">argc</span><span>, </span><span style="color:#8fbfdc;">char </span><span>* </span><span style="color:#ffb964;">argv </span><span>[ ])
+</span><span>{
+</span><span>    </span><span style="color:#888888;">// ...
+</span><span>}
+</span></code></pre>
+<p><strong>例子</strong></p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">#include </span><span style="color:#556633;">&lt;</span><span style="color:#99ad6a;">map</span><span style="color:#556633;">&gt;
+</span><span>
+</span><span style="color:#8fbfdc;">int </span><span style="color:#fad07a;">main</span><span>(</span><span style="color:#8fbfdc;">int </span><span style="color:#ffb964;">argc</span><span>, </span><span style="color:#8fbfdc;">char</span><span>* </span><span style="color:#ffb964;">argv</span><span>[])
+</span><span>{
+</span><span>    </span><span style="color:#888888;">// ...
+</span><span>}
+</span></code></pre>
+<p><strong>注意</strong> 一些 IDE 有他们自己的见解并且会添加使人分心的空格。</p>
+<p>这只是在你没有限制或者更好的想法的情况的一种推荐。这条规则是在对于指导方针的多次请求后才添加的。</p>
+<p><strong>注意</strong> 我们同样重视合理放置的空格，它能为可读性提供重大的帮助。不要矫枉过正。</p>
+<h2 id="nl-16-shi-yong-guan-yong-de-lei-cheng-yuan-sheng-ming-shun-xu">NL.16 使用惯用的类成员声明顺序</h2>
+<p><strong>理由</strong> 一个惯用的成员顺序提高可读性。</p>
+<p>声明一个类的时候应当使用如下顺序</p>
+<ul>
+<li>类型：类、enums 和别名（<code>using</code>）</li>
+<li>构造函数、赋值函数、析构函数</li>
+<li>普通函数</li>
+<li>数据成员</li>
+</ul>
+<p>使用 <code>public</code> 到 <code>protected</code> 再到 <code>private</code> 的顺序。</p>
+<p>这只是在你没有限制或者更好的想法的情况的一种推荐。这条规则是在对于指导方针的多次请求后才添加的。</p>
+<p><strong>例子</strong></p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">class </span><span style="color:#ffb964;">X </span><span>{
+</span><span style="color:#8fbfdc;">public</span><span>:
+</span><span>    </span><span style="color:#888888;">// interface
+</span><span style="color:#8fbfdc;">protected</span><span>:
+</span><span>    </span><span style="color:#888888;">// unchecked function for use by derived class implementations
+</span><span style="color:#8fbfdc;">private</span><span>:
+</span><span>    </span><span style="color:#888888;">// implementation details
+</span><span>};
+</span></code></pre>
+<p><strong>例子</strong> 有时候成员的默认顺序会跟分离公共接口和实现细节的意愿产生冲突。这种情况下，私有类型和函数可以跟私有数据成员放在一起。（译者注：简单说就是优先考虑访问限定符）</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">class </span><span style="color:#ffb964;">X </span><span>{
+</span><span style="color:#8fbfdc;">public</span><span>:
+</span><span>    </span><span style="color:#888888;">// interface
+</span><span style="color:#8fbfdc;">protected</span><span>:
+</span><span>    </span><span style="color:#888888;">// unchecked function for use by derived class implementations
+</span><span style="color:#8fbfdc;">private</span><span>:
+</span><span>    </span><span style="color:#888888;">// implementation details (types, functions, and data)
+</span><span>};
+</span></code></pre>
+<p><strong>反面例子</strong> 避免把同一个访问限定符分散地多次声明在另一种访问限定符之间</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">class </span><span style="color:#ffb964;">X </span><span>{   </span><span style="color:#888888;">// bad
+</span><span style="color:#8fbfdc;">public</span><span>:
+</span><span>    </span><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">f</span><span>();
+</span><span style="color:#8fbfdc;">public</span><span>:
+</span><span>    </span><span style="color:#8fbfdc;">int </span><span style="color:#fad07a;">g</span><span>();
+</span><span>    </span><span style="color:#888888;">// ...
+</span><span>};
+</span></code></pre>
+<p>使用宏来声明成员的分组通常最终会导致违反这些成员声明顺序的规则。但是无论如何，宏还是会隐藏掉最终会表达出来的东西。</p>
+<p><strong>强制措施</strong> 标记推荐的顺序的起点。将会有很多遗留代码不遵守这个规则。</p>
+<h2 id="nl-17-shi-yong-yuan-yu-k-r-de-bu-ju">NL.17 使用源于 K&amp;R 的布局</h2>
+<p><strong>理由</strong> 这是最初的 C 和 C++ 布局。它很好地保留了垂直空间。它很好地区分了不同不同的语言结构（比如函数和类）</p>
+<p><strong>注意</strong> 在 C++ 上下文中，这种风格通常被称作 Stroustrup。</p>
+<p>这只是在你没有限制或者更好的想法的情况的一种推荐。这条规则是在对于指导方针的多次请求后才添加的。</p>
+<p><strong>例子</strong></p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">struct </span><span style="color:#ffb964;">Cable </span><span>{
+</span><span>    </span><span style="color:#8fbfdc;">int</span><span> x;
+</span><span>    </span><span style="color:#888888;">// ...
+</span><span>};
+</span><span>
+</span><span style="color:#8fbfdc;">double </span><span style="color:#fad07a;">foo</span><span>(</span><span style="color:#8fbfdc;">int </span><span style="color:#ffb964;">x</span><span>)
+</span><span>{
+</span><span>    </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#cf6a4c;">0 </span><span>&lt; x) {
+</span><span>        </span><span style="color:#888888;">// ...
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">switch </span><span>(x) {
+</span><span>    </span><span style="color:#8fbfdc;">case </span><span style="color:#cf6a4c;">0</span><span>:
+</span><span>        </span><span style="color:#888888;">// ...
+</span><span>        </span><span style="color:#8fbfdc;">break</span><span>;
+</span><span>    </span><span style="color:#8fbfdc;">case</span><span> amazing:
+</span><span>        </span><span style="color:#888888;">// ...
+</span><span>        </span><span style="color:#8fbfdc;">break</span><span>;
+</span><span>    </span><span style="color:#8fbfdc;">default</span><span>:
+</span><span>        </span><span style="color:#888888;">// ...
+</span><span>        </span><span style="color:#8fbfdc;">break</span><span>;
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#cf6a4c;">0 </span><span>&lt; x)
+</span><span>        ++x;
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">if </span><span>(x &lt; </span><span style="color:#cf6a4c;">0</span><span>)
+</span><span>        </span><span style="color:#ffb964;">something</span><span>();
+</span><span>    </span><span style="color:#8fbfdc;">else
+</span><span>        </span><span style="color:#ffb964;">something_else</span><span>();
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">return</span><span> some_value;
+</span><span>}
+</span></code></pre>
+<p>注意 <code>if</code> 和 <code>(</code> 之间的空格</p>
+<p><strong>注意</strong> 对于每个语句使用单独的一行，比如 <code>if</code> 的一个分支，还有 <code>for</code> 的 body。</p>
+<p><strong>注意</strong> 类和结构体的 <code>{</code> 不会另起一行，但是函数的 <code>{</code> 会占用单独的一行</p>
+<p><strong>注意</strong> 你自己的用户定义类型应当首字母大写，从而跟标准库区分开来。</p>
+<p><strong>注意</strong> 函数名不要首字母大写</p>
+<p><strong>强制措施</strong> 如果你需要的话，使用 IDE 的自动格式化。</p>
+<h2 id="nl-18-shi-yong-c-feng-ge-de-sheng-ming-bu-ju">NL.18 使用 C++ 风格的声明布局</h2>
+<p><strong>理由</strong> C 风格的命名布局强调表达式跟语法的使用，然而 C++ 风格强调类型。表达式不会持有引用。</p>
+<p><strong>例子</strong></p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>T&amp; </span><span style="color:#fad07a;">operator[]</span><span>(</span><span style="color:#ffb964;">size_t</span><span>);   </span><span style="color:#888888;">// OK
+</span><span>T &amp;</span><span style="color:#fad07a;">operator[]</span><span>(</span><span style="color:#ffb964;">size_t</span><span>);   </span><span style="color:#888888;">// just strange
+</span><span>T &amp; </span><span style="color:#fad07a;">operator[]</span><span>(</span><span style="color:#ffb964;">size_t</span><span>);   </span><span style="color:#888888;">// undecided
+</span></code></pre>
+<p>这只是在你没有限制或者更好的想法的情况的一种推荐。这条规则是在对于指导方针的多次请求后才添加的。</p>
+<p><strong>强制措施</strong> 由于历史原因，这是不可能的。</p>
+<h2 id="nl-19-bi-mian-rong-yi-wu-du-de-ming-ming">NL.19 避免容易误读的命名</h2>
+<p><strong>理由</strong> 可读性。不是每个人都有轻易识别所有字母的屏幕。我们很容易就会误读具有相似拼写或者具有轻微拼写错误的单词。</p>
+<p><strong>例子</strong></p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">int</span><span> oO01lL = </span><span style="color:#cf6a4c;">6</span><span>; </span><span style="color:#888888;">// bad
+</span><span>
+</span><span style="color:#8fbfdc;">int</span><span> splunk = </span><span style="color:#cf6a4c;">7</span><span>;
+</span><span style="color:#8fbfdc;">int</span><span> splonk = </span><span style="color:#cf6a4c;">8</span><span>; </span><span style="color:#888888;">// bad: splunk and splonk are easily confused
+</span></code></pre>
+<p><strong>强制措施</strong> 谁知道呢</p>
+<h2 id="nl-20-bu-yao-ba-liang-ge-yu-ju-fang-tong-yi-xing">NL.20 不要把两个语句放同一行</h2>
+<p><strong>理由</strong> 可读性。如果两个语句放同一行真的很容易漏看。</p>
+<p><strong>例子</strong></p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">int</span><span> x = </span><span style="color:#cf6a4c;">7</span><span>; </span><span style="color:#8fbfdc;">char</span><span>* p = </span><span style="color:#cf6a4c;">29</span><span>;    </span><span style="color:#888888;">// don&#39;t
+</span><span style="color:#8fbfdc;">int</span><span> x = </span><span style="color:#cf6a4c;">7</span><span>; </span><span style="color:#ffb964;">f</span><span>(x);  ++x;      </span><span style="color:#888888;">// don&#39;t
+</span></code></pre>
+<p><strong>强制措施</strong> 很简单</p>
+<h2 id="nl-21-mei-xing-zhi-sheng-ming-yi-ge-bian-liang">NL.21 每行只声明一个变量</h2>
+<p><strong>理由</strong> 可读性。最小化声明句法的误解。</p>
+<p><strong>注意</strong> 更多细节可以参考 ES.10。</p>
+<h2 id="nl-25-bu-yao-ba-void-fang-zai-han-shu-can-shu-li">NL.25 不要把 <code>void</code> 放在函数参数里</h2>
+<p><strong>理由</strong> 冗余并且只有在考虑 C 的兼容性时才需要这样做。</p>
+<p><strong>例子</strong></p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">f</span><span>(</span><span style="color:#8fbfdc;">void</span><span>);   </span><span style="color:#888888;">// bad
+</span><span>
+</span><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">g</span><span>();       </span><span style="color:#888888;">// better
+</span></code></pre>
+<p><strong>注意</strong> 甚至连 Dennis Ritchie 都认为 <code>void f(void)</code> 是一个非常令人憎恨的东西。当函数原型非常少的时候，你可以为这个 C 的可恨的东西辩护。因此不应当使用：</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">int </span><span style="color:#fad07a;">f</span><span>();
+</span><span style="color:#ffb964;">f</span><span>(</span><span style="color:#cf6a4c;">1</span><span>, </span><span style="color:#cf6a4c;">2</span><span>, </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">weird but valid C89</span><span style="color:#556633;">&quot;</span><span>);   </span><span style="color:#888888;">// hope that f() is defined int f(a, b, c) char* c; { /* ... */ }
+</span></code></pre>
+<p>这会导致重大的问题，但是不会在 21 世纪出现，也不会在 C++ 中出现。</p>
+<h2 id="nl-26-shi-yong-guan-yong-de-const-biao-ji">NL.26 使用惯用的 <code>const</code> 标记</h2>
+<p><strong>理由</strong> 对于更多的程序员而言，他们更熟悉惯用的标记。维持在大范围的代码库中的统一性。</p>
+<p><strong>例子</strong></p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">const int</span><span> x = </span><span style="color:#cf6a4c;">7</span><span>;    </span><span style="color:#888888;">// OK
+</span><span style="color:#8fbfdc;">int const</span><span> y = </span><span style="color:#cf6a4c;">9</span><span>;    </span><span style="color:#888888;">// bad
+</span><span>
+</span><span style="color:#8fbfdc;">const int </span><span>*</span><span style="color:#8fbfdc;">const</span><span> p = nullptr;   </span><span style="color:#888888;">// OK, constant pointer to constant int
+</span><span style="color:#8fbfdc;">int const </span><span>*</span><span style="color:#8fbfdc;">const</span><span> p = nullptr;   </span><span style="color:#888888;">// bad, constant pointer to constant int
+</span></code></pre>
+<p><strong>注意</strong> 我们当然知道你可能会说把 <code>const</code> 放在后面更加的符合逻辑，但是这可能会使得更多的人非常困惑，特别是初学者，他们依赖于使用更加常用的符合习惯的风格的教学材料。</p>
+<p>跟之前一样，记住这些命名和布局的规则的目的只是为了保持统一性，不可能符合所有人的审美。</p>
+<p>这只是在你没有限制或者更好的想法的情况的一种推荐。这条规则是在对于指导方针的多次请求后才添加的。</p>
+<p><strong>强制措施</strong> 标记出现在类型名之后的 <code>const</code>。</p>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202012120112/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">CMake 项目结构最佳实践</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202111011219/">
+                                <span class="button__text">使用 WSL2 安装 minikube</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

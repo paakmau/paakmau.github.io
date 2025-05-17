@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Docker 下使用 Let&#x27;s Encrypt 与 nginx 搭建支持 HTTPS 的 WordPress 博客 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="Docker 下使用 Let's Encrypt 与 nginx 搭建支持 HTTPS 的 WordPress 博客 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/201912181916/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="Docker 下使用 Let's Encrypt 与 nginx 搭建支持 HTTPS 的 WordPress 博客 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/201912181916/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/201912181916/">Docker 下使用 Let&#x27;s Encrypt 与 nginx 搭建支持 HTTPS 的 WordPress 博客</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2019-12-18
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/docker/">#Docker</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/https/">#HTTPS</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/let-s-encrypt/">#Let&#x27;s Encrypt</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/wordpress/">#WordPress</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/nginx/">#nginx</a></span>
+    
+
+        <div class="post-content">
+            <p>Let's Encrypt 提供免费 SSL 证书的自动签发续签服务，我们可以用它来为博客启用 HTTPS</p>
+<span id="continue-reading"></span><h2 id="qian-fa-zheng-shu">签发证书</h2>
+<p>我们使用 <code>certbot/certbot</code> 镜像构建一次性容器签发证书</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">docker</span><span> volume create data_letsencrypt
+</span><span style="color:#ffb964;">docker</span><span> run</span><span style="color:#ffb964;"> --rm -p</span><span> 80:80</span><span style="color:#ffb964;"> -p</span><span> 443:443 \
+</span><span style="color:#ffb964;">  -v</span><span> data_letsencrypt:/etc/letsencrypt \
+</span><span>  certbot/certbot auth</span><span style="color:#ffb964;"> --standalone </span><span>\
+</span><span style="color:#ffb964;">  -m</span><span> yourname@email.com</span><span style="color:#ffb964;"> --agree-tos </span><span>\
+</span><span style="color:#ffb964;">  -d</span><span> example.com
+</span></code></pre>
+<p>解释：</p>
+<ul>
+<li><code>--rm</code> 表示容器结束后就自动删除。</li>
+<li>证书会被生成在 <code>data_letsencrypt</code> 数据卷下的 <code>live/example.com</code> 目录中。</li>
+</ul>
+<h2 id="bu-shu-mysql-yu-wordpress">部署 MySQL 与 WordPress</h2>
+<p>基本就正常部署就行<br>
+但由于我们使用 nginx 反向代理，所以 WordPress 不需要做端口映射</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">docker</span><span> volume create data_mysql_wordpress
+</span><span style="color:#ffb964;">docker</span><span> volume create data_wordpress
+</span><span style="color:#ffb964;">docker</span><span> run</span><span style="color:#ffb964;"> -d --name</span><span> mysql_wordpress \
+</span><span style="color:#ffb964;">  -v</span><span> data_mysql_wordpress:/var/lib/mysql \
+</span><span style="color:#ffb964;">  -e</span><span> MYSQL_ROOT_PASSWORD=root \
+</span><span>  mysql</span><span style="color:#ffb964;"> --default-authentication-plugin</span><span>=mysql_native_password
+</span><span style="color:#ffb964;">docker</span><span> run</span><span style="color:#ffb964;"> -d --name</span><span> wordpress \
+</span><span style="color:#ffb964;">  -v</span><span> data_wordpress:/var/www/html \
+</span><span style="color:#ffb964;">  --link</span><span> mysql_wordpress:mysql wordpress
+</span></code></pre>
+<h2 id="shi-yong-nginx-fan-xiang-dai-li">使用 nginx 反向代理</h2>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">docker</span><span> volume create data_nginx_conf
+</span><span style="color:#ffb964;">docker</span><span> run</span><span style="color:#ffb964;"> -d --name</span><span> nginx \
+</span><span style="color:#ffb964;">  -v</span><span> data_nginx_conf:/etc/nginx/conf.d \
+</span><span style="color:#ffb964;">  -v</span><span> data_letsencrypt:/etc/letsencrypt \
+</span><span style="color:#ffb964;">  --link</span><span> wordpress:wordpress \
+</span><span style="color:#ffb964;">  -p</span><span> 80:80</span><span style="color:#ffb964;"> -p</span><span> 443:443 nginx
+</span></code></pre>
+<p>解释：</p>
+<ul>
+<li>nginx 的配置文件会被放在 <code>data_nginx_conf</code> 数据卷中</li>
+<li>映射 <code>data_letsencrypt</code> 数据卷以获取证书</li>
+<li>链接 <code>wordpress</code> 容器用于代理转发</li>
+</ul>
+<p>进入 <code>data_nginx_conf</code> 数据卷并修改 <code>default.conf</code> 如下</p>
+<pre data-lang="conf" style="background-color:#151515;color:#e8e8d3;" class="language-conf "><code class="language-conf" data-lang="conf"><span style="color:#8fbfdc;">server </span><span>{
+</span><span>    </span><span style="color:#ffb964;">listen </span><span style="color:#cf6a4c;">443</span><span> ssl;
+</span><span>    </span><span style="color:#ffb964;">server_name </span><span>example.com;
+</span><span>
+</span><span>    </span><span style="color:#ffb964;">ssl_certificate </span><span>/etc/letsencrypt/live/example.com/fullchain.pem;
+</span><span>    </span><span style="color:#ffb964;">ssl_certificate_key </span><span>/etc/letsencrypt/live/example.com/privkey.pem;
+</span><span>    </span><span style="color:#ffb964;">ssl_protocols </span><span>TLSv1 TLSv1.</span><span style="color:#cf6a4c;">1</span><span> TLSv1.</span><span style="color:#cf6a4c;">2</span><span>;
+</span><span>
+</span><span>
+</span><span>    location / {
+</span><span>        </span><span style="color:#ffb964;">proxy_set_header </span><span>Host </span><span style="color:#8fbfdc;">$host</span><span>;
+</span><span>        </span><span style="color:#ffb964;">proxy_set_header </span><span>X-Real-IP </span><span style="color:#8fbfdc;">$remote_addr</span><span>;
+</span><span>        </span><span style="color:#ffb964;">proxy_set_header </span><span>X-Forwarded-For </span><span style="color:#8fbfdc;">$proxy_add_x_forwarded_for</span><span>;
+</span><span>        </span><span style="color:#ffb964;">proxy_set_header </span><span>X-Forwarded-Proto </span><span style="color:#8fbfdc;">$scheme</span><span>;
+</span><span>        </span><span style="color:#ffb964;">proxy_pass </span><span style="color:#7697d6;">http://wordpress:80</span><span>;
+</span><span>    }
+</span><span>}
+</span><span>
+</span><span style="color:#8fbfdc;">server </span><span>{
+</span><span>    </span><span style="color:#ffb964;">listen </span><span style="color:#cf6a4c;">80</span><span>;
+</span><span>    </span><span style="color:#ffb964;">return </span><span style="color:#cf6a4c;">301 </span><span style="color:#7697d6;">https://$host$request_uri</span><span>;
+</span><span>}
+</span></code></pre>
+<p>解释：</p>
+<ul>
+<li>其中 <code>ssl_certificate</code> 与 <code>ssl_certificate_key</code> 设定了证书的路径，需要把 example.com 替换为你博客的域名</li>
+<li><code>proxy_pass</code> 用于转发 <code>wordpress</code> 容器的 80 端口。最后监听本容器的 80 端口把 HTTP 重定向到 HTTPS</li>
+</ul>
+<p>然后重启 <code>nginx</code> 容器就完成了</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">docker</span><span> restart nginx
+</span></code></pre>
+<h2 id="zheng-shu-xu-qian">证书续签</h2>
+<p>证书有效期只有 90 天，因此需要续签</p>
+<p>我们先把 <code>nginx</code> 容器停了，把端口让出来</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">docker</span><span> stop nginx
+</span></code></pre>
+<p>然后再次使用 <code>certbot/certbot</code> 进行续签</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">docker</span><span> run</span><span style="color:#ffb964;"> --rm -p</span><span> 80:80</span><span style="color:#ffb964;"> -p</span><span> 443:443 \
+</span><span style="color:#ffb964;">  -v</span><span> data_letsencrypt:/etc/letsencrypt \
+</span><span>  certbot/certbot renew</span><span style="color:#ffb964;"> --standalone
+</span></code></pre>
+<p>之后再启动 <code>nginx</code> 就行了</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">docker</span><span> start nginx
+</span></code></pre>
+<p>然后可以用 <code>crontab</code> 创建定时任务自动续签</p>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/201912180059/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">Express + MySQL + Session 搭建 Web 后端脚手架</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/201912182310/">
+                                <span class="button__text">【luogu 1880】石子合并</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>【hdu 2955】Robberies | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="【hdu 2955】Robberies | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/201912190040/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="【hdu 2955】Robberies | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/201912190040/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/201912190040/">【hdu 2955】Robberies</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2019-12-19
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/dong-tai-gui-hua/">#动态规划</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/bei-bao-wen-ti/">#背包问题</a></span>
+    
+
+        <div class="post-content">
+            <p>一个 01 背包问题</p>
+<span id="continue-reading"></span><h2 id="ti-mu-miao-shu">题目描述</h2>
+<p>The aspiring Roy the Robber has seen a lot of American movies, and knows that the bad guys usually gets caught in the end, often because they become too greedy. He has decided to work in the lucrative business of bank robbery only for a short while, before retiring to a comfortable job at a university.</p>
+<p>For a few months now, Roy has been assessing the security of various banks and the amount of cash they hold. He wants to make a calculated risk, and grab as much money as possible.</p>
+<p>His mother, Ola, has decided upon a tolerable probability of getting caught. She feels that he is safe enough if the banks he robs together give a probability less than this.</p>
+<h2 id="shu-ru-ge-shi">输入格式</h2>
+<p>The first line of input gives <code>T</code>, the number of cases. For each scenario, the first line of input gives a floating point number <code>P</code>, the probability Roy needs to be below, and an integer <code>N</code>, the number of banks he has plans for. Then follow <code>N</code> lines, where line <code>j</code> gives an integer <code>Mj</code> and a floating point number <code>Pj</code>.<br>
+Bank <code>j</code> contains <code>Mj</code> millions, and the probability of getting caught from robbing it is <code>Pj</code>.</p>
+<h2 id="shu-chu-ge-shi">输出格式</h2>
+<p>For each test case, output a line with the maximum number of millions he can expect to get while the probability of getting caught is less than the limit set.</p>
+<p>Notes and Constraints<br>
+<code>0 &lt; T &lt;= 100</code><br>
+<code>0.0 &lt;= P &lt;= 1.0</code><br>
+<code>0 &lt; N &lt;= 100</code><br>
+<code>0 &lt; Mj &lt;= 100</code><br>
+<code>0.0 &lt;= Pj &lt;= 1.0</code><br>
+A bank goes bankrupt if it is robbed, and you may assume that all probabilities are independent as the police have very low funds.</p>
+<h2 id="shu-ru-yang-li">输入样例</h2>
+<pre data-lang="txt" style="background-color:#151515;color:#e8e8d3;" class="language-txt "><code class="language-txt" data-lang="txt"><span>3
+</span><span>0.04 3
+</span><span>1 0.02
+</span><span>2 0.03
+</span><span>3 0.05
+</span><span>0.06 3
+</span><span>2 0.03
+</span><span>2 0.03
+</span><span>3 0.05
+</span><span>0.10 3
+</span><span>1 0.03
+</span><span>2 0.02
+</span><span>3 0.05
+</span></code></pre>
+<h2 id="shu-chu-yang-li">输出样例</h2>
+<pre data-lang="txt" style="background-color:#151515;color:#e8e8d3;" class="language-txt "><code class="language-txt" data-lang="txt"><span>2
+</span><span>4
+</span><span>6
+</span></code></pre>
+<h2 id="ti-jie">题解</h2>
+<p>01 背包<br>
+<code>F(i, j)</code> 表示前 <code>i</code> 个银行取得 <code>j</code> 的钱而不被抓的最大概率</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">#include </span><span style="color:#556633;">&lt;</span><span style="color:#99ad6a;">algorithm</span><span style="color:#556633;">&gt;
+</span><span style="color:#8fbfdc;">#include </span><span style="color:#556633;">&lt;</span><span style="color:#99ad6a;">climits</span><span style="color:#556633;">&gt;
+</span><span style="color:#8fbfdc;">#include </span><span style="color:#556633;">&lt;</span><span style="color:#99ad6a;">cstdio</span><span style="color:#556633;">&gt;
+</span><span style="color:#8fbfdc;">#include </span><span style="color:#556633;">&lt;</span><span style="color:#99ad6a;">cstring</span><span style="color:#556633;">&gt;
+</span><span style="color:#8fbfdc;">#include </span><span style="color:#556633;">&lt;</span><span style="color:#99ad6a;">cstdlib</span><span style="color:#556633;">&gt;
+</span><span>
+</span><span style="color:#8fbfdc;">using namespace</span><span> std;
+</span><span>
+</span><span style="color:#8fbfdc;">const int</span><span> MAXN = </span><span style="color:#cf6a4c;">105</span><span>;
+</span><span style="color:#8fbfdc;">const int</span><span> MAXM = </span><span style="color:#cf6a4c;">10005</span><span>;
+</span><span style="color:#8fbfdc;">int</span><span> T, N;
+</span><span style="color:#8fbfdc;">double</span><span> P;
+</span><span style="color:#8fbfdc;">int</span><span> A[MAXN];
+</span><span style="color:#8fbfdc;">double</span><span> B[MAXN];
+</span><span style="color:#8fbfdc;">double</span><span> F[MAXM];
+</span><span>
+</span><span style="color:#8fbfdc;">int </span><span style="color:#fad07a;">main</span><span>() {
+</span><span>    scanf(</span><span style="color:#556633;">&quot;</span><span style="color:#7697d6;">%d</span><span style="color:#556633;">&quot;</span><span>, &amp;T);
+</span><span>    </span><span style="color:#8fbfdc;">while</span><span>(T--) {
+</span><span>        scanf(</span><span style="color:#556633;">&quot;</span><span style="color:#7697d6;">%lf%d</span><span style="color:#556633;">&quot;</span><span>, &amp;P, &amp;N), P=</span><span style="color:#cf6a4c;">1</span><span>-P;
+</span><span>        </span><span style="color:#8fbfdc;">for </span><span>(</span><span style="color:#8fbfdc;">int</span><span> i=</span><span style="color:#cf6a4c;">1</span><span>; i&lt;=N; i++)
+</span><span>            scanf(</span><span style="color:#556633;">&quot;</span><span style="color:#7697d6;">%d%lf</span><span style="color:#556633;">&quot;</span><span>, A+i, B+i), B[i]=</span><span style="color:#cf6a4c;">1</span><span>-B[i];
+</span><span>        memset(F, </span><span style="color:#cf6a4c;">0</span><span>, sizeof(F));
+</span><span>        F[</span><span style="color:#cf6a4c;">0</span><span>] = </span><span style="color:#cf6a4c;">1</span><span>;
+</span><span>        </span><span style="color:#8fbfdc;">int</span><span> ans = </span><span style="color:#cf6a4c;">0</span><span>;
+</span><span>        </span><span style="color:#8fbfdc;">for </span><span>(</span><span style="color:#8fbfdc;">int</span><span> i=</span><span style="color:#cf6a4c;">1</span><span>; i&lt;=N; i++)
+</span><span>            </span><span style="color:#8fbfdc;">for </span><span>(</span><span style="color:#8fbfdc;">int</span><span> j=MAXM; j&gt;=</span><span style="color:#cf6a4c;">0</span><span>; j--)
+</span><span>                </span><span style="color:#8fbfdc;">if </span><span>(j - A[i] &gt;= </span><span style="color:#cf6a4c;">0</span><span>) {
+</span><span>                    F[j] = </span><span style="color:#ffb964;">max </span><span>(F[j], F[j - A[i]] \* B[i]);
+</span><span>                    </span><span style="color:#8fbfdc;">if </span><span>(F[j] &gt;= P)
+</span><span>                        ans = </span><span style="color:#ffb964;">max</span><span>(ans, j);
+</span><span>                }
+</span><span>        printf(</span><span style="color:#556633;">&quot;</span><span style="color:#7697d6;">%d</span><span style="color:#99ad6a;">\n</span><span style="color:#556633;">&quot;</span><span>, ans);
+</span><span>    }
+</span><span>    </span><span style="color:#8fbfdc;">return </span><span style="color:#cf6a4c;">0</span><span>;
+</span><span>}
+</span></code></pre>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/201912182310/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">【luogu 1880】石子合并</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/201912191751/">
+                                <span class="button__text">【poj 1694】An Old Stone Game</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

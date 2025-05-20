@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>UE4 材质编辑器中材质结点的数据结构源码阅读 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="UE4 材质编辑器中材质结点的数据结构源码阅读 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202005152347/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="UE4 材质编辑器中材质结点的数据结构源码阅读 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202005152347/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202005152347/">UE4 材质编辑器中材质结点的数据结构源码阅读</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2020-05-15
+        </span>
+
+    </div>
+
+    
+
+        <div class="post-content">
+            <p>UE4 的材质编辑器中我们可以创建材质结点然后给它们连线来创建材质</p>
+<p>本文将根据源码解析材质结点在内存中的数据结构</p>
+<span id="continue-reading"></span><h2 id="uedgraph"><code>UEdGraph</code></h2>
+<p>先简单提一下 <code>UEdGraph</code></p>
+<p>它用来管理一张可视化的有向图，而且其实蓝图就是用这个东西来做的<br>
+一个 <code>UEdGraph</code> 对象会包括图中所有的 <code>UEdGraphNode</code> 也就是结点<br>
+一个结点包括位置等基础信息，然后它还有一个 <code>UEdGraphPin</code> 的指针数组<br>
+一个 <code>UEdGraphPin</code> 其实就是一个插槽，用一个字节表示是输入插槽还是输出插槽，然后持有它所属的 <code>UEdGraphNode</code> 指针，还有一个 <code>UEdGraphNode</code> 指针数组保存这个插槽连接到的结点</p>
+<h2 id="umaterialgraph"><code>UMaterialGraph</code></h2>
+<p>它派生自 <code>UEdGraph</code>，保存一个材质在编辑器中的所有结点形成的有向图。
+虽然它主要用于管理由材质结点组成的可视化的有向图，但它也持有 <code>UMaterial</code> 指针用来获取材质输入插槽等信息。<br>
+然后用户在编辑器中对材质的修改都会作用到这个对象上。</p>
+<p>它有一个 <code>UMaterialGraphNode_Root</code> 类型的成员变量 <code>RootNode</code>。
+这个 <code>RootNode</code> 其实就是编辑器中的材质结果结点。
+通过这个结点向前递归我们可以找到这个材质结果结点连接的所有结点，不过其实它的基类 <code>UEdGraph</code> 本身就具有这样的功能。</p>
+<h2 id="umaterialgraphnode-base"><code>UMaterialGraphNode_Base</code></h2>
+<p>根据名字我们知道它是材质结点的基类，派生自 <code>UEdGraphNode</code>。</p>
+<p>比如前面提到的 <code>UMaterialGraphNode_Root</code> 就是它的一个派生类；此外它的派生类还有 <code>UMaterialGraphNode</code>，这个派生类用于管理材质结果结点之外的其他结点。</p>
+<p>这两个派生类之间的主要区别在于获取插槽等结点数据的方式不同。</p>
+<p><code>UMaterialGraphNode_Root</code> 获取插槽数据是通过 <code>UEdGraphNode</code> 的 <code>GetGraph</code> 方法获取所属的 <code>UEdGraph</code> 指针，然后类型转换到 <code>UMaterialGraph</code> 指针，再通过 <code>UMaterialGraph</code> 的 <code>MaterialInputs</code> 得到材质结果结点上的各个输入。</p>
+<p>下面贴一下它的 <code>CreateInputPins</code> 的实现：</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">void </span><span>UMaterialGraphNode_Root::</span><span style="color:#fad07a;">CreateInputPins</span><span>()
+</span><span>{
+</span><span>    UMaterialGraph* MaterialGraph = </span><span style="color:#ffb964;">CastChecked</span><span>&lt;UMaterialGraph&gt;(</span><span style="color:#ffb964;">GetGraph</span><span>());
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">for </span><span>(</span><span style="color:#8fbfdc;">const</span><span> FMaterialInputInfo&amp; MaterialInput : MaterialGraph-&gt;</span><span style="color:#ffb964;">MaterialInputs</span><span>)
+</span><span>    {
+</span><span>        UEdGraphPin* InputPin = </span><span style="color:#ffb964;">CreatePin</span><span>(EGPD_Input, UMaterialGraphSchema::PC_MaterialInput, *FString::</span><span style="color:#ffb964;">Printf</span><span>(</span><span style="color:#ffb964;">TEXT</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#7697d6;">%d</span><span style="color:#556633;">&quot;</span><span>), (int32)MaterialInput.</span><span style="color:#ffb964;">GetProperty</span><span>()), *MaterialInput.</span><span style="color:#ffb964;">GetName</span><span>().</span><span style="color:#ffb964;">ToString</span><span>());
+</span><span>    }
+</span><span>
+</span><span>}
+</span></code></pre>
+<p>然后 <code>UMaterialGraphNode</code> 管理的是其他结点，其实也就是表达式结点，它持有一个 <code>UMaterialExpression</code> 指针，于是通过这个指针直接就能拿到结点表达式的输入输出的类型和名称。</p>
+<p><code>UMaterialExpression</code> 是结点表达式。<br>
+因为不同类型的结点会具有不同的输入输出和功能，所以一个结点就是一个具有若干输入和输出表达式。</p>
+<p>但是 <code>UMaterialExpression</code> 只是一个接口，不同表达式的输入输出不同，因此具体的表达式都会派生自 <code>UMaterialExpression</code>，比如 <code>UMaterialExpressionAdd</code> 就是具体的加法表达式。</p>
+<p>这里简单贴一下它的 <code>CreateInputPins</code> 的实现：</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">void </span><span>UMaterialGraphNode::</span><span style="color:#fad07a;">CreateInputPins</span><span>()
+</span><span>{
+</span><span>    </span><span style="color:#8fbfdc;">const</span><span> TArray&lt;FExpressionInput*&gt; ExpressionInputs = MaterialExpression-&gt;</span><span style="color:#ffb964;">GetInputs</span><span>();
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">for </span><span>(int32 Index = </span><span style="color:#cf6a4c;">0</span><span>; Index &lt; ExpressionInputs.</span><span style="color:#ffb964;">Num</span><span>() ; ++Index)
+</span><span>    {
+</span><span>        FExpressionInput* Input = ExpressionInputs[Index];
+</span><span>        FName InputName = MaterialExpression-&gt;</span><span style="color:#ffb964;">GetInputName</span><span>(Index);
+</span><span>
+</span><span>        InputName = </span><span style="color:#ffb964;">GetShortenPinName</span><span>(InputName);
+</span><span>
+</span><span>        </span><span style="color:#8fbfdc;">const</span><span> FName PinCategory = MaterialExpression-&gt;</span><span style="color:#ffb964;">IsInputConnectionRequired</span><span>(Index) ? UMaterialGraphSchema::PC_Required : UMaterialGraphSchema::PC_Optional;
+</span><span>
+</span><span>        UEdGraphPin* NewPin = </span><span style="color:#ffb964;">CreatePin</span><span>(EGPD_Input, PinCategory, InputName);
+</span><span>        </span><span style="color:#8fbfdc;">if </span><span>(NewPin-&gt;</span><span style="color:#ffb964;">PinName</span><span>.</span><span style="color:#ffb964;">IsNone</span><span>())
+</span><span>        {
+</span><span>            </span><span style="color:#888888;">// Makes sure pin has a name for lookup purposes but user will never see it
+</span><span>            NewPin-&gt;</span><span style="color:#ffb964;">PinName </span><span>= </span><span style="color:#ffb964;">CreateUniquePinName</span><span>(</span><span style="color:#ffb964;">TEXT</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Input</span><span style="color:#556633;">&quot;</span><span>));
+</span><span>            NewPin-&gt;</span><span style="color:#ffb964;">PinFriendlyName </span><span>= SpaceText;
+</span><span>        }
+</span><span>    }
+</span><span>}
+</span></code></pre>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202005142107/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">解析游戏开发中环境场景的模块化设计</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202007071821/">
+                                <span class="button__text">使用 Vue.js 和 Spring Boot 配置 WebSocket</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

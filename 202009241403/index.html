@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Vulkan 画三角形第十五章：总结 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="Vulkan 画三角形第十五章：总结 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202009241403/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="Vulkan 画三角形第十五章：总结 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202009241403/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202009241403/">Vulkan 画三角形第十五章：总结</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2020-09-24
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/vulkan/">#Vulkan</a></span>
+    
+
+        <div class="post-content">
+            <p>现在我们已经成功地渲染并在屏幕上展示了一个三角形，更重要的是，我们把 Vulkan 中的大部分知识都过了一遍，现在让我们来回顾一下它的每个步骤</p>
+<span id="continue-reading"></span>
+<ul>
+<li>
+<p>创建 Vulkan 实例</p>
+<p>通过实例，我们可以把应用程序跟 Vulkan 库连接起来，也能记录应用程序的信息以供未来可能的优化</p>
+</li>
+<li>
+<p>创建表面</p>
+<p>表面是不同平台的窗体系统的抽象，我们可以使用表面将渲染好的图像展示到窗体系统中</p>
+</li>
+<li>
+<p>选取物理设备</p>
+<p>检查显卡支持并选择合适的显卡。简单说应当优先选择独显，但是本系列文章中，我们为了避免麻烦，选择了比较常见的集显</p>
+</li>
+<li>
+<p>创建逻辑设备</p>
+<p>是物理设备的抽象，用于跟物理设备进行交互。在创建逻辑设备之后可以</p>
+</li>
+<li>
+<p>创建交换链</p>
+<p>交换链依赖于表面，负责管理图像的展示。可以配置缓冲模式比如垂直同步或三重缓冲等。在渲染时需要向交换链请求一个空闲的图像，渲染完成后通知交换链把该图像展示到表面上</p>
+</li>
+<li>
+<p>创建图像视图</p>
+<p>我们不能直接对图像进行操作，需要为每一个图像创建图像视图来限定访问图像的指定部分</p>
+</li>
+<li>
+<p>创建渲染路径</p>
+<p>一条渲染路径由多个子路径组成，每个子路径需要指定帧缓冲区附着的相关信息，比如使用了多少个附着，各个附着的图像布局、图像格式等具体信息</p>
+</li>
+<li>
+<p>编写并编译着色器</p>
+<p>使用 GLSL 语言编写顶点着色器和片元着色器，并使用 <code>glslc</code> 命令行工具编译为 Vulkan 中可用的 SPIR-V 字节码</p>
+</li>
+<li>
+<p>创建图形流水线</p>
+<p>指定图形流水线中需要进行的阶段，对于可编程阶段加载着色器代码，对于固定功能阶段指定必要的参数。需要绑定渲染路径，以指定流水线用于输出的附着类型</p>
+</li>
+<li>
+<p>创建帧缓冲区</p>
+<p>帧缓冲区可由多个附着组成，这个附着其实就是图像视图。帧缓冲区在渲染的时候被绑定到渲染路径上，并用于图形流水线的渲染</p>
+</li>
+<li>
+<p>创建命令缓冲区</p>
+<p>命令缓冲区由一系列的命令组成，被一次性提交给队列执行，命令可以控制内存传递、渲染等。比如我们的命令缓冲区就依次记录了这些命令来渲染三角形：开启渲染路径、绑定渲染流水线、渲染、结束渲染路径</p>
+</li>
+<li>
+<p>渲染与展示</p>
+<p>在主循环中需要从交换链中请求一个空闲的图像，然后提交对应的命令缓冲区到图形队列，从而把三角形渲染在该图像中，最后把该图像提交到展示队列，显示到屏幕上</p>
+</li>
+</ul>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202009191750/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">Vulkan 画三角形第十四章：渲染和展示</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202012112035/">
+                                <span class="button__text">CMake 从零开始快速上手</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

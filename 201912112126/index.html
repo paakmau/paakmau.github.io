@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Docker 远程连接以及 TLS 加密 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="Docker 远程连接以及 TLS 加密 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/201912112126/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="Docker 远程连接以及 TLS 加密 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/201912112126/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/201912112126/">Docker 远程连接以及 TLS 加密</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2019-12-11
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/docker/">#Docker</a></span>
+    
+
+        <div class="post-content">
+            <p>Docker Daemon 运行在 Debian 上，Docker Client 在 macOS 上</p>
+<p>因为不想在本地安装 Docker，考虑在本地用 Docker Client 远程连接到远程服务器的 Docker Daemon 上。</p>
+<span id="continue-reading"></span><h2 id="ming-ci-jie-shi">名词解释</h2>
+<p>Docker Daemon，可以理解为 Docker 的后端，也是 Docker 项目实际运行的地方。</p>
+<p>Docker client，Docker 的客户端，可以用来控制 Daemon 运行 Docker 项目。</p>
+<h2 id="fu-wu-duan-debian-pei-zhi-yuan-cheng-lian-jie">服务端（Debian）配置远程连接</h2>
+<p>覆盖配置 <code>docker.service</code> 即可</p>
+<p>修改 <code>/etc/systemd/system/docker.service.d/override.conf</code> 的内容如下<br>
+（如果目录或文件不存在就直接创建）</p>
+<pre data-lang="conf" style="background-color:#151515;color:#e8e8d3;" class="language-conf "><code class="language-conf" data-lang="conf"><span style="color:#8fbfdc;">[Service]
+</span><span style="color:#ffb964;">ExecStart</span><span>=
+</span><span style="color:#ffb964;">ExecStart</span><span>=/usr/bin/dockerd -H </span><span style="color:#7697d6;">tcp://0.0.0.0:2337 </span><span>-H </span><span style="color:#7697d6;">unix:///var/run/docker.sock
+</span></code></pre>
+<p>解释：</p>
+<ul>
+<li>第二行用于清除原本的 <code>ExecStart</code>，不可缺少</li>
+<li><code>-H tcp://0.0.0.0:2337</code> 指定监听 2337 端口，使得 Daemon 可以由 2337 端口远程访问</li>
+<li><code>-H unix:///var/run/docker.sock</code> 指定监听 Unix 域 Socket，使得原本的本地连接方式依然可用</li>
+</ul>
+<p>重启后台进程与 Docker 服务</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">systemctl</span><span> daemon-reload
+</span><span style="color:#ffb964;">systemctl</span><span> restart docker
+</span></code></pre>
+<p>至此，我们就能通过 2337 端口远程访问 Docker Daemon 了</p>
+<h2 id="ke-hu-duan-macos-pei-zhi-yuan-cheng-lian-jie">客户端（macOS）配置远程连接</h2>
+<p>安装 Docker Client</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">brew</span><span> install docker
+</span></code></pre>
+<p>临时指定 Docker 服务器的地址<br>
+如有需要，可以把 <code>DOCKER_HOST</code> 环境变量写入 <code>.bashrc</code> 或者 <code>.zshrc</code></p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">DOCKER_HOST</span><span>=</span><span style="color:#99ad6a;">tcp://x.x.x.x:2337
+</span></code></pre>
+<p>显示 Docker 信息以确认是否成功</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">docker</span><span> info
+</span></code></pre>
+<h2 id="fu-wu-duan-debian-pei-zhi-yuan-cheng-lian-jie-jia-mi">服务端（Debian）配置远程连接加密</h2>
+<p>发现远程连接不需要验证，如果有人获取了我们服务器的 ip 与端口，他就能直接连接到 Docker Daemon。并且 Docker 具有 <code>root</code> 权限，不加密十分危险。</p>
+<p>所以接下来我们快速配置加密连接</p>
+<p>执行下述脚本在 <code>/etc/docker</code> 目录下直接创建密钥</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#888888;"># 创建 certs 目录并切换路径
+</span><span style="color:#ffb964;">mkdir</span><span> /etc/docker/certs
+</span><span>cd /etc/docker/certs
+</span><span>
+</span><span style="color:#888888;"># 创建 ca 密钥
+</span><span style="color:#ffb964;">openssl</span><span> genrsa</span><span style="color:#ffb964;"> -aes256 -out</span><span> ca-key.pem 4096
+</span><span>
+</span><span style="color:#888888;"># 生成 ca 证书
+</span><span style="color:#ffb964;">openssl</span><span> req</span><span style="color:#ffb964;"> -new -x509 -days</span><span> 1000</span><span style="color:#ffb964;"> -key</span><span> ca-key.pem</span><span style="color:#ffb964;"> -sha256 -subj </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">/CN=*</span><span style="color:#556633;">&quot;</span><span style="color:#ffb964;"> -out</span><span> ca.pem
+</span><span>
+</span><span style="color:#888888;"># 创建服务器私钥
+</span><span style="color:#ffb964;">openssl</span><span> genrsa</span><span style="color:#ffb964;"> -out</span><span> server-key.pem 4096
+</span><span>
+</span><span style="color:#888888;"># 生成服务器证书
+</span><span style="color:#ffb964;">openssl</span><span> req</span><span style="color:#ffb964;"> -subj </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">/CN=*</span><span style="color:#556633;">&quot;</span><span style="color:#ffb964;"> -sha256 -new -key</span><span> server-key.pem</span><span style="color:#ffb964;"> -out</span><span> server.csr
+</span><span>
+</span><span style="color:#888888;"># 使用 ca 证书与服务器证书签名
+</span><span style="color:#ffb964;">openssl</span><span> x509</span><span style="color:#ffb964;"> -req -days</span><span> 1000</span><span style="color:#ffb964;"> -sha256 -in</span><span> server.csr</span><span style="color:#ffb964;"> -CA</span><span> ca.pem</span><span style="color:#ffb964;"> -CAkey</span><span> ca-key.pem</span><span style="color:#ffb964;"> -CAcreateserial -out</span><span> server-cert.pem
+</span><span>
+</span><span style="color:#888888;"># 创建客户端私钥
+</span><span style="color:#ffb964;">openssl</span><span> genrsa</span><span style="color:#ffb964;"> -out</span><span> key.pem 4096
+</span><span>
+</span><span style="color:#888888;"># 生成客户端证书
+</span><span style="color:#ffb964;">openssl</span><span> req</span><span style="color:#ffb964;"> -subj </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">/CN=client</span><span style="color:#556633;">&quot;</span><span style="color:#ffb964;"> -new -key</span><span> key.pem</span><span style="color:#ffb964;"> -out</span><span> client.csr
+</span><span>
+</span><span style="color:#888888;"># 创建并写入配置文件，然后根据配置文件使用 ca 证书与客户端证书签名
+</span><span>echo extendedKeyUsage=clientAuth &gt; extfile.cnf
+</span><span style="color:#ffb964;">openssl</span><span> x509</span><span style="color:#ffb964;"> -req -days</span><span> 1000</span><span style="color:#ffb964;"> -sha256 -in</span><span> client.csr</span><span style="color:#ffb964;"> -CA</span><span> ca.pem</span><span style="color:#ffb964;"> -CAkey</span><span> ca-key.pem</span><span style="color:#ffb964;"> -CAcreateserial -out</span><span> cert.pem</span><span style="color:#ffb964;"> -extfile</span><span> extfile.cnf
+</span><span>
+</span><span style="color:#888888;"># 删除多余的文件
+</span><span style="color:#ffb964;">rm -rf</span><span> ca.srl client.csr extfile.cnf server.csr
+</span></code></pre>
+<p>接下来覆盖配置 <code>docker.service</code><br>
+修改 <code>/etc/systemd/system/docker.service.d/override.conf</code> 的内容如下<br>
+（如果目录或文件不存在就直接创建）</p>
+<pre data-lang="conf" style="background-color:#151515;color:#e8e8d3;" class="language-conf "><code class="language-conf" data-lang="conf"><span style="color:#8fbfdc;">[Service]
+</span><span style="color:#ffb964;">ExecStart</span><span>=
+</span><span style="color:#ffb964;">ExecStart</span><span>=/usr/bin/dockerd --tlsverify --tlscacert=/etc/docker/certs/ca.pem --tlscert=/etc/docker/certs/server-cert.pem --tlskey=/etc/docker/certs/server-key.pem -H </span><span style="color:#7697d6;">tcp://0.0.0.0:2337 </span><span>-H </span><span style="color:#7697d6;">unix:///var/run/docker.sock
+</span></code></pre>
+<p>解释：基本跟上文的远程连接配置相同，只是指定了 tls 认证方式</p>
+<h2 id="ke-hu-duan-macos-pei-zhi-yuan-cheng-lian-jie-jia-mi">客户端（macOS）配置远程连接加密</h2>
+<p>首先拷贝密钥<br>
+将服务器上 <code>/etc/docker/certs</code> 下的 <code>ca.pem</code>、<code>cert.pem</code>、<code>key.pem</code> 拷贝到客户端的 <code>~/.docker</code> 中</p>
+<p>然后配置 Docker 环境变量到 <code>.zshrc</code> 或 <code>.bashrc</code> 中</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">DOCKER_HOST</span><span>=</span><span style="color:#99ad6a;">tcp://x.x.x.x:2337 </span><span style="color:#ffb964;">DOCKER_TLS_VERIFY</span><span>=</span><span style="color:#99ad6a;">1
+</span></code></pre>
+<p>尝试查看 Docker 信息以确认是否成功</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">docker</span><span> info
+</span></code></pre>
+<h2 id="can-kao-zi-liao">参考资料</h2>
+<p><a href="https://docs.docker.com/engine/security/https/">https://docs.docker.com/engine/security/https/</a><br></p>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/201912112016/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">Docker 简单介绍与安装</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/201912121724/">
+                                <span class="button__text">Docker 部署 .NET Core 3.0 控制台项目</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

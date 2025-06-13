@@ -9,7 +9,7 @@ tags = ["openGauss", "数据库"]
 
 `openGauss` 是一个开源的关系型数据库，兼容多个主流数据库的语法。
 本文以 `master` 分支为例，记录 `openGauss-server` 的构建、安装、运行与调试。
-参考的是官方文档：<https://gitee.com/opengauss/openGauss-server#%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4%E7%BC%96%E8%AF%91%E4%BB%A3%E7%A0%81>。
+参考的是官方文档：<https://gitcode.com/opengauss/openGauss-server#%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4%E7%BC%96%E8%AF%91%E4%BB%A3%E7%A0%81>。
 
 <!-- more -->
 
@@ -69,7 +69,7 @@ export PATH=${GAUSSHOME}/bin:${PATH}
 ## 下载第三方依赖包
 
 参考 `openGauss-server` 仓中 `README` 文档的说明，我们需要依据上文中查询出的 CPU 架构与发行版信息，下载对应的预编译第三方依赖包。
-文档链接是 <https://gitee.com/opengauss/openGauss-server/#%E4%B8%8B%E8%BD%BDopengauss>。
+文档链接是 <https://gitcode.com/opengauss/openGauss-server/#%E4%B8%8B%E8%BD%BDopengauss>。
 依据上文查询出的环境信息，这里需要下载 `master` 分支的 `openEuler_arm` 依赖包。
 下载好了之后解压，再把解压出来的目录重命名为 `binarylibs`。
 
@@ -89,7 +89,7 @@ mv openGauss-third_party_binarylibs_openEuler_arm binarylibs
 
 ```sh
 cd ${OG_WORKSPACE}
-git clone https://gitee.com/opengauss/openGauss-server.git
+git clone https://gitcode.com/opengauss/openGauss-server.git
 ```
 
 然后进入 clone 下来的源码路径：
@@ -144,7 +144,7 @@ Dolphin 插件的功能是兼容 MySQL 的语法。
 
 ```sh
 cd ${OG_WORKSPACE}
-git clone https://gitee.com/opengauss/Plugin.git
+git clone https://gitcode.com/opengauss/Plugin.git
 
 cp -r ${OG_WORKSPACE}/Plugin/contrib/dolphin ${CODE_BASE}/contrib
 

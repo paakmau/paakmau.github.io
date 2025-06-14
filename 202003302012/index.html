@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>使用 MockMvc 对 SpringBoot 项目集成测试 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="使用 MockMvc 对 SpringBoot 项目集成测试 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202003302012/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="使用 MockMvc 对 SpringBoot 项目集成测试 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202003302012/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202003302012/">使用 MockMvc 对 SpringBoot 项目集成测试</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2020-03-30
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/mockmvc/">#MockMvc</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/spring-boot/">#Spring Boot</a></span>
+    
+
+        <div class="post-content">
+            <p>对后端进行集成测试的时候，我们一般都希望从发送 HTTP 请求开始对后端进行完整的测试，可能会考虑用 Postman 或者 Postwoman 这类东西，但是直觉告诉我们应该也可以把集成测试写在代码里</p>
+<span id="continue-reading"></span><h2 id="zai-pom-xml-li-yin-ru-yi-lai">在 pom.xml 里引入依赖</h2>
+<pre data-lang="xml" style="background-color:#151515;color:#e8e8d3;" class="language-xml "><code class="language-xml" data-lang="xml"><span>&lt;</span><span style="color:#ffb964;">dependency</span><span>&gt;
+</span><span>    &lt;</span><span style="color:#ffb964;">groupId</span><span>&gt;org.springframework.boot&lt;/</span><span style="color:#ffb964;">groupId</span><span>&gt;
+</span><span>    &lt;</span><span style="color:#ffb964;">artifactId</span><span>&gt;spring-boot-starter-test&lt;/</span><span style="color:#ffb964;">artifactId</span><span>&gt;
+</span><span>    &lt;</span><span style="color:#ffb964;">scope</span><span>&gt;test&lt;/</span><span style="color:#ffb964;">scope</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#ffb964;">dependency</span><span>&gt;
+</span><span>&lt;</span><span style="color:#ffb964;">dependency</span><span>&gt;
+</span><span>    &lt;</span><span style="color:#ffb964;">groupId</span><span>&gt;com.alibaba&lt;/</span><span style="color:#ffb964;">groupId</span><span>&gt;
+</span><span>    &lt;</span><span style="color:#ffb964;">artifactId</span><span>&gt;fastjson&lt;/</span><span style="color:#ffb964;">artifactId</span><span>&gt;
+</span><span>    &lt;</span><span style="color:#ffb964;">version</span><span>&gt;1.2.62&lt;/</span><span style="color:#ffb964;">version</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#ffb964;">dependency</span><span>&gt;
+</span></code></pre>
+<h2 id="zhun-bei-sui-bian-yi-ge-xiang-mu-yong-yu-ce-shi">准备随便一个项目用于测试</h2>
+<p><code>BookVo</code> 如下</p>
+<pre data-lang="java" style="background-color:#151515;color:#e8e8d3;" class="language-java "><code class="language-java" data-lang="java"><span>@</span><span style="color:#ffb964;">Data
+</span><span>@</span><span style="color:#ffb964;">NoArgsConstructor
+</span><span>@</span><span style="color:#ffb964;">AllArgsConstructor
+</span><span style="color:#8fbfdc;">public class </span><span style="color:#ffb964;">BookVo </span><span>{
+</span><span>
+</span><span>    </span><span style="color:#ffb964;">Long </span><span>id;
+</span><span>    </span><span style="color:#ffb964;">String </span><span>name;
+</span><span>}
+</span></code></pre>
+<p>这里使用了 Lombok 插件自动生成 Getter、Setter 和构造函数，并重写了 <code>equals</code> 方法</p>
+<p><code>BookController</code> 如下</p>
+<pre data-lang="java" style="background-color:#151515;color:#e8e8d3;" class="language-java "><code class="language-java" data-lang="java"><span>@</span><span style="color:#ffb964;">RestController
+</span><span>@</span><span style="color:#ffb964;">RequestMapping</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">/book</span><span style="color:#556633;">&quot;</span><span>)
+</span><span style="color:#8fbfdc;">public class </span><span style="color:#ffb964;">BookController </span><span>{
+</span><span>
+</span><span>    @</span><span style="color:#ffb964;">PostMapping
+</span><span>    </span><span style="color:#8fbfdc;">public </span><span style="color:#ffb964;">String </span><span style="color:#fad07a;">postBook</span><span>(@</span><span style="color:#ffb964;">RequestParam String log</span><span>, @</span><span style="color:#ffb964;">RequestBody BookVo vo</span><span>) {
+</span><span>        </span><span style="color:#8fbfdc;">return</span><span> log + vo.</span><span style="color:#ffb964;">getName</span><span>();
+</span><span>    }
+</span><span>
+</span><span>    @</span><span style="color:#ffb964;">DeleteMapping</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">/{id}</span><span style="color:#556633;">&quot;</span><span>)
+</span><span>    </span><span style="color:#8fbfdc;">public </span><span style="color:#ffb964;">Long </span><span style="color:#fad07a;">deleteBook</span><span>(@</span><span style="color:#ffb964;">PathVariable Long id</span><span>) {
+</span><span>        </span><span style="color:#8fbfdc;">return</span><span> id;
+</span><span>    }
+</span><span>
+</span><span>    @</span><span style="color:#ffb964;">PutMapping</span><span>(</span><span style="color:#ffb964;">value </span><span>= </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">/{id}</span><span style="color:#556633;">&quot;</span><span>)
+</span><span>    </span><span style="color:#8fbfdc;">public </span><span style="color:#ffb964;">BookVo </span><span style="color:#fad07a;">putBook</span><span>(@</span><span style="color:#ffb964;">PathVariable Long id</span><span>, @</span><span style="color:#ffb964;">RequestBody BookVo vo</span><span>) {
+</span><span>        </span><span style="color:#8fbfdc;">return</span><span> vo;
+</span><span>    }
+</span><span>
+</span><span>    @</span><span style="color:#ffb964;">GetMapping</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">/{id}</span><span style="color:#556633;">&quot;</span><span>)
+</span><span>    </span><span style="color:#8fbfdc;">public </span><span style="color:#ffb964;">Long </span><span style="color:#fad07a;">getBook</span><span>(@</span><span style="color:#ffb964;">PathVariable Long id</span><span>) {
+</span><span>        </span><span style="color:#8fbfdc;">return</span><span> id;
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<h2 id="ji-cheng-ce-shi">集成测试</h2>
+<p>我们可以使用 MockMvc 指定 HTTP 请求的类型、<code>PathVariable</code>、<code>RequestParam</code>、<code>RequestBody</code> 等，并能使用断言验证返回的状态码、结果等<br>
+请求返回的 JSON 数据也能使用 Fastjson 方便的转换为对象</p>
+<p>不多逼逼，看代码</p>
+<pre data-lang="java" style="background-color:#151515;color:#e8e8d3;" class="language-java "><code class="language-java" data-lang="java"><span>@</span><span style="color:#ffb964;">SpringBootTest
+</span><span>@</span><span style="color:#ffb964;">AutoConfigureMockMvc
+</span><span style="color:#8fbfdc;">class </span><span style="color:#ffb964;">BookTests </span><span>{
+</span><span>
+</span><span>    @</span><span style="color:#ffb964;">Autowired
+</span><span>    </span><span style="color:#ffb964;">MockMvc </span><span>mockMvc;
+</span><span>
+</span><span>    @</span><span style="color:#ffb964;">Test
+</span><span>    </span><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">test</span><span>() throws </span><span style="color:#ffb964;">Exception </span><span>{
+</span><span>
+</span><span>        </span><span style="color:#ffb964;">BookVo</span><span> vo = new </span><span style="color:#ffb964;">BookVo</span><span>(</span><span style="color:#cf6a4c;">12</span><span style="color:#8fbfdc;">L</span><span>, </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Book 1</span><span style="color:#556633;">&quot;</span><span>);
+</span><span>
+</span><span>        </span><span style="color:#888888;">// POST
+</span><span>        </span><span style="color:#ffb964;">MvcResult</span><span> res = mockMvc
+</span><span>            .</span><span style="color:#ffb964;">perform</span><span>(</span><span style="color:#ffb964;">MockMvcRequestBuilders</span><span>.</span><span style="color:#ffb964;">post</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">/book</span><span style="color:#556633;">&quot;</span><span>).</span><span style="color:#ffb964;">param</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">log</span><span style="color:#556633;">&quot;</span><span>, </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Hello</span><span style="color:#556633;">&quot;</span><span>)
+</span><span>            .</span><span style="color:#ffb964;">contentType</span><span>(</span><span style="color:#ffb964;">MediaType</span><span>.</span><span style="color:#7697d6;">APPLICATION_JSON</span><span>).</span><span style="color:#ffb964;">content</span><span>(</span><span style="color:#ffb964;">JSONObject</span><span>.</span><span style="color:#ffb964;">toJSONString</span><span>(vo)))
+</span><span>            .</span><span style="color:#ffb964;">andExpect</span><span>(</span><span style="color:#ffb964;">MockMvcResultMatchers</span><span>.</span><span style="color:#ffb964;">status</span><span>().</span><span style="color:#ffb964;">isOk</span><span>()).</span><span style="color:#ffb964;">andReturn</span><span>();
+</span><span>        </span><span style="color:#ffb964;">assertEquals</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Hello Book 1</span><span style="color:#556633;">&quot;</span><span>, res.</span><span style="color:#ffb964;">getResponse</span><span>().</span><span style="color:#ffb964;">getContentAsString</span><span>());
+</span><span>
+</span><span>        </span><span style="color:#888888;">// DELETE
+</span><span>        res = mockMvc.</span><span style="color:#ffb964;">perform</span><span>(</span><span style="color:#ffb964;">MockMvcRequestBuilders</span><span>.</span><span style="color:#ffb964;">delete</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">/book/{id}</span><span style="color:#556633;">&quot;</span><span>, </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">2</span><span style="color:#556633;">&quot;</span><span>))
+</span><span>            .</span><span style="color:#ffb964;">andExpect</span><span>(</span><span style="color:#ffb964;">MockMvcResultMatchers</span><span>.</span><span style="color:#ffb964;">status</span><span>().</span><span style="color:#ffb964;">isOk</span><span>()).</span><span style="color:#ffb964;">andReturn</span><span>();
+</span><span>        </span><span style="color:#ffb964;">assertEquals</span><span>(</span><span style="color:#cf6a4c;">2</span><span style="color:#8fbfdc;">L</span><span>, </span><span style="color:#ffb964;">Long</span><span>.</span><span style="color:#ffb964;">valueOf</span><span>(res.</span><span style="color:#ffb964;">getResponse</span><span>().</span><span style="color:#ffb964;">getContentAsString</span><span>()));
+</span><span>
+</span><span>        </span><span style="color:#888888;">// PUT
+</span><span>        res = mockMvc
+</span><span>            .</span><span style="color:#ffb964;">perform</span><span>(</span><span style="color:#ffb964;">MockMvcRequestBuilders</span><span>.</span><span style="color:#ffb964;">put</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">/book/{id}</span><span style="color:#556633;">&quot;</span><span>, </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">12</span><span style="color:#556633;">&quot;</span><span>).</span><span style="color:#ffb964;">contentType</span><span>(</span><span style="color:#ffb964;">MediaType</span><span>.</span><span style="color:#7697d6;">APPLICATION_JSON</span><span>)
+</span><span>            .</span><span style="color:#ffb964;">content</span><span>(</span><span style="color:#ffb964;">JSONObject</span><span>.</span><span style="color:#ffb964;">toJSONString</span><span>(vo)))
+</span><span>            .</span><span style="color:#ffb964;">andExpect</span><span>(</span><span style="color:#ffb964;">MockMvcResultMatchers</span><span>.</span><span style="color:#ffb964;">status</span><span>().</span><span style="color:#ffb964;">isOk</span><span>()).</span><span style="color:#ffb964;">andReturn</span><span>();
+</span><span>            </span><span style="color:#ffb964;">BookVo</span><span> resVo = </span><span style="color:#ffb964;">JSONObject</span><span>.</span><span style="color:#ffb964;">parseObject</span><span>(res.</span><span style="color:#ffb964;">getResponse</span><span>().</span><span style="color:#ffb964;">getContentAsString</span><span>(), </span><span style="color:#ffb964;">BookVo</span><span>.</span><span style="color:#ffb964;">class</span><span>);
+</span><span>        </span><span style="color:#ffb964;">assertEquals</span><span>(vo, resVo);
+</span><span>
+</span><span>        </span><span style="color:#888888;">// 404
+</span><span>        mockMvc.</span><span style="color:#ffb964;">perform</span><span>(</span><span style="color:#ffb964;">MockMvcRequestBuilders</span><span>.</span><span style="color:#ffb964;">get</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">/aook</span><span style="color:#556633;">&quot;</span><span>)).</span><span style="color:#ffb964;">andExpect</span><span>(</span><span style="color:#ffb964;">MockMvcResultMatchers</span><span>.</span><span style="color:#ffb964;">status</span><span>().</span><span style="color:#ffb964;">isNotFound</span><span>());
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>需要注意的是使用 <code>RequestBody</code> 接收的参数需要使用 Fastjson 转换为字符串，并指定类型为 <code>APPLICATION_JSON</code><br>
+并且请求的返回值也可以使用 Fastjson 转换成简单的对象，比如上面代码就转成了 <code>BookVo</code><br>
+另外 <code>@Data</code> 注解会为 <code>BookVo</code> 重写 <code>equals</code> 方法，因此可以直接用 <code>assertEquals</code> 断言</p>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202003301931/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">SpringBoot JPA 快速上手</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202003302030/">
+                                <span class="button__text">使用 Mockito 对 SpringBoot 项目单元测试</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

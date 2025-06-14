@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Vulkan 画三角形第一章：概要与环境配置 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="Vulkan 画三角形第一章：概要与环境配置 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202009032023/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="Vulkan 画三角形第一章：概要与环境配置 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202009032023/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202009032023/">Vulkan 画三角形第一章：概要与环境配置</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2020-09-03
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/cmake/">#CMake</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/glfw/">#GLFW</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/vs-code/">#VS Code</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/vulkan/">#Vulkan</a></span>
+    
+
+        <div class="post-content">
+            <p>Vulkan 是一个跨平台的图形与计算 API，本系列文章将使用 Vulkan 绘制一个三角形，旨在为上手 Vulkan 提供帮助</p>
+<span id="continue-reading"></span>
+<p>使用 CMake 构建项目<br>
+使用 VS Code 作为 IDE<br>
+使用 GLFW 管理窗体</p>
+<p>本系列文章主要是下面这个教程的翻译，但是做了一些修改</p>
+<p><a href="https://vulkan-tutorial.com">https://vulkan-tutorial.com</a></p>
+<h2 id="an-zhuang-vulkan">安装 Vulkan</h2>
+<p>前往官网下载安装包直接安装</p>
+<p><a href="https://vulkan.lunarg.com">https://vulkan.lunarg.com</a></p>
+<h2 id="an-zhuang-glfw">安装 GLFW</h2>
+<p>Vulkan 只是一个图形 API，无法管理窗体。为了方便，我们引入跨平台的 GLFW 库</p>
+<h3 id="macos">macOS</h3>
+<p>可以用 <code>brew</code> 安装</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">brew</span><span> install glfw
+</span></code></pre>
+<h3 id="windows">Windows</h3>
+<p>稍微麻烦一点，可以用 MinGW-w64 编译 GLFW 的源码并安装，最后添加环境变量</p>
+<p>先去官网下载源码<br>
+<a href="https://www.glfw.org">https://www.glfw.org</a></p>
+<p>然后以管理员身份运行 PowerShell，<code>cd</code> 到 GLFW 源码项目文件夹下，输入以下命令</p>
+<pre data-lang="ps1" style="background-color:#151515;color:#e8e8d3;" class="language-ps1 "><code class="language-ps1" data-lang="ps1"><span>mkdir build
+</span><span>cd build
+</span><span>cmake -G </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">MinGW Makefiles</span><span style="color:#556633;">&quot;</span><span> ..
+</span><span>mingw32-make install
+</span></code></pre>
+<p>这样 GLFW 默认会被安装在 <code>C:\Program Files (x86)\GLFW</code> 文件夹中，如果想装在别的地方可以修改 <code>CMAKE_INSTALL_PREFIX</code> 环境变量，当然也可以直接下载预编译的二进制文件，但是可能它不会提供配置 GLFW 所需的 CMake 模块</p>
+<p>最后需要添加一个 <code>glfw3_DIR</code> 环境变量，指向存放配置 GLFW 的 CMake 模块的路径，值是 <code>C:\Program Files (x86)\GLFW\lib\cmake\glfw3</code>，如果你使用了不同的安装路径，请做相应修改，这样后续 <code>find_package</code> 才能找到 <code>glfw3</code> 的头文件和依赖库</p>
+<h2 id="an-zhuang-cmake">安装 CMake</h2>
+<p>考虑到跨平台，我们用 CMake 配合 VS Code 会很方便</p>
+<p>mac 下同样可以用 <code>brew</code> 安装</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">brew</span><span> install cmake
+</span></code></pre>
+<p>Windows 下使用官网安装包安装就行了</p>
+<h2 id="an-zhuang-vs-code-cha-jian">安装 VS Code 插件</h2>
+<ul>
+<li>C/C++</li>
+<li>CMake</li>
+<li>CMake Tools</li>
+</ul>
+<h2 id="chuang-jian-cmake-xiang-mu">创建 CMake 项目</h2>
+<p>直接新建一个文件夹，用 VS Code 打开它</p>
+<p>在其中创建 <code>CMakeList.txt</code> 文件，内容如下</p>
+<pre data-lang="cmake" style="background-color:#151515;color:#e8e8d3;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span>cmake_minimum_required(</span><span style="color:#ffb964;">VERSION </span><span>3.0.0)
+</span><span>project(VulkanTest </span><span style="color:#ffb964;">VERSION </span><span>0.1.0)
+</span><span>
+</span><span>set(</span><span style="color:#ffb964;">CMAKE_CXX_STANDARD </span><span>17)
+</span><span>
+</span><span>add_executable(VulkanTest main.cpp)
+</span><span>
+</span><span>find_package(glfw3 3.3 </span><span style="color:#ffb964;">REQUIRED</span><span>)
+</span><span>target_link_libraries(VulkanTest glfw)
+</span><span>
+</span><span>find_package(Vulkan </span><span style="color:#ffb964;">REQUIRED</span><span>)
+</span><span>target_include_directories(VulkanTest </span><span style="color:#ffb964;">PRIVATE </span><span>${</span><span style="color:#ffb964;">Vulkan_INCLUDE_DIRS</span><span>})
+</span><span>target_link_libraries(VulkanTest ${</span><span style="color:#ffb964;">Vulkan_LIBRARIES</span><span>})
+</span></code></pre>
+<p>简单说就是这个项目只有 <code>main.cpp</code> 一个文件，然后寻找 <code>Vulkan</code> 和 <code>glfw3</code> 这两个库，并链接到我们的项目中</p>
+<h2 id="yong-glfw-chuang-jian-chuang-ti">用 GLFW 创建窗体</h2>
+<p>接下来我们创建 <code>main.cpp</code> 文件</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">#include </span><span style="color:#556633;">&lt;</span><span style="color:#99ad6a;">GLFW/glfw3.h</span><span style="color:#556633;">&gt;
+</span><span>
+</span><span style="color:#8fbfdc;">const </span><span>uint32_t WIDTH = </span><span style="color:#cf6a4c;">800</span><span>;
+</span><span style="color:#8fbfdc;">const </span><span>uint32_t HEIGHT = </span><span style="color:#cf6a4c;">600</span><span>;
+</span><span>
+</span><span style="color:#8fbfdc;">class </span><span style="color:#ffb964;">VulkanHelloWorld </span><span>{
+</span><span style="color:#8fbfdc;">public</span><span>:
+</span><span>    </span><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">Run</span><span>() {
+</span><span>        </span><span style="color:#ffb964;">initWindow</span><span>();
+</span><span>        </span><span style="color:#ffb964;">initVulkan</span><span>();
+</span><span>        </span><span style="color:#ffb964;">mainLoop</span><span>();
+</span><span>        </span><span style="color:#ffb964;">cleanup</span><span>();
+</span><span>    }
+</span><span>
+</span><span style="color:#8fbfdc;">private</span><span>:
+</span><span>    </span><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">initWindow</span><span>() {
+</span><span>        </span><span style="color:#ffb964;">glfwInit</span><span>();
+</span><span>        </span><span style="color:#ffb964;">glfwWindowHint</span><span>(GLFW_CLIENT_API, GLFW_NO_API);
+</span><span>        </span><span style="color:#ffb964;">glfwWindowHint</span><span>(GLFW_RESIZABLE, GLFW_FALSE);
+</span><span>        window = </span><span style="color:#ffb964;">glfwCreateWindow</span><span>(WIDTH, HEIGHT, </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">VulkanHelloWorld</span><span style="color:#556633;">&quot;</span><span>, nullptr, nullptr);
+</span><span>    }
+</span><span>    </span><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">initVulkan</span><span>() {}
+</span><span>    </span><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">mainLoop</span><span>() {
+</span><span>        </span><span style="color:#8fbfdc;">while </span><span>(!</span><span style="color:#ffb964;">glfwWindowShouldClose</span><span>(window)) {
+</span><span>            </span><span style="color:#ffb964;">glfwPollEvents</span><span>();
+</span><span>        }
+</span><span>    }
+</span><span>    </span><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">cleanup</span><span>() {
+</span><span>        </span><span style="color:#ffb964;">glfwDestroyWindow</span><span>(window);
+</span><span>        </span><span style="color:#ffb964;">glfwTerminate</span><span>();
+</span><span>    }
+</span><span>
+</span><span style="color:#8fbfdc;">private</span><span>:
+</span><span>    GLFWwindow *window;
+</span><span>};
+</span><span>
+</span><span style="color:#8fbfdc;">int </span><span style="color:#fad07a;">main</span><span>() {
+</span><span>    VulkanHelloWorld helloWorld;
+</span><span>    helloWorld.</span><span style="color:#ffb964;">Run</span><span>();
+</span><span>    </span><span style="color:#8fbfdc;">return </span><span style="color:#cf6a4c;">0</span><span>;
+</span><span>}
+</span></code></pre>
+<p>这段代码主要是用 GLFW 处理窗体创建、主循环、窗体销毁等事情<br>
+因为 GLFW 不是本系列的主要内容，因此只是简单解释一下</p>
+<p><code>glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);</code><br>
+GLFW 原本设计就是要为 OpenGL 创建上下文，而这里我们只用它管理窗体，因此使用这行代码防止他为 OpenGL 创建上下文</p>
+<p><code>glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);</code><br>
+处理可变大小窗体很麻烦，因此我们直接禁用它</p>
+<p>在 VS Code 中键入 <code>Cmd+Shift+P</code> 呼出命令面板，在其中输入 <code>CMake: Debug</code> 并回车调试项目，就能看到上面的代码创建了一个空窗体</p>
+<p>在接下来的文章中我们会不断填充这段代码，最终在屏幕中渲染出一个三角形</p>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202007141756/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">并发环境下实现懒加载</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202009042049/">
+                                <span class="button__text">Vulkan 画三角形第二章：创建 Vulkan 实例</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

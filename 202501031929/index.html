@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>MySQL Server 构建、安装、运行与调试 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="MySQL Server 构建、安装、运行与调试 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202501031929/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="MySQL Server 构建、安装、运行与调试 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202501031929/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202501031929/">MySQL Server 构建、安装、运行与调试</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2025-01-03
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/mysql/">#MySQL</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/shu-ju-ku/">#数据库</a></span>
+    
+
+        <div class="post-content">
+            <p><code>MySQL</code> 是一个开源的关系型数据库。
+本文以 <code>8.0.40</code> 版本为例，记录 MySQL Server 的构建、安装、运行与调试。</p>
+<span id="continue-reading"></span><h2 id="huan-jing-bian-liang">环境变量</h2>
+<p>为了便于描述，本文的操作都会在一个工作路径中执行。
+所以直接给这个路径配一个环境变量 <code>MYSQL_WORKSPACE</code>：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">MYSQL_WORKSPACE</span><span>=</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/mysql
+</span></code></pre>
+<p>为了方便，再配置一些其他环境变量：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#888888;"># 安装路径
+</span><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">MYSQL_INSTALL</span><span>=</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">MYSQL_WORKSPACE</span><span style="color:#99ad6a;">}/install
+</span><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">PATH</span><span>=</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">MYSQL_INSTALL</span><span style="color:#99ad6a;">}/bin:${</span><span style="color:#ffb964;">PATH</span><span style="color:#99ad6a;">}
+</span><span>
+</span><span style="color:#888888;"># 数据目录
+</span><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">MYSQL_DATA</span><span>=</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">MYSQL_WORKSPACE</span><span style="color:#99ad6a;">}/data
+</span></code></pre>
+<h2 id="gou-jian-bing-an-zhuang-mysql-server">构建并安装 MySQL Server</h2>
+<p>先去 GitHub 上找到 MySQL Server 8.0.40 版本的 tag：</p>
+<p><a href="https://github.com/mysql/mysql-server/releases/tag/mysql-8.0.40">https://github.com/mysql/mysql-server/releases/tag/mysql-8.0.40</a></p>
+<p>然后下载代码、解压：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>cd ${</span><span style="color:#ffb964;">MYSQL_WORKSPACE</span><span>}
+</span><span style="color:#ffb964;">wget</span><span> https://github.com/mysql/mysql-server/archive/refs/tags/mysql-8.0.40.tar.gz
+</span><span style="color:#ffb964;">tar -zxf</span><span> mysql-8.0.40.tar.gz
+</span></code></pre>
+<p>解压之后 MySQL Server 的项目应该会在 <code>${MYSQL_WORKSPACE}/mysql-server-mysql-8.0.40</code> 目录里面。
+于是直接进去用 CMake 配置项目并生成构建脚本。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>cd ${</span><span style="color:#ffb964;">MYSQL_WORKSPACE</span><span>}/mysql-server-mysql-8.0.40
+</span><span>
+</span><span style="color:#ffb964;">mkdir -p</span><span> build &amp;&amp; cd build
+</span><span style="color:#ffb964;">cmake</span><span> .. \
+</span><span style="color:#ffb964;">  -DCMAKE_INSTALL_PREFIX</span><span>=${</span><span style="color:#ffb964;">MYSQL_INSTALL</span><span>} \
+</span><span style="color:#ffb964;">  -DMYSQL_DATADIR</span><span>=${</span><span style="color:#ffb964;">MYSQL_DATA</span><span>} \
+</span><span style="color:#ffb964;">  -DCMAKE_BUILD_TYPE</span><span>=Debug \
+</span><span style="color:#ffb964;">  -DDOWNLOAD_BOOST</span><span>=ON \
+</span><span style="color:#ffb964;">  -DWITH_BOOST</span><span>=${</span><span style="color:#ffb964;">MYSQL_WORKSPACE</span><span>}/boost
+</span></code></pre>
+<p>这个命令通过 <code>-D</code> 参数指定了一些 CMake 变量：</p>
+<ul>
+<li><code>CMAKE_INSTALL_PREFIX</code>：安装路径。</li>
+<li><code>MYSQL_DATADIR</code>：MySQL 数据目录，可以通过 <code>SELECT @@datadir;</code> 查询。</li>
+<li><code>CMAKE_BUILD_TYPE</code>：构建类型。
+<ul>
+<li>默认值为 <code>RelWithDebInfo</code>，表示启用编译器优化且生成调试信息。</li>
+<li>配置为 <code>Release</code> 会启用编译优化，不生成调试信息以减小编译体积。</li>
+<li>配置为 <code>Debug</code> 会禁用编译优化并生成调试信息，顺带一提，<code>-DCMAKE_BUILD_TYPE=Debug</code> 与 <code>-DWITH_DEBUG=1</code> 的作用是相同的。</li>
+</ul>
+</li>
+<li><code>DOWNLOAD_BOOST</code>：下载 Boost 库</li>
+<li><code>WITH_BOOST</code>：用于存放 Boost 库的路径</li>
+</ul>
+<p>如果 Boost 库下载失败，错误日志里会提示下载路径，可以尝试手动下载并解压：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>cd ${</span><span style="color:#ffb964;">MYSQL_WORKSPACE</span><span>}
+</span><span style="color:#ffb964;">mkdir -p</span><span> boost &amp;&amp; cd boost
+</span><span style="color:#ffb964;">wget</span><span> https://archives.boost.io/release/1.77.0/source/boost_1_77_0.tar.bz2
+</span><span style="color:#ffb964;">tar -jxf</span><span> boost_1_77_0.tar.bz2
+</span></code></pre>
+<p>弄好之后重新回去执行上面的 <code>cmake</code> 命令即可</p>
+<p>CMake 在执行过程中可能会报一些依赖库缺失的错误，按照提示手动安装即可。
+这里记录一下我的安装过程（发行版是 openEuler 22.03 LTS SP4）：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">dnf</span><span> install openssl-devel
+</span><span style="color:#ffb964;">dnf</span><span> install libtirpc-devel
+</span><span style="color:#ffb964;">dnf</span><span> install rpcgen
+</span></code></pre>
+<p>最后用 <code>make</code> 构建即可：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>cd ${</span><span style="color:#ffb964;">MYSQL_WORKSPACE</span><span>}/mysql-server-mysql-8.0.40/build
+</span><span style="color:#ffb964;">make -s -j</span><span> 8 &amp;&amp; </span><span style="color:#ffb964;">make</span><span> install
+</span></code></pre>
+<p>可以检查一下安装是否正常：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">mysqld --version
+</span></code></pre>
+<h2 id="da-bao">打包</h2>
+<p>可以使用 <code>make package</code> 命令将构建产物打包到一个单独的 <code>.tar.gz</code> 文件中。
+完整打包的过程如下：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>cd ${</span><span style="color:#ffb964;">MYSQL_WORKSPACE</span><span>}/mysql-server-mysql-8.0.40
+</span><span>
+</span><span style="color:#ffb964;">mkdir -p</span><span> build &amp;&amp; cd build
+</span><span style="color:#ffb964;">cmake</span><span> .. \
+</span><span style="color:#ffb964;">  -DCMAKE_BUILD_TYPE</span><span>=Release \
+</span><span style="color:#ffb964;">  -DDOWNLOAD_BOOST</span><span>=ON \
+</span><span style="color:#ffb964;">  -DWITH_BOOST</span><span>=${</span><span style="color:#ffb964;">MYSQL_WORKSPACE</span><span>}/boost
+</span><span>
+</span><span style="color:#ffb964;">make -s -j</span><span> 8 &amp;&amp; </span><span style="color:#ffb964;">make</span><span> package
+</span></code></pre>
+<h2 id="chu-shi-hua-shu-ju-ku">初始化数据库</h2>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">mysqld --initialize-insecure
+</span></code></pre>
+<p>如果之前的 <code>cmake</code> 命令执行正确，数据库目录会被初始化在 <code>${MYSQL_DATA}</code> 中。</p>
+<h2 id="yun-xing-shu-ju-ku">运行数据库</h2>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">mysqld </span><span>&amp;
+</span></code></pre>
+<h2 id="lian-jie-shu-ju-ku">连接数据库</h2>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">mysql -u</span><span> root</span><span style="color:#ffb964;"> --skip-password
+</span></code></pre>
+<p>可以尝试输出一下版本号：</p>
+<pre data-lang="sql" style="background-color:#151515;color:#e8e8d3;" class="language-sql "><code class="language-sql" data-lang="sql"><span>mysql&gt; select version();
+</span><span>+</span><span style="color:#888888;">--------------+
+</span><span>| version()    |
+</span><span>+</span><span style="color:#888888;">--------------+
+</span><span>| </span><span style="color:#cf6a4c;">8</span><span>.</span><span style="color:#cf6a4c;">0</span><span>.</span><span style="color:#cf6a4c;">40</span><span>-debug |
+</span><span>+</span><span style="color:#888888;">--------------+
+</span><span style="color:#cf6a4c;">1</span><span> row in set (</span><span style="color:#cf6a4c;">0</span><span>.</span><span style="color:#cf6a4c;">00</span><span> sec)
+</span><span>
+</span></code></pre>
+<h2 id="diao-shi">调试</h2>
+<p>使用 VS Code 调试，需要安装 C/C++ 插件。
+可以直接 attach 到 <code>mysqld</code> 进程中。
+如果前面环境变量配置正确，可以直接使用这个 <code>launch.json</code>：</p>
+<pre data-lang="json" style="background-color:#151515;color:#e8e8d3;" class="language-json "><code class="language-json" data-lang="json"><span>{
+</span><span>    </span><span style="color:#888888;">// Use IntelliSense to learn about possible attributes.
+</span><span>    </span><span style="color:#888888;">// Hover to view descriptions of existing attributes.
+</span><span>    </span><span style="color:#888888;">// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+</span><span>    </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">version</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">0.2.0</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>    </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">configurations</span><span style="color:#556633;">&quot;</span><span>: [
+</span><span>        {
+</span><span>            </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">name</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">(gdb) Attach</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>            </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">type</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">cppdbg</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>            </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">request</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">attach</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>            </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">program</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${env:MYSQL_INSTALL}/bin/mysqld</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>            </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">MIMode</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">gdb</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>            </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">setupCommands</span><span style="color:#556633;">&quot;</span><span>: [
+</span><span>                {
+</span><span>                    </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">description</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Enable pretty-printing for gdb</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>                    </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">text</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">-enable-pretty-printing</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>                    </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">ignoreFailures</span><span style="color:#556633;">&quot;</span><span>: true
+</span><span>                }
+</span><span>            ]
+</span><span>        }
+</span><span>    ]
+</span><span>}
+</span></code></pre>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202412162106/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">openGauss-server 构建、安装、运行与调试</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202501182247/">
+                                <span class="button__text">通过 MySQL Connector&#x2F;J 连接 openGauss</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

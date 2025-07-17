@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Unity Physics 学习笔记第四章：碰撞查询 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="Unity Physics 学习笔记第四章：碰撞查询 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202002072339/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="Unity Physics 学习笔记第四章：碰撞查询 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202002072339/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202002072339/">Unity Physics 学习笔记第四章：碰撞查询</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2020-02-07
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/unity-ecs/">#Unity ECS</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/unity-physics/">#Unity Physics</a></span>
+    
+
+        <div class="post-content">
+            <p>跟主流物理引擎一样，Unity Physics 也具有碰撞查询的功能</p>
+<span id="continue-reading"></span>
+<p>目前 Unity Physics 中的碰撞查询有以下几种<br>
+射线检测、碰撞体投射检测、碰撞体距离检测、点距离检测、重叠检测<br>
+当然它们都支持 <code>Collision Filter</code></p>
+<p>接下来我会制作一个示例项目并进行全面的介绍</p>
+<p>注意<br>
+尽量使用稳定版本的 Unity 编辑器，Alpha 或 Beta 可能会遇到非常多的坑，不要问我怎么知道的</p>
+<h2 id="shi-li-xiang-mu-jie-shao">示例项目介绍</h2>
+<p>这个示例项目大概是这样<br>
+我们可以控制一个球体移动，然后场景中有一些用于检测碰撞的立方体。当我们控制的球体移动到一个立方体的检测范围之内时，这个立方体就会作出反应以表示检测到碰撞</p>
+<p>另外，为了方便，我规定所有 Entity 都在 <code>z=0</code> 平面上，球体也只能在这个平面上运动，下面的代码也依赖这个规定<br>
+因此请保证所有 Entitiy 的 z 坐标都为 0</p>
+<h2 id="kong-zhi-qiu-ti-yun-dong">控制球体运动</h2>
+<p>先写一个受我们控制的球体<br>
+这个球体持有 <code>PlayerInput</code> 组件，一个 <code>FetchInputSystem</code> 获取键盘输入，并写入这个组件，然后 <code>MoveSystem</code> 根据 <code>PlayerInput</code> 的值修改 <code>Translation</code>（作为示例其实可以把这两个 System 整成一个）</p>
+<p><code>PlayerInput.cs</code></p>
+<pre data-lang="cs" style="background-color:#151515;color:#e8e8d3;" class="language-cs "><code class="language-cs" data-lang="cs"><span>[</span><span style="color:#ffb964;">Serializable</span><span>]
+</span><span style="color:#8fbfdc;">public struct </span><span style="color:#ffb964;">PlayerInput </span><span>: </span><span style="color:#ffb964;">IComponentData </span><span>{
+</span><span>    </span><span style="color:#8fbfdc;">public </span><span>float2 </span><span style="color:#ffb964;">moveDirection</span><span>;
+</span><span>}
+</span></code></pre>
+<p><code>FetchInputSystem.cs</code></p>
+<pre data-lang="cs" style="background-color:#151515;color:#e8e8d3;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#8fbfdc;">public class </span><span style="color:#ffb964;">FetchInputSystem </span><span>: </span><span style="color:#ffb964;">ComponentSystem </span><span>{
+</span><span>    </span><span style="color:#8fbfdc;">protected override void </span><span style="color:#fad07a;">OnUpdate </span><span>() {
+</span><span>        float2 </span><span style="color:#ffb964;">dir </span><span>= </span><span style="color:#ffb964;">float2</span><span>.</span><span style="color:#ffb964;">zero</span><span>;
+</span><span>        </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">UnityEngine</span><span>.</span><span style="color:#ffb964;">Input</span><span>.</span><span style="color:#ffb964;">GetKey</span><span>(</span><span style="color:#ffb964;">UnityEngine</span><span>.</span><span style="color:#ffb964;">KeyCode</span><span>.</span><span style="color:#ffb964;">A</span><span>))
+</span><span>            </span><span style="color:#ffb964;">dir </span><span>+= new float2 (-</span><span style="color:#cf6a4c;">1</span><span>, </span><span style="color:#cf6a4c;">0</span><span>);
+</span><span>        </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">UnityEngine</span><span>.</span><span style="color:#ffb964;">Input</span><span>.</span><span style="color:#ffb964;">GetKey</span><span>(</span><span style="color:#ffb964;">UnityEngine</span><span>.</span><span style="color:#ffb964;">KeyCode</span><span>.</span><span style="color:#ffb964;">D</span><span>))
+</span><span>            </span><span style="color:#ffb964;">dir </span><span>+= new float2 (</span><span style="color:#cf6a4c;">1</span><span>, </span><span style="color:#cf6a4c;">0</span><span>);
+</span><span>        </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">UnityEngine</span><span>.</span><span style="color:#ffb964;">Input</span><span>.</span><span style="color:#ffb964;">GetKey</span><span>(</span><span style="color:#ffb964;">UnityEngine</span><span>.</span><span style="color:#ffb964;">KeyCode</span><span>.</span><span style="color:#ffb964;">W</span><span>))
+</span><span>            </span><span style="color:#ffb964;">dir </span><span>+= new float2 (</span><span style="color:#cf6a4c;">0</span><span>, </span><span style="color:#cf6a4c;">1</span><span>);
+</span><span>        </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">UnityEngine</span><span>.</span><span style="color:#ffb964;">Input</span><span>.</span><span style="color:#ffb964;">GetKey</span><span>(</span><span style="color:#ffb964;">UnityEngine</span><span>.</span><span style="color:#ffb964;">KeyCode</span><span>.</span><span style="color:#ffb964;">S</span><span>))
+</span><span>            </span><span style="color:#ffb964;">dir </span><span>+= new float2 (</span><span style="color:#cf6a4c;">0</span><span>, -</span><span style="color:#cf6a4c;">1</span><span>);
+</span><span>        </span><span style="color:#ffb964;">dir </span><span>= </span><span style="color:#ffb964;">math</span><span>.</span><span style="color:#ffb964;">normalizesafe</span><span>(</span><span style="color:#ffb964;">dir</span><span>);
+</span><span>        </span><span style="color:#ffb964;">Entities</span><span>.</span><span style="color:#ffb964;">ForEach</span><span>((ref PlayerInput </span><span style="color:#ffb964;">input</span><span>) </span><span style="color:#8fbfdc;">=&gt; </span><span>{
+</span><span>            </span><span style="color:#ffb964;">input</span><span>.</span><span style="color:#ffb964;">moveDirection </span><span>= </span><span style="color:#ffb964;">dir</span><span>;
+</span><span>        });
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p><code>MoveSystem.cs</code></p>
+<pre data-lang="cs" style="background-color:#151515;color:#e8e8d3;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#8fbfdc;">public class </span><span style="color:#ffb964;">MoveSystem </span><span>: </span><span style="color:#ffb964;">JobComponentSystem </span><span>{
+</span><span>    [</span><span style="color:#ffb964;">BurstCompile</span><span>]
+</span><span>    </span><span style="color:#8fbfdc;">struct </span><span style="color:#ffb964;">MoveJob </span><span>: </span><span style="color:#ffb964;">IJobForEach</span><span>&lt;PlayerInput, PhysicsVelocity&gt; {
+</span><span>        </span><span style="color:#8fbfdc;">public void </span><span style="color:#fad07a;">Execute </span><span>([</span><span style="color:#ffb964;">ReadOnly</span><span>] </span><span style="color:#8fbfdc;">ref </span><span>PlayerInput </span><span style="color:#ffb964;">input</span><span>, </span><span style="color:#8fbfdc;">ref </span><span>PhysicsVelocity </span><span style="color:#ffb964;">velocity</span><span>) {
+</span><span>            </span><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">v </span><span>= </span><span style="color:#ffb964;">velocity</span><span>.</span><span style="color:#ffb964;">Linear</span><span>;
+</span><span>            </span><span style="color:#ffb964;">v </span><span>= new float3 (</span><span style="color:#ffb964;">input</span><span>.</span><span style="color:#ffb964;">moveDirection</span><span>, </span><span style="color:#cf6a4c;">0</span><span>) * </span><span style="color:#cf6a4c;">0.8</span><span style="color:#8fbfdc;">f</span><span>;
+</span><span>            </span><span style="color:#ffb964;">velocity </span><span>= new PhysicsVelocity { </span><span style="color:#ffb964;">Linear </span><span>= </span><span style="color:#ffb964;">v </span><span>};
+</span><span>        }
+</span><span>    }
+</span><span>    </span><span style="color:#8fbfdc;">protected override </span><span>JobHandle </span><span style="color:#fad07a;">OnUpdate </span><span>(JobHandle </span><span style="color:#ffb964;">inputDeps</span><span>) {
+</span><span>        </span><span style="color:#8fbfdc;">return </span><span>new MoveJob ().</span><span style="color:#ffb964;">Schedule </span><span>(</span><span style="color:#ffb964;">this</span><span>, </span><span style="color:#ffb964;">inputDeps</span><span>);
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p><code>MoveSphereAuthoring.cs</code></p>
+<pre data-lang="cs" style="background-color:#151515;color:#e8e8d3;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#8fbfdc;">public class </span><span style="color:#ffb964;">MoveSphereAuthoring </span><span>: </span><span style="color:#ffb964;">MonoBehaviour</span><span>, </span><span style="color:#ffb964;">IConvertGameObjectToEntity </span><span>{
+</span><span>    </span><span style="color:#8fbfdc;">public void </span><span style="color:#fad07a;">Convert </span><span>(Entity </span><span style="color:#ffb964;">entity</span><span>, EntityManager </span><span style="color:#ffb964;">dstManager</span><span>, GameObjectConversionSystem </span><span style="color:#ffb964;">conversionSystem</span><span>) {
+</span><span>        </span><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">inputCmpt </span><span>= new PlayerInput ();
+</span><span>        </span><span style="color:#ffb964;">dstManager</span><span>.</span><span style="color:#ffb964;">AddComponentData </span><span>(</span><span style="color:#ffb964;">entity</span><span>, </span><span style="color:#ffb964;">inputCmpt</span><span>);
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>接下来是喜闻乐见的 Entity 配置环节<br>
+创建一个 Sphere 的 GameObject，移除 <code>Sphere Collider</code>，添加 <code>Convert To Entity</code>，添加 <code>Physics Shape</code> 并修改 <code>Shape Type</code> 为 <code>Sphere</code>，添加 <code>Physics Body</code> 并把 <code>Gravity Factor</code> 设为 0，添加上面的 <code>MoveSphereAuthoring</code> 脚本<br>
+注意把球体的 z 坐标设为 0</p>
+<p>启动后按下 WASD，小球能相应运动</p>
+<h2 id="zhun-bei-yong-yu-jian-ce-de-li-fang-ti">准备用于检测的立方体</h2>
+<p>这些立方体只是普通的立方体，为它添加一个用于标记的组件 <code>CollisionChecker</code>，这样就能在 System 中识别并遍历它们</p>
+<p><code>CollisionChecker.cs</code></p>
+<pre data-lang="cs" style="background-color:#151515;color:#e8e8d3;" class="language-cs "><code class="language-cs" data-lang="cs"><span>[</span><span style="color:#ffb964;">Serializable</span><span>]
+</span><span style="color:#8fbfdc;">public struct </span><span style="color:#ffb964;">CollisionChecker </span><span>: </span><span style="color:#ffb964;">IComponentData </span><span>{ }
+</span></code></pre>
+<p><code>CollisionCheckerAuthoring.cs</code></p>
+<pre data-lang="cs" style="background-color:#151515;color:#e8e8d3;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#8fbfdc;">public class </span><span style="color:#ffb964;">CollisionCheckerAuthoring </span><span>: </span><span style="color:#ffb964;">MonoBehaviour</span><span>, </span><span style="color:#ffb964;">IConvertGameObjectToEntity </span><span>{
+</span><span>    </span><span style="color:#8fbfdc;">public void </span><span style="color:#fad07a;">Convert </span><span>(Entity </span><span style="color:#ffb964;">entity</span><span>, EntityManager </span><span style="color:#ffb964;">dstManager</span><span>, GameObjectConversionSystem </span><span style="color:#ffb964;">conversionSystem</span><span>) {
+</span><span>        </span><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">checkerCmpt </span><span>= new CollisionChecker();
+</span><span>        </span><span style="color:#ffb964;">dstManager</span><span>.</span><span style="color:#ffb964;">AddComponentData </span><span>(</span><span style="color:#ffb964;">entity</span><span>, </span><span style="color:#ffb964;">checkerCmpt</span><span>);
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>配置 Entity<br>
+创建 Cube 的 GameObject，移除 <code>Box Collider</code>，添加 <code>Convert To Entitiy</code>，<code>Physics Shape</code>，以及上面的 <code>CollisionCheckerAuthoring</code><br>
+可以复制多个，但要注意分散放置以免立方体之间互相检测到（也可以用 <code>Collision Filter</code> 解决这个问题）</p>
+<h2 id="peng-zhuang-cha-xun">碰撞查询</h2>
+<p>接下来我们写一个 <code>CollisionQuerySystem</code> 用于测试不同的碰撞查询类型</p>
+<p>我们在立方体附近进行不同类型的碰撞查询，如果检测到碰撞体就控制立方体自旋</p>
+<p>除了包围盒的重叠检测之外，这些查询都可以获取碰撞检测得到的第一个或者全部刚体，并获得 <code>RigidBodyIndex</code>（通过它可以拿到 Entity），碰撞位置，碰撞到的面的法向量，碰撞到网格的哪个面，还有碰撞点的位置<br>
+可以根据需要查文档或者看接口瞎猜就完事了奥利给<br></p>
+<h3 id="ray-cast">Ray cast</h3>
+<p>射线检测。<br>
+在立方体附近发射一条射线用于检测射线碰到的碰撞体。注意，如果没有修改 <code>Collision Filter</code>，请不要让这条射线碰到立方体本身</p>
+<p>下面的示例代码在立方体上面向上发送了一条长度为 1 的射线</p>
+<p><code>CollisionQuerySystem.cs</code></p>
+<pre data-lang="cs" style="background-color:#151515;color:#e8e8d3;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#8fbfdc;">public class </span><span style="color:#ffb964;">CollisionQuerySystem </span><span>: </span><span style="color:#ffb964;">JobComponentSystem </span><span>{
+</span><span>    [</span><span style="color:#ffb964;">BurstCompile</span><span>]
+</span><span>    </span><span style="color:#8fbfdc;">struct </span><span style="color:#ffb964;">CheckCollisionJob </span><span>: </span><span style="color:#ffb964;">IJobForEach</span><span>&lt;CollisionChecker, Translation, Rotation&gt; {
+</span><span>        [</span><span style="color:#ffb964;">ReadOnly</span><span>] </span><span style="color:#8fbfdc;">public </span><span>CollisionWorld </span><span style="color:#ffb964;">collisionWorld</span><span>;
+</span><span>        </span><span style="color:#8fbfdc;">public void </span><span style="color:#fad07a;">Execute </span><span>([</span><span style="color:#ffb964;">ReadOnly</span><span>] </span><span style="color:#8fbfdc;">ref </span><span>CollisionChecker </span><span style="color:#ffb964;">checker</span><span>, [</span><span style="color:#ffb964;">ReadOnly</span><span>] </span><span style="color:#8fbfdc;">ref </span><span>Translation </span><span style="color:#ffb964;">translation</span><span>, </span><span style="color:#8fbfdc;">ref </span><span>Rotation </span><span style="color:#ffb964;">rotation</span><span>) {
+</span><span>            </span><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">input </span><span>= new RaycastInput {
+</span><span>                </span><span style="color:#ffb964;">Start </span><span>= </span><span style="color:#ffb964;">translation</span><span>.</span><span style="color:#ffb964;">Value </span><span>+ </span><span style="color:#cf6a4c;">0.6</span><span style="color:#8fbfdc;">f </span><span>* </span><span style="color:#ffb964;">math</span><span>.</span><span style="color:#ffb964;">up </span><span>(),
+</span><span>                </span><span style="color:#ffb964;">End </span><span>= </span><span style="color:#cf6a4c;">1.6</span><span style="color:#8fbfdc;">f </span><span>* </span><span style="color:#ffb964;">math</span><span>.</span><span style="color:#ffb964;">up </span><span>() + </span><span style="color:#ffb964;">translation</span><span>.</span><span style="color:#ffb964;">Value</span><span>,
+</span><span>                </span><span style="color:#ffb964;">Filter </span><span>= new CollisionFilter {
+</span><span>                    </span><span style="color:#ffb964;">BelongsTo </span><span>= ~</span><span style="color:#cf6a4c;">0</span><span style="color:#8fbfdc;">u</span><span>,
+</span><span>                    </span><span style="color:#ffb964;">CollidesWith </span><span>= ~</span><span style="color:#cf6a4c;">0</span><span style="color:#8fbfdc;">u</span><span>,
+</span><span>                    </span><span style="color:#ffb964;">GroupIndex </span><span>= </span><span style="color:#cf6a4c;">0
+</span><span>                }
+</span><span>            };
+</span><span>            </span><span style="color:#8fbfdc;">bool </span><span style="color:#ffb964;">haveHit </span><span>= </span><span style="color:#ffb964;">collisionWorld</span><span>.</span><span style="color:#ffb964;">CastRay </span><span>(</span><span style="color:#ffb964;">input</span><span>);
+</span><span>            </span><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">r </span><span>= </span><span style="color:#ffb964;">rotation</span><span>.</span><span style="color:#ffb964;">Value</span><span>;
+</span><span>            </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">haveHit</span><span>)
+</span><span>                </span><span style="color:#ffb964;">r </span><span>= </span><span style="color:#ffb964;">math</span><span>.</span><span style="color:#ffb964;">mul </span><span>(</span><span style="color:#ffb964;">math</span><span>.</span><span style="color:#ffb964;">normalize </span><span>(</span><span style="color:#ffb964;">r</span><span>), </span><span style="color:#ffb964;">quaternion</span><span>.</span><span style="color:#ffb964;">AxisAngle </span><span>(</span><span style="color:#ffb964;">math</span><span>.</span><span style="color:#ffb964;">forward </span><span>(</span><span style="color:#ffb964;">r</span><span>), </span><span style="color:#cf6a4c;">0.03</span><span style="color:#8fbfdc;">f</span><span>));
+</span><span>            </span><span style="color:#ffb964;">rotation </span><span>= new Rotation { </span><span style="color:#ffb964;">Value </span><span>= </span><span style="color:#ffb964;">r </span><span>};
+</span><span>        }
+</span><span>    }
+</span><span>    </span><span style="color:#ffb964;">Unity</span><span>.</span><span style="color:#ffb964;">Physics</span><span>.</span><span style="color:#ffb964;">Systems</span><span>.BuildPhysicsWorld </span><span style="color:#ffb964;">physicsWorldSystem</span><span>;
+</span><span>    </span><span style="color:#8fbfdc;">protected override void </span><span style="color:#fad07a;">OnCreate </span><span>() {
+</span><span>        </span><span style="color:#ffb964;">physicsWorldSystem </span><span>= </span><span style="color:#ffb964;">World</span><span>.</span><span style="color:#ffb964;">GetOrCreateSystem</span><span>&lt;Unity.Physics.Systems.BuildPhysicsWorld&gt; ();
+</span><span>    }
+</span><span>    </span><span style="color:#8fbfdc;">protected override </span><span>JobHandle </span><span style="color:#fad07a;">OnUpdate </span><span>(JobHandle </span><span style="color:#ffb964;">inputDeps</span><span>) {
+</span><span>        </span><span style="color:#8fbfdc;">return </span><span>new CheckCollisionJob { </span><span style="color:#ffb964;">collisionWorld </span><span>= </span><span style="color:#ffb964;">physicsWorldSystem</span><span>.</span><span style="color:#ffb964;">PhysicsWorld</span><span>.</span><span style="color:#ffb964;">CollisionWorld </span><span>}.</span><span style="color:#ffb964;">Schedule </span><span>(</span><span style="color:#ffb964;">this</span><span>, </span><span style="color:#ffb964;">inputDeps</span><span>);
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<h3 id="collider-cast">Collider Cast</h3>
+<p>碰撞体投射检测。<br>
+在立方体附近使用碰撞体扫过一条线段，检测碰撞到的碰撞体，同样注意不要让这个发射出去的碰撞体碰到立方体本身</p>
+<p>下面示例代码在立方体上方向上发射了一个球体<br>
+注意需要在 Player 设置里允许 <code>unsafe</code> 代码</p>
+<p><code>CollisionQuerySystem.cs</code></p>
+<pre data-lang="cs" style="background-color:#151515;color:#e8e8d3;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#8fbfdc;">public class </span><span style="color:#ffb964;">CollisionQuerySystem </span><span>: </span><span style="color:#ffb964;">JobComponentSystem </span><span>{
+</span><span>    [</span><span style="color:#ffb964;">BurstCompile</span><span>]
+</span><span>    </span><span style="color:#8fbfdc;">struct </span><span style="color:#ffb964;">CheckCollisionJob </span><span>: </span><span style="color:#ffb964;">IJobForEach</span><span>&lt;CollisionChecker, Translation, Rotation&gt; {
+</span><span>        [</span><span style="color:#ffb964;">ReadOnly</span><span>] </span><span style="color:#8fbfdc;">public </span><span>CollisionWorld </span><span style="color:#ffb964;">collisionWorld</span><span>;
+</span><span>        </span><span style="color:#8fbfdc;">public unsafe void </span><span style="color:#fad07a;">Execute </span><span>([</span><span style="color:#ffb964;">ReadOnly</span><span>] </span><span style="color:#8fbfdc;">ref </span><span>CollisionChecker </span><span style="color:#ffb964;">checker</span><span>, [</span><span style="color:#ffb964;">ReadOnly</span><span>] </span><span style="color:#8fbfdc;">ref </span><span>Translation </span><span style="color:#ffb964;">translation</span><span>, </span><span style="color:#8fbfdc;">ref </span><span>Rotation </span><span style="color:#ffb964;">rotation</span><span>) {
+</span><span>            </span><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">filter </span><span>= new CollisionFilter {
+</span><span>                </span><span style="color:#ffb964;">BelongsTo </span><span>= ~</span><span style="color:#cf6a4c;">0</span><span style="color:#8fbfdc;">u</span><span>,
+</span><span>                </span><span style="color:#ffb964;">CollidesWith </span><span>= ~</span><span style="color:#cf6a4c;">0</span><span style="color:#8fbfdc;">u</span><span>,
+</span><span>                </span><span style="color:#ffb964;">GroupIndex </span><span>= </span><span style="color:#cf6a4c;">0
+</span><span>            };
+</span><span>            SphereGeometry </span><span style="color:#ffb964;">sphereGeometry </span><span>= new SphereGeometry { </span><span style="color:#ffb964;">Center </span><span>= </span><span style="color:#ffb964;">float3</span><span>.</span><span style="color:#ffb964;">zero</span><span>, </span><span style="color:#ffb964;">Radius </span><span>= </span><span style="color:#cf6a4c;">0.5</span><span style="color:#8fbfdc;">f </span><span>};
+</span><span>            BlobAssetReference&lt;Collider&gt; </span><span style="color:#ffb964;">sphereCollider </span><span>= </span><span style="color:#ffb964;">SphereCollider</span><span>.</span><span style="color:#ffb964;">Create </span><span>(</span><span style="color:#ffb964;">sphereGeometry</span><span>, </span><span style="color:#ffb964;">filter</span><span>);
+</span><span>            </span><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">input </span><span>= new ColliderCastInput {
+</span><span>                </span><span style="color:#ffb964;">Start </span><span>= </span><span style="color:#ffb964;">translation</span><span>.</span><span style="color:#ffb964;">Value </span><span>+ </span><span style="color:#cf6a4c;">1.2</span><span style="color:#8fbfdc;">f </span><span>* </span><span style="color:#ffb964;">math</span><span>.</span><span style="color:#ffb964;">up </span><span>(),
+</span><span>                </span><span style="color:#ffb964;">End </span><span>= </span><span style="color:#cf6a4c;">1.6</span><span style="color:#8fbfdc;">f </span><span>* </span><span style="color:#ffb964;">math</span><span>.</span><span style="color:#ffb964;">up </span><span>() + </span><span style="color:#ffb964;">translation</span><span>.</span><span style="color:#ffb964;">Value</span><span>,
+</span><span>                </span><span style="color:#ffb964;">Orientation </span><span>= </span><span style="color:#ffb964;">quaternion</span><span>.</span><span style="color:#ffb964;">identity</span><span>,
+</span><span>                </span><span style="color:#ffb964;">Collider </span><span>= (</span><span style="color:#ffb964;">Collider </span><span>* ) </span><span style="color:#ffb964;">sphereCollider</span><span>.</span><span style="color:#ffb964;">GetUnsafePtr</span><span>()
+</span><span>            };
+</span><span>            </span><span style="color:#8fbfdc;">bool </span><span style="color:#ffb964;">haveHit </span><span>= </span><span style="color:#ffb964;">collisionWorld</span><span>.</span><span style="color:#ffb964;">CastCollider </span><span>(</span><span style="color:#ffb964;">input</span><span>);
+</span><span>            </span><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">r </span><span>= </span><span style="color:#ffb964;">rotation</span><span>.</span><span style="color:#ffb964;">Value</span><span>;
+</span><span>            </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">haveHit</span><span>)
+</span><span>                </span><span style="color:#ffb964;">r </span><span>= </span><span style="color:#ffb964;">math</span><span>.</span><span style="color:#ffb964;">mul </span><span>(</span><span style="color:#ffb964;">math</span><span>.</span><span style="color:#ffb964;">normalize </span><span>(</span><span style="color:#ffb964;">r</span><span>), </span><span style="color:#ffb964;">quaternion</span><span>.</span><span style="color:#ffb964;">AxisAngle </span><span>(</span><span style="color:#ffb964;">math</span><span>.</span><span style="color:#ffb964;">forward </span><span>(</span><span style="color:#ffb964;">r</span><span>), </span><span style="color:#cf6a4c;">0.03</span><span style="color:#8fbfdc;">f</span><span>));
+</span><span>            </span><span style="color:#ffb964;">rotation </span><span>= new Rotation { </span><span style="color:#ffb964;">Value </span><span>= </span><span style="color:#ffb964;">r </span><span>};
+</span><span>        }
+</span><span>    }
+</span><span>    </span><span style="color:#ffb964;">Unity</span><span>.</span><span style="color:#ffb964;">Physics</span><span>.</span><span style="color:#ffb964;">Systems</span><span>.BuildPhysicsWorld </span><span style="color:#ffb964;">physicsWorldSystem</span><span>;
+</span><span>    </span><span style="color:#8fbfdc;">protected override void </span><span style="color:#fad07a;">OnCreate </span><span>() {
+</span><span>        </span><span style="color:#ffb964;">physicsWorldSystem </span><span>= </span><span style="color:#ffb964;">World</span><span>.</span><span style="color:#ffb964;">GetOrCreateSystem</span><span>&lt;Unity.Physics.Systems.BuildPhysicsWorld&gt; ();
+</span><span>    }
+</span><span>    </span><span style="color:#8fbfdc;">protected override </span><span>JobHandle </span><span style="color:#fad07a;">OnUpdate </span><span>(JobHandle </span><span style="color:#ffb964;">inputDeps</span><span>) {
+</span><span>        </span><span style="color:#8fbfdc;">return </span><span>new CheckCollisionJob { </span><span style="color:#ffb964;">collisionWorld </span><span>= </span><span style="color:#ffb964;">physicsWorldSystem</span><span>.</span><span style="color:#ffb964;">PhysicsWorld</span><span>.</span><span style="color:#ffb964;">CollisionWorld </span><span>}.</span><span style="color:#ffb964;">Schedule </span><span>(</span><span style="color:#ffb964;">this</span><span>, </span><span style="color:#ffb964;">inputDeps</span><span>);
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<h3 id="collider-distance">Collider Distance</h3>
+<p>放出一个碰撞体，检测与这个碰撞体的最短距离在指定范围内的其他碰撞体</p>
+<p>下面的示例代码在方块上方放置了一个球体</p>
+<p><code>CollisionQuerySystem.cs</code></p>
+<pre data-lang="cs" style="background-color:#151515;color:#e8e8d3;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#8fbfdc;">public class </span><span style="color:#ffb964;">CollisionQuerySystem </span><span>: </span><span style="color:#ffb964;">JobComponentSystem </span><span>{
+</span><span>    [</span><span style="color:#ffb964;">BurstCompile</span><span>]
+</span><span>    </span><span style="color:#8fbfdc;">struct </span><span style="color:#ffb964;">CheckCollisionJob </span><span>: </span><span style="color:#ffb964;">IJobForEach</span><span>&lt;CollisionChecker, Translation, Rotation&gt; {
+</span><span>        [</span><span style="color:#ffb964;">ReadOnly</span><span>] </span><span style="color:#8fbfdc;">public </span><span>CollisionWorld </span><span style="color:#ffb964;">collisionWorld</span><span>;
+</span><span>        </span><span style="color:#8fbfdc;">public unsafe void </span><span style="color:#fad07a;">Execute </span><span>([</span><span style="color:#ffb964;">ReadOnly</span><span>] </span><span style="color:#8fbfdc;">ref </span><span>CollisionChecker </span><span style="color:#ffb964;">checker</span><span>, [</span><span style="color:#ffb964;">ReadOnly</span><span>] </span><span style="color:#8fbfdc;">ref </span><span>Translation </span><span style="color:#ffb964;">translation</span><span>, </span><span style="color:#8fbfdc;">ref </span><span>Rotation </span><span style="color:#ffb964;">rotation</span><span>) {
+</span><span>            </span><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">filter </span><span>= new CollisionFilter {
+</span><span>                </span><span style="color:#ffb964;">BelongsTo </span><span>= ~</span><span style="color:#cf6a4c;">0</span><span style="color:#8fbfdc;">u</span><span>,
+</span><span>                </span><span style="color:#ffb964;">CollidesWith </span><span>= ~</span><span style="color:#cf6a4c;">0</span><span style="color:#8fbfdc;">u</span><span>,
+</span><span>                </span><span style="color:#ffb964;">GroupIndex </span><span>= </span><span style="color:#cf6a4c;">0
+</span><span>            };
+</span><span>            SphereGeometry </span><span style="color:#ffb964;">sphereGeometry </span><span>= new SphereGeometry { </span><span style="color:#ffb964;">Center </span><span>= </span><span style="color:#ffb964;">float3</span><span>.</span><span style="color:#ffb964;">zero</span><span>, </span><span style="color:#ffb964;">Radius </span><span>= </span><span style="color:#cf6a4c;">0.5</span><span style="color:#8fbfdc;">f </span><span>};
+</span><span>            BlobAssetReference&lt;Collider&gt; </span><span style="color:#ffb964;">sphereCollider </span><span>= </span><span style="color:#ffb964;">SphereCollider</span><span>.</span><span style="color:#ffb964;">Create </span><span>(</span><span style="color:#ffb964;">sphereGeometry</span><span>, </span><span style="color:#ffb964;">filter</span><span>);
+</span><span>            </span><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">input </span><span>= new ColliderDistanceInput {
+</span><span>                </span><span style="color:#ffb964;">Collider </span><span>= (</span><span style="color:#ffb964;">Collider </span><span>* ) </span><span style="color:#ffb964;">sphereCollider</span><span>.</span><span style="color:#ffb964;">GetUnsafePtr </span><span>(),
+</span><span>                </span><span style="color:#ffb964;">Transform </span><span>= new RigidTransform (</span><span style="color:#ffb964;">quaternion</span><span>.</span><span style="color:#ffb964;">identity</span><span>, </span><span style="color:#ffb964;">translation</span><span>.</span><span style="color:#ffb964;">Value </span><span>+ </span><span style="color:#ffb964;">math</span><span>.</span><span style="color:#ffb964;">up</span><span>() * </span><span style="color:#cf6a4c;">2</span><span style="color:#8fbfdc;">f</span><span>),
+</span><span>                </span><span style="color:#ffb964;">MaxDistance </span><span>= </span><span style="color:#cf6a4c;">0.2</span><span style="color:#8fbfdc;">f
+</span><span>            };
+</span><span>            </span><span style="color:#8fbfdc;">bool </span><span style="color:#ffb964;">haveHit </span><span>= </span><span style="color:#ffb964;">collisionWorld</span><span>.</span><span style="color:#ffb964;">CalculateDistance </span><span>(</span><span style="color:#ffb964;">input</span><span>);
+</span><span>            </span><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">r </span><span>= </span><span style="color:#ffb964;">rotation</span><span>.</span><span style="color:#ffb964;">Value</span><span>;
+</span><span>            </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">haveHit</span><span>)
+</span><span>                </span><span style="color:#ffb964;">r </span><span>= </span><span style="color:#ffb964;">math</span><span>.</span><span style="color:#ffb964;">mul </span><span>(</span><span style="color:#ffb964;">math</span><span>.</span><span style="color:#ffb964;">normalize </span><span>(</span><span style="color:#ffb964;">r</span><span>), </span><span style="color:#ffb964;">quaternion</span><span>.</span><span style="color:#ffb964;">AxisAngle </span><span>(</span><span style="color:#ffb964;">math</span><span>.</span><span style="color:#ffb964;">forward </span><span>(</span><span style="color:#ffb964;">r</span><span>), </span><span style="color:#cf6a4c;">0.03</span><span style="color:#8fbfdc;">f</span><span>));
+</span><span>            </span><span style="color:#ffb964;">rotation </span><span>= new Rotation { </span><span style="color:#ffb964;">Value </span><span>= </span><span style="color:#ffb964;">r </span><span>};
+</span><span>        }
+</span><span>    }
+</span><span>    </span><span style="color:#ffb964;">Unity</span><span>.</span><span style="color:#ffb964;">Physics</span><span>.</span><span style="color:#ffb964;">Systems</span><span>.BuildPhysicsWorld </span><span style="color:#ffb964;">physicsWorldSystem</span><span>;
+</span><span>    </span><span style="color:#8fbfdc;">protected override void </span><span style="color:#fad07a;">OnCreate </span><span>() {
+</span><span>        </span><span style="color:#ffb964;">physicsWorldSystem </span><span>= </span><span style="color:#ffb964;">World</span><span>.</span><span style="color:#ffb964;">GetOrCreateSystem</span><span>&lt;Unity.Physics.Systems.BuildPhysicsWorld&gt; ();
+</span><span>    }
+</span><span>    </span><span style="color:#8fbfdc;">protected override </span><span>JobHandle </span><span style="color:#fad07a;">OnUpdate </span><span>(JobHandle </span><span style="color:#ffb964;">inputDeps</span><span>) {
+</span><span>        </span><span style="color:#8fbfdc;">return </span><span>new CheckCollisionJob { </span><span style="color:#ffb964;">collisionWorld </span><span>= </span><span style="color:#ffb964;">physicsWorldSystem</span><span>.</span><span style="color:#ffb964;">PhysicsWorld</span><span>.</span><span style="color:#ffb964;">CollisionWorld </span><span>}.</span><span style="color:#ffb964;">Schedule </span><span>(</span><span style="color:#ffb964;">this</span><span>, </span><span style="color:#ffb964;">inputDeps</span><span>);
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<h3 id="point-distance">Point Distance</h3>
+<p>放出一个点，检测与这个点的最短距离在指定范围内的碰撞体</p>
+<p>下面的示例代码把这个点放在方块的正上方</p>
+<p><code>CollisionQuerySystem.cs</code></p>
+<pre data-lang="cs" style="background-color:#151515;color:#e8e8d3;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#8fbfdc;">public class </span><span style="color:#ffb964;">CollisionQuerySystem </span><span>: </span><span style="color:#ffb964;">JobComponentSystem </span><span>{
+</span><span>    [</span><span style="color:#ffb964;">BurstCompile</span><span>]
+</span><span>    </span><span style="color:#8fbfdc;">struct </span><span style="color:#ffb964;">CheckCollisionJob </span><span>: </span><span style="color:#ffb964;">IJobForEach</span><span>&lt;CollisionChecker, Translation, Rotation&gt; {
+</span><span>        [</span><span style="color:#ffb964;">ReadOnly</span><span>] </span><span style="color:#8fbfdc;">public </span><span>CollisionWorld </span><span style="color:#ffb964;">collisionWorld</span><span>;
+</span><span>        </span><span style="color:#8fbfdc;">public unsafe void </span><span style="color:#fad07a;">Execute </span><span>([</span><span style="color:#ffb964;">ReadOnly</span><span>] </span><span style="color:#8fbfdc;">ref </span><span>CollisionChecker </span><span style="color:#ffb964;">checker</span><span>, [</span><span style="color:#ffb964;">ReadOnly</span><span>] </span><span style="color:#8fbfdc;">ref </span><span>Translation </span><span style="color:#ffb964;">translation</span><span>, </span><span style="color:#8fbfdc;">ref </span><span>Rotation </span><span style="color:#ffb964;">rotation</span><span>) {
+</span><span>            </span><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">filter </span><span>= new CollisionFilter {
+</span><span>                </span><span style="color:#ffb964;">BelongsTo </span><span>= ~</span><span style="color:#cf6a4c;">0</span><span style="color:#8fbfdc;">u</span><span>,
+</span><span>                </span><span style="color:#ffb964;">CollidesWith </span><span>= ~</span><span style="color:#cf6a4c;">0</span><span style="color:#8fbfdc;">u</span><span>,
+</span><span>                </span><span style="color:#ffb964;">GroupIndex </span><span>= </span><span style="color:#cf6a4c;">0
+</span><span>            };
+</span><span>            </span><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">input </span><span>= new PointDistanceInput {
+</span><span>                </span><span style="color:#ffb964;">Position </span><span>= </span><span style="color:#ffb964;">translation</span><span>.</span><span style="color:#ffb964;">Value </span><span>+ </span><span style="color:#ffb964;">math</span><span>.</span><span style="color:#ffb964;">up </span><span>() * </span><span style="color:#cf6a4c;">1</span><span style="color:#8fbfdc;">f</span><span>,
+</span><span>                </span><span style="color:#ffb964;">MaxDistance </span><span>= </span><span style="color:#cf6a4c;">0.2</span><span style="color:#8fbfdc;">f</span><span>,
+</span><span>                </span><span style="color:#ffb964;">Filter </span><span>= </span><span style="color:#ffb964;">filter
+</span><span>            };
+</span><span>            </span><span style="color:#8fbfdc;">bool </span><span style="color:#ffb964;">haveHit </span><span>= </span><span style="color:#ffb964;">collisionWorld</span><span>.</span><span style="color:#ffb964;">CalculateDistance </span><span>(</span><span style="color:#ffb964;">input</span><span>);
+</span><span>            </span><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">r </span><span>= </span><span style="color:#ffb964;">rotation</span><span>.</span><span style="color:#ffb964;">Value</span><span>;
+</span><span>            </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">haveHit</span><span>)
+</span><span>                </span><span style="color:#ffb964;">r </span><span>= </span><span style="color:#ffb964;">math</span><span>.</span><span style="color:#ffb964;">mul </span><span>(</span><span style="color:#ffb964;">math</span><span>.</span><span style="color:#ffb964;">normalize </span><span>(</span><span style="color:#ffb964;">r</span><span>), </span><span style="color:#ffb964;">quaternion</span><span>.</span><span style="color:#ffb964;">AxisAngle </span><span>(</span><span style="color:#ffb964;">math</span><span>.</span><span style="color:#ffb964;">forward </span><span>(</span><span style="color:#ffb964;">r</span><span>), </span><span style="color:#cf6a4c;">0.03</span><span style="color:#8fbfdc;">f</span><span>));
+</span><span>            </span><span style="color:#ffb964;">rotation </span><span>= new Rotation { </span><span style="color:#ffb964;">Value </span><span>= </span><span style="color:#ffb964;">r </span><span>};
+</span><span>        }
+</span><span>    }
+</span><span>    </span><span style="color:#ffb964;">Unity</span><span>.</span><span style="color:#ffb964;">Physics</span><span>.</span><span style="color:#ffb964;">Systems</span><span>.BuildPhysicsWorld </span><span style="color:#ffb964;">physicsWorldSystem</span><span>;
+</span><span>    </span><span style="color:#8fbfdc;">protected override void </span><span style="color:#fad07a;">OnCreate </span><span>() {
+</span><span>        </span><span style="color:#ffb964;">physicsWorldSystem </span><span>= </span><span style="color:#ffb964;">World</span><span>.</span><span style="color:#ffb964;">GetOrCreateSystem</span><span>&lt;Unity.Physics.Systems.BuildPhysicsWorld&gt; ();
+</span><span>    }
+</span><span>    </span><span style="color:#8fbfdc;">protected override </span><span>JobHandle </span><span style="color:#fad07a;">OnUpdate </span><span>(JobHandle </span><span style="color:#ffb964;">inputDeps</span><span>) {
+</span><span>        </span><span style="color:#8fbfdc;">return </span><span>new CheckCollisionJob { </span><span style="color:#ffb964;">collisionWorld </span><span>= </span><span style="color:#ffb964;">physicsWorldSystem</span><span>.</span><span style="color:#ffb964;">PhysicsWorld</span><span>.</span><span style="color:#ffb964;">CollisionWorld </span><span>}.</span><span style="color:#ffb964;">Schedule </span><span>(</span><span style="color:#ffb964;">this</span><span>, </span><span style="color:#ffb964;">inputDeps</span><span>);
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<h3 id="overlap-query">Overlap Query</h3>
+<p>使用 AABB 检测重叠，性能比 Collider Distance 好<br>
+但是只能检测碰撞是否发生，无法获取碰撞点的具体信息</p>
+<p>注意两点</p>
+<p>第一是立方体的包围盒会与立方体本身重叠，所以必须修改默认的 <code>Collision Filter</code><br>
+我们需要在立方体的 <code>Physics Shape</code> 组件的 <code>Collision Filter</code> 里把 <code>Belongs To</code> 修改为只有 0，这样代码里就能使用 <code>Collision Filter</code> 避免检测到立方体本身</p>
+<p>第二是如果不对默认创建的立方体做旋转操作，它的 AABB 就是它本身<br>
+我们可以把立方体随意旋转一个角度或者把 <code>Physics Shape</code> 里的 <code>Shape Type</code> 改成别的形状以获得更明显的效果</p>
+<pre data-lang="cs" style="background-color:#151515;color:#e8e8d3;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#8fbfdc;">public class </span><span style="color:#ffb964;">CollisionQuerySystem </span><span>: </span><span style="color:#ffb964;">JobComponentSystem </span><span>{
+</span><span>    [</span><span style="color:#ffb964;">BurstCompile</span><span>]
+</span><span>    </span><span style="color:#8fbfdc;">struct </span><span style="color:#ffb964;">CheckCollisionJob </span><span>: </span><span style="color:#ffb964;">IJobForEach</span><span>&lt;CollisionChecker, Translation, PhysicsCollider, Rotation&gt; {
+</span><span>        [</span><span style="color:#ffb964;">ReadOnly</span><span>] </span><span style="color:#8fbfdc;">public </span><span>CollisionWorld </span><span style="color:#ffb964;">collisionWorld</span><span>;
+</span><span>        </span><span style="color:#8fbfdc;">public unsafe void </span><span style="color:#fad07a;">Execute </span><span>([</span><span style="color:#ffb964;">ReadOnly</span><span>] </span><span style="color:#8fbfdc;">ref </span><span>CollisionChecker </span><span style="color:#ffb964;">checker</span><span>, [</span><span style="color:#ffb964;">ReadOnly</span><span>] </span><span style="color:#8fbfdc;">ref </span><span>Translation </span><span style="color:#ffb964;">translation</span><span>, [</span><span style="color:#ffb964;">ReadOnly</span><span>] </span><span style="color:#8fbfdc;">ref </span><span>PhysicsCollider </span><span style="color:#ffb964;">collider</span><span>, </span><span style="color:#8fbfdc;">ref </span><span>Rotation </span><span style="color:#ffb964;">rotation</span><span>) {
+</span><span>            </span><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">filter </span><span>= new CollisionFilter {
+</span><span>                </span><span style="color:#ffb964;">BelongsTo </span><span>= ~</span><span style="color:#cf6a4c;">0</span><span style="color:#8fbfdc;">u</span><span>,
+</span><span>                </span><span style="color:#ffb964;">CollidesWith </span><span>= ~</span><span style="color:#cf6a4c;">0</span><span style="color:#8fbfdc;">u </span><span>^ </span><span style="color:#cf6a4c;">1</span><span style="color:#8fbfdc;">u</span><span>,
+</span><span>                </span><span style="color:#ffb964;">GroupIndex </span><span>= </span><span style="color:#cf6a4c;">0
+</span><span>            };
+</span><span>            </span><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">input </span><span>= new OverlapAabbInput {
+</span><span>                </span><span style="color:#ffb964;">Aabb </span><span>= </span><span style="color:#ffb964;">collider</span><span>.</span><span style="color:#ffb964;">Value</span><span>.</span><span style="color:#ffb964;">Value</span><span>.</span><span style="color:#ffb964;">CalculateAabb </span><span>(new RigidTransform (</span><span style="color:#ffb964;">quaternion</span><span>.</span><span style="color:#ffb964;">identity</span><span>, </span><span style="color:#ffb964;">translation</span><span>.</span><span style="color:#ffb964;">Value</span><span>)),
+</span><span>                </span><span style="color:#ffb964;">Filter </span><span>= </span><span style="color:#ffb964;">filter
+</span><span>            };
+</span><span>            NativeList&lt;</span><span style="color:#8fbfdc;">int</span><span>&gt; </span><span style="color:#ffb964;">allHits </span><span>= new NativeList&lt;</span><span style="color:#8fbfdc;">int</span><span>&gt; (</span><span style="color:#ffb964;">Allocator</span><span>.</span><span style="color:#ffb964;">Temp</span><span>);
+</span><span>            </span><span style="color:#8fbfdc;">bool </span><span style="color:#ffb964;">haveHit </span><span>= </span><span style="color:#ffb964;">collisionWorld</span><span>.</span><span style="color:#ffb964;">OverlapAabb </span><span>(</span><span style="color:#ffb964;">input</span><span>, </span><span style="color:#8fbfdc;">ref </span><span style="color:#ffb964;">allHits</span><span>);
+</span><span>            </span><span style="color:#ffb964;">allHits</span><span>.</span><span style="color:#ffb964;">Dispose </span><span>();
+</span><span>            </span><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">r </span><span>= </span><span style="color:#ffb964;">rotation</span><span>.</span><span style="color:#ffb964;">Value</span><span>;
+</span><span>            </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">haveHit</span><span>)
+</span><span>                </span><span style="color:#ffb964;">r </span><span>= </span><span style="color:#ffb964;">math</span><span>.</span><span style="color:#ffb964;">mul </span><span>(</span><span style="color:#ffb964;">math</span><span>.</span><span style="color:#ffb964;">normalize </span><span>(</span><span style="color:#ffb964;">r</span><span>), </span><span style="color:#ffb964;">quaternion</span><span>.</span><span style="color:#ffb964;">AxisAngle </span><span>(</span><span style="color:#ffb964;">math</span><span>.</span><span style="color:#ffb964;">forward </span><span>(</span><span style="color:#ffb964;">r</span><span>), </span><span style="color:#cf6a4c;">0.03</span><span style="color:#8fbfdc;">f</span><span>));
+</span><span>            </span><span style="color:#ffb964;">rotation </span><span>= new Rotation { </span><span style="color:#ffb964;">Value </span><span>= </span><span style="color:#ffb964;">r </span><span>};
+</span><span>        }
+</span><span>    }
+</span><span>    </span><span style="color:#ffb964;">Unity</span><span>.</span><span style="color:#ffb964;">Physics</span><span>.</span><span style="color:#ffb964;">Systems</span><span>.BuildPhysicsWorld </span><span style="color:#ffb964;">physicsWorldSystem</span><span>;
+</span><span>    </span><span style="color:#8fbfdc;">protected override void </span><span style="color:#fad07a;">OnCreate </span><span>() {
+</span><span>        </span><span style="color:#ffb964;">physicsWorldSystem </span><span>= </span><span style="color:#ffb964;">World</span><span>.</span><span style="color:#ffb964;">GetOrCreateSystem</span><span>&lt;Unity.Physics.Systems.BuildPhysicsWorld&gt; ();
+</span><span>    }
+</span><span>    </span><span style="color:#8fbfdc;">protected override </span><span>JobHandle </span><span style="color:#fad07a;">OnUpdate </span><span>(JobHandle </span><span style="color:#ffb964;">inputDeps</span><span>) {
+</span><span>        </span><span style="color:#8fbfdc;">return </span><span>new CheckCollisionJob { </span><span style="color:#ffb964;">collisionWorld </span><span>= </span><span style="color:#ffb964;">physicsWorldSystem</span><span>.</span><span style="color:#ffb964;">PhysicsWorld</span><span>.</span><span style="color:#ffb964;">CollisionWorld </span><span>}.</span><span style="color:#ffb964;">Schedule </span><span>(</span><span style="color:#ffb964;">this</span><span>, </span><span style="color:#ffb964;">inputDeps</span><span>);
+</span><span>    }
+</span><span>}
+</span></code></pre>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202002052342/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">Unity Physics 学习笔记第三章：刚体的运动状态</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202002082155/">
+                                <span class="button__text">Unity Physics 学习笔记第五章：核心组件</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

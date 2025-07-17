@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Unity Physics 学习笔记第七章：精确的碰撞管理 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="Unity Physics 学习笔记第七章：精确的碰撞管理 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202003152207/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="Unity Physics 学习笔记第七章：精确的碰撞管理 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202003152207/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202003152207/">Unity Physics 学习笔记第七章：精确的碰撞管理</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2020-03-15
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/unity-ecs/">#Unity ECS</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/unity-physics/">#Unity Physics</a></span>
+    
+
+        <div class="post-content">
+            <p>官方手册里有提到，但是没有具体描述。本文主要参考官方示例代码并进行实践。</p>
+<span id="continue-reading"></span><h2 id="yu-dao-de-wen-ti">遇到的问题</h2>
+<p>前文和手册中都有介绍过 <code>CollisionFilter</code>，但是这个东西是跟 <code>Collider</code> 绑在一起扔进 Blob 里的。而 Blob 是一种类似引用的东西，因此由同一个带有 <code>Collider</code> 的 Prefab 实例化出的 Entity，他们的 <code>CollisionFilter</code> 也是相同的。如果想要改变，必须要为每个实例化的 Entity 单独创建一个 <code>Collider</code> 的 Blob 资源来让他们的 <code>CollisionFilter</code> 不同。这就非常蛋疼</p>
+<h2 id="jian-dan-gao-xiao-dan-shi-bu-zheng-chang-ye-bu-yi-ding-gao-xiao-de-jie-jue-fang-an">简单高效但是不正常也不一定高效的解决方案</h2>
+<p>最简单的一种思路，为每一个实例化的 Entity 单独创建一个 <code>Collider</code> 的 Blob 资源</p>
+<p>例如网格碰撞体，可以把 Prefab 上碰撞体中存着点和面的 <code>NativeArray</code> 的引用偷出来，重新定个 <code>CollisionFilter</code> 就行了，因为点和面都是共用的，所以内存上其实不亏</p>
+<p>而且使用 <code>CollisionFilter</code> 的效率很高，因此在碰撞处理时的性能上也不亏</p>
+<p>不过在一开始创建新的 Blob 的时候就很麻烦而且时间开销较大；并且如果涉及到 Entity 的销毁，可能要把相应的 Blob 资源一起销毁；为了降低 Blob 创建销毁的时间开销，就要开个 Blob 资源的内存池（ECS 里开内存池是有毒吧？）。最终实现起来会变得很蛇皮，我个人认为作为一个正常的人类不应该做这样的事情。</p>
+<h2 id="zheng-chang-de-jie-jue-fang-an">正常的解决方案</h2>
+<p>根据手册的指示，使用 <code>IBodyPairsJob</code><br>
+具体来说，我们写一个 struct 实现 <code>IBodyPairsJob</code> 接口，并把它注入到 <code>StepPhysicsWorld</code> 中，把需要屏蔽的碰撞 <code>Disable</code> 掉。这样就能对碰撞为所欲为了</p>
+<p>下面是个简单的代码，他禁用了所有拥有 <code>NonUniformScale</code> 组件的碰撞体的碰撞</p>
+<pre data-lang="cs" style="background-color:#151515;color:#e8e8d3;" class="language-cs "><code class="language-cs" data-lang="cs"><span>[</span><span style="color:#ffb964;">UpdateBefore</span><span> (</span><span style="color:#ffb964;">typeof</span><span> (</span><span style="color:#ffb964;">StepPhysicsWorld</span><span>))]
+</span><span style="color:#8fbfdc;">class </span><span style="color:#ffb964;">DisableCollisionSystem </span><span>: </span><span style="color:#ffb964;">SystemBase </span><span>{
+</span><span>    </span><span style="color:#8fbfdc;">struct </span><span style="color:#ffb964;">DisableCollisionJob </span><span>: </span><span style="color:#ffb964;">IBodyPairsJob </span><span>{
+</span><span>        </span><span style="color:#8fbfdc;">public </span><span>ComponentDataFromEntity&lt;NonUniformScale&gt; </span><span style="color:#ffb964;">nonUniformScaleFromEntity</span><span>;
+</span><span>        </span><span style="color:#8fbfdc;">public void </span><span style="color:#fad07a;">Execute </span><span>(</span><span style="color:#8fbfdc;">ref </span><span>ModifiableBodyPair </span><span style="color:#ffb964;">pair</span><span>) {
+</span><span>            </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">nonUniformScaleFromEntity</span><span>.</span><span style="color:#ffb964;">Exists </span><span>(</span><span style="color:#ffb964;">pair</span><span>.</span><span style="color:#ffb964;">Entities</span><span>.</span><span style="color:#ffb964;">EntityA</span><span>)  </span><span style="color:#ffb964;">nonUniformScaleFromEntity</span><span>.</span><span style="color:#ffb964;">Exists </span><span>(</span><span style="color:#ffb964;">pair</span><span>.</span><span style="color:#ffb964;">Entities</span><span>.</span><span style="color:#ffb964;">EntityB</span><span>))
+</span><span>                </span><span style="color:#ffb964;">pair</span><span>.</span><span style="color:#ffb964;">Disable </span><span>();
+</span><span>        }
+</span><span>    }
+</span><span>    BuildPhysicsWorld </span><span style="color:#ffb964;">m_buildPhysicsWorld</span><span>;
+</span><span>    StepPhysicsWorld </span><span style="color:#ffb964;">m_stepPhysicsWorld</span><span>;
+</span><span>    </span><span style="color:#8fbfdc;">protected override void </span><span style="color:#fad07a;">OnCreate </span><span>() {
+</span><span>        </span><span style="color:#ffb964;">m_buildPhysicsWorld </span><span>= </span><span style="color:#ffb964;">World</span><span>.</span><span style="color:#ffb964;">GetOrCreateSystem</span><span>&lt;BuildPhysicsWorld&gt; ();
+</span><span>        </span><span style="color:#ffb964;">m_stepPhysicsWorld </span><span>= </span><span style="color:#ffb964;">World</span><span>.</span><span style="color:#ffb964;">GetOrCreateSystem</span><span>&lt;StepPhysicsWorld&gt; ();
+</span><span>    }
+</span><span>    </span><span style="color:#8fbfdc;">protected override void </span><span style="color:#fad07a;">OnUpdate </span><span>() {
+</span><span>        </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">m_stepPhysicsWorld</span><span>.</span><span style="color:#ffb964;">Simulation</span><span>.</span><span style="color:#ffb964;">Type </span><span>== </span><span style="color:#ffb964;">SimulationType</span><span>.</span><span style="color:#ffb964;">NoPhysics</span><span>) </span><span style="color:#8fbfdc;">return</span><span>;
+</span><span>        SimulationCallbacks.Callback </span><span style="color:#ffb964;">callback </span><span>= (ref ISimulation </span><span style="color:#ffb964;">simulation</span><span>, ref PhysicsWorld </span><span style="color:#ffb964;">world</span><span>, JobHandle </span><span style="color:#ffb964;">inDeps</span><span>) </span><span style="color:#8fbfdc;">=&gt; </span><span>{
+</span><span>            </span><span style="color:#8fbfdc;">return </span><span>new DisableCollisionJob { </span><span style="color:#ffb964;">nonUniformScaleFromEntity </span><span>= </span><span style="color:#ffb964;">GetComponentDataFromEntity</span><span>&lt;NonUniformScale&gt; () }.</span><span style="color:#ffb964;">Schedule </span><span>(</span><span style="color:#ffb964;">simulation</span><span>, </span><span style="color:#8fbfdc;">ref </span><span style="color:#ffb964;">world</span><span>, </span><span style="color:#ffb964;">inDeps</span><span>);
+</span><span>        };
+</span><span>        </span><span style="color:#ffb964;">m_stepPhysicsWorld</span><span>.</span><span style="color:#ffb964;">EnqueueCallback </span><span>(</span><span style="color:#ffb964;">SimulationCallbacks</span><span>.</span><span style="color:#ffb964;">Phase</span><span>.</span><span style="color:#ffb964;">PostCreateDispatchPairs</span><span>, </span><span style="color:#ffb964;">callback</span><span>);
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>但是需要注意几个点</p>
+<ol>
+<li>使用 <code>CollisionFilter</code> 来实现的话，碰撞处理过程中的性能要注入 <code>IBodyPairsJob</code> 好；但是使用 <code>IBodyPairsJob</code> 不需要考虑上述 <code>CollisionFilter</code> 的诸多问题，也避免了销毁与创建的开销；</li>
+<li>上面的代码使用了 lambda，却没有用 Burst 优化，因此会产生 GC，可以暂时用蛇皮方法自己搞搞；但 Unity Physic 之后的版本应该会自己解决这个问题，不用我们操心</li>
+</ol>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202002110101/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">Unity Physics 学习笔记第六章：触发器事件与碰撞事件</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202003191321/">
+                                <span class="button__text">UE4 TaskGraph 学习笔记：介绍与实践</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

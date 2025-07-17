@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Express + MySQL + Session 搭建 Web 后端脚手架 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="Express + MySQL + Session 搭建 Web 后端脚手架 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/201912180059/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="Express + MySQL + Session 搭建 Web 后端脚手架 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/201912180059/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/201912180059/">Express + MySQL + Session 搭建 Web 后端脚手架</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2019-12-18
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/express/">#Express</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/mysql/">#MySQL</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/node-js/">#Node.js</a></span>
+    
+
+        <div class="post-content">
+            <p>因为是我某门课的作业才顺便写的，因为感觉 js 后端偏向玩具所以不太感兴趣。但还是不得不说这玩具真好玩，贼牛逼。Express 框架用几十行代码就能搭出几乎完整的后端脚手架。</p>
+<span id="continue-reading"></span>
+<p>本项目是一个近似完整的后端脚手。<br>
+以 Express 框架为基础，以 MySQL 作为数据存储，有跨域处理，有 Session。</p>
+<p>但是该脚手架缺少 Express 异常处理，感兴趣可以自行添加<br>
+而且用 MySQL 存 Session 感觉不太正常，应该换 Redis，篇幅有限就不写了（虽然已经很长了）。</p>
+<p>作为示例，本文还实现了使用 Session 的验证码认证、RESTful 风格接口与 MD5 加密的登陆注册。</p>
+<h2 id="huan-jing">环境</h2>
+<p>Node.js v13.3.0</p>
+<p>MySQL 8.0.18，监听 3306 端口，认证插件为 <code>mysql_native_password</code>。<br>
+<code>root</code> 账户的密码为 <code>root</code>。</p>
+<p>在 MySQL 中执行以下脚本建立两个数据库，分别用于存储 Session 数据与用户数据。</p>
+<pre data-lang="sql" style="background-color:#151515;color:#e8e8d3;" class="language-sql "><code class="language-sql" data-lang="sql"><span>CREATE SCHEMA `</span><span style="color:#fad07a;">hello_session</span><span>` ;
+</span><span>CREATE SCHEMA `</span><span style="color:#fad07a;">hello</span><span>` ;
+</span><span>
+</span><span>USE </span><span style="color:#556633;">`</span><span style="color:#99ad6a;">hello</span><span style="color:#556633;">`</span><span>;
+</span><span>CREATE TABLE `hello`.`</span><span style="color:#fad07a;">user</span><span>` (
+</span><span>  </span><span style="color:#556633;">`</span><span style="color:#99ad6a;">id</span><span style="color:#556633;">` </span><span style="color:#8fbfdc;">INT </span><span>NOT NULL AUTO_INCREMENT,
+</span><span>  </span><span style="color:#556633;">`</span><span style="color:#99ad6a;">username</span><span style="color:#556633;">` </span><span style="color:#8fbfdc;">VARCHAR</span><span>(</span><span style="color:#cf6a4c;">45</span><span>) NOT NULL,
+</span><span>  </span><span style="color:#556633;">`</span><span style="color:#99ad6a;">password</span><span style="color:#556633;">` </span><span style="color:#8fbfdc;">VARCHAR</span><span>(</span><span style="color:#cf6a4c;">45</span><span>) NOT NULL,
+</span><span>  </span><span style="color:#8fbfdc;">PRIMARY KEY</span><span> (</span><span style="color:#556633;">`</span><span style="color:#99ad6a;">id</span><span style="color:#556633;">`</span><span>));
+</span></code></pre>
+<h2 id="xin-jian-node-js-xiang-mu">新建 Node.js 项目</h2>
+<p>然后建立文件夹并初始化 Node.js 项目。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">mkdir</span><span> hello-world
+</span><span>cd hello-world
+</span><span style="color:#ffb964;">npm</span><span> init
+</span></code></pre>
+<p>然后一路回车即可。<br>
+本文配置中入口点（entry point）使用了默认值，即 <code>index.js</code>。</p>
+<h2 id="express-kuang-jia-kuai-su-shang-shou">Express 框架快速上手</h2>
+<p>首先安装 express 依赖。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">npm</span><span> install express
+</span></code></pre>
+<p>然后修改入口点 <code>index.js</code> 代码如下。</p>
+<pre data-lang="js" style="background-color:#151515;color:#e8e8d3;" class="language-js "><code class="language-js" data-lang="js"><span style="color:#8fbfdc;">const </span><span style="color:#ffb964;">express </span><span>= require(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">express</span><span style="color:#556633;">&quot;</span><span>)
+</span><span style="color:#8fbfdc;">const </span><span style="color:#ffb964;">app </span><span>= </span><span style="color:#fad07a;">express</span><span>()
+</span><span>
+</span><span style="color:#888888;">// 定义一个 Get 请求的回调
+</span><span style="color:#ffb964;">app</span><span>.get(</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">/helloworld</span><span style="color:#556633;">&#39;</span><span>, (</span><span style="color:#ffb964;">req</span><span>, </span><span style="color:#ffb964;">res</span><span>) </span><span style="color:#8fbfdc;">=&gt; </span><span style="color:#ffb964;">res</span><span>.send(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">hello world!</span><span style="color:#556633;">&quot;</span><span>))
+</span><span>
+</span><span style="color:#888888;">// 将后端开在 8080 端口
+</span><span style="color:#ffb964;">app</span><span>.</span><span style="color:#fad07a;">listen</span><span>(</span><span style="color:#cf6a4c;">8080</span><span>)
+</span></code></pre>
+<p>于是我们测试一下。<br>
+在终端中输入如下命令即可运行 <code>index.js</code></p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">node</span><span> index.js
+</span></code></pre>
+<p>可以尝试在 Postman 中对 <code>http://localhost:8080/helloworld</code> 发送 Get 请求，验证响应是否正常</p>
+<p>正常的话 Express 脚手架就搭建成功了</p>
+<h2 id="express-zhong-jian-jian">Express 中间件</h2>
+<p>Express 每次处理 Request 都会经过所有的中间件，可以想像成流水线。因此可以利用它为 Express 添加新的功能</p>
+<p>而对于上文代码中的 <code>app</code>，调用 <code>app.use</code> 方法就能为 <code>app</code> 添加中间件</p>
+<h2 id="yin-ru-body-parser-zhong-jian-jian">引入 body-parser 中间件</h2>
+<p>这个中间件能将 HTTP 请求体中的 JSON 转换为 js 对象属性</p>
+<p>首先安装 <code>body-parser</code> 依赖</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">npm</span><span> install body-parser
+</span></code></pre>
+<p>接下来我们测试一下获取 body 的内容<br>
+修改 <code>index.js</code> 如下，并运行</p>
+<pre data-lang="js" style="background-color:#151515;color:#e8e8d3;" class="language-js "><code class="language-js" data-lang="js"><span style="color:#8fbfdc;">const </span><span style="color:#ffb964;">express </span><span>= require(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">express</span><span style="color:#556633;">&quot;</span><span>)
+</span><span style="color:#8fbfdc;">const </span><span style="color:#ffb964;">app </span><span>= </span><span style="color:#fad07a;">express</span><span>()
+</span><span>
+</span><span style="color:#888888;">// 添加 body-parser
+</span><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">bodyParser </span><span>= require(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">body-parser</span><span style="color:#556633;">&quot;</span><span>)
+</span><span style="color:#ffb964;">app</span><span>.</span><span style="color:#fad07a;">use</span><span>(</span><span style="color:#ffb964;">bodyParser</span><span>.</span><span style="color:#fad07a;">json</span><span>())
+</span><span style="color:#ffb964;">app</span><span>.</span><span style="color:#fad07a;">use</span><span>(</span><span style="color:#ffb964;">bodyParser</span><span>.</span><span style="color:#fad07a;">urlencoded</span><span>({ extended: false }))
+</span><span>
+</span><span style="color:#888888;">// 添加 post 请求并获取 body 的 json 数据
+</span><span style="color:#ffb964;">app</span><span>.</span><span style="color:#fad07a;">post</span><span>(</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">/helloworld</span><span style="color:#556633;">&#39;</span><span>, (</span><span style="color:#ffb964;">req</span><span>, </span><span style="color:#ffb964;">res</span><span>) </span><span style="color:#8fbfdc;">=&gt; </span><span style="color:#ffb964;">res</span><span>.send(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">You msg is: </span><span style="color:#556633;">&quot; </span><span>+ </span><span style="color:#ffb964;">req</span><span>.body.</span><span style="color:#ffb964;">msg</span><span>));
+</span><span>
+</span><span style="color:#ffb964;">app</span><span>.</span><span style="color:#fad07a;">listen</span><span>(</span><span style="color:#cf6a4c;">8080</span><span>)
+</span></code></pre>
+<p>Postman 中发送 post 请求，检查是否正确收到响应</p>
+<h2 id="yin-ru-express-session-zhong-jian-jian">引入 <code>express-session</code> 中间件</h2>
+<p>Session 是一种存储在后端的缓存数据，可以理解为以 id 索引的一块临时数据。前端将 id 存储在 Cookie 中，它把 id 传递给后端，后端就能根据 id 找到对应的 Session。它的安全性相对 Cookie 高很多，一般用于登陆、验证码等。<br>
+Session 可以简单存储在内存中，也可以存储在数据库中</p>
+<p>在 Express 中可以通过 <code>express-session</code> 中间件实现 Session 功能</p>
+<p>为了方便我们选择 MySQL 作为 Session 的存储方式（但一般情况都是用 Redis 这类内存数据库）</p>
+<p>它会使用我们最开始时建立的 MySQL 数据库 <code>hello_session</code><br>
+（<code>express-session</code> 会自动建表所以不用担心）</p>
+<p>然后测试一下看看<br>
+修改 <code>index.js</code> 如下，并运行</p>
+<pre data-lang="js" style="background-color:#151515;color:#e8e8d3;" class="language-js "><code class="language-js" data-lang="js"><span style="color:#8fbfdc;">const </span><span style="color:#ffb964;">express </span><span>= require(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">express</span><span style="color:#556633;">&quot;</span><span>)
+</span><span style="color:#8fbfdc;">const </span><span style="color:#ffb964;">app </span><span>= </span><span style="color:#fad07a;">express</span><span>()
+</span><span>
+</span><span style="color:#888888;">// 添加 express-session
+</span><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">session </span><span>= require(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">express-session</span><span style="color:#556633;">&quot;</span><span>)
+</span><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">mysqlStore </span><span>= require(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">express-mysql-session</span><span style="color:#556633;">&quot;</span><span>)
+</span><span style="color:#ffb964;">app</span><span>.</span><span style="color:#fad07a;">use</span><span>(</span><span style="color:#fad07a;">session</span><span>({
+</span><span>    store: new </span><span style="color:#ffb964;">mysqlStore</span><span>({
+</span><span>        host: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">localhost</span><span style="color:#556633;">&#39;</span><span>,
+</span><span>        port: </span><span style="color:#cf6a4c;">3306</span><span>,
+</span><span>        user: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">root</span><span style="color:#556633;">&#39;</span><span>,
+</span><span>        password: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">root</span><span style="color:#556633;">&#39;</span><span>,
+</span><span>        database: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">hello_session</span><span style="color:#556633;">&#39;
+</span><span>    }),
+</span><span>    secret: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">hello-secret</span><span style="color:#556633;">&#39;</span><span>,
+</span><span>    cookie: {
+</span><span>        maxAge: </span><span style="color:#cf6a4c;">1800000
+</span><span>    },
+</span><span>}))
+</span><span>
+</span><span style="color:#888888;">// 设置 session.hello
+</span><span style="color:#ffb964;">app</span><span>.get(</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">/set-session</span><span style="color:#556633;">&#39;</span><span>, (</span><span style="color:#ffb964;">req</span><span>, </span><span style="color:#ffb964;">res</span><span>) </span><span style="color:#8fbfdc;">=&gt; </span><span>{
+</span><span>    </span><span style="color:#ffb964;">req</span><span>.</span><span style="color:#ffb964;">session</span><span>.</span><span style="color:#ffb964;">hello </span><span>= </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Hello!</span><span style="color:#556633;">&quot;
+</span><span>    </span><span style="color:#ffb964;">res</span><span>.send(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">session.hello has been set.</span><span style="color:#556633;">&quot;</span><span>)
+</span><span>})
+</span><span style="color:#888888;">// 获取 session.hello 的值
+</span><span style="color:#ffb964;">app</span><span>.get(</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">/get-session</span><span style="color:#556633;">&#39;</span><span>, (</span><span style="color:#ffb964;">req</span><span>, </span><span style="color:#ffb964;">res</span><span>) </span><span style="color:#8fbfdc;">=&gt; </span><span>{
+</span><span>    </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">req</span><span>.</span><span style="color:#ffb964;">session</span><span>.</span><span style="color:#ffb964;">hello </span><span>== undefined)
+</span><span>        </span><span style="color:#ffb964;">res</span><span>.send(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">session.hello is undefined.</span><span style="color:#556633;">&quot;</span><span>)
+</span><span>    </span><span style="color:#8fbfdc;">else
+</span><span>        </span><span style="color:#ffb964;">res</span><span>.send(</span><span style="color:#ffb964;">req</span><span>.</span><span style="color:#ffb964;">session</span><span>.</span><span style="color:#ffb964;">hello</span><span>)
+</span><span>})
+</span><span>
+</span><span style="color:#ffb964;">app</span><span>.</span><span style="color:#fad07a;">listen</span><span>(</span><span style="color:#cf6a4c;">8080</span><span>)
+</span></code></pre>
+<p>解释：<br>
+对于同一个客户端，<code>req.session</code> 是相同的，它其实是根据客户端持有的 Session ID（如果没有，则会自动分配一个）找到的对应 Session。</p>
+<p>Postman 中直接请求 <code>get-session</code> 会收到 <code>session.hello is undefined.</code>，但是如果先请求 <code>set-session</code> 在 <code>get-session</code> 就会收到 <code>Hello!</code>。</p>
+<h2 id="kua-yu-chu-li">跨域处理</h2>
+<p>因为前后端分离，前端与后端会部署在不同的服务器或者同一台服务器的不同端口上，所以前端要访问后端接口就会产生跨域问题。</p>
+<p>而由于使用了 Session，前端需要将 Cookie 的内容传递给后端，跨域配置的安全性要求也就更高</p>
+<p>可以参考后文代码中配置示例</p>
+<h2 id="sheng-cheng-yan-zheng-ma">生成验证码</h2>
+<p>安装 <code>svg-captcha</code> 库</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">npm</span><span> install svg-captcha
+</span></code></pre>
+<p>尝试生成验证码<br>
+修改 <code>index.js</code> 如下并运行</p>
+<pre data-lang="js" style="background-color:#151515;color:#e8e8d3;" class="language-js "><code class="language-js" data-lang="js"><span style="color:#8fbfdc;">const </span><span style="color:#ffb964;">svgCaptcha </span><span>= require(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">svg-captcha</span><span style="color:#556633;">&quot;</span><span>)
+</span><span style="color:#8fbfdc;">let </span><span style="color:#ffb964;">captcha </span><span>= </span><span style="color:#ffb964;">svgCaptcha</span><span>.</span><span style="color:#fad07a;">create</span><span>({
+</span><span>        </span><span style="color:#888888;">// 翻转颜色
+</span><span>        inverse: false,
+</span><span>        </span><span style="color:#888888;">// 字体大小
+</span><span>        fontSize: </span><span style="color:#cf6a4c;">36</span><span>,
+</span><span>        </span><span style="color:#888888;">// 噪声线条数
+</span><span>        noise: </span><span style="color:#cf6a4c;">3</span><span>,
+</span><span>        </span><span style="color:#888888;">// 宽度
+</span><span>        width: </span><span style="color:#cf6a4c;">80</span><span>,
+</span><span>        </span><span style="color:#888888;">// 高度
+</span><span>        height: </span><span style="color:#cf6a4c;">30</span><span>,
+</span><span>    })
+</span><span style="color:#ffb964;">console</span><span>.log(</span><span style="color:#ffb964;">captcha</span><span>.text)
+</span><span style="color:#ffb964;">console</span><span>.log(</span><span style="color:#ffb964;">captcha</span><span>.data)
+</span></code></pre>
+<p>解释：<br>
+<code>svg-captcha</code> 的 <code>create</code> 方法生成一个验证码对象<br>
+它的 <code>text</code> 属性是验证码文本，<code>data</code> 属性是一个 svg 图像</p>
+<h2 id="md5-jia-mi">MD5 加密</h2>
+<p>MD5 加密其实就是一个哈希函数，只是他的哈希值长的又丑又长，不可逆<br>
+因此把用户的密码用 MD5 算法哈希后存储，就可以通过哈希值比对用户密码实现登陆，也没有人能知道密码原文</p>
+<p>安装 <code>utility</code> 依赖</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">npm</span><span> install utility
+</span></code></pre>
+<p>尝试加密<br>
+修改 <code>index.js</code> 如下，并运行</p>
+<pre data-lang="js" style="background-color:#151515;color:#e8e8d3;" class="language-js "><code class="language-js" data-lang="js"><span style="color:#8fbfdc;">const </span><span style="color:#ffb964;">utility </span><span>= require(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">utility</span><span style="color:#556633;">&quot;</span><span>)
+</span><span style="color:#8fbfdc;">function </span><span style="color:#fad07a;">encodePassword</span><span>(</span><span style="color:#ffb964;">pwd</span><span>) {
+</span><span>    </span><span style="color:#8fbfdc;">return </span><span style="color:#ffb964;">utility</span><span>.</span><span style="color:#fad07a;">md5</span><span>(</span><span style="color:#ffb964;">pwd </span><span>+ </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">hello express md5</span><span style="color:#556633;">&quot;</span><span>)
+</span><span>}
+</span><span>
+</span><span style="color:#ffb964;">console</span><span>.log(</span><span style="color:#fad07a;">encodePassword</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">test_password</span><span style="color:#556633;">&quot;</span><span>))
+</span></code></pre>
+<p>得到如下密文<br></p>
+<pre data-lang="txt" style="background-color:#151515;color:#e8e8d3;" class="language-txt "><code class="language-txt" data-lang="txt"><span>9c6481dbc7c568e6e0ed338c415db921
+</span></code></pre>
+<h2 id="lian-jie-mysql">连接 MySQL</h2>
+<p>这部分与 Express 无关</p>
+<p>这里会使用到我们最初建立的 <code>hello</code> 数据库及其中的 <code>user</code> 表</p>
+<p>尝试连接 MySQL 服务器，并添加一条测试记录<br>
+编辑 <code>index.js</code> 脚本如下</p>
+<pre data-lang="js" style="background-color:#151515;color:#e8e8d3;" class="language-js "><code class="language-js" data-lang="js"><span style="color:#8fbfdc;">const </span><span style="color:#ffb964;">mysql </span><span>= require(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">mysql</span><span style="color:#556633;">&quot;</span><span>)
+</span><span>
+</span><span style="color:#888888;">// 建立连接
+</span><span style="color:#8fbfdc;">const </span><span style="color:#ffb964;">mysqlConnect </span><span>= </span><span style="color:#ffb964;">mysql</span><span>.</span><span style="color:#fad07a;">createConnection</span><span>({
+</span><span>    host: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">localhost</span><span style="color:#556633;">&#39;</span><span>,
+</span><span>    port: </span><span style="color:#cf6a4c;">3306</span><span>,
+</span><span>    user: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">root</span><span style="color:#556633;">&#39;</span><span>,
+</span><span>    password: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">root</span><span style="color:#556633;">&#39;</span><span>,
+</span><span>    database: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">hello</span><span style="color:#556633;">&#39;
+</span><span>})
+</span><span style="color:#ffb964;">mysqlConnect</span><span>.</span><span style="color:#fad07a;">connect</span><span>()
+</span><span>
+</span><span style="color:#888888;">// 添加测试记录
+</span><span> </span><span style="color:#ffb964;">mysqlConnect</span><span>.</span><span style="color:#fad07a;">query</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">INSERT INTO `web_homework`.`user` (`username`, `password`) VALUES (?, ?);</span><span style="color:#556633;">&quot;</span><span>, [</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">test_username</span><span style="color:#556633;">&quot;</span><span>, </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">test_password</span><span style="color:#556633;">&quot;</span><span>], (</span><span style="color:#ffb964;">err</span><span>, </span><span style="color:#ffb964;">result</span><span>, </span><span style="color:#ffb964;">field</span><span>) </span><span style="color:#8fbfdc;">=&gt; </span><span>{ </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">err</span><span>) </span><span style="color:#ffb964;">console</span><span>.log(</span><span style="color:#ffb964;">err</span><span>) })
+</span></code></pre>
+<h2 id="gou-zao-wan-zheng-de-jiao-shou-jia">构造完整的脚手架</h2>
+<p>编辑 <code>index.js</code> 如下并运行</p>
+<pre data-lang="js" style="background-color:#151515;color:#e8e8d3;" class="language-js "><code class="language-js" data-lang="js"><span style="color:#8fbfdc;">const </span><span style="color:#ffb964;">express </span><span>= require(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">express</span><span style="color:#556633;">&quot;</span><span>)
+</span><span style="color:#8fbfdc;">const </span><span style="color:#ffb964;">app </span><span>= </span><span style="color:#fad07a;">express</span><span>()
+</span><span>
+</span><span style="color:#888888;">// 跨域
+</span><span style="color:#ffb964;">app</span><span>.all(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">*</span><span style="color:#556633;">&quot;</span><span>, </span><span style="color:#8fbfdc;">function </span><span>(</span><span style="color:#ffb964;">req</span><span>, </span><span style="color:#ffb964;">res</span><span>, </span><span style="color:#ffb964;">next</span><span>) {
+</span><span>    </span><span style="color:#ffb964;">res</span><span>.</span><span style="color:#fad07a;">header</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Access-Control-Allow-Credentials</span><span style="color:#556633;">&quot;</span><span>, </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">true</span><span style="color:#556633;">&quot;</span><span>);
+</span><span>    </span><span style="color:#ffb964;">res</span><span>.</span><span style="color:#fad07a;">header</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Access-Control-Allow-Origin</span><span style="color:#556633;">&quot;</span><span>, </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">null</span><span style="color:#556633;">&quot;</span><span>);
+</span><span>    </span><span style="color:#ffb964;">res</span><span>.</span><span style="color:#fad07a;">header</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Access-Control-Allow-Headers</span><span style="color:#556633;">&quot;</span><span>, </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Content-Type, Content-Length, Authorization, Accept,X-Requested-With</span><span style="color:#556633;">&quot;</span><span>);
+</span><span>    </span><span style="color:#ffb964;">res</span><span>.</span><span style="color:#fad07a;">header</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Access-Control-Allow-Methods</span><span style="color:#556633;">&quot;</span><span>, </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">PUT, POST, GET, DELETE, OPTIONS</span><span style="color:#556633;">&quot;</span><span>);
+</span><span>    </span><span style="color:#ffb964;">res</span><span>.</span><span style="color:#fad07a;">header</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">X-Powered-By</span><span style="color:#556633;">&quot;</span><span>, </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">3.2.1</span><span style="color:#556633;">&#39;</span><span>);
+</span><span>    </span><span style="color:#ffb964;">res</span><span>.</span><span style="color:#fad07a;">header</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Content-Type</span><span style="color:#556633;">&quot;</span><span>, </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">application/json; charset=utf-8</span><span style="color:#556633;">&quot;</span><span>);
+</span><span>    </span><span style="color:#fad07a;">next</span><span>();
+</span><span>});
+</span><span>
+</span><span style="color:#888888;">// 添加 body-parser 中间件
+</span><span style="color:#8fbfdc;">const </span><span style="color:#ffb964;">bodyParser </span><span>= require(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">body-parser</span><span style="color:#556633;">&quot;</span><span>)
+</span><span style="color:#ffb964;">app</span><span>.</span><span style="color:#fad07a;">use</span><span>(</span><span style="color:#ffb964;">bodyParser</span><span>.</span><span style="color:#fad07a;">json</span><span>())
+</span><span style="color:#ffb964;">app</span><span>.</span><span style="color:#fad07a;">use</span><span>(</span><span style="color:#ffb964;">bodyParser</span><span>.</span><span style="color:#fad07a;">urlencoded</span><span>({ extended: false }))
+</span><span>
+</span><span style="color:#888888;">// 添加 session 中间件
+</span><span style="color:#8fbfdc;">const </span><span style="color:#ffb964;">session </span><span>= require(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">express-session</span><span style="color:#556633;">&quot;</span><span>)
+</span><span style="color:#8fbfdc;">const </span><span style="color:#ffb964;">mysqlStore </span><span>= require(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">express-mysql-session</span><span style="color:#556633;">&quot;</span><span>)
+</span><span style="color:#ffb964;">app</span><span>.</span><span style="color:#fad07a;">use</span><span>(</span><span style="color:#fad07a;">session</span><span>({
+</span><span>    store: new </span><span style="color:#ffb964;">mysqlStore</span><span>({
+</span><span>        host: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">localhost</span><span style="color:#556633;">&#39;</span><span>,
+</span><span>        port: </span><span style="color:#cf6a4c;">3306</span><span>,
+</span><span>        user: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">root</span><span style="color:#556633;">&#39;</span><span>,
+</span><span>        password: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">root</span><span style="color:#556633;">&#39;</span><span>,
+</span><span>        database: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">hello_session</span><span style="color:#556633;">&#39;
+</span><span>    }),
+</span><span>    secret: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">web-homework-2019</span><span style="color:#556633;">&#39;</span><span>,
+</span><span>    resave: false,
+</span><span>    saveUninitialized: true,
+</span><span>    cookie: {
+</span><span>        maxAge: </span><span style="color:#cf6a4c;">1800000</span><span>,
+</span><span>        secure: false
+</span><span>    },
+</span><span>}))
+</span><span>
+</span><span style="color:#888888;">// 验证码库
+</span><span style="color:#8fbfdc;">const </span><span style="color:#ffb964;">svgCaptcha </span><span>= require(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">svg-captcha</span><span style="color:#556633;">&quot;</span><span>)
+</span><span style="color:#888888;">// MD5 加密
+</span><span style="color:#8fbfdc;">const </span><span style="color:#ffb964;">utility </span><span>= require(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">utility</span><span style="color:#556633;">&quot;</span><span>)
+</span><span style="color:#8fbfdc;">function </span><span style="color:#fad07a;">encodePassword</span><span>(</span><span style="color:#ffb964;">pwd</span><span>) {
+</span><span>    </span><span style="color:#8fbfdc;">return </span><span style="color:#ffb964;">utility</span><span>.</span><span style="color:#fad07a;">md5</span><span>(</span><span style="color:#ffb964;">pwd </span><span>+ </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">hello express md5</span><span style="color:#556633;">&quot;</span><span>)
+</span><span>}
+</span><span>
+</span><span style="color:#ffb964;">console</span><span>.log(</span><span style="color:#fad07a;">encodePassword</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">test_password</span><span style="color:#556633;">&quot;</span><span>))
+</span><span>
+</span><span style="color:#888888;">// mysql 配置
+</span><span style="color:#8fbfdc;">const </span><span style="color:#ffb964;">mysql </span><span>= require(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">mysql</span><span style="color:#556633;">&quot;</span><span>)
+</span><span style="color:#8fbfdc;">const </span><span style="color:#ffb964;">mysqlConnect </span><span>= </span><span style="color:#ffb964;">mysql</span><span>.</span><span style="color:#fad07a;">createConnection</span><span>({
+</span><span>    host: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">localhost</span><span style="color:#556633;">&#39;</span><span>,
+</span><span>    port: </span><span style="color:#cf6a4c;">3306</span><span>,
+</span><span>    user: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">root</span><span style="color:#556633;">&#39;</span><span>,
+</span><span>    password: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">root</span><span style="color:#556633;">&#39;</span><span>,
+</span><span>    database: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">hello</span><span style="color:#556633;">&#39;
+</span><span>})
+</span><span style="color:#ffb964;">mysqlConnect</span><span>.</span><span style="color:#fad07a;">connect</span><span>()
+</span><span>
+</span><span style="color:#888888;">// 注册
+</span><span style="color:#ffb964;">app</span><span>.</span><span style="color:#fad07a;">post</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">/user</span><span style="color:#556633;">&quot;</span><span>, (</span><span style="color:#ffb964;">req</span><span>, </span><span style="color:#ffb964;">res</span><span>, </span><span style="color:#ffb964;">next</span><span>) </span><span style="color:#8fbfdc;">=&gt; </span><span>{
+</span><span>    </span><span style="color:#8fbfdc;">let </span><span style="color:#ffb964;">username </span><span>= </span><span style="color:#ffb964;">req</span><span>.body.</span><span style="color:#ffb964;">username
+</span><span>    </span><span style="color:#8fbfdc;">let </span><span style="color:#ffb964;">password </span><span>= </span><span style="color:#ffb964;">req</span><span>.body.</span><span style="color:#ffb964;">password
+</span><span>    </span><span style="color:#8fbfdc;">let </span><span style="color:#ffb964;">captcha </span><span>= </span><span style="color:#ffb964;">req</span><span>.body.</span><span style="color:#ffb964;">captcha
+</span><span>    </span><span style="color:#888888;">// 验证输入合法
+</span><span>    </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">username</span><span>.length &lt; </span><span style="color:#cf6a4c;">6  </span><span style="color:#ffb964;">password</span><span>.length &lt; </span><span style="color:#cf6a4c;">6</span><span>) { </span><span style="color:#ffb964;">res</span><span>.send({ success: false, data: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">账号密码都应该大于等于六位</span><span style="color:#556633;">&quot; </span><span>}); </span><span style="color:#8fbfdc;">return </span><span>}
+</span><span>    </span><span style="color:#888888;">// 认证验证码
+</span><span>    </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">req</span><span>.</span><span style="color:#ffb964;">session</span><span>.</span><span style="color:#ffb964;">captcha </span><span>== undefined  </span><span style="color:#ffb964;">captcha</span><span>.toLowerCase() != </span><span style="color:#ffb964;">req</span><span>.</span><span style="color:#ffb964;">session</span><span>.</span><span style="color:#ffb964;">captcha</span><span>.toLowerCase()) { </span><span style="color:#ffb964;">res</span><span>.send({ success: false, data: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">验证码错误</span><span style="color:#556633;">&quot; </span><span>}); </span><span style="color:#8fbfdc;">return </span><span>}
+</span><span>    </span><span style="color:#888888;">// MD5 并尝试插入
+</span><span>    </span><span style="color:#ffb964;">password </span><span>= </span><span style="color:#fad07a;">encodePassword</span><span>(</span><span style="color:#ffb964;">password</span><span>)
+</span><span>    </span><span style="color:#ffb964;">mysqlConnect</span><span>.</span><span style="color:#fad07a;">query</span><span>(</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">SELECT id FROM `hello`.`user` WHERE `username` = ?</span><span style="color:#556633;">&#39;</span><span>, [</span><span style="color:#ffb964;">username</span><span>], (</span><span style="color:#ffb964;">err</span><span>, </span><span style="color:#ffb964;">result</span><span>, </span><span style="color:#ffb964;">field</span><span>) </span><span style="color:#8fbfdc;">=&gt; </span><span>{
+</span><span>        </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">err</span><span>) { </span><span style="color:#ffb964;">res</span><span>.send({ success: false, data: </span><span style="color:#ffb964;">err </span><span>}); </span><span style="color:#8fbfdc;">return </span><span>}
+</span><span>        </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">result</span><span>.length != </span><span style="color:#cf6a4c;">0</span><span>) { </span><span style="color:#ffb964;">res</span><span>.send({ success: false, data: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">账户已存在</span><span style="color:#556633;">&quot; </span><span>}); </span><span style="color:#8fbfdc;">return </span><span>}
+</span><span>        </span><span style="color:#ffb964;">mysqlConnect</span><span>.</span><span style="color:#fad07a;">query</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">INSERT INTO `hello`.`user` (`username`, `password`) VALUES (?, ?);</span><span style="color:#556633;">&quot;</span><span>, [</span><span style="color:#ffb964;">username</span><span>, </span><span style="color:#ffb964;">password</span><span>], (</span><span style="color:#ffb964;">err</span><span>, </span><span style="color:#ffb964;">result</span><span>, </span><span style="color:#ffb964;">field</span><span>) </span><span style="color:#8fbfdc;">=&gt; </span><span>{
+</span><span>            </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">err</span><span>) { </span><span style="color:#ffb964;">res</span><span>.send({ success: false, data: </span><span style="color:#ffb964;">err </span><span>}); </span><span style="color:#8fbfdc;">return </span><span>}
+</span><span>            </span><span style="color:#8fbfdc;">else
+</span><span>                </span><span style="color:#ffb964;">res</span><span>.send({ success: true })
+</span><span>        })
+</span><span>    })
+</span><span>})
+</span><span>
+</span><span style="color:#888888;">// 登陆
+</span><span style="color:#ffb964;">app</span><span>.</span><span style="color:#fad07a;">post</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">/token</span><span style="color:#556633;">&quot;</span><span>, (</span><span style="color:#ffb964;">req</span><span>, </span><span style="color:#ffb964;">res</span><span>, </span><span style="color:#ffb964;">next</span><span>) </span><span style="color:#8fbfdc;">=&gt; </span><span>{
+</span><span>    </span><span style="color:#8fbfdc;">let </span><span style="color:#ffb964;">username </span><span>= </span><span style="color:#ffb964;">req</span><span>.body.</span><span style="color:#ffb964;">username
+</span><span>    </span><span style="color:#8fbfdc;">let </span><span style="color:#ffb964;">password </span><span>= </span><span style="color:#ffb964;">req</span><span>.body.</span><span style="color:#ffb964;">password
+</span><span>    </span><span style="color:#8fbfdc;">let </span><span style="color:#ffb964;">captcha </span><span>= </span><span style="color:#ffb964;">req</span><span>.body.</span><span style="color:#ffb964;">captcha
+</span><span>    </span><span style="color:#888888;">// 验证输入合法
+</span><span>    </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">username</span><span>.length &lt; </span><span style="color:#cf6a4c;">6  </span><span style="color:#ffb964;">password</span><span>.length &lt; </span><span style="color:#cf6a4c;">6</span><span>) { </span><span style="color:#ffb964;">res</span><span>.send({ success: false, data: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">账号密码都应该大于等于六位</span><span style="color:#556633;">&quot; </span><span>}); </span><span style="color:#8fbfdc;">return </span><span>}
+</span><span>    </span><span style="color:#888888;">// 认证验证码
+</span><span>    </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">req</span><span>.</span><span style="color:#ffb964;">session</span><span>.</span><span style="color:#ffb964;">captcha </span><span>== undefined  </span><span style="color:#ffb964;">captcha</span><span>.toLowerCase() != </span><span style="color:#ffb964;">req</span><span>.</span><span style="color:#ffb964;">session</span><span>.</span><span style="color:#ffb964;">captcha</span><span>.toLowerCase()) { </span><span style="color:#ffb964;">res</span><span>.send({ success: false, data: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">验证码错误</span><span style="color:#556633;">&quot; </span><span>}); </span><span style="color:#8fbfdc;">return </span><span>}
+</span><span>    </span><span style="color:#888888;">// MD5 并验证
+</span><span>    </span><span style="color:#ffb964;">password </span><span>= </span><span style="color:#fad07a;">encodePassword</span><span>(</span><span style="color:#ffb964;">password</span><span>)
+</span><span>    </span><span style="color:#ffb964;">mysqlConnect</span><span>.</span><span style="color:#fad07a;">query</span><span>(</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">SELECT password FROM `hello`.`user` WHERE `username` = ?</span><span style="color:#556633;">&#39;</span><span>, [</span><span style="color:#ffb964;">username</span><span>], (</span><span style="color:#ffb964;">err</span><span>, </span><span style="color:#ffb964;">result</span><span>, </span><span style="color:#ffb964;">field</span><span>) </span><span style="color:#8fbfdc;">=&gt; </span><span>{
+</span><span>        </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">err</span><span>) { </span><span style="color:#ffb964;">res</span><span>.send({ success: true, data: </span><span style="color:#ffb964;">err </span><span>}); </span><span style="color:#8fbfdc;">return </span><span>}
+</span><span>        </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">result</span><span>.length == </span><span style="color:#cf6a4c;">0</span><span>) { </span><span style="color:#ffb964;">res</span><span>.send({ success: false, data: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">账户名不存在</span><span style="color:#556633;">&quot; </span><span>}); </span><span style="color:#8fbfdc;">return </span><span>}
+</span><span>        </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">result</span><span>[</span><span style="color:#cf6a4c;">0</span><span>].</span><span style="color:#ffb964;">password </span><span>!= </span><span style="color:#ffb964;">password</span><span>) { </span><span style="color:#ffb964;">res</span><span>.send({ success: false, data: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">密码错误</span><span style="color:#556633;">&quot; </span><span>}); </span><span style="color:#8fbfdc;">return </span><span>}
+</span><span>        </span><span style="color:#ffb964;">req</span><span>.</span><span style="color:#ffb964;">session</span><span>.</span><span style="color:#ffb964;">username </span><span>= </span><span style="color:#ffb964;">username
+</span><span>        </span><span style="color:#ffb964;">res</span><span>.send({ success: true })
+</span><span>    })
+</span><span>})
+</span><span>
+</span><span style="color:#888888;">// 注销
+</span><span style="color:#ffb964;">app</span><span>.delete(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">/token</span><span style="color:#556633;">&quot;</span><span>, (</span><span style="color:#ffb964;">req</span><span>, </span><span style="color:#ffb964;">res</span><span>, </span><span style="color:#ffb964;">next</span><span>) </span><span style="color:#8fbfdc;">=&gt; </span><span>{
+</span><span>    </span><span style="color:#ffb964;">req</span><span>.</span><span style="color:#ffb964;">session</span><span>.</span><span style="color:#ffb964;">username </span><span>= undefined
+</span><span>    </span><span style="color:#ffb964;">res</span><span>.send({ success: true })
+</span><span>})
+</span><span>
+</span><span style="color:#888888;">// 获取验证码接口
+</span><span style="color:#ffb964;">app</span><span>.get(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">/captcha</span><span style="color:#556633;">&quot;</span><span>, (</span><span style="color:#ffb964;">req</span><span>, </span><span style="color:#ffb964;">res</span><span>) </span><span style="color:#8fbfdc;">=&gt; </span><span>{
+</span><span>    </span><span style="color:#8fbfdc;">let </span><span style="color:#ffb964;">captcha </span><span>= </span><span style="color:#ffb964;">svgCaptcha</span><span>.</span><span style="color:#fad07a;">create</span><span>({
+</span><span>        </span><span style="color:#888888;">// 翻转颜色
+</span><span>        inverse: false,
+</span><span>        </span><span style="color:#888888;">// 字体大小
+</span><span>        fontSize: </span><span style="color:#cf6a4c;">36</span><span>,
+</span><span>        </span><span style="color:#888888;">// 噪声线条数
+</span><span>        noise: </span><span style="color:#cf6a4c;">3</span><span>,
+</span><span>        </span><span style="color:#888888;">// 宽度
+</span><span>        width: </span><span style="color:#cf6a4c;">80</span><span>,
+</span><span>        </span><span style="color:#888888;">// 高度
+</span><span>        height: </span><span style="color:#cf6a4c;">30</span><span>,
+</span><span>    })
+</span><span>    </span><span style="color:#ffb964;">req</span><span>.</span><span style="color:#ffb964;">session</span><span>.</span><span style="color:#ffb964;">captcha </span><span>= </span><span style="color:#ffb964;">captcha</span><span>.text;
+</span><span>    </span><span style="color:#ffb964;">res</span><span>.</span><span style="color:#fad07a;">type</span><span>(</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">svg</span><span style="color:#556633;">&#39;</span><span>);
+</span><span>    </span><span style="color:#ffb964;">res</span><span>.send({ success: true, data: </span><span style="color:#ffb964;">captcha</span><span>.data });
+</span><span>})
+</span><span>
+</span><span style="color:#888888;">// 获取用户名
+</span><span style="color:#ffb964;">app</span><span>.get(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">/username</span><span style="color:#556633;">&quot;</span><span>, (</span><span style="color:#ffb964;">req</span><span>, </span><span style="color:#ffb964;">res</span><span>) </span><span style="color:#8fbfdc;">=&gt; </span><span>{
+</span><span>    </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">req</span><span>.</span><span style="color:#ffb964;">session</span><span>.</span><span style="color:#ffb964;">username </span><span>== undefined)
+</span><span>        </span><span style="color:#ffb964;">res</span><span>.send({ success: false, data: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">尚未登陆</span><span style="color:#556633;">&quot; </span><span>})
+</span><span>    </span><span style="color:#8fbfdc;">else
+</span><span>        </span><span style="color:#ffb964;">res</span><span>.send({ success: true, data: </span><span style="color:#ffb964;">req</span><span>.</span><span style="color:#ffb964;">session</span><span>.</span><span style="color:#ffb964;">username </span><span>})
+</span><span>})
+</span><span>
+</span><span style="color:#ffb964;">app</span><span>.</span><span style="color:#fad07a;">listen</span><span>(</span><span style="color:#cf6a4c;">8080</span><span>)
+</span></code></pre>
+<p>注释很详细，结合前文的科普应该不难理解了</p>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/201912152020/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">支持 .NET Core 以及 Unity 的轻量级可靠 UDP 库 LiteNetLib 介绍</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/201912181916/">
+                                <span class="button__text">Docker 下使用 Let&#x27;s Encrypt 与 nginx 搭建支持 HTTPS 的 WordPress 博客</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

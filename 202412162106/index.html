@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>openGauss-server 构建、安装、运行与调试 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="openGauss-server 构建、安装、运行与调试 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202412162106/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="openGauss-server 构建、安装、运行与调试 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202412162106/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202412162106/">openGauss-server 构建、安装、运行与调试</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2024-12-16
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/opengauss/">#openGauss</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/shu-ju-ku/">#数据库</a></span>
+    
+
+        <div class="post-content">
+            <p><code>openGauss</code> 是一个开源的关系型数据库，兼容多个主流数据库的语法。
+本文以 <code>master</code> 分支为例，记录 <code>openGauss-server</code> 的构建、安装、运行与调试。
+参考的是官方文档：<a href="https://gitcode.com/opengauss/openGauss-server#%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4%E7%BC%96%E8%AF%91%E4%BB%A3%E7%A0%81">https://gitcode.com/opengauss/openGauss-server#%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4%E7%BC%96%E8%AF%91%E4%BB%A3%E7%A0%81</a>。</p>
+<span id="continue-reading"></span><h2 id="huan-jing">环境</h2>
+<p>可以通过一些命令查询 Linux 发行版信息与 CPU 架构：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#888888;"># 查询 CPU 架构
+</span><span style="color:#ffb964;">arch
+</span><span style="color:#ffb964;">uname -a
+</span><span>
+</span><span style="color:#888888;"># 查询发行版信息
+</span><span style="color:#ffb964;">distro
+</span><span style="color:#ffb964;">cat</span><span> /etc/system-release
+</span></code></pre>
+<p>本文使用的环境是：</p>
+<ul>
+<li><code>aarch64</code></li>
+<li>openEuler 20.03 LTS</li>
+</ul>
+<h2 id="huan-jing-bian-liang">环境变量</h2>
+<p>为了便于描述，本文的操作都会在一个工作路径中执行。
+所以直接给这个路径配一个环境变量 <code>OG_WORKSPACE</code>：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">OG_WORKSPACE</span><span>=</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/og
+</span></code></pre>
+<p>于是继续配置其他环境变量：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#888888;"># 源码路径
+</span><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">CODE_BASE</span><span>=</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">OG_WORKSPACE</span><span style="color:#99ad6a;">}/openGauss-server
+</span><span>
+</span><span style="color:#888888;"># 第三方依赖包路径
+</span><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">BINARYLIBS</span><span>=</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">OG_WORKSPACE</span><span style="color:#99ad6a;">}/binarylibs
+</span><span>
+</span><span style="color:#888888;"># GCC 编译器相关环境变量
+</span><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">GCC_HOME</span><span>=</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">BINARYLIBS</span><span style="color:#99ad6a;">}/buildtools/gcc10.3
+</span><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">CC</span><span>=</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">GCC_HOME</span><span style="color:#99ad6a;">}/gcc/bin/gcc
+</span><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">CXX</span><span>=</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">GCC_HOME</span><span style="color:#99ad6a;">}/gcc/bin/g++
+</span><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">LD_LIBRARY_PATH</span><span>=</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">GCC_HOME</span><span style="color:#99ad6a;">}/gcc/lib64:${</span><span style="color:#ffb964;">GCC_HOME</span><span style="color:#99ad6a;">}/isl/lib:${</span><span style="color:#ffb964;">GCC_HOME</span><span style="color:#99ad6a;">}/mpc/lib/:${</span><span style="color:#ffb964;">GCC_HOME</span><span style="color:#99ad6a;">}/mpfr/lib/:${</span><span style="color:#ffb964;">GCC_HOME</span><span style="color:#99ad6a;">}/gmp/lib/:${</span><span style="color:#ffb964;">LD_LIBRARY_PATH</span><span style="color:#99ad6a;">}
+</span><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">PATH</span><span>=</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">GCC_HOME</span><span style="color:#99ad6a;">}/gcc/bin:${</span><span style="color:#ffb964;">PATH</span><span style="color:#99ad6a;">}
+</span><span>
+</span><span style="color:#888888;"># 数据库相关环境变量
+</span><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">GAUSSHOME</span><span>=</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">OG_WORKSPACE</span><span style="color:#99ad6a;">}/install
+</span><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">PGDATA</span><span>=</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">OG_WORKSPACE</span><span style="color:#99ad6a;">}/data
+</span><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">PGPORT</span><span>=</span><span style="color:#99ad6a;">2333
+</span><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">PGDATABASE</span><span>=</span><span style="color:#99ad6a;">postgres
+</span><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">LD_LIBRARY_PATH</span><span>=</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">GAUSSHOME</span><span style="color:#99ad6a;">}/lib:${</span><span style="color:#ffb964;">LD_LIBRARY_PATH</span><span style="color:#99ad6a;">}
+</span><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">PATH</span><span>=</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">GAUSSHOME</span><span style="color:#99ad6a;">}/bin:${</span><span style="color:#ffb964;">PATH</span><span style="color:#99ad6a;">}
+</span></code></pre>
+<h2 id="xia-zai-di-san-fang-yi-lai-bao">下载第三方依赖包</h2>
+<p>参考 <code>openGauss-server</code> 仓中 <code>README</code> 文档的说明，我们需要依据上文中查询出的 CPU 架构与发行版信息，下载对应的预编译第三方依赖包。
+文档链接是 <a href="https://gitcode.com/opengauss/openGauss-server/#%E4%B8%8B%E8%BD%BDopengauss">https://gitcode.com/opengauss/openGauss-server/#%E4%B8%8B%E8%BD%BDopengauss</a>。
+依据上文查询出的环境信息，这里需要下载 <code>master</code> 分支的 <code>openEuler_arm</code> 依赖包。
+下载好了之后解压，再把解压出来的目录重命名为 <code>binarylibs</code>。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>cd ${</span><span style="color:#ffb964;">OG_WORKSPACE</span><span>}
+</span><span style="color:#ffb964;">wget</span><span> https://opengauss.obs.cn-south-1.myhuaweicloud.com/latest/binarylibs/gcc10.3/openGauss-third_party_binarylibs_openEuler_arm.tar.gz
+</span><span style="color:#ffb964;">tar -zxf</span><span> openGauss-third_party_binarylibs_openEuler_arm.tar.gz
+</span><span style="color:#ffb964;">mv</span><span> openGauss-third_party_binarylibs_openEuler_arm binarylibs
+</span></code></pre>
+<p>需要注意的是，这个依赖包已经自带了 GCC，所以直接通过上文配置好的环境变量使用即可。
+可以尝试用 <code>g++ --version</code> 验证第三方依赖包与环境变量是否正常。</p>
+<h2 id="gou-jian-bing-an-zhuang-opengauss-server">构建并安装 <code>openGauss-server</code></h2>
+<p>先把代码仓 clone 下来：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>cd ${</span><span style="color:#ffb964;">OG_WORKSPACE</span><span>}
+</span><span style="color:#ffb964;">git</span><span> clone https://gitcode.com/opengauss/openGauss-server.git
+</span></code></pre>
+<p>然后进入 clone 下来的源码路径：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>cd ${</span><span style="color:#ffb964;">CODE_BASE</span><span>}
+</span></code></pre>
+<p>接下来使用 <code>configure</code> 生成构建脚本。
+这里需要注意一下，目前 openGauss 在第三方依赖包中给不同 CPU 架构提供的 GCC 版本是不同的。
+可以直接用 <code>g++ --version</code> 查出来。
+比如 <code>aarch64</code> 依赖包中提供的版本是 10.3.1，而 <code>x86_64</code> 的是 10.3.0。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#888888;"># 生成 debug 版本构建脚本
+</span><span style="color:#ffb964;">./configure </span><span>\
+</span><span style="color:#ffb964;">  --gcc-version</span><span>=10.3.1 CC=g++ CFLAGS=</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">-O0 -g3</span><span style="color:#556633;">&#39; </span><span>\
+</span><span style="color:#ffb964;">  --prefix</span><span>=${</span><span style="color:#ffb964;">GAUSSHOME</span><span>}</span><span style="color:#ffb964;"> --3rd</span><span>=${</span><span style="color:#ffb964;">BINARYLIBS</span><span>} \
+</span><span style="color:#ffb964;">  --enable-debug --enable-cassert --enable-thread-safety </span><span>\
+</span><span style="color:#ffb964;">  --with-readline --without-zlib
+</span><span>
+</span><span style="color:#888888;"># 生成带 ASan 的 debug 版本构建脚本
+</span><span style="color:#ffb964;">./configure </span><span>\
+</span><span style="color:#ffb964;">  --gcc-version</span><span>=10.3.1 CC=g++ CFLAGS=</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">-O0 -g3</span><span style="color:#556633;">&#39; </span><span>\
+</span><span style="color:#ffb964;">  --prefix</span><span>=${</span><span style="color:#ffb964;">GAUSSHOME</span><span>}</span><span style="color:#ffb964;"> --3rd</span><span>=${</span><span style="color:#ffb964;">BINARYLIBS</span><span>} \
+</span><span style="color:#ffb964;">  --enable-debug --enable-cassert --enable-thread-safety </span><span>\
+</span><span style="color:#ffb964;">  --with-readline --without-zlib --enable-memory-check
+</span><span>
+</span><span style="color:#888888;"># 生成 release 版本构建脚本
+</span><span style="color:#ffb964;">./configure </span><span>\
+</span><span style="color:#ffb964;">  --gcc-version</span><span>=10.3.1 CC=g++ CFLAGS=</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">-O2 -g3</span><span style="color:#556633;">&quot; </span><span>\
+</span><span style="color:#ffb964;">  --prefix</span><span>=${</span><span style="color:#ffb964;">GAUSSHOME</span><span>}</span><span style="color:#ffb964;"> --3rd</span><span>=${</span><span style="color:#ffb964;">BINARYLIBS</span><span>} \
+</span><span style="color:#ffb964;">  --enable-thread-safety </span><span>\
+</span><span style="color:#ffb964;">  --with-readline --without-zlib
+</span></code></pre>
+<p>于是构建并安装即可：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">make -s -j</span><span> 8 &amp;&amp; </span><span style="color:#ffb964;">make</span><span> install
+</span></code></pre>
+<p>如果之前的环境变量配置正确，可以在 <code>${GAUSSHOME}</code> 路径下面找到安装好的文件。
+二进制可执行文件在 <code>${GAUSSHOME}/bin</code> 里面；动静态库在 <code>${GAUSSHOME}/lib</code> 里面。
+此时可以通过 <code>gaussdb --version</code> 或者 <code>gsql --version</code> 确认安装是否正常。</p>
+<h2 id="gou-jian-bing-an-zhuang-dolphin">构建并安装 dolphin</h2>
+<p>Dolphin 插件的功能是兼容 MySQL 的语法。
+构建并安装 dolphin 插件前需要先参考上文安装 openGauss。
+其过程跟上文类似，需要注意的是要把 <code>Plugin</code> 仓中的 <code>dolphin</code> 目录拷贝到源码路径里的 <code>contrib</code> 目录中。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>cd ${</span><span style="color:#ffb964;">OG_WORKSPACE</span><span>}
+</span><span style="color:#ffb964;">git</span><span> clone https://gitcode.com/opengauss/Plugin.git
+</span><span>
+</span><span style="color:#ffb964;">cp -r </span><span>${</span><span style="color:#ffb964;">OG_WORKSPACE</span><span>}/Plugin/contrib/dolphin ${</span><span style="color:#ffb964;">CODE_BASE</span><span>}/contrib
+</span><span>
+</span><span>cd ${</span><span style="color:#ffb964;">CODE_BASE</span><span>}/contrib/dolphin
+</span><span style="color:#ffb964;">make -s -j</span><span> 8 &amp;&amp; </span><span style="color:#ffb964;">make</span><span> install
+</span></code></pre>
+<p>如果安装成功的话，可以在 <code>${GAUSSHOME}/lib/postgresql</code> 里面看到 <code>dolphin.so</code>。</p>
+<h2 id="chu-shi-hua-shu-ju-ku">初始化数据库</h2>
+<p>我们可以通过 <code>gs_initdb</code> 初始化数据库。
+这个命令会建立一个目录，数据库所有的配置与持久化数据文件都会存储在这个目录中。
+这个目录的路径可以通过 <code>-D</code> 参数指定：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">gs_initdb -D </span><span>${</span><span style="color:#ffb964;">PGDATA</span><span>}</span><span style="color:#ffb964;"> --nodename</span><span>=single_node</span><span style="color:#ffb964;"> -w </span><span>&lt;password&gt;
+</span></code></pre>
+<p>我们也可以通过环境变量 <code>${PGDATA}</code> 指定这个路径。
+实际上在配置了上文的 <code>${PGDATA}</code> 环境变量之后，就可以省略掉 <code>-D</code> 参数：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">gs_initdb --nodename</span><span>=single_node</span><span style="color:#ffb964;"> -w </span><span>&lt;password&gt;
+</span></code></pre>
+<p>如果需要修改数据库后端的监听端口号，可以修改 <code>${PGDATA}/postgresql.conf</code> 里的 <code>port</code> 参数。
+但由于我们在上文已经配置了环境变量 <code>${PGPORT}</code>，就不需要再修改配置文件了。</p>
+<p>如果需要允许远程连接，可以修改 <code>${PGDATA}/pg_hba.conf</code>。</p>
+<h2 id="yun-xing-shu-ju-ku">运行数据库</h2>
+<p>这里提供数据库启动、停止、重启的命令，由于存在环境变量 <code>${PGDATA}</code>，这里所有的 <code>-D</code> 参数均可省略。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">gs_ctl</span><span> start</span><span style="color:#ffb964;"> -D </span><span>${</span><span style="color:#ffb964;">PGDATA</span><span>}
+</span><span style="color:#ffb964;">gs_ctl</span><span> stop</span><span style="color:#ffb964;"> -D </span><span>${</span><span style="color:#ffb964;">PGDATA</span><span>}
+</span><span style="color:#ffb964;">gs_ctl</span><span> restart</span><span style="color:#ffb964;"> -D </span><span>${</span><span style="color:#ffb964;">PGDATA</span><span>}
+</span><span>
+</span><span style="color:#ffb964;">gs_ctl</span><span> start
+</span><span style="color:#ffb964;">gs_ctl</span><span> stop
+</span><span style="color:#ffb964;">gs_ctl</span><span> restart
+</span></code></pre>
+<p>此外，也可以使用 <code>gaussdb -D ${PGDATA}</code> 或 <code>gaussdb</code> 直接在前台启动数据库，要停止的话按 <code>Ctrl+C</code> 即可。
+这种启动方式可以直接看到运行过程中的日志输出。
+如果需要通过调试器启动数据库，也需要使用这种启动方式。</p>
+<h2 id="lian-jie-shu-ju-ku">连接数据库</h2>
+<p>可以通过 <code>openGauss-server</code> 安装后自带的 <code>gsql</code> 连接数据库。
+使用 <code>-d</code> 参数或环境变量 <code>${PGDATABASE}</code> 指定数据库名；使用 <code>-p</code> 参数或环境变量 <code>${PGPORT}</code> 指定端口号。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">gsql -r -d </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">PGDATABASE</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;</span><span style="color:#ffb964;"> -p </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">PGPORT</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#ffb964;">gsql -r
+</span></code></pre>
+<p>可以尝试查询一下版本号：</p>
+<pre data-lang="sql" style="background-color:#151515;color:#e8e8d3;" class="language-sql "><code class="language-sql" data-lang="sql"><span>SELECT version();
+</span></code></pre>
+<h2 id="chuang-jian-b-ku-yi-jian-rong-mysql-yu-fa">创建 B 库以兼容 MySQL 语法</h2>
+<pre data-lang="sql" style="background-color:#151515;color:#e8e8d3;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#888888;">-- 创建 B 库
+</span><span>CREATE DATABASE compat_b DBCOMPATIBILITY &#39;</span><span style="color:#fad07a;">B</span><span>&#39;;
+</span><span>
+</span><span style="color:#888888;">-- 配置数据库级别 B 库常用参数
+</span><span>ALTER DATABASE compat_b SET enable_set_variable_b_format TO ON;
+</span><span>ALTER DATABASE compat_b SET </span><span style="color:#7697d6;">dolphin</span><span>.</span><span style="color:#7697d6;">lower_case_table_names</span><span> TO </span><span style="color:#cf6a4c;">0</span><span>;
+</span><span>ALTER DATABASE compat_b SET </span><span style="color:#7697d6;">dolphin</span><span>.</span><span style="color:#7697d6;">b_compatibility_mode</span><span> TO ON;
+</span><span>
+</span><span style="color:#888888;">-- 配置系统级别 B 库常用参数
+</span><span>ALTER SYSTEM SET enable_dolphin_proto TO ON;
+</span><span>ALTER SYSTEM SET dolphin_server_port TO </span><span style="color:#cf6a4c;">3306</span><span>;
+</span></code></pre>
+<p>这里由于修改了系统级别的 GUC 参数，需要重启一下数据库，比如直接：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">gs_ctl</span><span> restart
+</span></code></pre>
+<p>有时经常会见到提示 3306 端口被占用，导致重启失败。
+直接打开 <code>${PGDATA}/postgresql.conf</code>，修改 <code>dolphin_server_port</code> 参数随便换个端口号就行。</p>
+<p>重启后可以连到刚刚创建的 B 库上面：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">gsql -r -d</span><span> compat_b
+</span></code></pre>
+<p>只有在连接到 B 库的情况下 dolphin 插件才会加载，所以可以用 <code>\dx</code> 元命令确认一下 dolphin 插件是否正常：</p>
+<pre data-lang="sql" style="background-color:#151515;color:#e8e8d3;" class="language-sql "><code class="language-sql" data-lang="sql"><span>\dx dolphin
+</span></code></pre>
+<h2 id="diao-shi">调试</h2>
+<p>使用 VS Code 调试，需要安装 C/C++ 插件。
+可以通过调试器启动 <code>gaussdb</code> 进程直接运行数据库；如果数据库已在运行，也可以直接 attach 上去。
+有时候我们还会需要调试 <code>gsql</code> 客户端。
+如果前面环境变量配置正确，可以直接使用这个 <code>launch.json</code>：</p>
+<pre data-lang="json" style="background-color:#151515;color:#e8e8d3;" class="language-json "><code class="language-json" data-lang="json"><span>{
+</span><span>    </span><span style="color:#888888;">// Use IntelliSense to learn about possible attributes.
+</span><span>    </span><span style="color:#888888;">// Hover to view descriptions of existing attributes.
+</span><span>    </span><span style="color:#888888;">// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+</span><span>    </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">version</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">0.2.0</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>    </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">configurations</span><span style="color:#556633;">&quot;</span><span>: [
+</span><span>        {
+</span><span>            </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">name</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">(gdb) Attach gaussdb</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>            </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">type</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">cppdbg</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>            </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">request</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">attach</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>            </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">program</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${env:GAUSSHOME}/bin/gaussdb</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>            </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">MIMode</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">gdb</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>            </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">miDebuggerArgs</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">-ex &#39;handle SIGUSR2 nostop noprint pass&#39; -ex &#39;set print thread-events off&#39; -ex &#39;set print elements 0&#39;</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>            </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">setupCommands</span><span style="color:#556633;">&quot;</span><span>: [
+</span><span>                {
+</span><span>                    </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">description</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Enable pretty-printing for gdb</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>                    </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">text</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">-enable-pretty-printing</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>                    </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">ignoreFailures</span><span style="color:#556633;">&quot;</span><span>: true
+</span><span>                }
+</span><span>            ]
+</span><span>        },
+</span><span>        {
+</span><span>            </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">name</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">(gdb) Launch guassdb</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>            </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">type</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">cppdbg</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>            </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">request</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">launch</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>            </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">program</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${env:GAUSSHOME}/bin/gaussdb</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>            </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">stopAtEntry</span><span style="color:#556633;">&quot;</span><span>: false,
+</span><span>            </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">cwd</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${workspaceFolder}</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>            </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">MIMode</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">gdb</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>            </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">miDebuggerArgs</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">-ex &#39;handle SIGUSR2 nostop noprint pass&#39; -ex &#39;set print thread-events off&#39; -ex &#39;set print elements 0&#39;</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>            </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">setupCommands</span><span style="color:#556633;">&quot;</span><span>: [
+</span><span>                {
+</span><span>                    </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">description</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Enable pretty-printing for gdb</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>                    </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">text</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">-enable-pretty-printing</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>                    </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">ignoreFailures</span><span style="color:#556633;">&quot;</span><span>: true
+</span><span>                }
+</span><span>            ]
+</span><span>        },
+</span><span>        {
+</span><span>            </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">name</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">(gdb) Attach gsql</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>            </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">type</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">cppdbg</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>            </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">request</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">attach</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>            </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">program</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${env:GAUSSHOME}/bin/gsql</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>            </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">MIMode</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">gdb</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>            </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">miDebuggerArgs</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">-ex &#39;handle SIGINT nostop noprint pass&#39;</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>            </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">setupCommands</span><span style="color:#556633;">&quot;</span><span>: [
+</span><span>                {
+</span><span>                    </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">description</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Enable pretty-printing for gdb</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>                    </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">text</span><span style="color:#556633;">&quot;</span><span>: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">-enable-pretty-printing</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>                    </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">ignoreFailures</span><span style="color:#556633;">&quot;</span><span>: true
+</span><span>                }
+</span><span>            ]
+</span><span>        }
+</span><span>    ]
+</span><span>}
+</span></code></pre>
+<p>这个 <code>launch.json</code> 提供三个调试配置：</p>
+<ul>
+<li>
+<p><code>(gdb) Attach gaussdb</code></p>
+<p>Attach 到 <code>gaussdb</code> 进程上。</p>
+</li>
+<li>
+<p><code>(gdb) Launch gaussdb</code></p>
+<p>通过调试器启动 <code>gaussdb</code>。</p>
+</li>
+<li>
+<p><code>(gdb) Attach gsql</code></p>
+<p>Attach 到 <code>gsql</code> 进程上。</p>
+</li>
+</ul>
+<p>需要注意一下这个 <code>launch.json</code> 通过 <code>miDebuggerArgs</code> 给调试器指定了一些参数：</p>
+<ul>
+<li>
+<p><code>handle SIGUSR2 nostop noprint pass</code></p>
+<p>因为 <code>gaussdb</code> 通过自定义信号进行线程间通信，默认情况下每次信号产生都会导致调试器中断，所以我们需要让调试器忽略这些信号并重新传递给 <code>gaussdb</code> 处理。</p>
+</li>
+<li>
+<p><code>set print thread-events off</code></p>
+<p>忽略线程启停事件。</p>
+</li>
+<li>
+<p><code>set print elements 0</code></p>
+<p>用于关闭 <code>gdb</code> 打印变量的最大长度限制。
+因为我们可以通过 <code>nodeToString</code> 将各种结点结构体序列化为字符串，而这些字符串通常很长，所以需要关闭长度限制，否则会被截断。</p>
+</li>
+<li>
+<p><code>handle SIGINT nostop noprint pass</code></p>
+<p><code>SIGINT</code> 信号会在用户输入中断字符时产生（通常是 <code>Ctrl+C</code>），<code>gsql</code> 会自行处理这个中断。
+所以直接让调试器忽略并传递回 <code>gsql</code> 即可。</p>
+</li>
+</ul>
+<h2 id="qing-li">清理</h2>
+<p>如果修改差异很大或者需要切分支，那就要把构建或者安装的产物给清理掉后再重新构建了。</p>
+<p>这里提供一些常用的命令：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#888888;"># 先停止数据库
+</span><span style="color:#ffb964;">gs_ctl</span><span> stop
+</span><span>
+</span><span style="color:#888888;"># 删除数据库目录
+</span><span style="color:#ffb964;">rm -rf </span><span>${</span><span style="color:#ffb964;">PGDATA</span><span>}
+</span><span>
+</span><span style="color:#888888;"># 删除安装目录
+</span><span style="color:#ffb964;">rm -rf </span><span>${</span><span style="color:#ffb964;">GAUSSHOME</span><span>}
+</span><span>
+</span><span style="color:#888888;"># 清理构建产物
+</span><span>cd ${</span><span style="color:#ffb964;">CODE_BASE</span><span>}
+</span><span style="color:#ffb964;">make</span><span> clean
+</span><span style="color:#ffb964;">git</span><span> clean</span><span style="color:#ffb964;"> -xfd
+</span><span style="color:#ffb964;">git</span><span> reset</span><span style="color:#ffb964;"> --hard</span><span> HEAD
+</span></code></pre>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202412102135/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">使用火焰图分析程序性能</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202501031929/">
+                                <span class="button__text">MySQL Server 构建、安装、运行与调试</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

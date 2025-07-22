@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>使用火焰图分析程序性能 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="使用火焰图分析程序性能 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202412102135/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="使用火焰图分析程序性能 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202412102135/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202412102135/">使用火焰图分析程序性能</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2024-12-10
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/xing-neng-fen-xi/">#性能分析</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/huo-yan-tu/">#火焰图</a></span>
+    
+
+        <div class="post-content">
+            <p>火焰图是对层次数据的可视化。
+我们通常可以将性能分析工具采集到的调用栈信息以火焰图的方式进行可视化。
+从而直观且准确地观察到频繁调用的代码路径。</p>
+<span id="continue-reading"></span><h2 id="perf"><code>perf</code></h2>
+<p><code>perf</code> 是 Linux 系统上的性能分析工具。
+<code>perf</code> 可以周期性地产生中断，在中断处理中获取并记录当前调用栈信息。</p>
+<p>安装 <code>perf</code>：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">dnf</span><span> install perf
+</span><span>
+</span><span style="color:#ffb964;">perf --version
+</span></code></pre>
+<h2 id="bcc">BCC</h2>
+<p>BCC（BPF Compiler Collection）是用于创建内存跟踪与操作程序的工具包，依赖 eBPF。
+我们这里只需要使用它提供的 <code>offcputime</code> 工具，用于采集 off-CPU 的时间与堆栈信息。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">dnf</span><span> install bcc
+</span><span>
+</span><span style="color:#ffb964;">/usr/share/bcc/tools/offcputime --help
+</span></code></pre>
+<p>如果执行报错说找不到内核头文件，就需要安装正确版本的 <code>kernel-devel</code> 依赖包：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">dnf</span><span> install kernel-devel-</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$(</span><span style="color:#ffb964;">uname -r</span><span style="color:#99ad6a;">)</span><span style="color:#556633;">&quot;
+</span></code></pre>
+<h2 id="flamegraph-gong-ju">FlameGraph 工具</h2>
+<p>FlameGraph 以 <code>perf</code>、<code>offcputime</code> 等工具采集到的调用栈数据为输入，生成火焰图。</p>
+<p>不需要安装，直接 clone 即可：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">git</span><span> clone https://github.com/brendangregg/FlameGraph.git
+</span></code></pre>
+<h2 id="cpu-huo-yan-tu">CPU 火焰图</h2>
+<p><a href="https://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html">https://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html</a></p>
+<p>CPU 火焰图用于分析 CPU 繁忙的原因，通过调用栈分析找到热点代码路径。
+一般是以固定频率对运行中的程序状态进行采样，将采集到的数据转化为火焰图。
+通常的采样分析可以创建定时中断，每次中断时采集当前的 PC 寄存器、函数地址、调用栈等信息。
+注意一下，CPU 火焰图是用于 on-CPU 分析的，分析的范围是程序花费的 CPU 时间，不涉及 I/O、锁、换页等阻塞时间。</p>
+<p>首先我们把工作路径切到 clone 下来的 FlameGraph 里面。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>cd FlameGraph
+</span></code></pre>
+<p>然后可通过 <code>perf record</code> 命令采集调用栈数据，下面提供的命令会将采集结果输出到 <code>perf.data</code> 中：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">perf</span><span> record</span><span style="color:#ffb964;"> -F </span><span>&lt;frequency&gt; -a</span><span style="color:#ffb964;"> -g -p </span><span>&lt;pid&gt; -- &lt;cmd&gt;
+</span><span style="color:#ffb964;">perf</span><span> record</span><span style="color:#ffb964;"> -F</span><span> 99</span><span style="color:#ffb964;"> -a -g -p </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$(</span><span style="color:#ffb964;">pgrep -x</span><span style="color:#99ad6a;"> mysqld</span><span style="color:#ffb964;"> -u </span><span style="color:#99ad6a;">&lt;username&gt;)</span><span style="color:#556633;">&quot;</span><span> -- mysql -e </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">select * from &lt;some-table&gt;</span><span style="color:#556633;">&#39;
+</span><span style="color:#ffb964;">perf</span><span> record</span><span style="color:#ffb964;"> -F</span><span> 99</span><span style="color:#ffb964;"> -a -g -p </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$(</span><span style="color:#ffb964;">pgrep -x</span><span style="color:#99ad6a;"> mysqld</span><span style="color:#ffb964;"> -u </span><span style="color:#99ad6a;">&lt;username&gt;)</span><span style="color:#556633;">&quot;</span><span> -- sleep 30
+</span></code></pre>
+<p>最后通过 FlameGraph 工具生成火焰图。
+示例中输出的文件名是 <code>mysqld-on-cpu.svg</code>。
+这个 <code>.svg</code> 文件可直接用浏览器打开。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">perf</span><span> script | </span><span style="color:#ffb964;">./stackcollapse-perf.pl </span><span>&gt; out.perf-folded
+</span><span style="color:#ffb964;">cat</span><span> out.perf-folded | </span><span style="color:#ffb964;">./flamegraph.pl </span><span>&gt; mysqld-on-cpu.svg
+</span></code></pre>
+<h2 id="off-cpu-huo-yan-tu">Off-CPU 火焰图</h2>
+<p><a href="https://www.brendangregg.com/FlameGraphs/offcpuflamegraphs.html">https://www.brendangregg.com/FlameGraphs/offcpuflamegraphs.html</a></p>
+<p>Off-CPU 分析是指通过通过 off-CPU 的时间与调用栈信息确定线程阻塞的原因，它的分析范围是程序花费在等待 I/O、锁、换页等阻塞的时间。</p>
+<p>线程离开 CPU 的原因很多，除了主动等待 I/O 与锁之外，还有一些与线程本身无关的原因，比如中断处理，在 CPU 资源紧张情况下的上下文切换等。</p>
+<p>首先工作路径仍然是 FlameGraph 的项目目录：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>cd FlameGraph
+</span></code></pre>
+<p>然后通过 <code>offcputime</code> 命令测量阻塞时间与调用栈信息：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">/usr/share/bcc/tools/offcputime -df -p </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$(</span><span style="color:#ffb964;">pgrep -x</span><span style="color:#99ad6a;"> mysqld</span><span style="color:#ffb964;"> -u </span><span style="color:#99ad6a;">&lt;username&gt;)</span><span style="color:#556633;">&quot;</span><span> 30 &gt; out.stacks
+</span></code></pre>
+<p>最后使用 FlameGraph 工具生成冷火焰图：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">./flamegraph.pl --color</span><span>=io</span><span style="color:#ffb964;"> --title</span><span>=</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">Off-CPU Time Flame Graph</span><span style="color:#556633;">&#39;</span><span style="color:#ffb964;"> --countname</span><span>=us &lt; out.stacks &gt; mysqld-off-cpu.svg
+</span></code></pre>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202411052325/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">POSIX shell 脚本使用笔记</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202412162106/">
+                                <span class="button__text">openGauss-server 构建、安装、运行与调试</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

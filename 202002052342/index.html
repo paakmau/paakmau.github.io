@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Unity Physics 学习笔记第三章：刚体的运动状态 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="Unity Physics 学习笔记第三章：刚体的运动状态 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202002052342/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="Unity Physics 学习笔记第三章：刚体的运动状态 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202002052342/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202002052342/">Unity Physics 学习笔记第三章：刚体的运动状态</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2020-02-05
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/unity-ecs/">#Unity ECS</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/unity-physics/">#Unity Physics</a></span>
+    
+
+        <div class="post-content">
+            <p>本文介绍获取与修改刚体速度的方法<br>
+并实现控制立方体每隔一段时间朝随机方向运动，具有匀速运动与施加冲量两种方式</p>
+<span id="continue-reading"></span><h2 id="tian-jia-zu-jian-kong-zhi-fang-xiang">添加组件控制方向</h2>
+<p>我们新建一个用于控制运动方向的组件</p>
+<p><code>MoveDirection.cs</code></p>
+<pre data-lang="cs" style="background-color:#151515;color:#e8e8d3;" class="language-cs "><code class="language-cs" data-lang="cs"><span>[</span><span style="color:#ffb964;">Serializable</span><span>]
+</span><span style="color:#8fbfdc;">public struct </span><span style="color:#ffb964;">MoveDirection </span><span>: </span><span style="color:#ffb964;">IComponentData </span><span>{
+</span><span>    </span><span style="color:#8fbfdc;">public </span><span style="color:#ffb964;">Unity</span><span>.</span><span style="color:#ffb964;">Mathematics</span><span>.Random </span><span style="color:#ffb964;">random</span><span>;
+</span><span>    </span><span style="color:#8fbfdc;">public float </span><span style="color:#ffb964;">timeToChangeDirection</span><span>;
+</span><span>    </span><span style="color:#8fbfdc;">public </span><span>float2 </span><span style="color:#ffb964;">direction</span><span>;
+</span><span>}
+</span></code></pre>
+<p>解释：这里把 <code>random</code> 放进去是为了保证随机数生成的均匀性。</p>
+<p>然后写一个 Authoring 用来把这个组件添加到 Entity 上</p>
+<p><code>RandomMoveCubeAuthoring.cs</code></p>
+<pre data-lang="cs" style="background-color:#151515;color:#e8e8d3;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#8fbfdc;">public class </span><span style="color:#ffb964;">RandomMoveCubeAuthoring </span><span>: </span><span style="color:#ffb964;">MonoBehaviour</span><span>, </span><span style="color:#ffb964;">IConvertGameObjectToEntity </span><span>{
+</span><span>    </span><span style="color:#8fbfdc;">public void </span><span style="color:#fad07a;">Convert </span><span>(Entity </span><span style="color:#ffb964;">entity</span><span>, EntityManager </span><span style="color:#ffb964;">dstManager</span><span>, GameObjectConversionSystem </span><span style="color:#ffb964;">conversionSystem</span><span>) {
+</span><span>        </span><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">moveRandomCmpt </span><span>= new MoveDirection {
+</span><span>            </span><span style="color:#ffb964;">random </span><span>= new Unity.Mathematics.Random ((</span><span style="color:#8fbfdc;">uint</span><span>) </span><span style="color:#ffb964;">System</span><span>.</span><span style="color:#ffb964;">DateTime</span><span>.</span><span style="color:#ffb964;">Now</span><span>.</span><span style="color:#ffb964;">Ticks</span><span>),
+</span><span>            </span><span style="color:#ffb964;">timeToChangeDirection </span><span>= new Unity.Mathematics.Random ((</span><span style="color:#8fbfdc;">uint</span><span>) </span><span style="color:#ffb964;">System</span><span>.</span><span style="color:#ffb964;">DateTime</span><span>.</span><span style="color:#ffb964;">Now</span><span>.</span><span style="color:#ffb964;">Ticks</span><span>).</span><span style="color:#ffb964;">NextFloat </span><span>(),
+</span><span>            </span><span style="color:#ffb964;">direction </span><span>= </span><span style="color:#ffb964;">Unity</span><span>.</span><span style="color:#ffb964;">Mathematics</span><span>.</span><span style="color:#ffb964;">float2</span><span>.</span><span style="color:#ffb964;">zero
+</span><span>        };
+</span><span>        </span><span style="color:#ffb964;">dstManager</span><span>.</span><span style="color:#ffb964;">AddComponentData </span><span>(</span><span style="color:#ffb964;">entity</span><span>, </span><span style="color:#ffb964;">moveRandomCmpt</span><span>);
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<h2 id="pei-zhi-entity">配置 Entity</h2>
+<p>新建一个立方体 GameObject，移除 <code>Box Collider</code>，添加 <code>Convert To Entity</code>、<code>Physics Shape</code>、<code>Physics Body</code> 以及我们写的 <code>RandomMoveCubeAuthoring</code> 脚本<br>
+在 <code>Physics Body</code> 中把重力系数设为 0，线性阻尼设为 0.5。其他的用默认值就行</p>
+<p>这样这个 GameObject 在启动后会被自动转化为 Entity 并具有物理相关的组件以及 <code>MoveDirection</code> 组件</p>
+<h2 id="kong-zhi-yun-dong-zhuang-tai">控制运动状态</h2>
+<p>显然，写一个 System 生成随机方向，然后修改这个立方体的速度就行了</p>
+<p>下面有匀速运动和添加冲量两个版本，区别在于匀速运动每一帧都把速度修改为指定值，而添加冲量只需要在方向改变的那一帧修改速度</p>
+<p>这个是匀速版本的</p>
+<pre data-lang="cs" style="background-color:#151515;color:#e8e8d3;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#8fbfdc;">public class </span><span style="color:#ffb964;">RandomMoveSystem </span><span>: </span><span style="color:#ffb964;">JobComponentSystem </span><span>{
+</span><span>    [</span><span style="color:#ffb964;">BurstCompile</span><span>]
+</span><span>    </span><span style="color:#8fbfdc;">struct </span><span style="color:#ffb964;">RandomMoveJob </span><span>: </span><span style="color:#ffb964;">IJobForEach</span><span>&lt;MoveDirection, PhysicsVelocity&gt; {
+</span><span>        </span><span style="color:#8fbfdc;">public float </span><span style="color:#ffb964;">deltaTime</span><span>;
+</span><span>        </span><span style="color:#8fbfdc;">public void </span><span style="color:#fad07a;">Execute </span><span>(</span><span style="color:#8fbfdc;">ref </span><span>MoveDirection </span><span style="color:#ffb964;">moveDirection</span><span>, </span><span style="color:#8fbfdc;">ref </span><span>PhysicsVelocity </span><span style="color:#ffb964;">velocity</span><span>) {
+</span><span>            </span><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">dir </span><span>= </span><span style="color:#ffb964;">moveDirection</span><span>;
+</span><span>            </span><span style="color:#ffb964;">dir</span><span>.</span><span style="color:#ffb964;">timeToChangeDirection </span><span>-= </span><span style="color:#ffb964;">deltaTime</span><span>;
+</span><span>            </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">dir</span><span>.</span><span style="color:#ffb964;">timeToChangeDirection </span><span>&lt; </span><span style="color:#cf6a4c;">0</span><span>) {
+</span><span>                </span><span style="color:#ffb964;">dir</span><span>.</span><span style="color:#ffb964;">timeToChangeDirection </span><span>+= </span><span style="color:#cf6a4c;">1</span><span>;
+</span><span>                </span><span style="color:#ffb964;">dir</span><span>.</span><span style="color:#ffb964;">direction </span><span>= </span><span style="color:#cf6a4c;">0.5</span><span style="color:#8fbfdc;">f </span><span>* </span><span style="color:#ffb964;">math</span><span>.</span><span style="color:#ffb964;">normalize </span><span>(</span><span style="color:#ffb964;">dir</span><span>.</span><span style="color:#ffb964;">random</span><span>.</span><span style="color:#ffb964;">NextFloat2 </span><span>() - new float2 (</span><span style="color:#cf6a4c;">0.5</span><span style="color:#8fbfdc;">f</span><span>, </span><span style="color:#cf6a4c;">0.5</span><span style="color:#8fbfdc;">f</span><span>));
+</span><span>            }
+</span><span>            </span><span style="color:#ffb964;">moveDirection </span><span>= </span><span style="color:#ffb964;">dir</span><span>;
+</span><span>            </span><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">v </span><span>= </span><span style="color:#ffb964;">velocity</span><span>.</span><span style="color:#ffb964;">Linear</span><span>;
+</span><span>            </span><span style="color:#ffb964;">v </span><span>= new float3 (</span><span style="color:#ffb964;">dir</span><span>.</span><span style="color:#ffb964;">direction</span><span>, </span><span style="color:#cf6a4c;">0</span><span>);
+</span><span>            </span><span style="color:#ffb964;">velocity </span><span>= new PhysicsVelocity { </span><span style="color:#ffb964;">Linear </span><span>= </span><span style="color:#ffb964;">v </span><span>};
+</span><span>        }
+</span><span>    }
+</span><span>    </span><span style="color:#8fbfdc;">protected override </span><span>JobHandle </span><span style="color:#fad07a;">OnUpdate </span><span>(JobHandle </span><span style="color:#ffb964;">inputDeps</span><span>) {
+</span><span>        </span><span style="color:#8fbfdc;">return </span><span>new RandomMoveJob { </span><span style="color:#ffb964;">deltaTime </span><span>= </span><span style="color:#ffb964;">Time</span><span>.</span><span style="color:#ffb964;">DeltaTime </span><span>}.</span><span style="color:#ffb964;">Schedule </span><span>(</span><span style="color:#ffb964;">this</span><span>, </span><span style="color:#ffb964;">inputDeps</span><span>);
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>这个是冲量版本的，发现立方体会受到线性阻尼的影响，如果不明显可以把线性阻尼再改大一点</p>
+<pre data-lang="cs" style="background-color:#151515;color:#e8e8d3;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#8fbfdc;">public class </span><span style="color:#ffb964;">RandomMoveSystem </span><span>: </span><span style="color:#ffb964;">JobComponentSystem </span><span>{
+</span><span>    [</span><span style="color:#ffb964;">BurstCompile</span><span>]
+</span><span>    </span><span style="color:#8fbfdc;">struct </span><span style="color:#ffb964;">RandomMoveJob </span><span>: </span><span style="color:#ffb964;">IJobForEach</span><span>&lt;MoveDirection, PhysicsVelocity&gt; {
+</span><span>        </span><span style="color:#8fbfdc;">public float </span><span style="color:#ffb964;">deltaTime</span><span>;
+</span><span>        </span><span style="color:#8fbfdc;">public void </span><span style="color:#fad07a;">Execute </span><span>(</span><span style="color:#8fbfdc;">ref </span><span>MoveDirection </span><span style="color:#ffb964;">moveDirection</span><span>, </span><span style="color:#8fbfdc;">ref </span><span>PhysicsVelocity </span><span style="color:#ffb964;">velocity</span><span>) {
+</span><span>            </span><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">dir </span><span>= </span><span style="color:#ffb964;">moveDirection</span><span>;
+</span><span>            </span><span style="color:#ffb964;">dir</span><span>.</span><span style="color:#ffb964;">timeToChangeDirection </span><span>-= </span><span style="color:#ffb964;">deltaTime</span><span>;
+</span><span>            </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">dir</span><span>.</span><span style="color:#ffb964;">timeToChangeDirection </span><span>&lt; </span><span style="color:#cf6a4c;">0</span><span>) {
+</span><span>                </span><span style="color:#ffb964;">dir</span><span>.</span><span style="color:#ffb964;">timeToChangeDirection </span><span>+= </span><span style="color:#cf6a4c;">1</span><span>;
+</span><span>                </span><span style="color:#ffb964;">dir</span><span>.</span><span style="color:#ffb964;">direction </span><span>= </span><span style="color:#cf6a4c;">0.5</span><span style="color:#8fbfdc;">f </span><span>* </span><span style="color:#ffb964;">math</span><span>.</span><span style="color:#ffb964;">normalize </span><span>(</span><span style="color:#ffb964;">dir</span><span>.</span><span style="color:#ffb964;">random</span><span>.</span><span style="color:#ffb964;">NextFloat2 </span><span>() - new float2 (</span><span style="color:#cf6a4c;">0.5</span><span style="color:#8fbfdc;">f</span><span>, </span><span style="color:#cf6a4c;">0.5</span><span style="color:#8fbfdc;">f</span><span>));
+</span><span>                </span><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">v </span><span>= </span><span style="color:#ffb964;">velocity</span><span>.</span><span style="color:#ffb964;">Linear</span><span>;
+</span><span>                </span><span style="color:#ffb964;">v </span><span>+= new float3 (</span><span style="color:#ffb964;">dir</span><span>.</span><span style="color:#ffb964;">direction</span><span>, </span><span style="color:#cf6a4c;">0</span><span>);
+</span><span>                </span><span style="color:#ffb964;">velocity </span><span>= new PhysicsVelocity { </span><span style="color:#ffb964;">Linear </span><span>= </span><span style="color:#ffb964;">v </span><span>};
+</span><span>            }
+</span><span>            </span><span style="color:#ffb964;">moveDirection </span><span>= </span><span style="color:#ffb964;">dir</span><span>;
+</span><span>        }
+</span><span>    }
+</span><span>    </span><span style="color:#8fbfdc;">protected override </span><span>JobHandle </span><span style="color:#fad07a;">OnUpdate </span><span>(JobHandle </span><span style="color:#ffb964;">inputDeps</span><span>) {
+</span><span>        </span><span style="color:#8fbfdc;">return </span><span>new RandomMoveJob { </span><span style="color:#ffb964;">deltaTime </span><span>= </span><span style="color:#ffb964;">Time</span><span>.</span><span style="color:#ffb964;">DeltaTime </span><span>}.</span><span style="color:#ffb964;">Schedule </span><span>(</span><span style="color:#ffb964;">this</span><span>, </span><span style="color:#ffb964;">inputDeps</span><span>);
+</span><span>    }
+</span><span>}
+</span></code></pre>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202002042356/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">Unity Physics 学习笔记第二章：配置刚体与碰撞器属性</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202002072339/">
+                                <span class="button__text">Unity Physics 学习笔记第四章：碰撞查询</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

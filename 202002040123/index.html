@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Unity ECS 框架摸索第六章：更灵活的筛选与遍历 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="Unity ECS 框架摸索第六章：更灵活的筛选与遍历 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202002040123/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="Unity ECS 框架摸索第六章：更灵活的筛选与遍历 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202002040123/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202002040123/">Unity ECS 框架摸索第六章：更灵活的筛选与遍历</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2020-02-04
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/unity-ecs/">#Unity ECS</a></span>
+    
+
+        <div class="post-content">
+            <p>前文中我们用 <code>IJobForEach</code> 或者 <code>JobComponentSystem.Entities.ForEach</code> 都只能筛选并遍历具有特定 Component 的 Entity，但其实有更灵活且同样高效的方式</p>
+<span id="continue-reading"></span><h2 id="entityquery">EntityQuery</h2>
+<p>Unity 提供了 <code>EntityQuery</code> 用于精确筛选 Entity，并且文档中提到 <code>IJobForEach</code> 与 <code>JobComponentSystem.Entities.ForEach</code> 的内部实现其实都是 <code>EntityQuery</code></p>
+<h3 id="getentityquery">GetEntityQuery</h3>
+<p>最简单的，我们可以筛选具有指定组件的实体，并规定这些组件的读写权限</p>
+<p>例如下面的代码选出了全部的同时拥有 <code>Translation</code> 与 <code>MoveSpeed</code> 组件的 Entity，并且规定 <code>Translation</code> 可读可写，<code>MoveSpeed</code> 只读</p>
+<pre data-lang="cs" style="background-color:#151515;color:#e8e8d3;" class="language-cs "><code class="language-cs" data-lang="cs"><span>EntityQuery </span><span style="color:#ffb964;">m_Query </span><span>= </span><span style="color:#ffb964;">GetEntityQuery</span><span>(typeof(Translation), </span><span style="color:#ffb964;">ComponentType</span><span>.</span><span style="color:#ffb964;">ReadOnly</span><span>&lt;MoveSpeed&gt;());
+</span></code></pre>
+<h3 id="entityquerydesc">EntityQueryDesc</h3>
+<p>对于更复杂的筛选，我们使用 <code>EntityQueryDesc</code> 来创建 <code>EntityQuery</code>，一个 <code>EntityQueryDesc</code> 对象具有三个属性，它们的类型都是 <code>ComponentType</code> 数组</p>
+<ul>
+<li><code>All</code>：数组中所有的类型必须出现在 Entity 中，且可以在其中规定读写权限</li>
+<li><code>Any</code>：数组中至少一个类型会出现在 Entity 中</li>
+<li><code>None</code>：数组中任意类型都不会出现在 Entity 中</li>
+</ul>
+<p>下面举个例子，筛选同时具有 <code>Translation</code>、<code>MoveSpeed</code>，不具有 <code>RotationSpeed</code>，至少具有 <code>Wing</code> 或 <code>Magic</code> 中的一个的所有 Entity</p>
+<pre data-lang="cs" style="background-color:#151515;color:#e8e8d3;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">query </span><span>= new EntityQueryDesc
+</span><span>{
+</span><span>    </span><span style="color:#ffb964;">All </span><span>= new ComponentType[] { </span><span style="color:#ffb964;">ComponentType</span><span>.</span><span style="color:#ffb964;">ReadOnly</span><span>&lt;MoveSpeed&gt;(), typeof(Translation) },
+</span><span>    </span><span style="color:#ffb964;">None </span><span>= new ComponentType[] { typeof(RotationSpeed) },
+</span><span>    </span><span style="color:#ffb964;">Any </span><span>= new ComponentType[] { typeof(Magic), typeof(Wing) }
+</span><span>};
+</span><span>EntityQuery </span><span style="color:#ffb964;">m_Group </span><span>= </span><span style="color:#ffb964;">GetEntityQuery</span><span>(</span><span style="color:#ffb964;">query</span><span>);
+</span></code></pre>
+<h3 id="lian-he-shai-xuan">联合筛选</h3>
+<p>我们可以在调用 <code>GetEntityQuery</code> 函数时传入 <code>EntityQueryDesc</code> 数组，数组中的筛选条件是或的关系，下面是例子</p>
+<pre data-lang="cs" style="background-color:#151515;color:#e8e8d3;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">query1 </span><span>= new EntityQueryDesc
+</span><span>{
+</span><span>    </span><span style="color:#ffb964;">All </span><span>= new ComponentType[] { </span><span style="color:#ffb964;">ComponentType</span><span>.</span><span style="color:#ffb964;">ReadOnly</span><span>&lt;MoveSpeed&gt;(), typeof(Translation), typeof(Wing) },
+</span><span>    </span><span style="color:#ffb964;">None </span><span>= new ComponentType[] { typeof(RotationSpeed) }
+</span><span>};
+</span><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">query2 </span><span>= new EntityQueryDesc
+</span><span>{
+</span><span>    </span><span style="color:#ffb964;">All </span><span>= new ComponentType[] { </span><span style="color:#ffb964;">ComponentType</span><span>.</span><span style="color:#ffb964;">ReadOnly</span><span>&lt;MoveSpeed&gt;(), typeof(Translation), typeof(Magic) }
+</span><span>};
+</span><span style="color:#ffb964;">m_Group </span><span>= </span><span style="color:#ffb964;">GetEntityQuery</span><span>(new EntityQueryDesc[] { </span><span style="color:#ffb964;">query1</span><span>, </span><span style="color:#ffb964;">query2 </span><span>});
+</span></code></pre>
+<h3 id="shared-component-guo-lu">Shared Component 过滤</h3>
+<p>可以对筛选出的 Entity 拥有的指定 Shared Component 进行过滤，保证过滤出的 Entity 拥有的指定 Shared Component 均为特定值</p>
+<p>例如下面代码用一个 Shared Component 作为分组标记，过滤出 <code>GroupId</code> 为 5 的所有 Entity</p>
+<pre data-lang="cs" style="background-color:#151515;color:#e8e8d3;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#8fbfdc;">public struct </span><span style="color:#ffb964;">SharedGroup </span><span>: </span><span style="color:#ffb964;">ISharedComponentData </span><span>{
+</span><span>    </span><span style="color:#8fbfdc;">public int </span><span style="color:#ffb964;">GroupId</span><span>;
+</span><span>}
+</span><span>
+</span><span style="color:#8fbfdc;">public class </span><span style="color:#ffb964;">FlySystem </span><span>: </span><span style="color:#ffb964;">JobComponentSystem
+</span><span>{
+</span><span>    [</span><span style="color:#ffb964;">BurstCompile</span><span>]
+</span><span>    </span><span style="color:#8fbfdc;">struct </span><span style="color:#ffb964;">FlyJob </span><span>: </span><span style="color:#ffb964;">IJobForEach</span><span>&lt;MoveSpeed, Translation&gt;
+</span><span>    {
+</span><span>        </span><span style="color:#8fbfdc;">public void </span><span style="color:#fad07a;">Execute</span><span>([</span><span style="color:#ffb964;">ReadOnly</span><span>]</span><span style="color:#8fbfdc;">ref </span><span>MoveSpeed </span><span style="color:#ffb964;">moveSpeed</span><span>, </span><span style="color:#8fbfdc;">ref </span><span>Translation </span><span style="color:#ffb964;">translation</span><span>)
+</span><span>        {
+</span><span>            </span><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">v </span><span>= </span><span style="color:#ffb964;">translation</span><span>.</span><span style="color:#ffb964;">Value</span><span>;
+</span><span>            </span><span style="color:#ffb964;">v</span><span>.</span><span style="color:#ffb964;">y </span><span>+= </span><span style="color:#ffb964;">moveSpeed</span><span>.</span><span style="color:#ffb964;">MetrePerSecond</span><span>;
+</span><span>            </span><span style="color:#ffb964;">translation </span><span>= new Translation { </span><span style="color:#ffb964;">Value </span><span>= </span><span style="color:#ffb964;">v </span><span>};
+</span><span>        }
+</span><span>    }
+</span><span>    EntityQuery </span><span style="color:#ffb964;">m_Group</span><span>;
+</span><span>    </span><span style="color:#8fbfdc;">protected override void </span><span style="color:#fad07a;">OnCreate</span><span>()
+</span><span>    {
+</span><span>        </span><span style="color:#ffb964;">m_Group </span><span>= </span><span style="color:#ffb964;">GetEntityQuery</span><span>(</span><span style="color:#ffb964;">ComponentType</span><span>.</span><span style="color:#ffb964;">ReadOnly</span><span>&lt;SharedGroup&gt;(), </span><span style="color:#ffb964;">ComponentType</span><span>.</span><span style="color:#ffb964;">ReadOnly</span><span>&lt;MoveSpeed&gt;(), typeof(Translation));
+</span><span>        </span><span style="color:#ffb964;">m_Group</span><span>.</span><span style="color:#ffb964;">AddSharedComponentFilter</span><span>(new SharedGroup());
+</span><span>    }
+</span><span>    </span><span style="color:#8fbfdc;">protected override </span><span>JobHandle </span><span style="color:#fad07a;">OnUpdate</span><span>(JobHandle </span><span style="color:#ffb964;">inputDeps</span><span>)
+</span><span>    {
+</span><span>        </span><span style="color:#ffb964;">m_Group</span><span>.</span><span style="color:#ffb964;">SetSharedComponentFilter</span><span>(new SharedGroup { </span><span style="color:#ffb964;">GroupId </span><span>= </span><span style="color:#cf6a4c;">4 </span><span>});
+</span><span>        </span><span style="color:#8fbfdc;">return </span><span>new FlyJob().</span><span style="color:#ffb964;">Schedule</span><span>(</span><span style="color:#ffb964;">m_Group</span><span>, </span><span style="color:#ffb964;">inputDeps</span><span>);
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>解释：<br>
+当前版本官方手册中这个地方没有更新，上面代码中把 <code>AddSharedComponentFilter</code> 放在 <code>OnCreate</code>，<code>SetSharedComponentFilter</code> 放在 <code>OnUpdate</code> 的用法是我瞎猜的。
+当前版本的官方手册用的是之前版本的，没有这两个函数。<br>
+另外我碰巧发现，就算没有 Add，直接 Set 它也会自动 Add。</p>
+<h3 id="ban-ben-xiu-gai-guo-lu">版本修改过滤</h3>
+<p>过滤出指定组件被修改过的</p>
+<p>同样也有 Add 和 Set 两个版本，官方手册同样暂时还没有更新。</p>
+<p>然后下面的代码用于过滤出 <code>Translation</code> 组件经过修改的实体。<br>
+当然是我瞎猜的也没有试（反正 API 还会改）。</p>
+<pre data-lang="cs" style="background-color:#151515;color:#e8e8d3;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#ffb964;">m_Group</span><span>.</span><span style="color:#ffb964;">AddChangedVersionFilter</span><span>(typeof(Translation));
+</span></code></pre>
+<h2 id="shou-dong-bian-li">手动遍历</h2>
+<p>这种方式可以遍历所有的 Entity，可以灵活访问任意 Entity 的任意 Component，但显然效率低下，官方手册说蛇皮操作推荐用这个</p>
+<p>手册说用 <code>IJobParallelFor</code>，懒得写了（反正 API 也会改）（看着语法提示干就完了，奥利给）</p>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202002031405/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">Unity ECS 框架摸索第五章：利用 Prefab 实例化 Entity 及其销毁</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202002042209/">
+                                <span class="button__text">Unity Physics 学习笔记第一章：简要介绍与 Hello World</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

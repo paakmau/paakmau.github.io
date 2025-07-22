@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>RESTful 接口设计经验总结 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="RESTful 接口设计经验总结 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202112312231/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="RESTful 接口设计经验总结 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202112312231/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202112312231/">RESTful 接口设计经验总结</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2021-12-31
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/rest/">#REST</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/web-ying-yong/">#Web 应用</a></span>
+    
+
+        <div class="post-content">
+            <p>本文归纳了 RESTful 接口设计实践中的一些经验。</p>
+<span id="continue-reading"></span><h2 id="post-he-put">POST 和 PUT</h2>
+<p><a href="https://stackoverflow.com/questions/630453/what-is-the-difference-between-post-and-put-in-http">https://stackoverflow.com/questions/630453/what-is-the-difference-between-post-and-put-in-http</a></p>
+<p>PUT 是幂等的，而 POST 不是。
+幂等意味着多次相同 PUT 请求之后系统的状态跟一次 PUT 请求的结果相同。</p>
+<p>这让我们容易联想到，POST 用于创建资源而 PUT 用于更新资源。
+虽然实际项目中大部分情况下确实是这样，但是这个表述是不准确的。
+在明确资源名的情况下使用 PUT 请求就可以直接创建该资源，而针对这个资源名的多次 PUT 请求也只会对这同一个资源进行操作，因此是符合幂等的。
+因此更准确的表述应该是：POST 用于创建服务端负责分配资源名的资源，而 PUT 请求用于客户端分配或已知资源名的资源的创建和更新。</p>
+<h2 id="lu-jing-bian-liang-yu-qing-qiu-can-shu">路径变量与请求参数</h2>
+<p>路径变量与请求参数是在 URL 中传递数据的两种方式。
+它们的区别在于路径变量应当用于指定唯一的资源，而请求参数用于指定筛选资源的条件。</p>
+<p>使用路径变量应当能够定位到明确的资源。
+路径变量通常是 ID 或者唯一的资源名。
+如果没有该资源我们就应该返回 404 错误。</p>
+<p>而请求参数筛选到资源可以有多个，也可以没有。
+请求参数一般用于筛选某些字段或进行分页。
+对于找不到资源的情况我们返回一个空列表就可以了。</p>
+<h2 id="patch">PATCH</h2>
+<p><a href="https://stackoverflow.com/questions/28459418/use-of-put-vs-patch-methods-in-rest-api-real-life-scenarios">https://stackoverflow.com/questions/28459418/use-of-put-vs-patch-methods-in-rest-api-real-life-scenarios</a></p>
+<p><a href="https://williamdurand.fr/2014/02/14/please-do-not-patch-like-an-idiot/">https://williamdurand.fr/2014/02/14/please-do-not-patch-like-an-idiot/</a></p>
+<p>PATCH 用于更新某个资源的部分数据，有别于 PUT 请求必须完整地更新整个资源。
+但是需要注意一点，与 PUT 不同，PATCH 没有被要求是幂等的，也就是对同一个资源的相同 PATCH 多次请求可能会导致该资源不断变化。</p>
+<p>另外，PATCH 并不是设计来用于真正的 RESTful 接口。
+Roy Fielding（HTTP 规范的作者，也是 REST 的发起者）明确说明 PATCH 是用于 HTTP/1.1 的，因为 REST 接口中从来没有部分更新。</p>
+<blockquote>
+<p>PATCH was something I created for the initial HTTP/1.1 proposal because partial PUT is never RESTful. ;-)</p>
+</blockquote>
+<p>但是完整地更新整个资源显然会造成带宽的浪费，因此在实际项目中 PATCH 也时常被混合在 REST 中一起使用。</p>
+<h2 id="zhuang-tai-ma">状态码</h2>
+<p>状态码实际上非常简单，并不难理解，因此在实际项目中我们就很容易疏忽大意，最后陷入一些误区。
+这里介绍一些常见的问题。</p>
+<p>常见的误区就是所有的请求成功都返回 200，但是实际上只有返回的 Response 为整个资源时才能使用 200。
+而在 PUT、POST 和 DELETE 请求中我们往往不会返回完整的资源，更多的是直接 Response 为空，因此这个时候状态码应当为 204（No Content）。
+在 POST 请求（或者用于创建资源的 PUT 请求）成功后，如果需要返回完整的新对象，那么我们应当返回 201（Created）。</p>
+<p>不过这些状态码标准在实际项目中不太受到重视。
+很多场景下后端都会依据业务来自定义一套新的错误返回机制。
+这套机制往往已经包含了足够多的信息，于是错误码就显得不那么重要了。
+这是因为客户端报错时往往需要提供很多额外信息，仅用错误码是不够的。
+于是就需要一套单独的错误返回机制把一些必要的信息塞在 Response 里返回给客户端。
+但这套机制跟错误码是共存的，因此还是建议遵守 RESTful 错误码标准以避免一些理解上的问题。</p>
+<h2 id="deng-lu">登录</h2>
+<p>初学 REST 遇到一个非常操蛋的问题就是登录的接口怎么设计。
+不过实际上确实也很操蛋，应当把登录抽象为创建临时的 token，然后 POST 请求拿到 token 即为登录成功。</p>
+<h2 id="kong-zhi-ming-ling">控制命令</h2>
+<p>考虑这样一个业务需求：前端需要经过后端查询或改变一些嵌入式设备的运行状态。</p>
+<p>比较阳间的思路是把每台设备都抽象成一个资源。
+但是实际发现设备向后端暴露的接口非常简洁，基本直接就是对某个寄存器的读写，并且甲方对与前端的显示暂时没有更高的要求，那么这个时候如果我们还强行做抽象就会增加系统的复杂性。
+于是我们考虑直接把控制命令抽象为资源，把寄存器的编号扔在它的属性里，极大幅度缩短了开发时间以及跟甲方扯皮的时间。
+然而最后的结果是甲方非常开心并且强化了他们的蜜汁自信，把嵌入式那边一顿爆改（甚至直接换成了 json），并且要求前端对数据分类显示。
+<del>我的心中只有 mmp。</del>
+不过好在按照之前说的设计这部分逻辑就没什么代码，所以也能算不亏，并且甚至可能还避开了甲方的折磨（因为对寄存器操作的封装直接扔给甲方那边的嵌入式了），可以算小赚。</p>
+<h2 id="you-xiu-shi-jian">优秀实践</h2>
+<p>很多时候我们也可以去参考 <a href="https://docs.github.com/en/rest">GitHub REST API</a>。</p>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202111011219/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">使用 WSL2 安装 minikube</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202201042338/">
+                                <span class="button__text">现代 CMake 项目的正确姿势</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

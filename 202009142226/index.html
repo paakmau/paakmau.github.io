@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Vulkan 画三角形第十二章：创建帧缓冲区 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="Vulkan 画三角形第十二章：创建帧缓冲区 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202009142226/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="Vulkan 画三角形第十二章：创建帧缓冲区 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202009142226/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202009142226/">Vulkan 画三角形第十二章：创建帧缓冲区</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2020-09-14
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/vulkan/">#Vulkan</a></span>
+    
+
+        <div class="post-content">
+            <p>在之前的文章中已经讨论了很多帧缓冲区相关的东西，并且我们已经配置了渲染路径，渲染路径基于一个单独的与交换链图像具有相同格式的帧缓冲区，但我们实际上还没有创建它</p>
+<span id="continue-reading"></span>
+<p>在渲染路径创建时指定的附着通过封装为 <code>VkFramebuffer</code> 对象进行绑定。一个帧缓冲区对象引用了代表这些附着的所有 <code>VkImageView</code> 对象。当然我们这里只有一个，也就是颜色附着。然而，我们需要用于附着的图像取决于我们在展示时交换链提供的图像。这意味这我们必须对交换链中所有的图像都创建一个帧缓冲区，并且在渲染的时候使用与交换链提供的图像相对应的那个帧缓冲区</p>
+<p>首先添加一个成员变量用来持有这些帧缓冲区</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>std::vector&lt;VkFramebuffer&gt; swapchainFramebuffers;
+</span></code></pre>
+<p>接下来添加一个成员函数来为这个数组创建对象，并在 <code>initVulkan</code> 中调用它</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">initVulkan</span><span>() {
+</span><span>    </span><span style="color:#ffb964;">createInstance</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createSurface</span><span>();
+</span><span>    </span><span style="color:#ffb964;">pickPhysicalDevice</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createLogicalDevice</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createSwapchain</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createImageViews</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createRenderPass</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createGraphicsPipeline</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createFrambuffers</span><span>();
+</span><span>}
+</span><span>
+</span><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">createFramebuffers</span><span>() {
+</span><span>
+</span><span>}
+</span></code></pre>
+<p>然后直接填充这个函数</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">createFramebuffers</span><span>() {
+</span><span>    swapchainFramebuffers.</span><span style="color:#ffb964;">resize</span><span>(swapchainImageViews.</span><span style="color:#ffb964;">size</span><span>());
+</span><span>    </span><span style="color:#8fbfdc;">for </span><span>(size_t i = </span><span style="color:#cf6a4c;">0</span><span>; i &lt; swapchainImageViews.</span><span style="color:#ffb964;">size</span><span>(); i++) {
+</span><span>        VkImageView attachments[] = {swapchainImageViews[i]};
+</span><span>        VkFramebufferCreateInfo framebufferInfo = {};
+</span><span>        framebufferInfo.</span><span style="color:#ffb964;">sType </span><span>= VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+</span><span>        framebufferInfo.</span><span style="color:#ffb964;">renderPass </span><span>= renderPass;
+</span><span>        framebufferInfo.</span><span style="color:#ffb964;">attachmentCount </span><span>= </span><span style="color:#cf6a4c;">1</span><span>;
+</span><span>        framebufferInfo.</span><span style="color:#ffb964;">pAttachments </span><span>= attachments;
+</span><span>        framebufferInfo.</span><span style="color:#ffb964;">width </span><span>= swapchainExtent.</span><span style="color:#ffb964;">width</span><span>;
+</span><span>        framebufferInfo.</span><span style="color:#ffb964;">height </span><span>= swapchainExtent.</span><span style="color:#ffb964;">height</span><span>;
+</span><span>        framebufferInfo.</span><span style="color:#ffb964;">layers </span><span>= </span><span style="color:#cf6a4c;">1</span><span>;
+</span><span>
+</span><span>        </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">vkCreateFramebuffer</span><span>(device, &amp;framebufferInfo, nullptr, &amp;swapchainFramebuffers[i]) != VK_SUCCESS)
+</span><span>            </span><span style="color:#8fbfdc;">throw </span><span>std::</span><span style="color:#ffb964;">runtime_error</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">failed to create framebuffer!</span><span style="color:#556633;">&quot;</span><span>);
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>首先第一步是调整数组的长度来持有所有的缓冲区</p>
+<p>之后的创建过程十分显然。先通过创建信息的 <code>renderPass</code> 成员指定与帧缓冲区兼容的渲染路径。我们只能选择兼容的渲染路径，这大致上意味着它们都要使用相同数量和相同类型的附着</p>
+<p><code>attachmentCount</code> 和 <code>pAttachments</code> 参数指定了帧缓冲区对应的图像视图对象，它需要与渲染路径创建信息中的 <code>pAttachment</code> 数组中的附着描述相匹配</p>
+<p><code>width</code> 和 <code>height</code> 参数非常显然，<code>layers</code> 指的是图像的层数，我们使用的交换链图像都是单层的，因此层数为一</p>
+<p>最后需要在 <code>cleanup</code> 中销毁所有的帧缓冲区</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">cleanup</span><span>() {
+</span><span>    </span><span style="color:#8fbfdc;">for </span><span>(</span><span style="color:#8fbfdc;">auto</span><span> framebuffer : swapchainFramebuffers)
+</span><span>        </span><span style="color:#ffb964;">vkDestroyFramebuffer</span><span>(device, framebuffer, nullptr);
+</span><span>    </span><span style="color:#ffb964;">vkDestroyPipeline</span><span>(device, graphicsPipeline, nullptr);
+</span><span>    </span><span style="color:#ffb964;">vkDestroyPipelineLayout</span><span>(device, pipelineLayout, nullptr);
+</span><span>    </span><span style="color:#ffb964;">vkDestroyRenderPass</span><span>(device, renderPass, nullptr);
+</span><span>    </span><span style="color:#8fbfdc;">for </span><span>(</span><span style="color:#8fbfdc;">auto</span><span> imageView : swapchainImageViews)
+</span><span>        </span><span style="color:#ffb964;">vkDestroyImageView</span><span>(device, imageView, nullptr);
+</span><span>    </span><span style="color:#ffb964;">vkDestroySwapchainKHR</span><span>(device, swapchain, nullptr);
+</span><span>    </span><span style="color:#ffb964;">vkDestroyDevice</span><span>(device, nullptr);
+</span><span>    </span><span style="color:#ffb964;">vkDestroySurfaceKHR</span><span>(instance, surface, nullptr);
+</span><span>    </span><span style="color:#ffb964;">vkDestroyInstance</span><span>(instance, nullptr);
+</span><span>
+</span><span>    </span><span style="color:#ffb964;">glfwDestroyWindow</span><span>(window);
+</span><span>    </span><span style="color:#ffb964;">glfwTerminate</span><span>();
+</span><span>}
+</span></code></pre>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202009132219/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">Vulkan 画三角形第十一章：创建图形流水线</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202009170007/">
+                                <span class="button__text">Vulkan 画三角形第十三章：创建命令缓冲区</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

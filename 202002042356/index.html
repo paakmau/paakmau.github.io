@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Unity Physics 学习笔记第二章：配置刚体与碰撞器属性 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="Unity Physics 学习笔记第二章：配置刚体与碰撞器属性 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202002042356/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="Unity Physics 学习笔记第二章：配置刚体与碰撞器属性 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202002042356/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202002042356/">Unity Physics 学习笔记第二章：配置刚体与碰撞器属性</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2020-02-04
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/unity-ecs/">#Unity ECS</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/unity-physics/">#Unity Physics</a></span>
+    
+
+        <div class="post-content">
+            <p>前文展示了一个简单的 Hello World，本文将进一步介绍其中用到的 <code>Physics Shape</code> 和 <code>Physics Body</code> 这两个脚本的参数设置</p>
+<span id="continue-reading"></span>
+<p>这两个脚本其实都是 Authoring，它们会根据编辑器中设定的值为 Entity 相应地添加组件</p>
+<h2 id="physics-shape">Physics Shape</h2>
+<p>可以理解为碰撞体，能为 Entity 添加碰撞功能</p>
+<h3 id="xun-chang-shu-xing">寻常属性</h3>
+<p>在 Inspector 面板中，我们可以设置它的形状、大小、重心、材质、摩擦系数、恢复系数等属性<br>
+这些属性在主流物理引擎中十分常见，高中物理也都学过，就不细说了</p>
+<h3 id="is-trigger-yu-raises-collision-events"><code>Is Trigger</code> 与 <code>Raises Collision Events</code><br></h3>
+<p>如果勾选了 <code>Is Trigger，碰撞体就不会与其他碰撞体产生物理碰撞，但是在碰撞体重叠时会产生碰撞事件</code><br>
+可以用来检测角色是否进入一个区域<br></p>
+<p>而 <code>Raises Collision Events</code> 与 Is Trigger 类似，会产生碰撞事件，但是它能够与其他碰撞体产生物理碰撞</p>
+<h3 id="collision-filter"><code>Collision Filter</code></h3>
+<p><code>Collision Filter</code> 能屏蔽碰撞体与某些碰撞体的碰撞，也就是，只跟指定分组的 <code>Physics Shape</code> 发生碰撞<br></p>
+<p>具有 32 个分组，一个碰撞体可以属于多个分组，并且可以指定与哪些分组发生碰撞<br>
+内部实现其实就是 uint，用位运算做判断<br></p>
+<p>另外，碰撞查询也具有这个特性，例如发射射线或发射碰撞器等</p>
+<h2 id="physics-body"><code>Physics Body</code></h2>
+<p><code>Physics Body</code> 使 Entity 具有运动的能力</p>
+<h3 id="xun-chang-de-shu-xing">寻常的属性</h3>
+<p>在 Inspector 面板中，我们可以看到质量、重力系数、线性阻尼、角度阻尼等，基本上也是高中物理</p>
+<h3 id="motion-type"><code>Motion Type</code></h3>
+<ul>
+<li><code>Dynamic</code>，动态。普通的可以运动的刚体，根据质量计算碰撞后的运动状态</li>
+<li><code>Kinematic</code>，运动学。可以运动的刚体，可以理解为质量无穷大的 Dynamic 刚体，看起来就是能把其他普通 Dynamic 刚体弹开，自己不受碰撞的影响。可以用于电梯</li>
+<li><code>Static</code>，静态。无法运动的刚体，可以理解为质量无穷大</li>
+</ul>
+<h3 id="zhi-liang-fen-pei">质量分配</h3>
+<p>勾选 <code>Override Default Mass Distribution</code> 以手动配置重心与惯性张量</p>
+<h2 id="fu-he-peng-zhuang-ti">复合碰撞体</h2>
+<p>多个不同的 <code>Physics Shape</code> 可以组合到一起</p>
+<p>个人猜测应该就是把多个碰撞体整合为一个碰撞体，最终组件数量不会变<br>
+但并不是，验证后发现每个带有 <code>Physics Shape</code> 的 GameObject 都转化为了 Entity，然后用 <code>Parent</code> 组件跟父组件捆起来，感觉是 Unity 偷懒了<br>
+因此为了效率，可以把用作静态碰撞体的所有模型在导入 Unity 之前先合并为同一个模型。不要在 Unity 里蛇皮操作</p>
+<p>根据官方手册，可以这样操作<br>
+在 Hierarchy 面板中将多个具有 <code>Physics Shape</code> 的子 GameObject 挂在一个具有 <code>Physics Body</code> 的父 GameObject 下<br>
+注意，只有父 GameObject 拥有 <code>Convert to Entity</code> 组件，子 GameObject 不需要</p>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202002042209/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">Unity Physics 学习笔记第一章：简要介绍与 Hello World</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202002052342/">
+                                <span class="button__text">Unity Physics 学习笔记第三章：刚体的运动状态</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

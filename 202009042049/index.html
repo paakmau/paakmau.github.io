@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Vulkan 画三角形第二章：创建 Vulkan 实例 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="Vulkan 画三角形第二章：创建 Vulkan 实例 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202009042049/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="Vulkan 画三角形第二章：创建 Vulkan 实例 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202009042049/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202009042049/">Vulkan 画三角形第二章：创建 Vulkan 实例</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2020-09-04
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/glfw/">#GLFW</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/vulkan/">#Vulkan</a></span>
+    
+
+        <div class="post-content">
+            <p>开始一切之前，我们先引入 Vulkan 的头文件</p>
+<span id="continue-reading"></span><pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">#include </span><span style="color:#556633;">&lt;</span><span style="color:#99ad6a;">vulkan/vulkan.h</span><span style="color:#556633;">&gt;
+</span></code></pre>
+<p>注意这行代码要写在包含 GLFW 之前，因为 GLFW 可以通过条件编译来为 Vulkan 提供一些支持</p>
+<h2 id="chuang-jian-shi-li">创建实例</h2>
+<p>然后要做的事情就是创建 Vulkan 实例。实例可以把你的应用程序跟 Vulkan 类库连接起来，创建实例需要指定一些信息</p>
+<p>首先添加一个成员变量用来保存和处理实例</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkInstance instance;
+</span></code></pre>
+<p>然后添加一个成员函数 <code>createInstance</code> 用于创建实例，并在 <code>initVulkan</code> 中调用它</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">initVulkan</span><span>() {
+</span><span>    </span><span style="color:#ffb964;">createInstance</span><span>();
+</span><span>}
+</span></code></pre>
+<p>接下来我们开始填充这个成员函数</p>
+<p>首先我们需要填充一个结构体用于存储我们应用程序的相关信息。这并不是必须的，但是驱动可以通过我们提供的信息对我们的应用进行优化。比如说我们的应用如果使用了一个知名的图形引擎，那么驱动就可以针对这个引擎的特定行为进行优化</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">createInstance</span><span>() {
+</span><span>    </span><span style="color:#888888;">// 应用程序信息
+</span><span>    VkApplicationInfo </span><span style="color:#ffb964;">appInfo</span><span>{};
+</span><span>    appInfo.</span><span style="color:#ffb964;">sType </span><span>= VK_STRUCTURE_TYPE_APPLICATION_INFO;
+</span><span>    appInfo.</span><span style="color:#ffb964;">pApplicationName </span><span>= </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Hello Triangle</span><span style="color:#556633;">&quot;</span><span>;
+</span><span>    appInfo.</span><span style="color:#ffb964;">applicationVersion </span><span>= </span><span style="color:#ffb964;">VK_MAKE_VERSION</span><span>(</span><span style="color:#cf6a4c;">1</span><span>, </span><span style="color:#cf6a4c;">0</span><span>, </span><span style="color:#cf6a4c;">0</span><span>);
+</span><span>    appInfo.</span><span style="color:#ffb964;">pEngineName </span><span>= </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">No Engine</span><span style="color:#556633;">&quot;</span><span>;
+</span><span>    appInfo.</span><span style="color:#ffb964;">engineVersion </span><span>= </span><span style="color:#ffb964;">VK_MAKE_VERSION</span><span>(</span><span style="color:#cf6a4c;">1</span><span>, </span><span style="color:#cf6a4c;">0</span><span>, </span><span style="color:#cf6a4c;">0</span><span>);
+</span><span>    appInfo.</span><span style="color:#ffb964;">apiVersion </span><span>= VK_API_VERSION_1_0;
+</span><span>}
+</span></code></pre>
+<p>对于这个结构体，我们在 <code>sType</code> 中明确地指定了它的类型，并且 Vulkan 中大部分的其他结构体也都是一样</p>
+<p>接下来我们需要填充另一个结构体，这个结构体存储着创建实例所需要的信息，并作会在创建实例时直接把这个结构体作为参数传递过去。需要注意的是，Vulkan 中的大部分方法调用也都是直接传递一个结构体，而不是拆开为一个一个的参数</p>
+<p>我们在 <code>createInstance</code> 方法的末端添加以下代码</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#888888;">// 实例创建信息
+</span><span>VkInstanceCreateInfo createInfo = {};
+</span><span>createInfo.</span><span style="color:#ffb964;">sType </span><span>= VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+</span><span>createInfo.</span><span style="color:#ffb964;">pApplicationInfo </span><span>= &amp;appInfo;
+</span></code></pre>
+<p>这两行代码的作用显而易见，然后我们来指定扩展。Vulkan 是一个跨平台的 API，这就意味着你需要一些扩展来跟窗体系统交互。而 GLFW 提供了方便的内建函数来获取所需要的扩展，于是我们只需要把它们存入结构体中就行了</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>uint32_t glfwExtensionCount = </span><span style="color:#cf6a4c;">0</span><span>;
+</span><span style="color:#8fbfdc;">const char </span><span>**glfwExtensions;
+</span><span>glfwExtensions = </span><span style="color:#ffb964;">glfwGetRequiredInstanceExtensions</span><span>(&amp;glfwExtensionCount);
+</span><span>createInfo.</span><span style="color:#ffb964;">enabledExtensionCount </span><span>= glfwExtensionCount;
+</span><span>createInfo.</span><span style="color:#ffb964;">ppEnabledExtensionNames </span><span>= glfwExtensions;
+</span></code></pre>
+<p>接下来我们指定需要的全局校验层，通过使用全局校验层我们可以在调试过程中获得一些帮助，然而这不属于本系列文章的讨论范围，因此我们直接把校验层的数量设为零</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>createInfo.</span><span style="color:#ffb964;">enabledLayerCount </span><span>= </span><span style="color:#cf6a4c;">0</span><span>;
+</span></code></pre>
+<p>于是我们就可以创建实例了，这个结构体就会作为参数传递过去</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#888888;">// 实例创建信息
+</span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">vkCreateInstance</span><span>(&amp;createInfo, nullptr, &amp;instance) != VK_SUCCESS)
+</span><span>    </span><span style="color:#8fbfdc;">throw </span><span>std::</span><span style="color:#ffb964;">runtime_error</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">failed to create instance!</span><span style="color:#556633;">&quot;</span><span>);
+</span></code></pre>
+<p>贴一下 <code>createInstance</code> 的完整代码，但其实就是把上面的代码片段按顺序拼接到 <code>createInstance</code> 函数里，为了方便，后面的文章就不贴完整代码了</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">createInstance</span><span>() {
+</span><span>    </span><span style="color:#888888;">// 应用程序信息
+</span><span>    VkApplicationInfo </span><span style="color:#ffb964;">appInfo</span><span>{};
+</span><span>    appInfo.</span><span style="color:#ffb964;">sType </span><span>= VK_STRUCTURE_TYPE_APPLICATION_INFO;
+</span><span>    appInfo.</span><span style="color:#ffb964;">pApplicationName </span><span>= </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Hello Triangle</span><span style="color:#556633;">&quot;</span><span>;
+</span><span>    appInfo.</span><span style="color:#ffb964;">applicationVersion </span><span>= </span><span style="color:#ffb964;">VK_MAKE_VERSION</span><span>(</span><span style="color:#cf6a4c;">1</span><span>, </span><span style="color:#cf6a4c;">0</span><span>, </span><span style="color:#cf6a4c;">0</span><span>);
+</span><span>    appInfo.</span><span style="color:#ffb964;">pEngineName </span><span>= </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">No Engine</span><span style="color:#556633;">&quot;</span><span>;
+</span><span>    appInfo.</span><span style="color:#ffb964;">engineVersion </span><span>= </span><span style="color:#ffb964;">VK_MAKE_VERSION</span><span>(</span><span style="color:#cf6a4c;">1</span><span>, </span><span style="color:#cf6a4c;">0</span><span>, </span><span style="color:#cf6a4c;">0</span><span>);
+</span><span>    appInfo.</span><span style="color:#ffb964;">apiVersion </span><span>= VK_API_VERSION_1_0;
+</span><span>    </span><span style="color:#888888;">// 实例创建信息
+</span><span>    VkInstanceCreateInfo createInfo = {};
+</span><span>    createInfo.</span><span style="color:#ffb964;">sType </span><span>= VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+</span><span>    createInfo.</span><span style="color:#ffb964;">pApplicationInfo </span><span>= &amp;appInfo;
+</span><span>    uint32_t glfwExtensionCount = </span><span style="color:#cf6a4c;">0</span><span>;
+</span><span>    </span><span style="color:#8fbfdc;">const char </span><span>**glfwExtensions;
+</span><span>    glfwExtensions = </span><span style="color:#ffb964;">glfwGetRequiredInstanceExtensions</span><span>(&amp;glfwExtensionCount);
+</span><span>    createInfo.</span><span style="color:#ffb964;">enabledExtensionCount </span><span>= glfwExtensionCount;
+</span><span>    createInfo.</span><span style="color:#ffb964;">ppEnabledExtensionNames </span><span>= glfwExtensions;
+</span><span>    createInfo.</span><span style="color:#ffb964;">enabledLayerCount </span><span>= </span><span style="color:#cf6a4c;">0</span><span>;
+</span><span>    </span><span style="color:#888888;">// 实例创建信息
+</span><span>    </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">vkCreateInstance</span><span>(&amp;createInfo, nullptr, &amp;instance) != VK_SUCCESS)
+</span><span>        </span><span style="color:#8fbfdc;">throw </span><span>std::</span><span style="color:#ffb964;">runtime_error</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">failed to create instance!</span><span style="color:#556633;">&quot;</span><span>);
+</span><span>}
+</span></code></pre>
+<h2 id="xiao-hui-shi-li">销毁实例</h2>
+<p>另外，需要在 <code>cleanup</code> 函数中销毁实例</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">cleanup</span><span>() {
+</span><span>    </span><span style="color:#ffb964;">vkDestroyInstance</span><span>(instance, nullptr);
+</span><span>
+</span><span>    </span><span style="color:#ffb964;">glfwDestroyWindow</span><span>(window);
+</span><span>    </span><span style="color:#ffb964;">glfwTerminate</span><span>();
+</span><span>}
+</span></code></pre>
+<p>最后我们可以调试看看有没有写错</p>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202009032023/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">Vulkan 画三角形第一章：概要与环境配置</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202009052302/">
+                                <span class="button__text">Vulkan 画三角形第三章：创建窗体表面</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

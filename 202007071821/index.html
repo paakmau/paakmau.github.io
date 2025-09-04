@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>使用 Vue.js 和 Spring Boot 配置 WebSocket | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="使用 Vue.js 和 Spring Boot 配置 WebSocket | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202007071821/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="使用 Vue.js 和 Spring Boot 配置 WebSocket | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202007071821/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202007071821/">使用 Vue.js 和 Spring Boot 配置 WebSocket</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2020-07-07
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/spring-boot/">#Spring Boot</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/vue-js/">#Vue.js</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/websocket/">#WebSocket</a></span>
+    
+
+        <div class="post-content">
+            <p>HTTP 协议中的请求只能由客户端发起，如果需要服务端主动向客户端发送信息，就会用到 WebSocket</p>
+<span id="continue-reading"></span><h2 id="hou-duan-bu-fen">后端部分</h2>
+<p>首先需要一个配置类用于指定 WebSocket 的端口号</p>
+<pre data-lang="java" style="background-color:#151515;color:#e8e8d3;" class="language-java "><code class="language-java" data-lang="java"><span>@</span><span style="color:#ffb964;">Configuration
+</span><span style="color:#8fbfdc;">public class </span><span style="color:#ffb964;">WebSocketConfig </span><span>{
+</span><span>    @</span><span style="color:#ffb964;">Bean
+</span><span>    </span><span style="color:#8fbfdc;">public </span><span style="color:#ffb964;">ServerEndpointExporter </span><span style="color:#fad07a;">serverEndpointExporter</span><span>() {
+</span><span>        </span><span style="color:#8fbfdc;">return </span><span>new </span><span style="color:#ffb964;">ServerEndpointExporter</span><span>();
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>然后我们写一个类用来管理 WebSocket 连接，处理连接建立、收到消息、连接断开等的回调</p>
+<pre data-lang="java" style="background-color:#151515;color:#e8e8d3;" class="language-java "><code class="language-java" data-lang="java"><span>@</span><span style="color:#ffb964;">ServerEndpoint</span><span>(</span><span style="color:#ffb964;">value </span><span>= </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">/wstest</span><span style="color:#556633;">&quot;</span><span>)
+</span><span>@</span><span style="color:#ffb964;">Component
+</span><span style="color:#8fbfdc;">public class </span><span style="color:#ffb964;">WebSocketTest </span><span>{
+</span><span>    </span><span style="color:#8fbfdc;">private static int </span><span>onlineCount = </span><span style="color:#cf6a4c;">0</span><span>;
+</span><span>    </span><span style="color:#8fbfdc;">private static </span><span style="color:#ffb964;">CopyOnWriteArraySet</span><span>&lt;</span><span style="color:#ffb964;">WebSocketTest</span><span>&gt; webSocketSet = new </span><span style="color:#ffb964;">CopyOnWriteArraySet</span><span>&lt;&gt;();
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">private </span><span style="color:#ffb964;">Session </span><span>session;
+</span><span>
+</span><span>    @</span><span style="color:#ffb964;">OnOpen
+</span><span>    </span><span style="color:#8fbfdc;">public void </span><span style="color:#fad07a;">onOpen</span><span>(</span><span style="color:#ffb964;">Session session</span><span>) {
+</span><span>        </span><span style="color:#ffb964;">this</span><span>.session = session;
+</span><span>        webSocketSet.</span><span style="color:#ffb964;">add</span><span>(</span><span style="color:#ffb964;">this</span><span>);
+</span><span>        onlineCount++;
+</span><span>        </span><span style="color:#ffb964;">System</span><span>.out.</span><span style="color:#ffb964;">println</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">WS: New connection</span><span style="color:#556633;">&quot;</span><span>);
+</span><span>
+</span><span>        </span><span style="color:#ffb964;">sendText</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Hello, I&#39;m server.</span><span style="color:#556633;">&quot;</span><span>);
+</span><span>    }
+</span><span>
+</span><span>    @</span><span style="color:#ffb964;">OnClose
+</span><span>    </span><span style="color:#8fbfdc;">public void </span><span style="color:#fad07a;">onClose</span><span>() {
+</span><span>        webSocketSet.</span><span style="color:#ffb964;">remove</span><span>(</span><span style="color:#ffb964;">this</span><span>);
+</span><span>        onlineCount--;
+</span><span>        </span><span style="color:#ffb964;">System</span><span>.out.</span><span style="color:#ffb964;">println</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">WS: Connection closed</span><span style="color:#556633;">&quot;</span><span>);
+</span><span>    }
+</span><span>
+</span><span>    @</span><span style="color:#ffb964;">OnMessage
+</span><span>    </span><span style="color:#8fbfdc;">public void </span><span style="color:#fad07a;">onMessage</span><span>(</span><span style="color:#ffb964;">String msg</span><span>, </span><span style="color:#ffb964;">Session session</span><span>) {
+</span><span>        </span><span style="color:#ffb964;">System</span><span>.out.</span><span style="color:#ffb964;">println</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">WS: Message received, </span><span style="color:#556633;">&quot; </span><span>+ msg);
+</span><span>        </span><span style="color:#ffb964;">sendText</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Your msg is </span><span style="color:#556633;">&quot; </span><span>+ msg);
+</span><span>    }
+</span><span>
+</span><span>    @</span><span style="color:#ffb964;">OnError
+</span><span>    </span><span style="color:#8fbfdc;">public void </span><span style="color:#fad07a;">onError</span><span>(</span><span style="color:#ffb964;">Session session</span><span>, </span><span style="color:#ffb964;">Throwable error</span><span>) {
+</span><span>        </span><span style="color:#ffb964;">System</span><span>.out.</span><span style="color:#ffb964;">println</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">WS: err</span><span style="color:#556633;">&quot;</span><span>);
+</span><span>        error.</span><span style="color:#ffb964;">printStackTrace</span><span>();
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">public static int </span><span style="color:#fad07a;">GetOnlineCount</span><span>() {
+</span><span>        </span><span style="color:#8fbfdc;">return</span><span> onlineCount;
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">private void </span><span style="color:#fad07a;">sendText</span><span>(</span><span style="color:#ffb964;">String text</span><span>) {
+</span><span>        </span><span style="color:#8fbfdc;">try </span><span>{
+</span><span>            session.</span><span style="color:#ffb964;">getBasicRemote</span><span>().</span><span style="color:#ffb964;">sendText</span><span>(text);
+</span><span>        } </span><span style="color:#8fbfdc;">catch </span><span>(</span><span style="color:#ffb964;">IOException e</span><span>) {
+</span><span>            e.</span><span style="color:#ffb964;">printStackTrace</span><span>();
+</span><span>        }
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>然后可以找一些在线测试网站测一下后端</p>
+<h2 id="qian-duan-bu-fen">前端部分</h2>
+<p>跟后端差不多，把回调函数绑定一下就能用了</p>
+<pre data-lang="html" style="background-color:#151515;color:#e8e8d3;" class="language-html "><code class="language-html" data-lang="html"><span>&lt;</span><span style="color:#ffb964;">template</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#ffb964;">button @click</span><span>=</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">sendTestMsg</span><span style="color:#556633;">&quot;</span><span>&gt;发送测试信息&lt;/</span><span style="color:#ffb964;">button</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#ffb964;">template</span><span>&gt;
+</span><span>
+</span><span>&lt;</span><span style="color:#ffb964;">script</span><span>&gt;
+</span><span style="color:#8fbfdc;">export default </span><span>{
+</span><span>  </span><span style="color:#fad07a;">data</span><span>() {
+</span><span>    </span><span style="color:#8fbfdc;">return </span><span>{
+</span><span>      path: </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">ws://127.0.0.1:8080/wstest</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>      socket: undefined
+</span><span>    };
+</span><span>  },
+</span><span>  </span><span style="color:#fad07a;">mounted</span><span>() {
+</span><span>    </span><span style="color:#ffb964;">this</span><span>.socket = new </span><span style="color:#ffb964;">WebSocket</span><span>(</span><span style="color:#ffb964;">this</span><span>.path);
+</span><span>    </span><span style="color:#ffb964;">this</span><span>.socket.onopen = </span><span style="color:#ffb964;">this</span><span>.onOpen;
+</span><span>    </span><span style="color:#ffb964;">this</span><span>.socket.onclose = </span><span style="color:#ffb964;">this</span><span>.onClose;
+</span><span>    </span><span style="color:#ffb964;">this</span><span>.socket.onerror = </span><span style="color:#ffb964;">this</span><span>.onError;
+</span><span>    </span><span style="color:#ffb964;">this</span><span>.socket.onmessage = </span><span style="color:#ffb964;">this</span><span>.onMessage;
+</span><span>  },
+</span><span>  methods: {
+</span><span>    </span><span style="color:#fad07a;">onOpen</span><span>() {
+</span><span>      console.log(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">连接成功</span><span style="color:#556633;">&quot;</span><span>);
+</span><span>    },
+</span><span>    </span><span style="color:#fad07a;">onClose</span><span>() {
+</span><span>      console.log(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">连接关闭</span><span style="color:#556633;">&quot;</span><span>);
+</span><span>    },
+</span><span>    </span><span style="color:#fad07a;">onErr</span><span>() {
+</span><span>      console.log(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">错误发生</span><span style="color:#556633;">&quot;</span><span>);
+</span><span>    },
+</span><span>    </span><span style="color:#fad07a;">onMessage</span><span>(</span><span style="color:#ffb964;">msg</span><span>) {
+</span><span>      console.log(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">收到消息: </span><span style="color:#556633;">&quot;</span><span>, </span><span style="color:#ffb964;">msg</span><span>);
+</span><span>    },
+</span><span>    </span><span style="color:#fad07a;">sendTestMsg</span><span>() {
+</span><span>      </span><span style="color:#8fbfdc;">let </span><span style="color:#ffb964;">msg </span><span>= </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Hello</span><span style="color:#556633;">&quot;</span><span>;
+</span><span>      </span><span style="color:#ffb964;">this</span><span>.socket.</span><span style="color:#ffb964;">send</span><span>(</span><span style="color:#ffb964;">msg</span><span>);
+</span><span>      console.log(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">发送消息: </span><span style="color:#556633;">&quot;</span><span>, </span><span style="color:#ffb964;">msg</span><span>);
+</span><span>    }
+</span><span>  }
+</span><span>};
+</span><span>&lt;/</span><span style="color:#ffb964;">script</span><span>&gt;
+</span><span>
+</span><span>&lt;</span><span style="color:#ffb964;">style</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#ffb964;">style</span><span>&gt;
+</span></code></pre>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202005152347/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">UE4 材质编辑器中材质结点的数据结构源码阅读</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202007112038/">
+                                <span class="button__text">Win10 下 Perforce 命令行快速上手</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

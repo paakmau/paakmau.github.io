@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Vulkan 画三角形第十章：着色器模块 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="Vulkan 画三角形第十章：着色器模块 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202009120028/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="Vulkan 画三角形第十章：着色器模块 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202009120028/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202009120028/">Vulkan 画三角形第十章：着色器模块</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2020-09-12
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/vulkan/">#Vulkan</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/zhao-se-qi/">#着色器</a></span>
+    
+
+        <div class="post-content">
+            <p>与早期 API 不同，Vulkan 中的着色器代码必须要以字节码的格式指定，而不是像 GLSL、HLSL 这样人类可读的语法。这种字节码格式是 SPIR-V，它可以用于 Vulkan 和 OpenCL。它是一个用来写图形与计算着色器的格式，但是现在我们只关心可用于 Vulkan 图形流水线的着色器</p>
+<span id="continue-reading"></span>
+<p>使用字节码的优点在于 GPU 厂商自己写的编译器把着色器代码编译为原生代码会非常简单。过去的经验告诉我们，对于像是 GLSL 这样的人类可读的语法，GPU 厂商在对标准的解释上会有更大的灵活性。如果你正在写一些非常复杂的着色器，那么有可能存在这样的风险，在你的开发机上可以正常运行，但在其他 GPU 厂商提供的驱动上可能因为语法错误等问题而无法使用这些着色器。而使用简单的 SPIR-V 这样的字节码格式就可以避免这样的问题</p>
+<p>然而这并不意味着我们需要手写字节码。Khronos 已经发布了他们自己的独立于厂商的编译器，用于把 GLSL 编译为 SPIR-V。这个编译器可以验证你的着色器代码是否满足标准，然后生成一个 SPIR-V 的二进制文件，你可以把这个文件用于你自己的应用程序。你同样可以引入这个编译器作为类库，从而在运行时产生 SPIR-V，当然这不在本系列文章范围之内。尽管 <code>glslangValidator</code> 可以直接用来编译，但这里我们还是使用谷歌提供的 <code>glslc</code>。<code>glslc</code> 的优点在于它的参数格式与 GCC、Clang 等众所周知的编译器类似，并且添加了一些额外功能。这两个工具都已经被包含在 Vulkan SDK 中，所以我们不需要额外下载任何东西</p>
+<p>GLSL 是一个具有 C 语言风格语法的着色器语言。用它写的程序中会有一个 <code>main</code> 函数，这个函数对于每一个对象都会触发。GLSL 使用全局变量来处理输入输出，而没有使用函数参数和返回值。这个语言包含图形编程中有用的许多特性，比如内建的向量和矩阵等类型、一些用于计算叉乘、计算矩阵向量乘法等的函数。向量类型写作 <code>vec</code> 后跟一个表示向量元素个数的数字，比如三维的位置信息应当使用 <code>vec3</code> 来存储。我们可以通过.x 等成员来访问它的某个元素，但是可以使用它的多个元素来创建一个新的向量，比如 <code>vec3(1.0, 2.0, 3.0).xy</code> 会得到一个 <code>vec2</code>。向量的构造函数也可以传入向量和标量的组合，比如 <code>vec3(vec2(1.0, 2.0), 3.0)</code></p>
+<p>正如前面的文章所说，我们需要一个顶点着色器和一个片元着色器来在屏幕上画一个三角形</p>
+<p>接下来我们使用 GLSL 来编写这两个着色器，然后把它们编译成 SPIR-V 的二进制文件，最后加载到我们的应用程序中</p>
+<h2 id="ding-dian-zhao-se-qi">顶点着色器</h2>
+<p>顶点着色器会处理每一个输入进来的顶点。输入的顶点数据包括世界位置、颜色、法向量、贴图坐标等属性。输出的则是顶点在裁剪空间中的最终位置以及需要被传递到片元着色器中的一些其他属性比如颜色、贴图坐标等。在光栅化阶段，这些值会随着片元的分布被逐一插值，从而实现一个平滑的梯度</p>
+<p>裁剪坐标是一个由顶点着色器计算得到的四维向量，随后会被做齐次除法从而转换为 NDC 坐标</p>
+<p>如果你之前接触过计算机图形学，那么应该会对这些非常熟悉。如果你之前用过 OpenGL，你会发现 Y 坐标会被翻转，而 Z 坐标的范围跟 Direct3D 的一样，是零到一</p>
+<p>对于我们要绘制的三角形，我们不需要对它应用任何的变换，我们只需要从一开始就指定它三个顶点的 NDC 坐标就行了</p>
+<p>然后我们把这几个坐标的最后一个元素设为一，就可以直接作为顶点着色器的裁剪坐标输出。这样的话，在做齐次除法之后，三角形的坐标也不会有任何的改变</p>
+<p>通常来说输入的三角形坐标会被存放在顶点缓冲区中，但是在 Vulkan 中创建顶点缓冲区并且向其中填入数据非常复杂。我们先做一些不那么正统的操作，直接把这些坐标硬编码在顶点着色器中</p>
+<p>然后为了让这个三角形好看一些，我们可以指定顶点的颜色，于是可以把它们也硬编码进去</p>
+<p>最后创建一个 <code>shader.vert</code> 文件用来保存顶点着色器的 GLSL 代码，内容如下</p>
+<pre data-lang="glsl" style="background-color:#151515;color:#e8e8d3;" class="language-glsl "><code class="language-glsl" data-lang="glsl"><span style="color:#8fbfdc;">#version</span><span> 450
+</span><span>
+</span><span style="color:#8fbfdc;">vec2</span><span> positions[</span><span style="color:#cf6a4c;">3</span><span>] = </span><span style="color:#8fbfdc;">vec2</span><span>[](
+</span><span>    </span><span style="color:#8fbfdc;">vec2</span><span>(</span><span style="color:#cf6a4c;">0.0</span><span>, -</span><span style="color:#cf6a4c;">0.5</span><span>),
+</span><span>    </span><span style="color:#8fbfdc;">vec2</span><span>(</span><span style="color:#cf6a4c;">0.5</span><span>, </span><span style="color:#cf6a4c;">0.5</span><span>),
+</span><span>    </span><span style="color:#8fbfdc;">vec2</span><span>(-</span><span style="color:#cf6a4c;">0.5</span><span>, </span><span style="color:#cf6a4c;">0.5</span><span>)
+</span><span>);
+</span><span>
+</span><span style="color:#8fbfdc;">vec3</span><span> colors[</span><span style="color:#cf6a4c;">3</span><span>] = </span><span style="color:#8fbfdc;">vec3</span><span>[](
+</span><span>    </span><span style="color:#8fbfdc;">vec3</span><span>(</span><span style="color:#cf6a4c;">1.0</span><span>, </span><span style="color:#cf6a4c;">0.0</span><span>, </span><span style="color:#cf6a4c;">0.0</span><span>),
+</span><span>    </span><span style="color:#8fbfdc;">vec3</span><span>(</span><span style="color:#cf6a4c;">0.0</span><span>, </span><span style="color:#cf6a4c;">1.0</span><span>, </span><span style="color:#cf6a4c;">0.0</span><span>),
+</span><span>    </span><span style="color:#8fbfdc;">vec3</span><span>(</span><span style="color:#cf6a4c;">0.0</span><span>, </span><span style="color:#cf6a4c;">0.0</span><span>, </span><span style="color:#cf6a4c;">1.0</span><span>)
+</span><span>);
+</span><span>
+</span><span style="color:#8fbfdc;">layout</span><span>(location = </span><span style="color:#cf6a4c;">0</span><span>) </span><span style="color:#8fbfdc;">out vec3</span><span> fragColor;
+</span><span>
+</span><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">main</span><span>() {
+</span><span>    </span><span style="color:#ffb964;">gl_Position </span><span>= </span><span style="color:#8fbfdc;">vec4</span><span>(positions[gl_VertexIndex], </span><span style="color:#cf6a4c;">0.0</span><span>, </span><span style="color:#cf6a4c;">1.0</span><span>);
+</span><span>    fragColor = colors[gl_VertexIndex];
+</span><span>}
+</span></code></pre>
+<p>其中，对于每一个顶点，都会执行一次 <code>main</code> 函数。内建的 <code>gl_VertextIndex</code> 变量表示当前正在处理的顶点的索引，这本该是顶点缓冲区的索引，而在上面的代码中它其实是硬编码的顶点数据的数组的索引。每一个顶点的位置都来自于着色器中的常量数组，结合了 <code>z</code> 和 <code>w</code> 元素后就可以作为裁剪坐标输出，内建的 <code>gl_Position</code> 也就是起到输出这个裁剪坐标的作用</p>
+<p>然后注意到我们手动添加了一个输出变量 <code>fragColor</code>，这用于输出顶点颜色。在随后的片元着色器中，我们可以接收到它，但并不需要使用同样的变量名，只需要 <code>location</code> 值相同就行了。另外对于三角形三个顶点之间的片元，<code>fragColor</code> 的值会被自动地插值，从而实现平滑的过渡效果</p>
+<h2 id="pian-yuan-zhao-se-qi">片元着色器</h2>
+<p>顶点着色器输出的三个顶点的位置形成的三角形会用许多片元填充到屏幕上的一块区域中。片元着色器会对每一个片元都计算一遍，然后输出颜色和深度到一个或多个帧缓冲区中</p>
+<p>创建一个 <code>shader.frag</code> 文件用于保存片元着色器的 GLSL 代码，内容如下</p>
+<pre data-lang="glsl" style="background-color:#151515;color:#e8e8d3;" class="language-glsl "><code class="language-glsl" data-lang="glsl"><span style="color:#8fbfdc;">#version</span><span> 450
+</span><span style="color:#8fbfdc;">#extension </span><span style="color:#99ad6a;">GL_ARB_separate_shader_objects </span><span>: </span><span style="color:#ffb964;">enable
+</span><span>
+</span><span style="color:#8fbfdc;">layout</span><span>(location = </span><span style="color:#cf6a4c;">0</span><span>) </span><span style="color:#8fbfdc;">in vec3</span><span> fragColor;
+</span><span>
+</span><span style="color:#8fbfdc;">layout</span><span>(location = </span><span style="color:#cf6a4c;">0</span><span>) </span><span style="color:#8fbfdc;">out vec4</span><span> outColor;
+</span><span>
+</span><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">main</span><span>() {
+</span><span>    outColor = </span><span style="color:#8fbfdc;">vec4</span><span>(fragColor, </span><span style="color:#cf6a4c;">1.0</span><span>);
+</span><span>}
+</span></code></pre>
+<p>与顶点着色器类似，对于每一个片元，<code>main</code> 函数都会执行一次。GLSL 中颜色是一个由 R、G、B、A 四个元素组成的四维向量，这些元素的取值都在零到一范围内。与顶点着色器中的 <code>gl_Position</code> 不同，对于正在处理的片元，没有一个内建的变量用于输出它的颜色值。我们必须指定为每一个帧缓冲区指定我们自己的输出变量，其中 <code>location</code> 指定的是帧缓冲区的索引</p>
+<h2 id="bian-yi-zhao-se-qi">编译着色器</h2>
+<p>首先在项目的根目录下创建一个目录，命名为 <code>shaders</code>，把之前写好的 <code>shader.vert</code> 和 <code>shader.frag</code> 放进去。需要注意，GLSL 着色器并没有一个官方规定的扩展名，这两个文件名只是一种常用的写法</p>
+<p>接下来我们使用最开始提到的 <code>glslc</code> 这个命令行工具来进行编译</p>
+<p>对于 Linux 和 macOS，我们使用下面的命令就能把顶点着色器和片元着色器分别编译为 <code>vert.spv</code> 和 <code>frag.spv</code> 两个 SPIR-V 的二进制文件</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">glslc</span><span> shader.vert</span><span style="color:#ffb964;"> -o</span><span> vert.spv
+</span><span style="color:#ffb964;">glslc</span><span> shader.frag</span><span style="color:#ffb964;"> -o</span><span> frag.spv
+</span></code></pre>
+<p>对于 Windows，使用下面的命令</p>
+<pre data-lang="ps1" style="background-color:#151515;color:#e8e8d3;" class="language-ps1 "><code class="language-ps1" data-lang="ps1"><span>glslc.exe shader.vert -o vert.spv
+</span><span>glslc.exe shader.frag -o frag.spv
+</span></code></pre>
+<p>当然，如果提示找不到 <code>glslc</code>，可能是没有添加环境变量，所以就去添加环境变量，或者直接在 Vulkan SDK 的安装目录下找到 <code>glslc</code>，使用绝对路径就行了</p>
+<p>这两行命令告诉编译器去读取 GLSL 源文件然后把编译后的 SPIR-V 字节码输出到由 <code>-o</code> 参数指定的文件中</p>
+<p>如果你的着色器存在语法错误，那么编译器会如你期望的一样，告诉你行号和问题。我们可以删个分号试试。也可以不加任何参数直接运行编译器看看它支持什么样的标记。它同样可以把字节码输出为一个人类可读的格式，于是我们就能看到我们的着色器具体做了什么以及到底有哪些优化被应用到了这个阶段</p>
+<p>在命令行中编译着色器是最直接的方式之一，同时也是本文所使用的方式，但我们也可以直接用自己的代码编译它。Vulkan SDK 包含了 <code>libshaderc</code>，这是一个能够在程序中把 GLSL 编译为 SPIR-V 的库</p>
+<h2 id="jia-zai-zhao-se-qi">加载着色器</h2>
+<p>我们生成了 SPIR-V 着色器之后，就可以把它们加载到应用程序并插入到图形流水线中了。我们首先添加一个工具函数来从文件中读取着色器字节码的二进制数据</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">static</span><span> std::vector&lt;</span><span style="color:#8fbfdc;">char</span><span>&gt; </span><span style="color:#fad07a;">readFile</span><span>(</span><span style="color:#8fbfdc;">const</span><span> std::string &amp;</span><span style="color:#ffb964;">filename</span><span>) {
+</span><span>    std::ifstream </span><span style="color:#ffb964;">file</span><span>(filename, std::ios::ate  std::ios::binary);
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">if </span><span>(!file.</span><span style="color:#ffb964;">is_open</span><span>())
+</span><span>        </span><span style="color:#8fbfdc;">throw </span><span>std::</span><span style="color:#ffb964;">runtime_error</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">failed to open file!</span><span style="color:#556633;">&quot;</span><span>);
+</span><span>
+</span><span>    size_t fileSize = (size_t) file.</span><span style="color:#ffb964;">tellg</span><span>();
+</span><span>    std::vector&lt;</span><span style="color:#8fbfdc;">char</span><span>&gt; </span><span style="color:#ffb964;">buffer</span><span>(fileSize);
+</span><span>    file.</span><span style="color:#ffb964;">seekg</span><span>(</span><span style="color:#cf6a4c;">0</span><span>);
+</span><span>    file.</span><span style="color:#ffb964;">read</span><span>(buffer.</span><span style="color:#ffb964;">data</span><span>(), fileSize);
+</span><span>    file.</span><span style="color:#ffb964;">close</span><span>();
+</span><span>    </span><span style="color:#8fbfdc;">return</span><span> buffer;
+</span><span>}
+</span></code></pre>
+<p>最后再添加一个工具函数来根据读取出来的二进制数据创建着色器模块，就好了</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkShaderModule </span><span style="color:#fad07a;">createShaderModule</span><span>(</span><span style="color:#8fbfdc;">const</span><span> std::vector&lt;</span><span style="color:#8fbfdc;">char</span><span>&gt; &amp;</span><span style="color:#ffb964;">code</span><span>) {
+</span><span>    VkShaderModuleCreateInfo createInfo = {};
+</span><span>    createInfo.</span><span style="color:#ffb964;">sType </span><span>= VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+</span><span>    createInfo.</span><span style="color:#ffb964;">codeSize </span><span>= code.</span><span style="color:#ffb964;">size</span><span>();
+</span><span>    createInfo.</span><span style="color:#ffb964;">pCode </span><span>= reinterpret_cast&lt;</span><span style="color:#8fbfdc;">const </span><span>uint32_t*&gt;(code.</span><span style="color:#ffb964;">data</span><span>());
+</span><span>    VkShaderModule shaderModule;
+</span><span>    </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">vkCreateShaderModule</span><span>(device, &amp;createInfo, nullptr, &amp;shaderModule) != VK_SUCCESS)
+</span><span>        </span><span style="color:#8fbfdc;">throw </span><span>std::</span><span style="color:#ffb964;">runtime_error</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">failed to create shader module</span><span style="color:#556633;">&quot;</span><span>);
+</span><span>    </span><span style="color:#8fbfdc;">return</span><span> shaderModule;
+</span><span>}
+</span></code></pre>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202009111430/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">Vulkan 画三角形第九章：渲染路径</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202009132219/">
+                                <span class="button__text">Vulkan 画三角形第十一章：创建图形流水线</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

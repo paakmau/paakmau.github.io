@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>服务器整体性能调优学习笔记 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="服务器整体性能调优学习笔记 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202505092217/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="服务器整体性能调优学习笔记 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202505092217/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202505092217/">服务器整体性能调优学习笔记</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2025-05-09
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/xing-neng-fen-xi/">#性能分析</a></span>
+    
+
+        <div class="post-content">
+            <p>在服务器整机上部署的应用出现性能问题时，可先在服务器层面尝试调优。
+本文记录了服务器硬件信息查询方法、性能指标的常用监测方法以及与性能相关的服务器配置等。</p>
+<span id="continue-reading"></span><h2 id="tong-yong-zi-yuan-jian-kong">通用资源监控</h2>
+<p><code>nmon</code> 是一个通用的系统资源监控工具，执行 <code>nmon</code> 后会显示命令帮助：</p>
+<ul>
+<li><code>c</code>：CPU。</li>
+<li><code>m</code>：内存。</li>
+<li><code>d</code>：磁盘。
+<ul>
+<li>Busy（使用率）：磁盘 I/O 请求的饱和程度。</li>
+<li>Read：读吞吐量。</li>
+<li>Write：写吞吐量。</li>
+</ul>
+</li>
+<li><code>n</code>：网络。</li>
+</ul>
+<p>上面的用法是默认的交互模式，我们可以在 <code>nmon</code> 命令后紧跟一个 <code>-f</code> 参数切换到数据收集模式，收集到的数据会被写入到工作路径下的 <code>.nmon</code> 文件中：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#888888;"># 每 15s 采样一次，总共采样 480 次（2 小时）
+</span><span style="color:#ffb964;">nmon -f -s</span><span> 15</span><span style="color:#ffb964;"> -c</span><span> 480
+</span></code></pre>
+<p>可以使用 <a href="https://nmon.sourceforge.io/pmwiki.php?n=Site.Nmon-Analyser">nmon Analyzer</a> 将采集到的结果可视化为图表。
+这个工具依赖 Microsoft Excel，它使用了内嵌的 Visual Basic，所以不支持 OpenOffice。</p>
+<h2 id="zhu-ban">主板</h2>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#888888;"># 查询主板型号
+</span><span style="color:#ffb964;">dmidecode -s</span><span> system-product-name
+</span></code></pre>
+<h2 id="cpu">CPU</h2>
+<p>硬件信息查询：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#888888;"># 查询 CPU 信息：架构、型号、线程、核、路、频率等
+</span><span style="color:#ffb964;">lscpu
+</span><span>
+</span><span style="color:#888888;"># NUMA 架构的 CPU 与内存分布
+</span><span style="color:#ffb964;">numactl -H
+</span></code></pre>
+<h3 id="htop"><code>htop</code></h3>
+<p><code>htop</code> 是一个系统监控与进程管理软件，能提供比 <code>top</code> 更详细的信息。
+NUMA 架构设备通常包含几十甚至上百个 CPU 核心，如果需要分别监控它们的负载，使用 <code>htop</code> 会非常方便。</p>
+<p>执行 <code>htop</code> 之后按 <code>F2</code> 可以进入交互式的配置菜单；也可以直接修改配置文件 <code>${HOME}/.config/htop/htoprc</code>，这里提供一个简单配置：</p>
+<pre data-lang="conf" style="background-color:#151515;color:#e8e8d3;" class="language-conf "><code class="language-conf" data-lang="conf"><span style="color:#ffb964;">header_layout</span><span>=two_50_50
+</span><span style="color:#ffb964;">show_cpu_usage</span><span>=</span><span style="color:#cf6a4c;">1
+</span><span style="color:#ffb964;">show_cpu_frequency</span><span>=</span><span style="color:#cf6a4c;">1
+</span><span style="color:#ffb964;">column_meters_0</span><span>=LeftCPUs4 Memory Tasks Uptime
+</span><span style="color:#ffb964;">column_meter_modes_0</span><span>=</span><span style="color:#cf6a4c;">1 1 2 2
+</span><span style="color:#ffb964;">column_meters_1</span><span>=RightCPUs4 Swap LoadAverage CPU
+</span><span style="color:#ffb964;">column_meter_modes_1</span><span>=</span><span style="color:#cf6a4c;">1 1 2 2
+</span></code></pre>
+<p>这套配置的效果：</p>
+<ul>
+<li>排版是左右两列各占 50% 宽度。</li>
+<li>CPU 信息包含 CPU 使用率与频率。</li>
+<li>左列自上往下分别为：
+<ul>
+<li>CPU 信息，每行 4 个；条形图。</li>
+<li>内存占用；条形图。</li>
+<li>任务信息（进程数、线程数、on-CPU 的线程数）；文本。</li>
+<li>正常运行时间；文本。</li>
+</ul>
+</li>
+<li>右列自上往下分别为：
+<ul>
+<li>CPU 信息，每行 4 个；条形图。</li>
+<li>交换分区占用；条形图。</li>
+<li>一段时间内 CPU 的平均负载（1 分钟、5 分钟、 15 分钟）；文本。</li>
+<li>总体的 CPU 平均使用率；文本。</li>
+</ul>
+</li>
+</ul>
+<p>输出大概是这样：</p>
+<pre data-lang="txt" style="background-color:#151515;color:#e8e8d3;" class="language-txt "><code class="language-txt" data-lang="txt"><span>    0[||||||||||||||61.0% 2895MHz]  32[||||||||||||||90.7%|2898MHz]  64[||||||||||||||84.1%|2897MHz]  96[||||||||||||||93.3%|2897MHz] 128[|||||||||||||||87.2%|2900MHz]160[|||||||||||||||91.1%|2900MHz]192[|||||||||||||||93.5%|2900MHz]224[|||||||||||||||88.9%|2900MHz]
+</span><span>    1[||||||||||||||90.9%|2895MHz]  33[||||||||||||||91.1%|2898MHz]  65[||||||||||||||86.0%|2897MHz]  97[||||||||||||||88.4%|2897MHz] 129[|||||||||||||||86.7%|2900MHz]161[|||||||||||||||84.1%|2900MHz]193[|||||||||||||||91.3%|2900MHz]225[|||||||||||||||90.9%|2900MHz]
+</span><span>    2[||||||||||||||88.9%|2895MHz]  34[||||||||||||||89.1%|2894MHz]  66[||||||||||||||88.6%|2896MHz]  98[||||||||||||||88.9%|2896MHz] 130[|||||||||||||||87.0%|2900MHz]162[|||||||||||||||84.4%|2900MHz]194[|||||||||||||||93.2%|2900MHz]226[|||||||||||||||89.1%|2900MHz]
+</span><span>    3[||||||||||||||93.5%|2895MHz]  35[||||||||||||||91.3%|2894MHz]  67[||||||||||||||84.1%|2896MHz]  99[||||||||||||||89.1%|2896MHz] 131[|||||||||||||||91.1%|2900MHz]163[|||||||||||||||83.7%|2900MHz]195[|||||||||||||||90.9%|2900MHz]227[|||||||||||||||88.9%|2900MHz]
+</span><span>    4[||||||||||||||87.5%|2899MHz]  36[||||||||||||||87.5%|2902MHz]  68[||||||||||||||88.9%|2896MHz] 100[||||||||||||||90.9%|2908MHz] 132[|||||||||||||||87.0%|2900MHz]164[|||||||||||||||93.6%|2900MHz]196[|||||||||||||||89.1%|2900MHz]228[|||||||||||||||90.7%|2900MHz]
+</span><span>    5[||||||||||||||91.1%|2899MHz]  37[||||||||||||||93.3%|2902MHz]  69[||||||||||||||86.4%|2896MHz] 101[||||||||||||||88.9%|2908MHz] 133[|||||||||||||||88.9%|2900MHz]165[|||||||||||||||89.6%|2900MHz]197[|||||||||||||||89.6%|2900MHz]229[|||||||||||||||83.7%|2900MHz]
+</span><span>    6[||||||||||||||86.7%|2902MHz]  38[||||||||||||||89.1%|2897MHz]  70[||||||||||||||87.0%|2895MHz] 102[||||||||||||||91.1%|2904MHz] 134[|||||||||||||||89.4%|2900MHz]166[|||||||||||||||89.1%|2900MHz]198[|||||||||||||||88.9%|2900MHz]230[|||||||||||||||91.5%|2900MHz]
+</span><span>    7[||||||||||||||90.5%|2902MHz]  39[||||||||||||||86.4%|2897MHz]  71[||||||||||||||88.6%|2895MHz] 103[||||||||||||||88.4%|2904MHz] 135[|||||||||||||||88.6%|2900MHz]167[|||||||||||||||84.8%|2900MHz]199[|||||||||||||||91.3%|2900MHz]231[|||||||||||||||89.4%|2900MHz]
+</span><span>    8[||||||||||||||88.9%|2902MHz]  40[||||||||||||||87.2%|2899MHz]  72[||||||||||||||88.6%|2898MHz] 104[||||||||||||||87.2%|2900MHz] 136[|||||||||||||||81.8%|2899MHz]168[|||||||||||||||87.0%|2900MHz]200[|||||||||||||||91.3%|2900MHz]232[|||||||||||||||90.9%|2900MHz]
+</span><span>    9[||||||||||||||86.4%|2902MHz]  41[||||||||||||||88.6%|2899MHz]  73[||||||||||||||87.0%|2898MHz] 105[||||||||||||||88.9%|2900MHz] 137[|||||||||||||||91.5%|2899MHz]169[|||||||||||||||91.1%|2900MHz]201[|||||||||||||||93.6%|2900MHz]233[|||||||||||||||88.6%|2900MHz]
+</span><span>   10[||||||||||||||87.0%|2903MHz]  42[||||||||||||||93.3%|2901MHz]  74[||||||||||||||84.8%|2900MHz] 106[||||||||||||||84.1%|2905MHz] 138[|||||||||||||||91.3%|2900MHz]170[|||||||||||||||91.3%|2900MHz]202[|||||||||||||||91.3%|2900MHz]234[|||||||||||||||91.3%|2900MHz]
+</span><span>   11[||||||||||||||88.9%|2903MHz]  43[||||||||||||||87.0%|2901MHz]  75[||||||||||||||91.1%|2900MHz] 107[||||||||||||||90.9%|2905MHz] 139[|||||||||||||||87.2%|2900MHz]171[|||||||||||||||87.2%|2900MHz]203[|||||||||||||||90.7%|2900MHz]235[|||||||||||||||90.7%|2900MHz]
+</span><span>   12[||||||||||||||86.4%|2900MHz]  44[||||||||||||||89.1%|2904MHz]  76[||||||||||||||89.4%|2897MHz] 108[||||||||||||||86.7%|2899MHz] 140[|||||||||||||||86.7%|2900MHz]172[|||||||||||||||91.1%|2900MHz]204[|||||||||||||||95.7%|2900MHz]236[|||||||||||||||89.4%|2900MHz]
+</span><span>   13[||||||||||||||91.3%|2900MHz]  45[||||||||||||||89.1%|2904MHz]  77[||||||||||||||88.6%|2897MHz] 109[||||||||||||||89.1%|2899MHz] 141[|||||||||||||||89.6%|2900MHz]173[|||||||||||||||91.1%|2900MHz]205[|||||||||||||||93.2%|2900MHz]237[|||||||||||||||88.9%|2900MHz]
+</span><span>   14[||||||||||||||88.1%|2899MHz]  46[||||||||||||||88.9%|2896MHz]  78[||||||||||||||90.9%|2900MHz] 110[||||||||||||||87.0%|2900MHz] 142[|||||||||||||||91.3%|2900MHz]174[|||||||||||||||87.0%|2900MHz]206[|||||||||||||||91.3%|2900MHz]238[|||||||||||||||86.7%|2900MHz]
+</span><span>   15[||||||||||||||93.3%|2899MHz]  47[||||||||||||||93.5%|2896MHz]  79[||||||||||||||88.9%|2900MHz] 111[||||||||||||||90.9%|2900MHz] 143[|||||||||||||||89.1%|2900MHz]175[|||||||||||||||89.4%|2900MHz]207[|||||||||||||||91.7%|2900MHz]239[|||||||||||||||93.5%|2900MHz]
+</span><span>   16[||||||||||||||90.7%|2896MHz]  48[||||||||||||||91.3%|2904MHz]  80[||||||||||||||88.4%|2892MHz] 112[||||||||||||||88.9%|2898MHz] 144[|||||||||||||||87.5%|2900MHz]176[|||||||||||||||91.5%|2900MHz]208[|||||||||||||||84.4%|2900MHz]240[|||||||||||||||93.5%|2900MHz]
+</span><span>   17[||||||||||||||93.2%|2896MHz]  49[||||||||||||||90.7%|2904MHz]  81[||||||||||||||93.0%|2892MHz] 113[||||||||||||||88.6%|2898MHz] 145[|||||||||||||||88.4%|2900MHz]177[|||||||||||||||88.6%|2900MHz]209[|||||||||||||||89.1%|2900MHz]241[|||||||||||||||93.2%|2900MHz]
+</span><span>   18[||||||||||||||86.7%|2896MHz]  50[||||||||||||||87.0%|2895MHz]  82[||||||||||||||80.4%|2902MHz] 114[||||||||||||||88.4%|2900MHz] 146[|||||||||||||||87.0%|2900MHz]178[|||||||||||||||86.7%|2900MHz]210[|||||||||||||||93.3%|2900MHz]242[|||||||||||||||88.6%|2900MHz]
+</span><span>   19[||||||||||||||87.0%|2896MHz]  51[||||||||||||||89.4%|2895MHz]  83[||||||||||||||91.1%|2902MHz] 115[||||||||||||||84.1%|2900MHz] 147[|||||||||||||||91.3%|2900MHz]179[|||||||||||||||83.7%|2900MHz]211[|||||||||||||||95.7%|2900MHz]243[|||||||||||||||88.6%|2900MHz]
+</span><span>   20[||||||||||||||93.5%|2902MHz]  52[||||||||||||||91.1%|2894MHz]  84[||||||||||||||85.1%|2901MHz] 116[||||||||||||||91.5%|2902MHz] 148[|||||||||||||||89.4%|2900MHz]180[|||||||||||||||89.1%|2900MHz]212[|||||||||||||||93.8%|2900MHz]244[|||||||||||||||89.1%|2900MHz]
+</span><span>   21[||||||||||||||91.3%|2902MHz]  53[||||||||||||||89.8%|2894MHz]  85[||||||||||||||88.9%|2901MHz] 117[||||||||||||||86.7%|2902MHz] 149[|||||||||||||||86.4%|2900MHz]181[|||||||||||||||88.6%|2900MHz]213[|||||||||||||||88.6%|2900MHz]245[|||||||||||||||87.2%|2900MHz]
+</span><span>   22[||||||||||||||84.1%|2898MHz]  54[||||||||||||||89.1%|2900MHz]  86[||||||||||||||89.4%|2906MHz] 118[||||||||||||||91.3%|2905MHz] 150[|||||||||||||||88.9%|2900MHz]182[|||||||||||||||91.3%|2900MHz]214[|||||||||||||||86.4%|2900MHz]246[|||||||||||||||91.5%|2900MHz]
+</span><span>   23[||||||||||||||86.7%|2898MHz]  55[||||||||||||||81.4%|2900MHz]  87[||||||||||||||91.3%|2906MHz] 119[||||||||||||||89.4%|2905MHz] 151[|||||||||||||||90.9%|2900MHz]183[|||||||||||||||89.8%|2900MHz]215[|||||||||||||||88.6%|2900MHz]247[|||||||||||||||91.3%|2900MHz]
+</span><span>   24[||||||||||||||91.1%|2896MHz]  56[||||||||||||||89.4%|2904MHz]  88[||||||||||||||90.9%|2900MHz] 120[||||||||||||||85.7%|2901MHz] 152[|||||||||||||||88.6%|2900MHz]184[|||||||||||||||88.6%|2900MHz]216[|||||||||||||||86.4%|2900MHz]248[|||||||||||||||87.2%|2900MHz]
+</span><span>   25[||||||||||||||91.3%|2896MHz]  57[||||||||||||||91.1%|2904MHz]  89[||||||||||||||91.5%|2900MHz] 121[||||||||||||||89.4%|2901MHz] 153[|||||||||||||||83.7%|2900MHz]185[|||||||||||||||88.9%|2900MHz]217[|||||||||||||||91.3%|2900MHz]249[|||||||||||||||90.9%|2900MHz]
+</span><span>   26[||||||||||||||88.6%|2904MHz]  58[||||||||||||||80.0%|2904MHz]  90[||||||||||||||89.1%|2899MHz] 122[||||||||||||||82.6%|2907MHz] 154[|||||||||||||||89.8%|2900MHz]186[|||||||||||||||77.8%|2900MHz]218[|||||||||||||||87.2%|2900MHz]250[|||||||||||||||75.6%|2900MHz]
+</span><span>   27[||||||||||||||87.0%|2904MHz]  59[||||||||||||||78.3%|2904MHz]  91[||||||||||||||84.4%|2899MHz] 123[||||||||||||||68.9% 2907MHz] 155[|||||||||||||||86.7%|2900MHz]187[|||||||||||||||75.0%|2900MHz]219[|||||||||||||||88.9%|2900MHz]251[|||||||||||||||88.9%|2900MHz]
+</span><span>   28[||||||||||||||90.9%|2900MHz]  60[||||||||||||||79.1%|2903MHz]  92[||||||||||||||84.1%|2899MHz] 124[||||||||||||||79.5%|2896MHz] 156[|||||||||||||||88.9%|2900MHz]188[|||||||||||||||77.8%|2900MHz]220[|||||||||||||||93.5%|2900MHz]252[|||||||||||||||91.3%|2900MHz]
+</span><span>   29[||||||||||||||93.3%|2900MHz]  61[||||||||||||||82.2%|2903MHz]  93[||||||||||||||89.6%|2899MHz] 125[||||||||||||||75.6%|2896MHz] 157[|||||||||||||||91.7%|2900MHz]189[|||||||||||||||73.3%|2900MHz]221[|||||||||||||||86.7%|2900MHz]253[|||||||||||||||75.0%|2900MHz]
+</span><span>   30[||||||||||||||88.6%|2901MHz]  62[||||||||||||||75.6%|2904MHz]  94[||||||||||||||86.7%|2897MHz] 126[||||||||||||||72.7%|2908MHz] 158[|||||||||||||||89.4%|2900MHz]190[|||||||||||||||82.2%|2900MHz]222[|||||||||||||||85.1%|2900MHz]254[|||||||||||||||80.4%|2900MHz]
+</span><span>   31[||||||||||||||89.1%|2901MHz]  63[||||||||||||||68.9% 2904MHz]  95[||||||||||||||89.6%|2897MHz] 127[||||||||||||||68.2% 2908MHz] 159[|||||||||||||||84.4%|2900MHz]191[|||||||||||||||75.6%|2900MHz]223[|||||||||||||||91.3%|2900MHz]255[|||||||||||||||77.8%|2900MHz]
+</span><span>  Mem[||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||193G/1006G] Swp[||                                                                                                                  12.6M/4.00G]
+</span><span>  Tasks: 40, 1046 thr, 2048 kthr; 0 running                                                                                           Load average: 494.98 353.27 206.93
+</span><span>  Uptime: 03:48:04                                                                                                                    Avg: 63.9% sys: 24.0% low:  0.0% vir:  0.0% freq: 2899MHz
+</span></code></pre>
+<p>如果希望将 <code>htop</code> 的快照输出到文件中：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#888888;"># 输出到文件
+</span><span>echo | </span><span style="color:#ffb964;">htop </span><span>&gt; htop.out
+</span><span>
+</span><span style="color:#888888;"># 打印文件
+</span><span style="color:#ffb964;">head -c -10</span><span> htop.out | </span><span style="color:#ffb964;">tail -c</span><span> +10
+</span></code></pre>
+<h4 id="cpu-shi-yong-lu-yu-cpu-fu-zai">CPU 使用率与 CPU 负载</h4>
+<p>注意一下，CPU 使用率与 CPU 负载是两种不同的概念。</p>
+<p>CPU 使用率是指在一个时间段内 CPU 处于忙碌状态的比例。
+在某个时间戳时，CPU 的状态是离散的，只有忙碌和空闲两种状态。
+因此统计出的 CPU 使用率不可能超过 100%。
+<code>htop</code> 实际是访问文件 <code>/proc/stat</code> 获取 CPU 在不同状态下花费的时间（以 <code>USER_HZ</code> 为单位，通常是 10ms），通过时间段前后的差值计算出的比例作为 CPU 使用率。
+<code>/proc/stat</code> 中 CPU 的状态包括：user（用户态）、nice（低优先级用户态）、system（内核态）、idle（空闲）、iowait（I/O 等待）、irq（中断处理）、softirq（软中断处理）等。
+<code>htop</code> 是通过不同颜色区分展示这些状态在 CPU 使用率中的占比，支持基础模式（默认）与详细模式（Detailed CPU time）两种显示模式。
+比如在默认的基础显示模式中，I/O 等待与 IRQ 处理会合并显示为同一种颜色；如果修改为详细显示模式，它们会被不同的颜色代表。
+大部分情况下，我们可以使用默认的基础模式，能够粗略区分用户进程与内核空间代码的占比就行。</p>
+<p>而 CPU 负载衡量的不仅仅是测量时的活动量，还包含了线程对 CPU 的需求程度。
+在理想情况下，可以认为 CPU 负载测量的是 Linux 运行队列中标记为 runnable（可运行）与 uninterruptible sleep（不可中断睡眠）的线程数的移动平均值。
+因此只要符合条件的线程足够多，CPU 负载是能够超过 100% 的。
+多线程调度是以时间片为单位将线程分配给 CPU 执行，用户线程在进入系统调用或时间片结束时放弃控制并回到内核态。
+这时内核会以固定频率依据运行队列中的线程状态统计 CPU 负载（计算移动平均值）。
+有意思的是，内核在计算移动平均值时用了一点魔法，不过可以不用管。
+一般情况下认为将 CPU 负载控制在 70% 以下是比较稳定的。
+顺带一提，可以通过命令 <code>cat /proc/loadavg</code> 手动查询 CPU 负载。</p>
+<p>总体来说 CPU 使用率衡量的是 CPU 自身花费的时间；而 CPU 负载衡量的是安排给 CPU 的任务。</p>
+<p>另外，对于多核 CPU（暂时不考虑超线程），衡量整机的 CPU 使用率与负载时，通常都是以核心数为比例进行缩放的。
+比方说对于 8 核 CPU 而言，整机 CPU 使用率的上限是 800%。</p>
+<p>提供一些参考资料：</p>
+<ul>
+<li>
+<p>关于 <code>Tasks</code></p>
+<p><a href="https://superuser.com/questions/1160791/htop-what-is-task-thread-and-running">https://superuser.com/questions/1160791/htop-what-is-task-thread-and-running</a></p>
+</li>
+<li>
+<p>关于 <code>LoadAverage</code></p>
+<p><a href="https://www.digitalocean.com/community/tutorials/load-average-in-linux">https://www.digitalocean.com/community/tutorials/load-average-in-linux</a></p>
+<p><a href="https://www.scoutapm.com/blog/understanding-load-averages">https://www.scoutapm.com/blog/understanding-load-averages</a></p>
+<p><a href="https://www.linuxjournal.com/article/9001">https://www.linuxjournal.com/article/9001</a></p>
+</li>
+</ul>
+<h4 id="chong-fen-shi-yong-cpu-zi-yuan">充分使用 CPU 资源</h4>
+<p>对于稳定运行的系统而言，我们通常的策略是将 CPU 负载控制在较低的范围内。
+但如果是基准测试场景，我们希望是把系统资源发挥到极限，如果不考虑网络与磁盘瓶颈，此时关键的问题在于如何让 CPU 使用率尽可能高（主要包括 user、iowait、irq 等），减少 idle 状态的占比。通常会将每个核心的 CPU 使用率维持在 80% 左右。</p>
+<p>举一个简化的例子，服务端 CPU 核数为 256，客户端连接会话数同样配置为 256，对于每个会话服务端会单独创建一个线程进行处理。
+在这种场景下我们会经常观察到 idle 状态的占比很大，比方说可能为 30%。
+这是因为客户端不仅要向服务端发送负载请求，还要负责请求生成、响应接收、指标统计等额外任务。
+而每个客户端会话通常也只由一个线程负责，因此在相邻的两次负载请求之间，这个线程需要一段时间处理这些额外任务。
+处理额外任务时，服务端对应的线程还在等待负载请求，一般就会进入阻塞状态，这种情况下该线程对应的核心也会进入 idle 状态。</p>
+<p>如果希望减少这些 idle 状态的占比，一个简单的方法就是给客户端增加会话数量，一般可以把会话数配置为核心数的 3 到 5 倍。
+这意味着服务端单个核心需要并发地处理多个会话的负载请求，这里并发处理是由操作系统线程调度实现的。
+对于单个核心而言，只要这些会话对应的线程至少有一个处于可运行状态，这个核心就不会进入 idle 状态。
+注意，这种高并发场景下 CPU 负载会非常高，比方说会话数配置为核心数的 3 倍，每个核心的 CPU 负载可能会在 200% 上下。
+此时 CPU 负载也可以作为一个参考指标，比如可用于确认基准测试客户端会话数配置是否有效，或者用于确认服务端线程是否正常启动。</p>
+<p>另外，如果客户端与服务端之间是通过网络交互，还需要考虑网卡中断对 CPU 使用率的影响，参考 <a href="https://paakmau.github.io/202505052150/">NUMA 架构设备的网卡中断绑核</a>。
+可以适当减少负责网卡中断的 CPU 核心数，使得这些核心的使用率维持在 80% 左右，从而空出更多的核心留给服务端应用。</p>
+<h2 id="nei-cun">内存</h2>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#888888;"># 查询当前内存占用情况
+</span><span style="color:#ffb964;">free -h
+</span><span>
+</span><span style="color:#888888;"># 监控一段时间内内存占用变化情况
+</span><span style="color:#ffb964;">watch -n</span><span> 1</span><span style="color:#ffb964;"> --differences</span><span>=cumulative </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">free -h</span><span style="color:#556633;">&#39;
+</span></code></pre>
+<p>可以看到内存与交换分区的使用情况。</p>
+<ul>
+<li><code>total</code>：总内存。</li>
+<li><code>used</code>：已使用的内存，比如 <code>malloc</code> 分配的内存，满足 <code>used = total - free - buff/cache</code>。</li>
+<li><code>free</code>：完全空闲、未使用的内存，通常会注意到这个值比较小，这个是正常现象，因为 Linux 会充分利用空闲内存进行缓存以提高性能。</li>
+<li><code>shared</code>：进程间共享的内存，一个经典的例子就是 PostgreSQL 中的 <code>shared_buffers</code>。</li>
+<li><code>buff/cache</code>：一般来说是指临时使用的内存，在需要时可被内核回收。
+<ul>
+<li><code>buffers</code>：用于内核缓存。</li>
+<li><code>cache</code>：用于页缓存与 slab，可以使用命令 <code>echo 3 &gt; /proc/sys/vm/drop_caches</code> 回收页缓存与 slab 对象。</li>
+</ul>
+</li>
+<li><code>available</code>：系统估算出的可供使用的内存，包括 <code>free</code> 与可回收的 <code>buff/cache</code>。</li>
+</ul>
+<h3 id="ge-numa-jie-dian-shang-de-nei-cun">各 NUMA 结点上的内存</h3>
+<p>可以参考 <a href="https://paakmau.github.io/202502192154/">NUMA 相关命令速查</a>。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#888888;"># 监控一段时间内各 NUMA 节点内存分配的命中情况
+</span><span style="color:#ffb964;">watch -n</span><span> 1</span><span style="color:#ffb964;"> --differences</span><span>=cumulative numastat
+</span><span>
+</span><span style="color:#888888;"># 监控一段时间内各 NUMA 节点内存占用变化情况
+</span><span style="color:#ffb964;">watch -n</span><span> 1</span><span style="color:#ffb964;"> --differences</span><span>=cumulative </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">numastat -m -c | grep -e Node -e MemFree -e MemUsed</span><span style="color:#556633;">&#39;
+</span></code></pre>
+<h3 id="jiao-huan-kong-jian">交换空间</h3>
+<p>交换空间可以是一个交换分区或者一个文件，可用于扩展物理内存。
+当应用通过虚拟内存地址访存触发缺页中断时，操作系统会把交换空间中对应的页加载到物理内存中。
+如果物理内存不足，操作系统会通过某种策略把长时间未访问的页释放掉并写入交换空间中。</p>
+<p>通常情况下交换空间会配置为物理内存的 1 到 2 倍。
+但对于整机部署的数据库而言，内存用量可由应用控制，能够避免 OOM 问题。
+这种场景下，内存主要用于文件缓存以及多表连接时产生的中间表：文件缓存由操作系统管理；而中间表在内存不足时会被数据库写入磁盘中。
+整机部署数据库的系统中，物理内存通常很大（比如 1T 或更大），这时应当把内存管理交给数据库应用，这时就能够关闭交换空间以减少磁盘负载。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#888888;"># 关闭交换分区
+</span><span style="color:#ffb964;">swapoff -a
+</span></code></pre>
+<h2 id="ci-pan">磁盘</h2>
+<p>查询磁盘信息：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#888888;"># 查询所有磁盘
+</span><span style="color:#ffb964;">fdisk -l
+</span><span>
+</span><span style="color:#888888;"># 查询磁盘挂载
+</span><span style="color:#ffb964;">df -h
+</span></code></pre>
+<h3 id="zang-ye-hui-xie">脏页回写</h3>
+<p>通过以下内核参数（对应的文件在 <code>/proc/sys/vm</code> 目录中）修改脏页回写策略：</p>
+<ul>
+<li><code>vm.dirty_background_ratio</code>：脏页超过该比例时会被背景线程异步回写。</li>
+<li><code>vm.dirty_ratio</code>：脏页超过该比例时，写请求会被阻塞，直至部分脏页被回写到磁盘。</li>
+<li><code>vm.dirty_expire_centisecs</code>：脏页停留时间（厘秒），超过该时间后脏页会被背景线程异步回写。</li>
+<li><code>vm.dirty_writeback_centisecs</code>：负责回写的背景线程唤醒的周期（厘秒）。</li>
+</ul>
+<p>例如：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">sysctl -w</span><span> vm.dirty_ratio=60
+</span></code></pre>
+<p>查询当前脏页数量：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">grep</span><span> nr_dirty /proc/vmstat
+</span></code></pre>
+<h3 id="i-o-tong-ji">I/O 统计</h3>
+<p>可以用 <code>iostat</code> 查询磁盘的 I/O 统计信息。
+比如下面的命令会查询 <code>nvme0n1</code> 与 <code>nvme1n1</code> 这两块盘的 I/O 统计信息，末尾两个数字用于指定每 2s 查询一次，共查询 5 次：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">iostat</span><span> nvme0n1 nvme1n1 2 5
+</span></code></pre>
+<p>输出大概像是这样：</p>
+<pre data-lang="txt" style="background-color:#151515;color:#e8e8d3;" class="language-txt "><code class="language-txt" data-lang="txt"><span>avg-cpu:  %user   %nice %system %iowait  %steal   %idle
+</span><span>           1.82    0.00    0.34    0.06    0.00   97.78
+</span><span>
+</span><span>Device             tps    kB_read/s    kB_wrtn/s    kB_dscd/s    kB_read    kB_wrtn    kB_dscd
+</span><span>nvme0n1        4243.82        73.92    433912.70   1853392.66     124665  731763388 3125616988
+</span><span>nvme1n1         233.50         3.91     29609.24   1853392.66       6601   49933904 3125616988
+</span></code></pre>
+<p>还可以带上 <code>-x</code> 参数以显示扩展信息：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">iostat -x</span><span> nvme0n1 nvme1n1 2 5
+</span></code></pre>
+<ul>
+<li>
+<p><code>avg-cpu</code>：平均 CPU 使用率，可参考上文。</p>
+</li>
+<li>
+<p><code>tps</code>：transfers per second，一个 transfer 就是一个 I/O 请求。</p>
+</li>
+<li>
+<p><code>kB_read/s</code>：读吞吐量。</p>
+</li>
+<li>
+<p><code>kB_wrtn/s</code>：写吞吐量。</p>
+</li>
+<li>
+<p><code>kB_dscd/s</code>：设备每秒丢弃的数据量（以 kB 为单位）</p>
+<p>对于机械硬盘来说，硬盘空间可由软件维护，在写入时直接覆盖就行，操作系统在释放空间时不需要通知硬盘，这种情况下 <code>kB_dscd/s</code> 会恒定为零。
+但固态硬盘就不一样，因为固态硬盘有一个写入放大的问题：写入的最小单位是一个数据块，即使少量字节的写入也会导致整个数据块的覆写。
+因此释放固态硬盘上的空间时，操作系统需要向硬盘发送 trim 命令以指定需要释放的空间。
+固态硬盘在后续对数据块进行覆盖写时就可以依据 trim 命令提供的信息减少覆写时的拷贝开销。具体可以参考 <a href="https://en.wikipedia.org/wiki/Trim_(computing)">Trim (computing) - Wikipedia</a>。</p>
+</li>
+<li>
+<p><code>await</code>：I/O 请求从提交至设备到处理完成的平均等待时间，包括 I/O 请求在队列中的等待时间与设备实际处理时间。</p>
+</li>
+<li>
+<p><code>r_await</code>：读请求的平均等待时间。</p>
+</li>
+<li>
+<p><code>w_await</code>：写请求的平均等待时间。</p>
+</li>
+<li>
+<p><code>%util</code>：设备在采样周期内处理 I/O 请求的时间比例。</p>
+<p>对于串行处理的设备来说，接近 100% 意味着该设备的饱和。
+但对于具有并行处理能力的设备（比如 NVMe）来说，100% 并不能准确反映设备的性能瓶颈。</p>
+</li>
+</ul>
+<h2 id="wang-luo">网络</h2>
+<p>查询网卡的硬件信息：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#888888;"># 通过 ip 查询网络接口
+</span><span style="color:#ffb964;">dev</span><span>=</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$(</span><span style="color:#ffb964;">ifconfig </span><span style="color:#99ad6a;">| </span><span style="color:#ffb964;">grep -B</span><span style="color:#99ad6a;"> 1 </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">ip</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot; </span><span style="color:#99ad6a;">| </span><span style="color:#ffb964;">head -n</span><span style="color:#99ad6a;"> 1 | </span><span style="color:#ffb964;">awk </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">{ print $1 }</span><span style="color:#556633;">&#39; </span><span style="color:#99ad6a;">| </span><span style="color:#ffb964;">tr -d </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">:</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">)</span><span style="color:#556633;">&quot;
+</span><span style="color:#ffb964;">dev</span><span>=</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$(</span><span style="color:#ffb964;">ip</span><span style="color:#99ad6a;"> address | </span><span style="color:#ffb964;">grep </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">ip</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot; </span><span style="color:#99ad6a;">| </span><span style="color:#ffb964;">awk </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">{ print $NF }</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">)</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#888888;"># 查询网卡带宽等信息
+</span><span style="color:#ffb964;">ethtool </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">dev</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span></code></pre>
+<h3 id="ping"><code>ping</code></h3>
+<p>确认两台设备间连接情况，可以使用 <code>ping</code>：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">ping </span><span>&lt;ip&gt;
+</span></code></pre>
+<p>大致输出：</p>
+<pre data-lang="txt" style="background-color:#151515;color:#e8e8d3;" class="language-txt "><code class="language-txt" data-lang="txt"><span>PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
+</span><span>64 bytes from 8.8.8.8: icmp_seq=1 ttl=109 time=40.2 ms
+</span><span>64 bytes from 8.8.8.8: icmp_seq=2 ttl=109 time=40.1 ms
+</span><span>64 bytes from 8.8.8.8: icmp_seq=3 ttl=109 time=40.0 ms
+</span></code></pre>
+<ul>
+<li>
+<p><code>ttl</code>：time to live。</p>
+<p>剩余跳数，每经过一跳路由会减 1，减至 0 时该数据包会被丢弃。
+其初始值由目标系统决定，Windows 一般是 128，Linux 一般是 64。
+在内网环境下分离部署应用时，需要尽量减少途径的路由。
+如果剩余跳数偏小，说明经过的路由比较多，需要检查网络拓扑。</p>
+</li>
+<li>
+<p><code>time</code>：往返时延。</p>
+<p>内网环境下，时延最好小于 0.1ms。</p>
+</li>
+</ul>
+<h3 id="tc"><code>tc</code></h3>
+<p><code>tc</code>（traffic control）工具是用于配置 Linux 内核分组包调度器的用户空间系统管理工具。
+可以用于构造网络延迟、丢包等场景。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#888888;"># 对指定网卡构造 200ms 的延迟
+</span><span style="color:#ffb964;">tc</span><span> qdisc add dev </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">dev</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;</span><span> root netem delay 200ms
+</span><span>
+</span><span style="color:#888888;"># 取消该延迟
+</span><span style="color:#ffb964;">tc</span><span> qdisc del dev </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">dev</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;</span><span> root netem delay 200ms
+</span></code></pre>
+<h3 id="sar"><code>sar</code></h3>
+<p><code>sar</code> 命令可用于监控网卡 I/O 统计，需要启动 <code>sysstat</code> 服务。
+比如下面的命令会查询所有网卡的统计信息，末尾两个数字用于指定每 2s 查询一次，共查询 5 次：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">sar -n</span><span> DEV 2 5
+</span></code></pre>
+<ul>
+<li><code>rxpck/s</code> 与 <code>txpck/s</code>：每秒接收与发送的包数。</li>
+<li><code>rxkB/s</code> 与 <code>txkB/s</code>：接收与发送方向的吞吐量。</li>
+<li><code>rxcmp/s</code> 与 <code>txcmp/s</code>：每秒接收与发送方向的压缩数据包数量。</li>
+<li><code>%ifutil</code>：网络接口的使用率，是吞吐量与带宽的比值。</li>
+</ul>
+<h3 id="iperf3"><code>iperf3</code></h3>
+<p><code>iperf3</code> 是一个用于测试网络最大可用带宽的工具。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#888888;"># 启动服务端
+</span><span style="color:#ffb964;">iperf3 -s
+</span><span>
+</span><span style="color:#888888;"># 启动客户端
+</span><span style="color:#ffb964;">iperf3 -c </span><span>&lt;server-ip&gt; -b 1M</span><span style="color:#ffb964;"> -t</span><span> 60</span><span style="color:#ffb964;"> -i</span><span> 2</span><span style="color:#ffb964;"> -P</span><span> 4
+</span></code></pre>
+<p>分别在两台设备上执行上面的两条命令，客户端会使用 TCP 协议以 1Mbps 的比特率向服务端发送数据。
+解释一下参数：</p>
+<ul>
+<li>
+<p><code>-s</code>：表示启动服务端。</p>
+</li>
+<li>
+<p><code>-c &lt;server-ip&gt;</code>：表示启动客户端并指定服务端 IP。</p>
+</li>
+<li>
+<p><code>-b 1M</code>：指定负载比特率，单位是 bits/sec，这里的 <code>1M</code> 会将比特率配置为 1Mbps。</p>
+</li>
+<li>
+<p><code>-t 60</code>：指定负载的执行时间为 60，单位是秒。</p>
+</li>
+<li>
+<p><code>-i 2</code>：指定吞吐量报告的输出频率为 2，单位是秒。</p>
+</li>
+<li>
+<p><code>-P 4</code>：指定客户端并发量为 4。</p>
+<p>大带宽情况下单并发可能会导致吞吐量偏低，需要考虑增加 <code>iperf3</code> 的客户端并发量。</p>
+</li>
+</ul>
+<p>再提供一些常用参数：</p>
+<ul>
+<li><code>-u</code>：使用 UDP 协议，如果不配置该参数则会默认使用 TCP 协议。</li>
+<li><code>-R</code>：使用反转模式，改变负载方向（服务端发送，客户端接收）。</li>
+<li><code>--bidir</code>：使用双向模式（服务端与客户端都会发送数据）。</li>
+</ul>
+<h3 id="mtu">MTU</h3>
+<p>MTU（maximum transmission unit）可翻译为最大传输单元，指的是数据链路层能通过的最大数据包大小，一般为 1500 字节。
+合理配置该参数可以减少分片带来的开销。
+比方说对于频繁发送长报文的应用而言，更大的 MTU 能够减少分片的次数（甚至可能不需要分片）从而提高网络吞吐量。
+需要注意，两台主机间通信的实际 MTU 其实是传输路径上各个网元的最小 MTU，超过 MTU 的数据包会被丢弃。
+因此一般仅在拓扑简单的内网环境中修改 MTU。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#888888;"># 依据网络接口名查询其 MTU
+</span><span style="color:#ffb964;">ifconfig </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">dev</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot; </span><span>| </span><span style="color:#ffb964;">grep</span><span> mtu
+</span><span>
+</span><span style="color:#888888;"># 临时修改 MTU 为 9000 字节，重启后会失效
+</span><span style="color:#ffb964;">ifconfig </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">dev</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;</span><span> mtu 9000
+</span><span>
+</span><span style="color:#888888;"># 将 MTU 配置持久化到配置文件中
+</span><span>echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">MTU=9000</span><span style="color:#556633;">&quot; </span><span>&gt;&gt; </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">/etc/sysconfig/network-scripts/ifcfg-${</span><span style="color:#ffb964;">dev</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span></code></pre>
+<h3 id="wang-qia-zhong-duan-he-bing-can-shu">网卡中断合并参数</h3>
+<p>网卡中断合并（coalesce）参数用于控制中断触发的频率。
+更高的频率能够提高响应速度，具有更好的实时性，但频繁触发中断会导致 CPU 开销增大，会导致吞吐量的降低；
+而降低中断频率可以一次性处理更多的数据包，减少中断次数，降低 CPU 开销，从而提高吞吐量，但会提高延迟。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#888888;"># 查询中断合并参数
+</span><span style="color:#ffb964;">ethtool -c </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">dev</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#888888;"># 配置中断合并参数
+</span><span style="color:#ffb964;">ethtool -C </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">dev</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;</span><span> adaptive-rx off rx-usecs 288
+</span></code></pre>
+<ul>
+<li><code>adaptive-rx</code>/<code>adaptive-tx</code>：自适应调整接收/发送方向的中断频率。</li>
+<li><code>rx-usecs</code>/<code>tx-usecs</code>：在接收/发送数据包时，延迟触发中断的最大等待时间阈值，单位为微秒（μs）。</li>
+<li><code>rx-frames</code>/<code>tx-frames</code>：表示接收/发送缓冲区中触发中断的最大数据帧数量阈值。</li>
+</ul>
+<p>这里触发中断的阈值有两个，满足任意一个阈值都会导致中断触发。</p>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202505052150/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">NUMA 架构设备的网卡中断绑核</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202507022107/">
+                                <span class="button__text">openGauss 安装与升级过程记录</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

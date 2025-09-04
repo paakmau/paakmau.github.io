@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>NUMA 架构设备的网卡中断绑核 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="NUMA 架构设备的网卡中断绑核 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202505052150/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="NUMA 架构设备的网卡中断绑核 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202505052150/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202505052150/">NUMA 架构设备的网卡中断绑核</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2025-05-05
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/numa/">#NUMA</a></span>
+    
+
+        <div class="post-content">
+            <p>为网卡中断绑核是一种常见的优化，在高并发场景下能够提升性能，并且更稳定。</p>
+<span id="continue-reading"></span>
+<ul>
+<li>
+<p>缓存友好</p>
+<p>默认的随机分配可能会导致不同 CPU 核心之间中断处理指令与数据的缓存被频繁覆盖。
+如果为中断处理分配到独占的 CPU 核心，其指令与数据都将能长期存储在缓存中。</p>
+</li>
+<li>
+<p>NUMA 友好</p>
+<p>在一些场景下，我们可以将网卡中断与应用程序绑定在同一 NUMA 节点的各个核心上。
+这样绑定就能够避免报文在中断与应用间传递时产生跨 NUMA 节点的访存。</p>
+</li>
+</ul>
+<h2 id="irqbalance"><code>irqbalance</code></h2>
+<p>为中断绑核前需要先关闭 <code>irqbalance</code> 服务，否则绑核配置可能会被覆盖：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">systemctl</span><span> stop irqbalance
+</span></code></pre>
+<h2 id="duo-dui-lie-wang-qia-tong-dao-pei-zhi">多队列网卡通道配置</h2>
+<p>多队列网卡（比如 Intel 82575）通过哈希将报文分配到不同的硬队列上，并对 CPU 核心触发硬中断进行处理。</p>
+<p>可以通过 <code>ethtool</code> 命令管理多队列网卡的通道配置。
+通道由一个 IRQ（interrupt request）以及能触发该 IRQ 的若干队列组成。
+这里的 IRQ 指的是硬中断。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">ip</span><span>=&lt;ip&gt;
+</span><span>
+</span><span style="color:#888888;"># 通过 ip 查询网络接口
+</span><span style="color:#ffb964;">dev</span><span>=</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$(</span><span style="color:#ffb964;">ifconfig </span><span style="color:#99ad6a;">| </span><span style="color:#ffb964;">grep -B</span><span style="color:#99ad6a;"> 1 </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">ip</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot; </span><span style="color:#99ad6a;">| </span><span style="color:#ffb964;">head -n</span><span style="color:#99ad6a;"> 1 | </span><span style="color:#ffb964;">awk </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">{ print $1 }</span><span style="color:#556633;">&#39; </span><span style="color:#99ad6a;">| </span><span style="color:#ffb964;">tr -d </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">:</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">)</span><span style="color:#556633;">&quot;
+</span><span style="color:#ffb964;">dev</span><span>=</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$(</span><span style="color:#ffb964;">ip</span><span style="color:#99ad6a;"> address | </span><span style="color:#ffb964;">grep </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">ip</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot; </span><span style="color:#99ad6a;">| </span><span style="color:#ffb964;">awk </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">{ print $NF }</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">)</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#888888;"># 查询接口支持的最大通道数与当前配置
+</span><span style="color:#ffb964;">ethtool -l </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">dev</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#ffb964;">irq_cnt</span><span>=&lt;irq-cnt&gt;
+</span><span>
+</span><span style="color:#888888;"># 配置网卡通道数
+</span><span style="color:#ffb964;">ethtool -L </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">dev</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;</span><span> combined </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">irq_cnt</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span></code></pre>
+<h2 id="zhong-duan-hao-cha-xun">中断号查询</h2>
+<p>可通过文件 <code>/proc/interrupts</code> 查询出每个 IRQ 的中断号、在各 CPU 上的触发次数、中断类型等。
+我们可以通过网络接口名查询出各个通道的 IRQ 对应的中断号。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#888888;"># 通过接口名查询网卡各通道的中断号
+</span><span style="color:#ffb964;">irq_list</span><span>=</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$(</span><span style="color:#ffb964;">grep </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">dev</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;"> /proc/interrupts | </span><span style="color:#ffb964;">awk </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">{ print $1 }</span><span style="color:#556633;">&#39; </span><span style="color:#99ad6a;">| </span><span style="color:#ffb964;">tr -d </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">:</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">)</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#888888;"># 统计一下中断数量是否与之前配置的通道数一致
+</span><span>echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">irq_list</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot; </span><span>| </span><span style="color:#ffb964;">wc -w
+</span></code></pre>
+<h2 id="zhong-duan-bang-he">中断绑核</h2>
+<p><a href="https://docs.redhat.com/en/documentation/Red_Hat_Enterprise_Linux/6/html/Performance_Tuning_Guide/s-cpu-irq.html">https://docs.redhat.com/en/documentation/Red_Hat_Enterprise_Linux/6/html/Performance_Tuning_Guide/s-cpu-irq.html</a></p>
+<p>IRQ 有一个属性 <code>smp_affinity</code>，它指定了允许为该中断执行 ISR（interrupt service routine）的 CPU 核心。
+<code>smp_affinity</code> 属性可用于将应用与中断绑定在同一核心或多个特定核心，从而提高应用的性能。
+因为这能够允许中断线程与应用线程之间共享缓存。</p>
+<p><code>smp_affinity</code> 是一个十六进制掩码，标记为 1 的位表示其对应的 CPU 核心可用于执行 ISR。
+<code>smp_affinity_list</code> 则是以十进制方式输出各个核心。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#888888;"># 查询各中断的绑核配置
+</span><span style="color:#8fbfdc;">for</span><span> irq </span><span style="color:#8fbfdc;">in </span><span>$</span><span style="color:#ffb964;">irq_list</span><span>; </span><span style="color:#8fbfdc;">do
+</span><span>  echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">irq</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span><span>  </span><span style="color:#ffb964;">cat</span><span> /proc/irq/${</span><span style="color:#ffb964;">irq</span><span>}/smp_affinity
+</span><span>  </span><span style="color:#ffb964;">cat</span><span> /proc/irq/${</span><span style="color:#ffb964;">irq</span><span>}/smp_affinity_list
+</span><span>  echo
+</span><span style="color:#8fbfdc;">done
+</span></code></pre>
+<p>本文提供一些配置思路，实际场景中应当依据具体业务进行调整。
+为每个 IRQ 绑定一个 CPU 核心，考虑两种绑核方式：</p>
+<ol>
+<li>选择网卡同一 NUMA 节点上的核心，减少跨结点访存。</li>
+<li>在每个节点上都选择相同数量的核心，使得负载均衡。</li>
+</ol>
+<p>对于第一种绑核方式，需要先查出网卡同 NUMA 节点上的各个 CPU 核心：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#888888;"># 查询网卡 PCI 地址
+</span><span style="color:#ffb964;">pci_addr</span><span>=</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$(</span><span style="color:#ffb964;">ethtool -i </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">dev</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot; </span><span style="color:#99ad6a;">| </span><span style="color:#ffb964;">grep</span><span style="color:#99ad6a;"> bus-info | </span><span style="color:#ffb964;">awk </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">{ print $2 }</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">)</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#888888;"># 查询网卡所属 NUMA 节点
+</span><span style="color:#ffb964;">lspci -vvvs </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">pci_addr</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot; </span><span>| </span><span style="color:#ffb964;">grep</span><span> NUMA
+</span><span>
+</span><span style="color:#888888;"># 查询 NUMA 节点的 CPU 分布
+</span><span style="color:#ffb964;">numactl -H
+</span></code></pre>
+<p>明确需要绑定的 CPU 核心后，就可以通过写入 <code>smp_affinity_list</code> 来对 IRQ 进行绑核。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#888888;"># 用空格分隔的 CPU 核心列表，需要与中断数量保持一致
+</span><span style="color:#ffb964;">cpu_list</span><span>=&lt;cpu-list&gt;
+</span><span>
+</span><span style="color:#8fbfdc;">for</span><span> i </span><span style="color:#8fbfdc;">in </span><span>$(</span><span style="color:#ffb964;">seq</span><span> 1 </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">irq_cnt</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;</span><span>); </span><span style="color:#8fbfdc;">do
+</span><span>  </span><span style="color:#ffb964;">irq</span><span>=</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$(echo ${</span><span style="color:#ffb964;">irq_list</span><span style="color:#99ad6a;">} | </span><span style="color:#ffb964;">awk </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">{ print \$$</span><span style="color:#ffb964;">i</span><span style="color:#99ad6a;"> }</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">)</span><span style="color:#556633;">&quot;
+</span><span>  </span><span style="color:#ffb964;">cpu</span><span>=</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$(echo ${</span><span style="color:#ffb964;">cpu_list</span><span style="color:#99ad6a;">} | </span><span style="color:#ffb964;">awk </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">{ print \$$</span><span style="color:#ffb964;">i</span><span style="color:#99ad6a;"> }</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">)</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span>  echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">IRQ: ${</span><span style="color:#ffb964;">irq</span><span style="color:#99ad6a;">}, CPU: ${</span><span style="color:#ffb964;">cpu</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span><span>  </span><span style="color:#888888;"># 绑核
+</span><span>  echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">cpu</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot; </span><span>| </span><span style="color:#ffb964;">tee</span><span> /proc/irq/${</span><span style="color:#ffb964;">irq</span><span>}/smp_affinity_list
+</span><span style="color:#8fbfdc;">done
+</span></code></pre>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202504052145/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">Jenkinsfile 使用笔记</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202505092217/">
+                                <span class="button__text">服务器整体性能调优学习笔记</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

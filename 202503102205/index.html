@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>内网 openEuler 常用配置 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="内网 openEuler 常用配置 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202503102205/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="内网 openEuler 常用配置 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202503102205/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202503102205/">内网 openEuler 常用配置</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2025-03-10
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/openeuler/">#openEuler</a></span>
+    
+
+        <div class="post-content">
+            <p>openEuler 通常会安装在一些内网设备上，并且有些命令行工具也不方便安装。
+本文将会以这些限制为前提，记录一些惯用的配置。</p>
+<span id="continue-reading"></span><h2 id="wei-mei-xing-stdout-da-yin-shi-chuo">为每行 stdout 打印时戳</h2>
+<p>一般来说直接安装 <code>moreutils</code>，然后 <code>&lt;cmd&gt; | ts</code> 就能为标准输出的每行打印其输出的时戳。
+但是 openEuler 仓库里暂时没有，手动安装的话需要解决一些麻烦的依赖。</p>
+<p>所以我是暂时用 <code>alias</code> 简单处理一下：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>alias </span><span style="color:#fad07a;">ts</span><span>=</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">while IFS= read -r line; do printf &quot;[%(%F %T)T] $line\n&quot;; done</span><span style="color:#556633;">&#39;
+</span></code></pre>
+<p>效果大概是：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">$</span><span> (echo foo; echo bar) | </span><span style="color:#ffb964;">ts
+</span><span style="color:#ffb964;">[2025-03-10</span><span> 22:37:42] foo
+</span><span style="color:#ffb964;">[2025-03-10</span><span> 22:37:42] bar
+</span></code></pre>
+<h2 id="pei-zhi-bash-ming-ling-ti-shi-fu">配置 Bash 命令提示符</h2>
+<p>改变 Bash 命令提示符的输出：</p>
+<ul>
+<li>完整工作路径</li>
+<li>当前时间</li>
+<li>当前 Git 分支（如果有）</li>
+</ul>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#fad07a;">parse_git_branch</span><span>() {
+</span><span>  </span><span style="color:#ffb964;">git</span><span> branch </span><span style="color:#cf6a4c;">2</span><span>&gt; /dev/null | </span><span style="color:#ffb964;">sed -e </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">/^[^*]/d</span><span style="color:#556633;">&#39;</span><span style="color:#ffb964;"> -e </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">s/* \(.*\)/ (\1)/</span><span style="color:#556633;">&#39;
+</span><span>}
+</span><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">PS1</span><span>=</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">[\[\e[31m\]\D{%F} \t\[\e[0m\] \u@\h \[\e[32m\]\w\[\e[33m\]$(parse_git_branch)\[\e[0m\]]$ </span><span style="color:#556633;">&#39;
+</span></code></pre>
+<p>效果大概是：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">[2025-03-10</span><span> 23:03:27 root@localhost </span><span style="color:#ffb964;">~</span><span>/project/repo (main)</span><span style="color:#ffb964;">]$</span><span> echo foo
+</span><span style="color:#ffb964;">foo
+</span></code></pre>
+<p>其实要输出 Git 分支的话，是更推荐使用 <a href="https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh">git-prompt.sh</a> 的。
+但考虑到内网环境的限制，本文还是选择了更通用的配置方式。</p>
+<h2 id="an-zhuang-helix">安装 Helix</h2>
+<p><a href="https://docs.helix-editor.com/install.html">https://docs.helix-editor.com/install.html</a></p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">mkdir</span><span> pkg &amp;&amp; cd pkg
+</span><span>
+</span><span style="color:#ffb964;">wget</span><span> https://github.com/helix-editor/helix/releases/download/25.01.1/helix-25.01.1-aarch64-linux.tar.xz
+</span><span style="color:#ffb964;">tar -Jxf </span><span>*.tar.xz
+</span><span>
+</span><span style="color:#ffb964;">mkdir -p </span><span>${</span><span style="color:#ffb964;">HOME</span><span>}/.local/bin
+</span><span style="color:#ffb964;">cp</span><span> helix-*/hx ${</span><span style="color:#ffb964;">HOME</span><span>}/.local/bin
+</span><span style="color:#ffb964;">mkdir -p </span><span>${</span><span style="color:#ffb964;">HOME</span><span>}/.config/helix
+</span><span style="color:#ffb964;">cp -r</span><span> helix-*/runtime ${</span><span style="color:#ffb964;">HOME</span><span>}/.config/helix
+</span><span>
+</span><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">PATH</span><span>=</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/.local/bin:${</span><span style="color:#ffb964;">PATH</span><span style="color:#99ad6a;">}
+</span><span>
+</span><span style="color:#ffb964;">hx --health
+</span></code></pre>
+<h2 id="guan-bi-zheng-shu-xiao-yan">关闭证书校验</h2>
+<p>有时代理改变证书，导致一些 HTTPS 协议的 URL 不能正常访问。
+一般来说应该是安装与代理相匹配的证书，但也可以简单地为一些应用直接关闭证书校验：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>echo </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">check_certificate = off</span><span style="color:#556633;">&#39; </span><span>&gt;&gt; ${</span><span style="color:#ffb964;">HOME</span><span>}/.wgetrc
+</span><span>echo </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">insecure</span><span style="color:#556633;">&#39; </span><span>&gt;&gt; ${</span><span style="color:#ffb964;">HOME</span><span>}/.curlrc
+</span></code></pre>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202502202237/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">openGauss 的 NUMA-aware 部署</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202503112308/">
+                                <span class="button__text">openGauss 执行 HyBench 基准测试</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

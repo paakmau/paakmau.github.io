@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>【luogu 1880】石子合并 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="【luogu 1880】石子合并 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/201912182310/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="【luogu 1880】石子合并 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/201912182310/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/201912182310/">【luogu 1880】石子合并</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2019-12-18
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/dong-tai-gui-hua/">#动态规划</a></span>
+    
+
+        <div class="post-content">
+            <p>退役了退役了，刷点水题准备面试</p>
+<span id="continue-reading"></span><h2 id="ti-mu-miao-shu">题目描述</h2>
+<p>在一个圆形操场的四周摆放 N 堆石子，现要将石子有次序地合并成一堆。规定每次只能选相邻的 2 堆合并成新的一堆，并将新的一堆的石子数，记为该次合并的得分。</p>
+<p>试设计出一个算法,计算出将 N 堆石子合并成 1 堆的最小得分和最大得分。</p>
+<h2 id="shu-ru-ge-shi">输入格式</h2>
+<p>数据的第 1 行是正整数 N，表示有 N 堆石子。<br>
+第 2 行有 N 个整数，第 i 个整数 ai​ 表示第 i 堆石子的个数。</p>
+<h2 id="shu-chu-ge-shi">输出格式</h2>
+<p>输出共 2 行，第 1 行为最小得分，第 2 行为最大得分。</p>
+<h2 id="shu-ru-yang-li">输入样例</h2>
+<pre data-lang="txt" style="background-color:#151515;color:#e8e8d3;" class="language-txt "><code class="language-txt" data-lang="txt"><span>4
+</span><span>4 5 9 4
+</span></code></pre>
+<h2 id="shu-chu-yang-li">输出样例</h2>
+<pre data-lang="txt" style="background-color:#151515;color:#e8e8d3;" class="language-txt "><code class="language-txt" data-lang="txt"><span>43
+</span><span>54
+</span></code></pre>
+<h2 id="hint">Hint</h2>
+<p><code>1 &lt;= N &lt;= 100，0 &lt;= Ai &lt;= 20</code></p>
+<h2 id="ti-jie">题解</h2>
+<p>把环复制一遍变成链做 dp 就行了</p>
+<p><code>F(i, j)</code> 表示合并 <code>[i, j]</code> 的最大得分<br>
+<code>F(i, j) = max { F(i, k) + F(k+1, j) + Sum(i, j), i &lt;= k &lt; j }</code><br>
+最小得分同理</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">#include </span><span style="color:#556633;">&lt;</span><span style="color:#99ad6a;">cstdio</span><span style="color:#556633;">&gt;
+</span><span style="color:#8fbfdc;">#include </span><span style="color:#556633;">&lt;</span><span style="color:#99ad6a;">algorithm</span><span style="color:#556633;">&gt;
+</span><span style="color:#8fbfdc;">#include </span><span style="color:#556633;">&lt;</span><span style="color:#99ad6a;">climits</span><span style="color:#556633;">&gt;
+</span><span style="color:#8fbfdc;">#include </span><span style="color:#556633;">&lt;</span><span style="color:#99ad6a;">cstring</span><span style="color:#556633;">&gt;
+</span><span>
+</span><span style="color:#8fbfdc;">using namespace</span><span> std;
+</span><span>
+</span><span style="color:#8fbfdc;">const int</span><span> MAXN = </span><span style="color:#cf6a4c;">205</span><span>;
+</span><span>
+</span><span style="color:#8fbfdc;">int</span><span> N;
+</span><span style="color:#8fbfdc;">long long</span><span> A[MAXN];
+</span><span style="color:#8fbfdc;">long long</span><span> F[MAXN][MAXN];
+</span><span style="color:#8fbfdc;">long long</span><span> G[MAXN][MAXN];
+</span><span style="color:#8fbfdc;">long long</span><span> S[MAXN];
+</span><span>
+</span><span style="color:#8fbfdc;">int </span><span style="color:#fad07a;">main</span><span>() {
+</span><span>    memset (G, </span><span style="color:#cf6a4c;">0x0f</span><span>, sizeof(G));
+</span><span>    scanf(</span><span style="color:#556633;">&quot;</span><span style="color:#7697d6;">%d</span><span style="color:#556633;">&quot;</span><span>, &amp;N);
+</span><span>    </span><span style="color:#8fbfdc;">for </span><span>(</span><span style="color:#8fbfdc;">int</span><span> i = </span><span style="color:#cf6a4c;">1</span><span>; i &lt;= N; i++)
+</span><span>        scanf(</span><span style="color:#556633;">&quot;</span><span style="color:#7697d6;">%lld</span><span style="color:#556633;">&quot;</span><span>, A + i), A[i+N] = A[i], G[i][i] = G[i+N][i+N] = </span><span style="color:#cf6a4c;">0</span><span>;
+</span><span>    </span><span style="color:#8fbfdc;">for </span><span>(</span><span style="color:#8fbfdc;">int</span><span> i = </span><span style="color:#cf6a4c;">1</span><span>; i &lt;= N * </span><span style="color:#cf6a4c;">2</span><span>; i++)
+</span><span>        S[i] = S[i - </span><span style="color:#cf6a4c;">1</span><span>] + A[i];
+</span><span>    </span><span style="color:#8fbfdc;">for </span><span>(</span><span style="color:#8fbfdc;">int</span><span> l = </span><span style="color:#cf6a4c;">2</span><span>; l &lt;= N; l++)
+</span><span>        </span><span style="color:#8fbfdc;">for </span><span>(</span><span style="color:#8fbfdc;">int</span><span> i = </span><span style="color:#cf6a4c;">1</span><span>; i+l-</span><span style="color:#cf6a4c;">1 </span><span>&lt;= </span><span style="color:#cf6a4c;">2</span><span>*N; i++)
+</span><span>            </span><span style="color:#8fbfdc;">for </span><span>(</span><span style="color:#8fbfdc;">int</span><span> j = </span><span style="color:#cf6a4c;">1</span><span>; j &lt; l; j++)  {
+</span><span>                F[i][i+l-</span><span style="color:#cf6a4c;">1</span><span>] = </span><span style="color:#ffb964;">max</span><span>(F[i][i+l-</span><span style="color:#cf6a4c;">1</span><span>], F[i][i+j-</span><span style="color:#cf6a4c;">1</span><span>] + F[i+j][i+l-</span><span style="color:#cf6a4c;">1</span><span>] + S[i+l-</span><span style="color:#cf6a4c;">1</span><span>] - S[i-</span><span style="color:#cf6a4c;">1</span><span>]);
+</span><span>                G[i][i+l-</span><span style="color:#cf6a4c;">1</span><span>] = </span><span style="color:#ffb964;">min</span><span>(G[i][i+l-</span><span style="color:#cf6a4c;">1</span><span>], G[i][i+j-</span><span style="color:#cf6a4c;">1</span><span>] + G[i+j][i+l-</span><span style="color:#cf6a4c;">1</span><span>] + S[i+l-</span><span style="color:#cf6a4c;">1</span><span>] - S[i-</span><span style="color:#cf6a4c;">1</span><span>]);
+</span><span>            }
+</span><span>    </span><span style="color:#8fbfdc;">long long</span><span> ansMn = INT_MAX;
+</span><span>    </span><span style="color:#8fbfdc;">long long</span><span> ansMx = INT_MIN;
+</span><span>    </span><span style="color:#8fbfdc;">for </span><span>(</span><span style="color:#8fbfdc;">int</span><span> i=</span><span style="color:#cf6a4c;">1</span><span>; i&lt;=N; i++) {
+</span><span>        ansMx = </span><span style="color:#ffb964;">max </span><span>(ansMx, F[i][i+N-</span><span style="color:#cf6a4c;">1</span><span>]);
+</span><span>        ansMn = </span><span style="color:#ffb964;">min </span><span>(ansMn, G[i][i+N-</span><span style="color:#cf6a4c;">1</span><span>]);
+</span><span>    }
+</span><span>    printf(</span><span style="color:#556633;">&quot;</span><span style="color:#7697d6;">%lld</span><span style="color:#99ad6a;">\n</span><span style="color:#7697d6;">%lld</span><span style="color:#556633;">&quot;</span><span>, ansMn, ansMx);
+</span><span>    </span><span style="color:#8fbfdc;">return </span><span style="color:#cf6a4c;">0</span><span>;
+</span><span>}
+</span></code></pre>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/201912181916/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">Docker 下使用 Let&#x27;s Encrypt 与 nginx 搭建支持 HTTPS 的 WordPress 博客</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/201912190040/">
+                                <span class="button__text">【hdu 2955】Robberies</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

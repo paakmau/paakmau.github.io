@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>POSIX shell 脚本使用笔记 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="POSIX shell 脚本使用笔记 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202411052325/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="POSIX shell 脚本使用笔记 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202411052325/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202411052325/">POSIX shell 脚本使用笔记</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2024-11-05
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/powershell/">#PowerShell</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/shell/">#Shell</a></span>
+    
+
+        <div class="post-content">
+            <p>命令行脚本在很多场景下都会用到，比如自动化任务、流水线、构建镜像等。
+本文会结合一些常用命令，记录 POSIX shell（<code>sh</code>）命令行脚本的编写方法与技巧。</p>
+<span id="continue-reading"></span>
+<p>POSIX 的全称是 Portable Operating System Interface，定义了操作系统与用户级别 API 的一些标准。
+POSIX shell 标准实际上是 KornShell（<code>ksh</code>）的真子集，而 KornShell 则是以 Bourne shell 为基础实现的。</p>
+<p>POSIX shell 的解释器一般可以用 <code>/bin/sh</code>，可以在绝大多数 Unix-like 系统里找到。
+顺带一提有些系统的 <code>/bin/sh</code> 可能会是一个软链接或者硬链接，会链接到其他解释器，比如常见的 <code>bash</code> 这些。
+不过这些解释器一般都要兼容 POSIX shell 的语法。</p>
+<p>虽然 <code>sh</code> 已经很古老了，但是它可以在几乎任何系统下使用，可移植性很强，所以还是需要熟悉一些基础用法。</p>
+<p>本文会涉及一些代码风格要求，主要参考 <a href="https://google.github.io/styleguide/shellguide.html">https://google.github.io/styleguide/shellguide.html</a>。
+注意这个脚本风格指导是针对 <code>bash</code> 的，与本文有所不同。</p>
+<p>POSIX shell 的标准可以参考：</p>
+<p><a href="https://pubs.opengroup.org/onlinepubs/9799919799/utilities/V3_chap02.html">https://pubs.opengroup.org/onlinepubs/9799919799/utilities/V3_chap02.html</a></p>
+<h2 id="jiao-ben-wen-jian">脚本文件</h2>
+<p>执行 <code>sh</code> 脚本可以直接 <code>sh ./script.sh</code>。
+也可以直接当作 executable 执行：<code>./script.sh</code>。</p>
+<p>如果需要直接执行，脚本文件需要具有读权限与执行权限。
+权限可用 <code>ls -l</code> 查看，如果没有执行权限可以这样：<code>chmod +x ./script.sh</code>。</p>
+<p>文件名命名用 <code>underscore_style</code>，executable 脚本不带后缀名或用 <code>.sh</code>，library 脚本要求带 <code>.sh</code> 后缀。</p>
+<h2 id="shebang">Shebang</h2>
+<p>写在脚本第一行，用于指定解释器，比方说 <code>#!/bin/sh</code>。</p>
+<p>注意到有些脚本会写成类似 <code>#!/usr/bin/env bash</code> 的形式。
+这种 shebang 写法不直接指定 <code>bash</code> 的绝对路径，而是要求在 <code>$PATH</code> 中找 <code>bash</code>。
+这是为了可移植性，因为不同系统上 <code>bash</code> 的路径会不太一样，比如有些系统会把 <code>bash</code> 放在 <code>/usr/local/bin</code> 里面。
+但是对于制定了标准的 POSIX shell 而言，就不存在这种情况，直接用绝对路径 <code>/bin/sh</code> 就行了。</p>
+<p>Shebang 其实是指 <code>#!</code>。
+因为 <code>#</code> 通常被称为 sharp 或者 hash，而 <code>!</code> 通常称为 bang。
+所以组装一下就叫做 shebang，其实还有很多叫法，比如 sha-bang、hashbang 啥的。</p>
+<h2 id="bian-liang">变量</h2>
+<h3 id="bian-liang-ding-yi-fu-zhi-yu-shan-chu">变量定义、赋值与删除</h3>
+<p>不需要单独定义变量，可以直接赋值，比如 <code>var=1</code>。
+注意不要在 <code>=</code> 两边加空格。</p>
+<p>对于不需要的变量，可以用 <code>unset</code> 删除变量，比如 <code>unset var</code>。</p>
+<p>环境变量、只读变量用 <code>ALL_CAPS</code>，并且要求定义在文件顶部。
+其他变量命名风格用 <code>underscore_style</code>。</p>
+<h3 id="bian-liang-zhan-kai">变量展开</h3>
+<p>Variable expansion。</p>
+<p>参考：<a href="https://unix.stackexchange.com/questions/78914/quoted-vs-unquoted-string-expansion">https://unix.stackexchange.com/questions/78914/quoted-vs-unquoted-string-expansion</a></p>
+<p>对于大部分变量，可以用 <code>$</code> 展开变量再括入双引号内以获取变量的值，比如 <code>echo "The value is: ${var}"</code>。</p>
+<p>如果不带双引号展开，这个变量的字符串值会被进行两个操作：</p>
+<ul>
+<li>
+<p>Field splitting</p>
+<p>对这个变量的字符串值进行 split 操作。
+split 的依据是环境变量 <code>${IFS}</code>。<br>
+<code>${IFS}</code> 的默认值包含空格、制表符和换行符。
+特殊字符不便于输入，修改 <code>${IFS}</code> 可以用这种写法：<code>IFS="$(echo -ne '\n \t')"</code>，注意 <code>\n</code> 不能放在最后，因为 <code>$()</code> 展开时会把末尾换行符 trim 掉。
+如果是 <code>bash</code> 的话可以这样写：<code>IFS=$' \t\n'</code>。</p>
+</li>
+<li>
+<p>Pathname expansion</p>
+<p>把 split 出的每个子串当作一个 pattern 去匹配文件，并用匹配的所有文件作为最终的输出，如果匹配失败将会保持子串原本的值。<br>
+Pathname expansion 默认是开启的，但我们不一定需要它，可以通过 <code>set -f</code> 与 <code>set +f</code> 打开与关闭这个功能。
+如果不希望影响全局作用域，那就应当在 subshell 中使用 <code>set -f</code> 或 <code>set +f</code>。</p>
+</li>
+</ul>
+<p>比如说对于 <code>files='*.sh *.c'</code>，我们用 <code>echo ${files}</code> 不带双引号展开并输出，将会看到当前目录下所有的 <code>.c</code> 与 <code>.sh</code> 文件。
+但如果没有匹配的文件，将会看到相应的 pattern 子串本身。
+实际使用中这种展开方式常用于循环，比如 <code>for file in ${files}</code>。</p>
+<p>变量展开还提供了一些语法糖，可以在展开时依据条件对变量做一些修改。
+比方说最常见的场景就是，脚本需要获取一个环境变量，但这个环境变量可能未定义或者为空串，所以可以在展开时给它指定一个默认值。
+支持的写法如下：</p>
+<ul>
+<li>
+<p><code>${var:-&lt;word&gt;}</code>：输出默认值。</p>
+<p>如果 <code>var</code> 未定义或为空串，将展开 <code>&lt;word&gt;</code> 作为替代的展开结果。</p>
+</li>
+<li>
+<p><code>${var:=&lt;word&gt;}</code>：输出并赋值为默认值。</p>
+<p>如果 <code>var</code> 未定义或为空串，先展开 <code>&lt;word&gt;</code> 作为展开结果，再将展开结果赋值给 <code>var</code>。</p>
+</li>
+<li>
+<p><code>${var:?&lt;word&gt;}</code>：指示错误。</p>
+<p>如果 <code>var</code> 未定义或为空串，将 <code>&lt;word&gt;</code> 展开结果输出到标准错误流，并以非零值退出脚本。
+如果是交互式 shell 则不会退出。</p>
+</li>
+<li>
+<p><code>${var:+&lt;word&gt;}</code>：输出替代值。</p>
+<p>如果 <code>var</code> 有定义且非空串，将会作为替代去展开 <code>&lt;word&gt;</code> 作为展开结果。</p>
+</li>
+</ul>
+<p>举例说明一些常见用法：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#888888;"># 以字符串作为默认值
+</span><span>echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">var</span><span style="color:#99ad6a;">:-default_value}</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#888888;"># 以 pathname expansion 作为默认值
+</span><span>echo ${</span><span style="color:#ffb964;">var</span><span>:-*.sh}
+</span><span>
+</span><span style="color:#888888;"># 展开变量作为默认值
+</span><span>echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">var</span><span style="color:#99ad6a;">:-</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">other_var</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#888888;"># 展开命令作为默认值
+</span><span>echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">var</span><span style="color:#99ad6a;">:-</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$(echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">default_value</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">)</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span></code></pre>
+<p>上面写法中的 <code>:</code> 用于决定 <code>var</code> 有定义但为空串情况下的处理方式。
+带 <code>:</code> 时空串被认为等同于未定义的情况，均为无效值；不带 <code>:</code> 时空串被认为是一个有效值。
+下面提供一个示例作为演示：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#888888;"># 空串也视为有效值，不替换默认值
+</span><span style="color:#ffb964;">var</span><span>=
+</span><span style="color:#ffb964;">other_var</span><span>=</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">var</span><span style="color:#99ad6a;">-default_value}</span><span style="color:#556633;">&quot;
+</span><span>[ </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">other_var</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot; </span><span>= </span><span style="color:#556633;">&#39;&#39; </span><span>] &amp;&amp; echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">This will print.</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#888888;"># 未定义仍视为无效值，替换为默认值
+</span><span>unset var
+</span><span style="color:#ffb964;">other_var</span><span>=</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">var</span><span style="color:#99ad6a;">-default_value}</span><span style="color:#556633;">&quot;
+</span><span>[ </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">other_var</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot; </span><span>= </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">default_value</span><span style="color:#556633;">&#39; </span><span>] &amp;&amp; echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">This will print.</span><span style="color:#556633;">&quot;
+</span></code></pre>
+<p>变量展开还可以获取变量中存储的字符串的长度：<code>${#var}</code>。</p>
+<p>关于代码风格，变量展开时有两种等价的写法：<code>${var}</code> 和 <code>$var</code>。</p>
+<ul>
+<li>对于自定义的变量，要求使用带大括号的写法，比如 <code>${var}</code>。</li>
+<li>对于单字符的位置参数或特殊参数，不加大括号。
+<ul>
+<li>位置参数比如 <code>$1</code>、<code>$5</code>、<code>$9</code>；</li>
+<li>特殊参数比如 <code>$0</code>、<code>$#</code>、<code>$@</code>、<code>$?</code>、<code>$$</code>。</li>
+</ul>
+</li>
+</ul>
+<h3 id="huan-jing-bian-liang">环境变量</h3>
+<p>Environment variable。</p>
+<p><code>export</code> 的变量可以作为环境变量被子进程读取。</p>
+<p>举个例子，如果希望在脚本中执行其他子脚本，直接对变量赋值，其他子脚本是获取不到变量的值的。
+所以要通过 <code>export</code> 把变量导出为环境变量，这样子脚本中就能获取到变量的值。</p>
+<p>可以先对变量进行赋值再设为 <code>export</code>，比如：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">ENV_VAR</span><span>=</span><span style="color:#99ad6a;">10
+</span><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">ENV_VAR
+</span></code></pre>
+<p>可以在 <code>export</code> 的同时进行赋值，比如 <code>export ENV_VAR=10</code>。
+另外，在 <code>export</code> 之后仍可修改变量的值，之后执行子进程获取到的是修改后的环境变量值。</p>
+<p>在脚本退出后，<code>export</code> 的环境变量会被销毁。
+如果希望在上层脚本或交互式 shell 中保留这些环境变量，可以通过 dot 命令执行该脚本，比如说 <code>. script.sh</code>。
+通过 dot 命令执行的脚本会以当前上下文作为执行上下文，因此该脚本对环境变量的修改将会作用到当前上下文。
+顺带一提，在 <code>bash</code> 中有一个内建的 <code>source</code> 命令，它与 dot 命令是等价的。
+比方说常见的 <code>source .bashrc</code> 其实也可以写成 <code>. .bashrc</code></p>
+<h3 id="zhi-du-bian-liang">只读变量</h3>
+<p>变量被设为只读后将不可被修改。
+只读变量也不可被 <code>unset</code>，除非把 shell 给 kill 掉。</p>
+<p>可以先对变量进行赋值，最后再设为只读，比如：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">var</span><span>=</span><span style="color:#99ad6a;">10
+</span><span style="color:#ffb964;">var</span><span>=</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$(( var + </span><span style="color:#cf6a4c;">1 </span><span style="color:#99ad6a;">))</span><span style="color:#556633;">&quot;
+</span><span style="color:#8fbfdc;">readonly </span><span style="color:#ffb964;">var
+</span></code></pre>
+<p>也可以在设置只读的同时进行赋值，比如：<code>readonly var=10</code>。</p>
+<h3 id="wei-zhi-can-shu">位置参数</h3>
+<p>Positional parameters。</p>
+<p><code>$1</code> 到 <code>$9</code> 是位置参数，分别代表执行脚本时传入的各个参数。
+比如 <code>$1</code> 代表第一个参数，<code>$2</code> 代表第二个参数，以此类推。</p>
+<h3 id="te-shu-can-shu">特殊参数</h3>
+<p>Special Parameters。</p>
+<ul>
+<li><code>$*</code>：传入的各个位置参数，以字符串方式存储</li>
+<li><code>$@</code>：传入的各个位置参数，以数组方式存储</li>
+<li><code>$#</code>：传入的位置参数数量</li>
+<li><code>$?</code>：上一个前台子进程或者 subshell 的退出状态</li>
+<li><code>$$</code>：当前脚本进程的 pid</li>
+<li><code>$0</code>：当前脚本文件名</li>
+</ul>
+<p>注意一下 <code>$@</code>，如果需要使用 <code>for</code> 遍历位置参数，必须使用 <code>for i in "$@"</code> 的写法。
+这里如果用不带双引号的 <code>for i in $@</code> 写法，会导致含空格的单个参数在展开时被 split 为多个参数；
+加上双引号的 <code>for i in "$@"</code> 并不会将各个位置参数展开为同一个字符串；
+顺带一提，<code>$*</code> 在不带双引号时展开结果会与 <code>$@</code> 相同，带了双引号后就是展开为一段普通字符串了。</p>
+<p>举个例子：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#fad07a;">echo_params</span><span>() {
+</span><span>  </span><span style="color:#8fbfdc;">for</span><span> i </span><span style="color:#8fbfdc;">in </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$</span><span style="color:#ffb964;">@</span><span style="color:#556633;">&quot;</span><span>; </span><span style="color:#8fbfdc;">do
+</span><span>    echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">i</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span><span>  </span><span style="color:#8fbfdc;">done
+</span><span>  echo
+</span><span>
+</span><span>  </span><span style="color:#8fbfdc;">for</span><span> i </span><span style="color:#8fbfdc;">in </span><span>$</span><span style="color:#ffb964;">@</span><span>; </span><span style="color:#8fbfdc;">do
+</span><span>    echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">i</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span><span>  </span><span style="color:#8fbfdc;">done
+</span><span>  echo
+</span><span>
+</span><span>  </span><span style="color:#8fbfdc;">for</span><span> i </span><span style="color:#8fbfdc;">in </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$</span><span style="color:#ffb964;">*</span><span style="color:#556633;">&quot;</span><span>; </span><span style="color:#8fbfdc;">do
+</span><span>    echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">i</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span><span>  </span><span style="color:#8fbfdc;">done
+</span><span>  echo
+</span><span>
+</span><span>  </span><span style="color:#8fbfdc;">for</span><span> i </span><span style="color:#8fbfdc;">in </span><span>$</span><span style="color:#ffb964;">*</span><span>; </span><span style="color:#8fbfdc;">do
+</span><span>    echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">i</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span><span>  </span><span style="color:#8fbfdc;">done
+</span><span>}
+</span><span>
+</span><span style="color:#ffb964;">echo_params </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">1 2</span><span style="color:#556633;">&quot; &quot;</span><span style="color:#99ad6a;">3</span><span style="color:#556633;">&quot;
+</span></code></pre>
+<p>输出结果为：</p>
+<pre data-lang="txt" style="background-color:#151515;color:#e8e8d3;" class="language-txt "><code class="language-txt" data-lang="txt"><span>1 2
+</span><span>3
+</span><span>
+</span><span>1
+</span><span>2
+</span><span>3
+</span><span>
+</span><span>1 2 3
+</span><span>
+</span><span>1
+</span><span>2
+</span><span>3
+</span></code></pre>
+<h2 id="tui-chu-zhuang-tai">退出状态</h2>
+<p>一个脚本可以视作一个 executable 程序，它会有一个退出状态。
+一般退出状态为零代表正常执行，其他取值均为异常值。
+退出状态的取值范围是 <code>[0, 255]</code>。
+可以通过类似 <code>exit 1</code> 的语句在退出的同时指定脚本的退出状态。
+我们在执行该脚本的上层脚本或者交互式 shell 中就能通过特殊变量 <code>$?</code> 获取该脚本的退出状态。
+给一个简单的例子：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">exit 1</span><span style="color:#556633;">&quot; </span><span>&gt; some_script.sh
+</span><span style="color:#ffb964;">sh</span><span> some_script.sh
+</span><span>echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$</span><span style="color:#ffb964;">?</span><span style="color:#556633;">&quot;
+</span></code></pre>
+<p>顺带一提，对于 C++ 程序而言，这个退出状态其实就是 <code>main</code> 函数的返回值。
+而对于脚本本身或 subshell 来说，它是最后执行的命令的退出状态或 <code>exit</code> 返回的值。
+对于形如 <code>{ ... }</code> 的复合命令来说，它是最后执行的命令的退出状态。</p>
+<h2 id="zi-fu-chuan-cao-zuo">字符串操作</h2>
+<p>变量的值与命令的参数都是字符串类型的，比如：<code>echo some_string</code>。</p>
+<h3 id="yin-hao">引号</h3>
+<p>但字符串中有可能会包含对于 shell 而言有特殊含义的字符，比如：空格、制表符、换行符、各种引号、各种括号等。
+这个时候可以在字符串两端加上单引号或双引号，于是这些特殊字符就能以字面量作为含义。</p>
+<ul>
+<li>
+<p>单引号</p>
+<p>内部所有字符全部保留字面量的值，但单引号中不能出现单引号。<br>
+例如：<code>echo '${var} =' "${var}"</code></p>
+</li>
+<li>
+<p>双引号</p>
+<p>大部分字符保留字面量的值，部分字符需要使用反斜杠 <code>\</code> 转义。
+可在双引号内做变量展开与命令展开。<br>
+例如：<code>echo "\"\${var}\" = ${var}"</code></p>
+</li>
+</ul>
+<h3 id="pin-jie">拼接</h3>
+<p>直接把两段字符串写在一起就行了。
+注意不要在中间加空格，否则会被认为是两段字符串。</p>
+<p>提供一个简单示例：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>echo </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">${var} = </span><span style="color:#556633;">&#39;&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">var</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span></code></pre>
+<h3 id="chang-du">长度</h3>
+<p>可以通过类似 <code>${#var}</code> 的语法获取字符串变量的长度。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>echo </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">Length of &quot;${var}&quot; is</span><span style="color:#556633;">&#39; &quot;</span><span style="color:#99ad6a;">${#</span><span style="color:#ffb964;">var</span><span style="color:#99ad6a;">}.</span><span style="color:#556633;">&quot;
+</span></code></pre>
+<h3 id="zi-chuan-chu-li">子串处理</h3>
+<p>POSIX shell 提供几种语法用于截取子串。
+它们使用模式匹配标记法，而不是使用正则表达式标记法。</p>
+<p>支持的语法如下：</p>
+<ul>
+<li><code>${var%pattern}</code>：通过 <code>pattern</code> 去除 <code>${var}</code> 的最短后缀。</li>
+<li><code>${var%%pattern}</code>：通过 <code>pattern</code> 去除 <code>${var}</code> 的最长后缀。</li>
+<li><code>${var#pattern}</code>：通过 <code>pattern</code> 去除 <code>${var}</code> 的最短前缀。</li>
+<li><code>${var##pattern}</code>：通过 <code>pattern</code> 去除 <code>${var}</code> 的最长前缀。</li>
+</ul>
+<p>举个去除文件后缀名的例子演示一下：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">file</span><span>=</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">file.tar.gz</span><span style="color:#556633;">&#39;
+</span><span>
+</span><span style="color:#8fbfdc;">if </span><span>[ </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">file%</span><span style="color:#99ad6a;">.*}</span><span style="color:#556633;">&quot; </span><span>= </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">file.tar</span><span style="color:#556633;">&#39; </span><span>]; </span><span style="color:#8fbfdc;">then
+</span><span>  echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">This will print.</span><span style="color:#556633;">&quot;
+</span><span style="color:#8fbfdc;">fi
+</span><span>
+</span><span style="color:#8fbfdc;">if </span><span>[ </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">file%%</span><span style="color:#99ad6a;">.*}</span><span style="color:#556633;">&quot; </span><span>= </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">file</span><span style="color:#556633;">&#39; </span><span>]; </span><span style="color:#8fbfdc;">then
+</span><span>  echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">This will print.</span><span style="color:#556633;">&quot;
+</span><span style="color:#8fbfdc;">fi
+</span></code></pre>
+<h2 id="fu-za-chu-li">复杂处理</h2>
+<p>对于复杂的字符串处理，需要借助外部命令：</p>
+<ul>
+<li><code>grep</code> 用于过滤。</li>
+<li><code>tr</code> 用于逐字符的处理。</li>
+<li><code>sed</code> 用于逐行的处理。</li>
+<li><code>awk</code> 用于更复杂的处理。</li>
+</ul>
+<p>这里提供一些常用脚本：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#888888;"># 将空格替换为换行符
+</span><span style="color:#ffb964;">cat </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">some_file</span><span style="color:#556633;">&quot; </span><span>| </span><span style="color:#ffb964;">tr -s </span><span style="color:#556633;">&#39; &#39; &#39;</span><span style="color:#99ad6a;">\n</span><span style="color:#556633;">&#39;
+</span><span>
+</span><span style="color:#888888;"># 将连续的空格替换为单个换行符
+</span><span style="color:#ffb964;">cat </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">some_file</span><span style="color:#556633;">&quot; </span><span>| </span><span style="color:#ffb964;">tr -s </span><span style="color:#556633;">&#39; &#39; &#39;</span><span style="color:#99ad6a;">\n</span><span style="color:#556633;">&#39;
+</span><span>
+</span><span style="color:#888888;"># 将文件中第 5 行替换为指定字符串，并写回该文件
+</span><span style="color:#ffb964;">sed -i </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">5 c some string</span><span style="color:#556633;">&quot; &quot;</span><span style="color:#99ad6a;">some_file</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#888888;"># 正则表达式查询出文件系统为 ext4 的磁盘
+</span><span style="color:#ffb964;">df -T </span><span>| </span><span style="color:#ffb964;">sed -nE </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">s#(.*) *ext4.*#\\1#p</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#888888;"># 使用 awk 查询出文件系统为 ext4 的磁盘
+</span><span style="color:#ffb964;">df -T </span><span>| </span><span style="color:#ffb964;">grep </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">ext4</span><span style="color:#556633;">&quot; </span><span>| </span><span style="color:#ffb964;">awk </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">{ print $1 }</span><span style="color:#556633;">&#39;
+</span><span>
+</span><span style="color:#888888;"># 正则匹配模式串 some_pattern 的行每五行仅输出一行，其余未匹配行照常输出
+</span><span style="color:#ffb964;">cat </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">some_file</span><span style="color:#556633;">&quot; </span><span>| </span><span style="color:#ffb964;">awk </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">/some_pattern/{ if (++i % 2 == 1) print; next } 1</span><span style="color:#556633;">&#39;
+</span></code></pre>
+<h2 id="suan-shu-yun-suan">算术运算</h2>
+<p>内建的算术运算只支持整数。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">var</span><span>=</span><span style="color:#99ad6a;">10
+</span><span style="color:#ffb964;">var</span><span>=</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$(( var * </span><span style="color:#cf6a4c;">10 </span><span style="color:#99ad6a;">))</span><span style="color:#556633;">&quot;
+</span><span>echo </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">&quot;${var}&quot; + 5 =</span><span style="color:#556633;">&#39; &quot;</span><span style="color:#99ad6a;">$(( var + </span><span style="color:#cf6a4c;">5 </span><span style="color:#99ad6a;">))</span><span style="color:#556633;">&quot;
+</span></code></pre>
+<p>要求使用内建的 <code>$(( ... ))</code>，避免使用外部的 <code>expr</code> 命令。</p>
+<h2 id="fu-dian-shu-yun-suan">浮点数运算</h2>
+<p>TODO:</p>
+<h2 id="guan-dao">管道</h2>
+<p>从左往右，前一条命令的标准输出会作为后一条命令的标准输入。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#888888;"># A single pipeline
+</span><span style="color:#ffb964;">ls </span><span>| </span><span style="color:#ffb964;">grep </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">.sh</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#888888;"># Multiple pipelines
+</span><span style="color:#ffb964;">ls </span><span>\
+</span><span>  | </span><span style="color:#ffb964;">grep </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">.sh</span><span style="color:#556633;">&quot; </span><span>\
+</span><span>  | </span><span style="color:#ffb964;">grep </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">some_keyword</span><span style="color:#556633;">&quot; </span><span>\
+</span></code></pre>
+<p>管道的退出状态会受到 <code>pipefail</code> 选项的影响。
+默认 <code>pipefail</code> 是关闭的，这时管道的退出状态就是管道中最后一条命令的退出状态。
+当 <code>pipefail</code> 开启后，只有当管道中所有命令的退出状态均为零，管道的退出状态才为零，否则为一。
+打开 <code>pipefail</code>：<code>set -o pipefail</code>；
+关闭 <code>pipefail</code>：<code>set +o pipefail</code>；
+查看当前选项开关状态：<code>set -o</code>。</p>
+<p>另外还可以在管道<strong>最开始</strong>加一个感叹号，将管道的退出状态取反，例如：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>! </span><span style="color:#ffb964;">ls </span><span>| </span><span style="color:#ffb964;">grep </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">keyword</span><span style="color:#556633;">&quot;
+</span><span>echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$</span><span style="color:#ffb964;">?</span><span style="color:#556633;">&quot;
+</span></code></pre>
+<p>单条管道不换行，多条管道则需要换行，并使用统一的两个空格作为缩进。</p>
+<h2 id="yu-huo-lie-biao">与或列表</h2>
+<p>与或列表可通过逻辑运算符把命令连接起来，各个命令的退出状态将会作为运算数。
+其中与运算跟或运算的优先级相同，结合性是左结合。
+与 C++ 语言相同，POSIX shell 的逻辑运算使用短路求值策略。</p>
+<p>与或列表的退出状态是列表中执行的最后一条命令的退出状态。</p>
+<p>举个例子：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">false </span><span>&amp;&amp; echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">This won&#39;t print.</span><span style="color:#556633;">&quot;
+</span><span>echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$</span><span style="color:#ffb964;">?</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#ffb964;">true </span><span>\
+</span><span>  || echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">This won&#39;t print.</span><span style="color:#556633;">&quot; </span><span>\
+</span><span>  &amp;&amp; echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">This will print.</span><span style="color:#556633;">&quot;
+</span><span>echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$</span><span style="color:#ffb964;">?</span><span style="color:#556633;">&quot;
+</span></code></pre>
+<p>跟 lua 语言类似，与或列表可以当作三元运算符使用：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">rm </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">some_file</span><span style="color:#556633;">&quot; </span><span>\
+</span><span>  &amp;&amp; echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Remove succeeded.</span><span style="color:#556633;">&quot; </span><span>\
+</span><span>  || echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Remove failed.</span><span style="color:#556633;">&quot;
+</span></code></pre>
+<p>可以在与或列表中使用形如 <code>{ ... }</code> 的复合命令或者 subshell。
+大括号形式的复合命令记得要在最后一条命令后面加分号。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">true </span><span>\
+</span><span>  &amp;&amp; { echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$</span><span style="color:#ffb964;">?</span><span style="color:#556633;">&quot;</span><span>; </span><span style="color:#ffb964;">false</span><span>; } \
+</span><span>  || ( echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$</span><span style="color:#ffb964;">?</span><span style="color:#556633;">&quot;</span><span>; </span><span style="color:#ffb964;">true </span><span>) \
+</span><span>  &amp;&amp; ( echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$</span><span style="color:#ffb964;">?</span><span style="color:#556633;">&quot; </span><span>&amp;&amp; </span><span style="color:#ffb964;">false </span><span>) \
+</span><span>  || echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$</span><span style="color:#ffb964;">?</span><span style="color:#556633;">&quot;
+</span></code></pre>
+<p>换行风格要求与管道保持一致。</p>
+<h2 id="shu-ru-shu-chu-liu-zhong-ding-xiang">输入输出流重定向</h2>
+<ul>
+<li><code>cmd &gt; "file.out"</code>：将标准输出流重定向到文件。</li>
+<li><code>cmd &lt; "file.in"</code>：将标准输入流重定向为文件。</li>
+<li><code>cmd &lt; "file.in" &gt; "file.out"</code>：将标准输入流与标准输出流都分别重定向到各自的文件。</li>
+<li><code>cmd &gt;&gt; "file.out"</code>：将标准输出流以追加写的方式重定向到文件。</li>
+<li><code>cmd 2&gt;&gt; "file.out"</code>：将标准错误流以追加写的方式重定向到文件。</li>
+<li><code>cmd &gt; "file.out" 2&gt;&amp;1</code>：将标准输出流重定向到文件，并把标准错误流重定向到标准输出流上。</li>
+<li><code>cmd &gt;&amp;2</code>：将标准输出流重定向到标准错误流上。</li>
+</ul>
+<p>有时会需要输出错误信息，可以这样写：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#fad07a;">err</span><span>() {
+</span><span>  echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">[$(</span><span style="color:#ffb964;">date</span><span style="color:#99ad6a;"> +</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">%Y-%m-%d %H:%M:%S</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">)]: $</span><span style="color:#ffb964;">*</span><span style="color:#556633;">&quot; </span><span>&gt;&amp;</span><span style="color:#cf6a4c;">2
+</span><span>}
+</span><span>
+</span><span style="color:#8fbfdc;">if </span><span>[ </span><span style="color:#ffb964;">-z </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">var</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot; </span><span>]; </span><span style="color:#8fbfdc;">then
+</span><span>  </span><span style="color:#ffb964;">err </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">&quot;${var}&quot; is empty</span><span style="color:#556633;">&#39;
+</span><span>  exit 1
+</span><span style="color:#8fbfdc;">fi
+</span></code></pre>
+<h2 id="subshell">subshell</h2>
+<p>POSIX shell 没有 <code>bash</code> 里的那种 <code>local</code> 变量。
+即使是函数内的变量，作用域也是全局的。
+想要模拟局部作用域的效果需要使用 subshell。</p>
+<p>Subshell 可以访问外部变量，但它对变量的修改不会影响到外部的作用域。
+很简单，直接做个实验吧：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">var</span><span>=</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">global</span><span style="color:#556633;">&#39;
+</span><span>echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">var</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span><span>(
+</span><span>  echo </span><span style="color:#556633;">&quot;  </span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">var</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span><span>  </span><span style="color:#ffb964;">var</span><span>=</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">subshell</span><span style="color:#556633;">&#39;
+</span><span>  echo </span><span style="color:#556633;">&quot;  </span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">var</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span><span>)
+</span><span>echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">var</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span></code></pre>
+<p>输出：</p>
+<pre data-lang="txt" style="background-color:#151515;color:#e8e8d3;" class="language-txt "><code class="language-txt" data-lang="txt"><span>global
+</span><span>  global
+</span><span>  subshell
+</span><span>global
+</span></code></pre>
+<p>Subshell 的退出状态由最后一条命令决定。
+也可以在 subshell 中使用 <code>exit</code> 指定。
+在外部就可以通过 <code>$?</code> 获取到这个退出状态：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>(
+</span><span>  exit 1
+</span><span>)
+</span><span>echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$</span><span style="color:#ffb964;">?</span><span style="color:#556633;">&quot;
+</span></code></pre>
+<h2 id="ming-ling-ti-huan">命令替换</h2>
+<p>Command substitution。</p>
+<p>可以执行命令或调用函数，将其标准输出获取为字符串。
+可以把这坨字符串赋值给某个变量，也可以直接作为另一个命令的参数。</p>
+<ul>
+<li><code>dir="$(pwd)"</code> 会通过 <code>pwd</code> 命令输出当前的工作路径赋值到 <code>dir</code> 变量。</li>
+<li><code>ls "$(pwd)"</code> 会把 <code>pwd</code> 命令输出的工作路径作为参数传给 <code>ls</code> 从而把路径内的文件都打印出来。</li>
+</ul>
+<p>如果需要嵌套，可以用类似这样的写法：<code>some_cmd "$(some_cmd "$(some_cmd)")"</code>。
+比如在上面命令的中间再套一个无害的 <code>echo</code> 进去：<code>ls "$(echo "$(pwd)")"</code>。
+这种写法不需要使用反斜杠转义。</p>
+<p>一些需要注意的地方：</p>
+<ul>
+<li>
+<p>这个小括号实际上就是 subshell。</p>
+<p>因此如果在里面调用函数，函数对变量的修改将不会影响到外部作用域。</p>
+</li>
+<li>
+<p>命令替换返回的是一个字符串。</p>
+<p>命令替换其实是跟变量展开一样的。
+我们用 <code>"</code> 把命令替换的返回值括起来就会得到一个字符串。
+不带 <code>"</code> 展开就会跟变量展开一样依次执行 field splitting 与 pathname expansion 操作。
+具体可参考变量展开。</p>
+<p>有一种常见的场景是需要把一个命令替换的返回值用变量保存起来，再把这个变量作为其他命令的位置参数传进去。
+而命令替换会返回一个字符串，如果这个字符串实际上包含多个参数，一般是用换行符或空格分隔。
+这个时候就需要不带 <code>"</code> 对命令替换进行展开。
+比如先 <code>files=$(ls)</code>，再 <code>cat ${files}</code>。</p>
+<p>当然也可以直接把命令替换作为其他命令的输入参数，效果是相同的，比如 <code>cat $(ls)</code>。</p>
+<p>需要注意的是展开时 split 的依据是 <code>$IFS</code>，因此需要保证这些参数内不能出现 <code>$IFS</code> 里的字符（比方说最常见的空格），否则这个参数会被 split 成两个参数。
+实际上如果有文件名内包含空格，<code>cat $(ls)</code> 是会出问题的。
+如果要搜索文件，正确的写法应该是通过 pathname expansion，比如：<code>cat $(echo "*")</code>。</p>
+</li>
+</ul>
+<p>要求尽可能用 <code>"</code> 把命令替换括起来（比如 <code>"$(pwd)"</code>），除非有必要。
+嵌套在 <code>"$()"</code> 内的双引号不需要反斜杠转义。</p>
+<p>不建议使用类似 <code>&lt;cmd&gt; "`&lt;cmd&gt;`"</code> 的写法。
+因为如果需要嵌套，就会用到反斜杠转义，可读性差。</p>
+<h2 id="ren-wu-kong-zhi">任务控制</h2>
+<p>TODO:</p>
+<h2 id="kong-zhi-liu">控制流</h2>
+<p>对于控制流语句，要求把 <code>; then</code> 和 <code>; do</code> 放在 <code>if</code>、<code>for</code>、<code>while</code> 的同一行。</p>
+<p>缩进统一用两个空格。</p>
+<h3 id="xun-huan-yu-ju">循环语句</h3>
+<p>注意一下 POSIX shell 是不支持数组的，但是可以对 field splitting 跟 pathname expansion 的各个展开结果进行遍历。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#8fbfdc;">for</span><span> arg </span><span style="color:#8fbfdc;">in </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$</span><span style="color:#ffb964;">@</span><span style="color:#556633;">&quot;</span><span>; </span><span style="color:#8fbfdc;">do
+</span><span>  echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">arg</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span><span style="color:#8fbfdc;">done
+</span><span>
+</span><span style="color:#888888;"># Field splitting
+</span><span style="color:#8fbfdc;">for</span><span> i </span><span style="color:#8fbfdc;">in </span><span>$(</span><span style="color:#ffb964;">seq</span><span> 1 10); </span><span style="color:#8fbfdc;">do
+</span><span>  echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">i</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span><span style="color:#8fbfdc;">done
+</span><span>
+</span><span style="color:#888888;"># Pathname expansion
+</span><span style="color:#8fbfdc;">for</span><span> file </span><span style="color:#8fbfdc;">in</span><span> ./*; </span><span style="color:#8fbfdc;">do
+</span><span>  echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">file</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span><span style="color:#8fbfdc;">done
+</span></code></pre>
+<h3 id="tiao-jian-yu-ju">条件语句</h3>
+<p><code>if</code> 语句会执行一个复合命令列表，并依据其退出状态进行条件判断：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#8fbfdc;">if </span><span>! </span><span style="color:#ffb964;">rm </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">some_file</span><span style="color:#556633;">&quot; </span><span>|| ! </span><span style="color:#ffb964;">rm </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">other_file</span><span style="color:#556633;">&quot;</span><span>; </span><span style="color:#8fbfdc;">then
+</span><span>  echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Remove failed.</span><span style="color:#556633;">&quot;
+</span><span style="color:#8fbfdc;">else
+</span><span>  echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Remove succeeded.</span><span style="color:#556633;">&quot;
+</span><span style="color:#8fbfdc;">fi
+</span></code></pre>
+<h3 id="test"><code>test</code></h3>
+<p><a href="https://pubs.opengroup.org/onlinepubs/9799919799/utilities/test.html">https://pubs.opengroup.org/onlinepubs/9799919799/utilities/test.html</a></p>
+<p>POSIX 标准提供了 <code>test</code> 工具用于条件判断。
+<code>test</code> 能够计算表达式的值，并通过其退出状态表示计算结果。
+退出状态为零表示 <code>true</code>，为一表示 <code>false</code>。</p>
+<p><code>test</code> 通过命令的位置参数传入表达式中的运算符与运算数：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#8fbfdc;">if </span><span style="color:#ffb964;">test </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">var</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;</span><span> = </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">some_str</span><span style="color:#556633;">&quot;</span><span>; </span><span style="color:#8fbfdc;">then
+</span><span>  echo </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">&quot;${var}&quot; is equal to &quot;some_str&quot;.</span><span style="color:#556633;">&#39;
+</span><span style="color:#8fbfdc;">fi
+</span><span>
+</span><span style="color:#8fbfdc;">if </span><span style="color:#ffb964;">test </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">var</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;</span><span style="color:#ffb964;"> -gt</span><span> 2 &amp;&amp; </span><span style="color:#ffb964;">test</span><span> ! </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">var</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;</span><span style="color:#ffb964;"> -eq</span><span> 7; </span><span style="color:#8fbfdc;">then
+</span><span>  echo </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">&quot;${var}&quot; is greater than 2 and not equal to 7.</span><span style="color:#556633;">&#39;
+</span><span style="color:#8fbfdc;">fi
+</span></code></pre>
+<p><code>test</code> 工具还有另一种方括号的形式，写法差别不大，比如：<code>[ "${var}" = "some_str" ]</code>。
+实际上我们也经常能见到 <code>/usr/bin/[</code> 这个文件，然后 <code>ls -l</code> 一下可能还会发现这个文件跟 <code>test</code> 就是同一个。
+这种方括号形式的实现还是比较巧妙的。
+不过要注意，因为 <code>[</code> 本身就是一个 executable，所以要记得加空格。
+列举一些常见写法：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#8fbfdc;">if </span><span>[ </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">var</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot; </span><span>= </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">some_str</span><span style="color:#556633;">&quot; </span><span>]; </span><span style="color:#8fbfdc;">then
+</span><span>  echo </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">&quot;${var}&quot; is equal to &quot;some_str&quot;.</span><span style="color:#556633;">&#39;
+</span><span style="color:#8fbfdc;">elif </span><span>[ </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">var</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot; </span><span>= </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">other_str</span><span style="color:#556633;">&quot; </span><span>]; </span><span style="color:#8fbfdc;">then
+</span><span>  echo </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">&quot;${var}&quot; is equal to &quot;other_str&quot;.</span><span style="color:#556633;">&#39;
+</span><span style="color:#8fbfdc;">else
+</span><span>  echo </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">&quot;${var}&quot; is unknown.</span><span style="color:#556633;">&#39;
+</span><span style="color:#8fbfdc;">fi
+</span><span>
+</span><span style="color:#8fbfdc;">if </span><span>[ </span><span style="color:#ffb964;">-z </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">var</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot; </span><span>]; </span><span style="color:#8fbfdc;">then
+</span><span>  echo </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">&quot;${var}&quot; is empty.</span><span style="color:#556633;">&#39;
+</span><span style="color:#8fbfdc;">fi
+</span><span>
+</span><span style="color:#8fbfdc;">if </span><span>[ </span><span style="color:#ffb964;">-n </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">var</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot; </span><span>]; </span><span style="color:#8fbfdc;">then
+</span><span>  echo </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">&quot;${var}&quot; is not empty.</span><span style="color:#556633;">&#39;
+</span><span style="color:#8fbfdc;">fi
+</span><span>
+</span><span style="color:#8fbfdc;">if </span><span>[ </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">var</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot; </span><span style="color:#ffb964;">-gt</span><span> 2 ] &amp;&amp; [ ! </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">var</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot; </span><span style="color:#ffb964;">-eq</span><span> 7 ]; </span><span style="color:#8fbfdc;">then
+</span><span>  echo </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">&quot;${var}&quot; is greater than 2 and not equal to 7.</span><span style="color:#556633;">&#39;
+</span><span style="color:#8fbfdc;">fi
+</span></code></pre>
+<p>提供一下 <code>test</code> 的部分参数列表：</p>
+<ul>
+<li><code>-e &lt;path&gt;</code>：路径存在</li>
+<li><code>-d &lt;path&gt;</code>：路径是一个目录</li>
+<li><code>-f &lt;path&gt;</code>：路径是一个普通文件</li>
+<li><code>-h &lt;path&gt;</code>：路径是一个软链接</li>
+<li><code>&lt;p1&gt; -ef &lt;p2&gt;</code>：两个路径都存在且为同一文件，支持硬链接与软链接</li>
+<li><code>-n &lt;str&gt;</code>：字符串长度不为 0</li>
+<li><code>-z &lt;str&gt;</code>：字符串长度为 0</li>
+<li><code>&lt;str&gt;</code>：字符串不为空串</li>
+<li><code>&lt;s1&gt; = &lt;s2&gt;</code>：字符串相等</li>
+<li><code>&lt;s1&gt; != &lt;s2&gt;</code>：字符串不相等</li>
+<li><code>&lt;s1&gt; &gt; &lt;s2&gt;</code>：字典序大于</li>
+<li><code>&lt;s2&gt; &lt; &lt;s1&gt;</code>：字典序小于</li>
+<li><code>&lt;n1&gt; -eq &lt;n2&gt;</code>：整数相等</li>
+<li><code>&lt;n1&gt; -gt &lt;n2&gt;</code>：整数大于</li>
+<li><code>&lt;n1&gt; -lt &lt;n2&gt;</code>：整数小于</li>
+<li><code>! &lt;expr&gt;</code>：将 <code>test</code> 命令的最终结果取反</li>
+</ul>
+<p>注意，如果不带引号展开空串，它将不会被作为参数传入 <code>test</code>。
+比方说 <code>test -n $(cat /dev/null) &amp;&amp; echo 1</code> 仍然会输出 <code>1</code>；
+但 <code>test -n "$(cat /dev/null)" &amp;&amp; echo 1</code> 就不会；
+此时如果不希望带引号展开，可以使用类似 <code>test $(cat /dev/null) &amp;&amp; echo 1</code> 的写法。</p>
+<p>这里有个坑是字典序比较运算用了 <code>&gt;</code> 和 <code>&lt;</code>。
+这两个字符直接写会被解释器认为是重定向，所以一般要带上引号，比如 <code>test "${var}" "&lt;" "some_str"</code>。</p>
+<p><code>test</code> 的写法比较严谨，但可读性比较弱，建议使用方括号的形式。</p>
+<h2 id="han-shu">函数</h2>
+<h3 id="han-shu-ding-yi">函数定义</h3>
+<p>函数一般通过标准输出配合命令替换输出一个字符串。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#fad07a;">count_params</span><span>() {
+</span><span>  echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$</span><span style="color:#ffb964;">#</span><span style="color:#556633;">&quot;
+</span><span>}
+</span><span>
+</span><span style="color:#fad07a;">get_the_first_param</span><span>() {
+</span><span>  echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$</span><span style="color:#ffb964;">1</span><span style="color:#556633;">&quot;
+</span><span>}
+</span><span>
+</span><span>echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Param cnt: $(</span><span style="color:#ffb964;">count_params</span><span style="color:#99ad6a;"> 1 2 3 4)</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span>echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">The first param: $(</span><span style="color:#ffb964;">get_the_first_param</span><span style="color:#99ad6a;"> 1 2 3 4)</span><span style="color:#556633;">&quot;
+</span></code></pre>
+<p>函数实际上还有一个整数类型的退出状态，默认是执行的最后一条命令的退出状态，也可以直接 <code>return</code> 指定退出状态。
+比方说可以编写一个函数，它的最后一条命令是 <code>rm</code> 掉某个文件。
+如果删除成功，退出状态就是零；如果由于该文件不存在等原因导致删除失败，退出状态就会是非零值。
+跟普通的命令一样，这个退出状态也是通过 <code>$?</code> 获取。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#fad07a;">remove_file</span><span>() {
+</span><span>  </span><span style="color:#ffb964;">rm </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$</span><span style="color:#ffb964;">1</span><span style="color:#556633;">&quot;
+</span><span>}
+</span><span>
+</span><span style="color:#fad07a;">check_params</span><span>() {
+</span><span>  </span><span style="color:#8fbfdc;">if </span><span>[ </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$</span><span style="color:#ffb964;">#</span><span style="color:#556633;">&quot; </span><span>!= 0 ]; </span><span style="color:#8fbfdc;">then
+</span><span>    </span><span style="color:#8fbfdc;">return</span><span> 1
+</span><span>  </span><span style="color:#8fbfdc;">fi
+</span><span>  </span><span style="color:#8fbfdc;">return</span><span> 0
+</span><span>}
+</span><span>
+</span><span style="color:#ffb964;">remove_file </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">somefile</span><span style="color:#556633;">&quot;
+</span><span>echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$</span><span style="color:#ffb964;">?</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#ffb964;">check_params</span><span> 1 2 3 4
+</span><span>echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$</span><span style="color:#ffb964;">?</span><span style="color:#556633;">&quot;
+</span></code></pre>
+<p>函数需要集中定义，紧跟在环境变量与常量下方，命名用 <code>underscore_style</code>，左大括号不换行，小括号与函数名间不加空格。
+建议在函数中使用 subshell 避免污染全局作用域。</p>
+<h3 id="main-han-shu"><code>main</code> 函数</h3>
+<p><code>sh</code> 脚本其实没有 <code>main</code> 函数的概念，写什么就跑什么。
+但是这里可以人为加一个 <code>main</code> 函数给它。
+这样做的优点在于可以保证代码的统一性，同样建议在 <code>main</code> 函数中使用 subshell 从而不污染全局作用域。</p>
+<p>依据谷歌的脚本风格指导，<code>main</code> 函数要求是最后一个定义的函数。
+要求在脚本的最后一条语句用 <code>main "$@"</code> 调用这个 <code>main</code> 函数并把参数传进去。</p>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202411042238/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">Docker 速查笔记</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202412102135/">
+                                <span class="button__text">使用火焰图分析程序性能</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

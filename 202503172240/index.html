@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>openGauss 慢 SQL 诊断 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="openGauss 慢 SQL 诊断 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202503172240/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="openGauss 慢 SQL 诊断 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202503172240/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202503172240/">openGauss 慢 SQL 诊断</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2025-03-17
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/opengauss/">#openGauss</a></span>
+    
+
+        <div class="post-content">
+            <p>openGauss 有一个慢 SQL 诊断特性，数据库会依据配置自动记录慢 SQL 执行过程中的诊断信息，提供表与函数两种查询接口。</p>
+<span id="continue-reading"></span><h2 id="xiang-guan-guc-can-shu">相关 GUC 参数</h2>
+<ul>
+<li>
+<p><code>log_min_duration_statement</code>：慢 SQL 执行时间阈值。</p>
+<p>超过该时间的语句会被识别为慢 SQL 并依据配置记录诊断信息。</p>
+</li>
+<li>
+<p><code>track_stmt_stat_level</code>：语句诊断信息的记录级别。</p>
+<p>可为普通语句与慢 SQL 分别配置，用逗号分隔。
+默认值为 <code>OFF,L0</code>，表示不记录普通语句，以 <code>L0</code> 级别记录慢 SQL 语句的诊断信息。</p>
+</li>
+<li>
+<p><code>track_activity_query_size</code>：慢 SQL 语句记录的最大长度，超过长度后会被截断。</p>
+</li>
+</ul>
+<h2 id="cha-xun-zhen-duan-xin-xi">查询诊断信息</h2>
+<p>首先建表，插入足够多的数据：</p>
+<pre data-lang="sql" style="background-color:#151515;color:#e8e8d3;" class="language-sql "><code class="language-sql" data-lang="sql"><span>CREATE TABLE </span><span style="color:#fad07a;">t</span><span> (v </span><span style="color:#8fbfdc;">integer</span><span>);
+</span><span>INSERT INTO t VALUES (generate_series(</span><span style="color:#cf6a4c;">1</span><span>, 1E6));
+</span></code></pre>
+<p>可以打开计时功能，输出每条 SQL 的执行时间：</p>
+<pre data-lang="sql" style="background-color:#151515;color:#e8e8d3;" class="language-sql "><code class="language-sql" data-lang="sql"><span>\timing on
+</span></code></pre>
+<p>默认的慢 SQL 阈值是 30 分钟，太久了，所以我们简单降低一下：</p>
+<pre data-lang="sql" style="background-color:#151515;color:#e8e8d3;" class="language-sql "><code class="language-sql" data-lang="sql"><span>SET log_min_duration_statement TO </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">100ms</span><span style="color:#556633;">&#39;</span><span>;
+</span></code></pre>
+<p>于是对之前的表做全表扫描输出，因为结果比较多，可以将输出重定向到 <code>/dev/null</code>：</p>
+<pre data-lang="sql" style="background-color:#151515;color:#e8e8d3;" class="language-sql "><code class="language-sql" data-lang="sql"><span>\o /dev/null
+</span><span>SELECT </span><span style="color:#ffb964;">* </span><span>from t;
+</span><span>\o
+</span></code></pre>
+<p>由于诊断信息的字段很多，一般是先给 <code>gsql</code> 开启 expanded 输出模式：</p>
+<pre data-lang="sql" style="background-color:#151515;color:#e8e8d3;" class="language-sql "><code class="language-sql" data-lang="sql"><span>\pset expanded on
+</span></code></pre>
+<p>查询所有诊断信息：</p>
+<pre data-lang="sql" style="background-color:#151515;color:#e8e8d3;" class="language-sql "><code class="language-sql" data-lang="sql"><span>SELECT </span><span style="color:#ffb964;">* </span><span>FROM </span><span style="color:#7697d6;">dbe_perf</span><span>.</span><span style="color:#7697d6;">statement_history</span><span>;
+</span></code></pre>
+<p>介绍一些常用字段：</p>
+<ul>
+<li><code>query</code>：经过脱敏处理的原始语句</li>
+<li><code>start_time</code>：执行开始时间</li>
+<li><code>finish_time</code>：执行结束时间</li>
+<li><code>query_plan</code>：执行计划</li>
+<li><code>n_returned_rows</code>：返回行数</li>
+<li><code>details</code>：<code>bytea</code> 类型，记录语句执行中的等待事件，可使用 <code>statement_detail_decode</code> 解析</li>
+</ul>
+<p>访问的元组与块：</p>
+<ul>
+<li><code>n_tuples_fetched</code></li>
+<li><code>n_tuples_returned</code></li>
+<li><code>n_tuples_inserted</code></li>
+<li><code>n_tuples_updated</code></li>
+<li><code>n_tuples_deleted</code></li>
+<li><code>n_blocks_fetched</code></li>
+<li><code>n_blocks_hit</code></li>
+</ul>
+<p>各类耗时：</p>
+<ul>
+<li><code>db_time</code></li>
+<li><code>cpu_time</code></li>
+<li><code>execution_time</code></li>
+<li><code>parse_time</code></li>
+<li><code>plan_time</code></li>
+<li><code>rewrite_time</code></li>
+<li><code>pl_execution_time</code></li>
+<li><code>pl_compilation_time</code></li>
+<li><code>data_io_time</code></li>
+</ul>
+<p>清除诊断信息：</p>
+<pre data-lang="sql" style="background-color:#151515;color:#e8e8d3;" class="language-sql "><code class="language-sql" data-lang="sql"><span>DELETE FROM </span><span style="color:#7697d6;">dbe_perf</span><span>.</span><span style="color:#7697d6;">statement_history</span><span>;
+</span></code></pre>
+<h2 id="cha-xun-man-sql-zhong-de-deng-dai-shi-jian">查询慢 SQL 中的等待事件</h2>
+<p>构造数据：</p>
+<pre data-lang="sql" style="background-color:#151515;color:#e8e8d3;" class="language-sql "><code class="language-sql" data-lang="sql"><span>CREATE TABLE </span><span style="color:#fad07a;">t</span><span> (v </span><span style="color:#8fbfdc;">integer</span><span>);
+</span><span>INSERT INTO t VALUES (</span><span style="color:#cf6a4c;">1</span><span>);
+</span></code></pre>
+<p>开启事务修改该表中的数据，但不提交：</p>
+<pre data-lang="sql" style="background-color:#151515;color:#e8e8d3;" class="language-sql "><code class="language-sql" data-lang="sql"><span>BEGIN;
+</span><span>UPDATE t SET v = </span><span style="color:#cf6a4c;">1 </span><span>where v = </span><span style="color:#cf6a4c;">1</span><span>;
+</span></code></pre>
+<p>在新会话中再次修改该数据，会被阻塞：</p>
+<pre data-lang="sql" style="background-color:#151515;color:#e8e8d3;" class="language-sql "><code class="language-sql" data-lang="sql"><span>SET log_min_duration_statement TO </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">100ms</span><span style="color:#556633;">&#39;</span><span>;
+</span><span>
+</span><span>UPDATE t SET v = </span><span style="color:#cf6a4c;">1 </span><span>where v = </span><span style="color:#cf6a4c;">1</span><span>;
+</span></code></pre>
+<p>等待一段时间后在原会话中结束事务：</p>
+<pre data-lang="sql" style="background-color:#151515;color:#e8e8d3;" class="language-sql "><code class="language-sql" data-lang="sql"><span>END;
+</span></code></pre>
+<p>最后通过全局函数 <code>statement_detail_decode</code> 解析 <code>details</code> 列中的等待事件信息：</p>
+<pre data-lang="sql" style="background-color:#151515;color:#e8e8d3;" class="language-sql "><code class="language-sql" data-lang="sql"><span>\pset expanded on
+</span><span>
+</span><span>SELECT </span><span style="color:#ffb964;">*</span><span>, statement_detail_decode(details, </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">plaintext</span><span style="color:#556633;">&#39;</span><span>, true) FROM </span><span style="color:#7697d6;">dbe_perf</span><span>.</span><span style="color:#7697d6;">statement_history</span><span>;
+</span></code></pre>
+<p>可以看到最后有类似这样的输出：</p>
+<pre data-lang="txt" style="background-color:#151515;color:#e8e8d3;" class="language-txt "><code class="language-txt" data-lang="txt"><span>statement_detail_decode |         ---------------Wait Events Area--------------- 
+</span><span>                        | &#39;1&#39;     LOCK_EVENT      transactionid                                      4061898 (us)
+</span><span>                        | &#39;2&#39;     STATUS          flush data                                              11 (us)
+</span><span>                        | &#39;3&#39;     IO_EVENT        BufHashTableSearch                                       9 (us)
+</span><span>                        | &#39;4&#39;     IO_EVENT        WALBufferAccess                                          0 (us)
+</span></code></pre>
+<p>其中 <code>transactionid</code> 类型的 <code>LOCK_EVENT</code> 就是不同会话并发修改同一条数据导致的等待事件。</p>
+<h2 id="cha-xun-quan-ju-fan-wei-de-deng-dai-shi-jian">查询全局范围的等待事件</h2>
+<p>在一些 OLTP 的基准测试场景下，执行事务的频率很高，且每条语句的执行时间都很短，逐条分析是比较困难的。
+这时就可以从全局范围查询等待事件进行观察：</p>
+<pre data-lang="sql" style="background-color:#151515;color:#e8e8d3;" class="language-sql "><code class="language-sql" data-lang="sql"><span>SELECT </span><span style="color:#ffb964;">* </span><span>FROM </span><span style="color:#7697d6;">dbe_perf</span><span>.</span><span style="color:#7697d6;">wait_events </span><span>ORDER BY total_wait_time DESC;
+</span></code></pre>
+<p>如果 <code>IO_EVENT</code> 耗时较长，需要去关注磁盘相关的问题；如果是 <code>LOCK_EVENT</code> 则需要关注并发语句的竞争问题。</p>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202503161558/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">openGauss 执行 BenchmarkSQL 基准测试</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202504052145/">
+                                <span class="button__text">Jenkinsfile 使用笔记</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

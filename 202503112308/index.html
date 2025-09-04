@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>openGauss 执行 HyBench 基准测试 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="openGauss 执行 HyBench 基准测试 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202503112308/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="openGauss 执行 HyBench 基准测试 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202503112308/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202503112308/">openGauss 执行 HyBench 基准测试</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2025-03-11
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/hybench/">#HyBench</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/opengauss/">#openGauss</a></span>
+    
+
+        <div class="post-content">
+            <p>HyBench 是一个 HTAP 数据库基准测试，用于评估数据库在事务与分析混合处理场景下的性能。</p>
+<p><a href="https://benchmark.tempos.cn/beachmarkDesc-htap.html">https://benchmark.tempos.cn/beachmarkDesc-htap.html</a></p>
+<span id="continue-reading"></span><h2 id="zong-ti-liu-cheng">总体流程</h2>
+<ul>
+<li>
+<p>生成数据集</p>
+<p>八个 <code>.csv</code> 文件，分别对应八张表。
+可通过配置文件控制数据集的规模。</p>
+</li>
+<li>
+<p>装载数据集</p>
+<p>HyBench 提供了一些语句模板，用于创建这八张表及其索引。
+表结构与索引是允许修改的，因此可以视情况进行适当修改。
+建表完成后，直接用 <code>COPY</code> 命令导入数据就行。</p>
+</li>
+<li>
+<p>配置与调优</p>
+<p>在执行负载前允许修改数据库与系统配置，也允许通过 <code>ANALYZE</code> 等方式采集统计信息。
+但执行负载预热是不允许的。</p>
+</li>
+<li>
+<p>执行负载</p>
+<p>负载总共 2 小时，分为三个阶段：OLAP、OLTP、OLXP，时间比例为 3:3:4。
+在不改变语义的情况下，允许对负载语句进行修改。
+通常的优化方法是为语句添加查询计划提示。</p>
+<ul>
+<li>OLAP：复杂的只读查询，语句主要包含多表连接、聚合函数等。</li>
+<li>OLTP：简单事务查询，主要是增删改查。</li>
+<li>OLXP：并发地执行 OLAP 与 OLTP 负载</li>
+</ul>
+</li>
+</ul>
+<h2 id="gong-zuo-lu-jing">工作路径</h2>
+<p>为方便描述，本文把工作路径配置成环境变量：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">HY_WORKSPACE</span><span>=</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/hybench
+</span></code></pre>
+<h2 id="an-zhuang-hybench">安装 HyBench</h2>
+<h3 id="xia-zai-jre">下载 JRE</h3>
+<p>本文使用的是毕昇 JDK 17。
+因为 HyBench 是直接把 <code>.jar</code> 包塞仓库里的，不需要编译，所以下载 JRE 就行。</p>
+<p><a href="https://www.hikunpeng.com/developer/devkit/download/jdk">https://www.hikunpeng.com/developer/devkit/download/jdk</a></p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>cd ${</span><span style="color:#ffb964;">HY_WORKSPACE</span><span>}
+</span><span style="color:#ffb964;">wget</span><span> https://mirrors.huaweicloud.com/kunpeng/archive/compiler/bisheng_jdk/bisheng-jre-17.0.14-b12-linux-aarch64.tar.gz
+</span><span style="color:#ffb964;">tar -zxf</span><span> bisheng-jre-17.0.14-b12-linux-aarch64.tar.gz
+</span><span style="color:#ffb964;">rm</span><span> bisheng-jre-17.0.14-b12-linux-aarch64.tar.gz
+</span></code></pre>
+<p>于是 JRE 就会被解压到 <code>${HY_WORKSPACE}/bisheng-jre-17.0.14</code> 目录中。</p>
+<h3 id="huo-qu-hybench">获取 HyBench</h3>
+<p><a href="https://benchmark.tempos.cn/downloadTool.html">https://benchmark.tempos.cn/downloadTool.html</a></p>
+<p><a href="https://gitee.com/cstc2023/hybench">https://gitee.com/cstc2023/hybench</a></p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>cd ${</span><span style="color:#ffb964;">HY_WORKSPACE</span><span>}
+</span><span style="color:#ffb964;">git</span><span> clone https://gitee.com/cstc2023/hybench.git
+</span></code></pre>
+<h3 id="pei-zhi-hybench">配置 HyBench</h3>
+<p>首先修改配置文件 <code>${HY_WORKSPACE}/hybench/conf/og.props</code>，主要包括：</p>
+<ul>
+<li>
+<p>数据库连接配置</p>
+<p>包括 JDBC 驱动类名、用户名、密码、URL 等</p>
+</li>
+<li>
+<p>数据规模</p>
+<p>缩放系数，默认是 <code>1x</code>。
+配置为 <code>1x</code> 时，生成的数据集文件总共约 500MB，其中最大的 <code>transfer.csv</code> 含有 6000000 条记录。</p>
+</li>
+<li>
+<p>并发量</p>
+<p>HyBench 在执行负载时会多线程并发访问数据库执行随机语句。
+可为各个负载阶段分别配置并发量。</p>
+</li>
+<li>
+<p>运行时间</p>
+<p>可对各个负载阶段分别配置执行时间。</p>
+</li>
+</ul>
+<pre data-lang="conf" style="background-color:#151515;color:#e8e8d3;" class="language-conf "><code class="language-conf" data-lang="conf"><span style="color:#ffb964;">db</span><span>=openGauss
+</span><span style="color:#ffb964;">classname</span><span>=org.opengauss.Driver
+</span><span style="color:#ffb964;">username</span><span>=hybench
+</span><span style="color:#ffb964;">password</span><span>=&lt;password&gt;
+</span><span style="color:#ffb964;">url</span><span>=jdbc:</span><span style="color:#7697d6;">opengauss://localhost:2333/hybench_1x?useUnicode=true&amp;characterEncoding=utf-8
+</span><span style="color:#ffb964;">url_ap</span><span>=jdbc:</span><span style="color:#7697d6;">opengauss://localhost:2333/hybench_1x?useUnicode=true&amp;characterEncoding=utf-8
+</span><span style="color:#ffb964;">classname_ap</span><span>=org.opengauss.Driver
+</span><span style="color:#ffb964;">username_ap</span><span>=hybench
+</span><span style="color:#ffb964;">password_ap</span><span>=&lt;password&gt;
+</span><span>
+</span><span style="color:#888888;"># 数据规模，可配置为 `1x` 或 `10x`
+</span><span style="color:#ffb964;">sf</span><span>=</span><span style="color:#cf6a4c;">1x
+</span><span>
+</span><span style="color:#ffb964;">at1_percent</span><span>=</span><span style="color:#cf6a4c;">35
+</span><span style="color:#ffb964;">at2_percent</span><span>=</span><span style="color:#cf6a4c;">25
+</span><span style="color:#ffb964;">at3_percent</span><span>=</span><span style="color:#cf6a4c;">15
+</span><span style="color:#ffb964;">at4_percent</span><span>=</span><span style="color:#cf6a4c;">15
+</span><span style="color:#ffb964;">at5_percent</span><span>=</span><span style="color:#cf6a4c;">7
+</span><span style="color:#ffb964;">at6_percent</span><span>=</span><span style="color:#cf6a4c;">3
+</span><span>
+</span><span style="color:#888888;"># AP 并发量
+</span><span style="color:#ffb964;">apclient</span><span>=</span><span style="color:#cf6a4c;">1
+</span><span>
+</span><span style="color:#888888;"># TP 并发量
+</span><span style="color:#ffb964;">tpclient</span><span>=</span><span style="color:#cf6a4c;">1
+</span><span>
+</span><span style="color:#ffb964;">fresh_interval</span><span>=</span><span style="color:#cf6a4c;">20
+</span><span>
+</span><span style="color:#ffb964;">contention_num</span><span>=</span><span style="color:#cf6a4c;">100
+</span><span>
+</span><span style="color:#888888;"># 运行时间
+</span><span style="color:#ffb964;">apRunMins</span><span>=</span><span style="color:#cf6a4c;">36
+</span><span style="color:#ffb964;">tpRunMins</span><span>=</span><span style="color:#cf6a4c;">36
+</span><span style="color:#ffb964;">xpRunMins</span><span>=</span><span style="color:#cf6a4c;">48
+</span><span>
+</span><span style="color:#888888;"># XP 并发量
+</span><span style="color:#ffb964;">xtpclient</span><span>=</span><span style="color:#cf6a4c;">1
+</span><span style="color:#ffb964;">xapclient</span><span>=</span><span style="color:#cf6a4c;">1
+</span><span>
+</span><span style="color:#ffb964;">apround</span><span>=</span><span style="color:#cf6a4c;">1
+</span></code></pre>
+<p>然后修改 <code>${HY_WORKSPACE}/hybench/hybench</code> 文件，依据文件里的提示，删除含有 <code>exit -1</code> 的第一行，并配置 <code>${JAVA_HOME}</code>：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">JAVA_HOME</span><span>=</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HY_WORKSPACE</span><span style="color:#99ad6a;">}/bisheng-jre-17.0.14
+</span></code></pre>
+<p>最后为该文件添加可执行权限：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">chmod</span><span> +x ${</span><span style="color:#ffb964;">HY_WORKSPACE</span><span>}/hybench/hybench
+</span></code></pre>
+<h3 id="dao-ru-opengauss-jdbc">导入 openGauss JDBC</h3>
+<p>HyBench 通过 JDBC 访问数据库，JDBC 驱动的类名已经由上文中的 <code>og.props</code> 指定好了。
+观察 <code>${HY_WORKSPACE}/hybench/hybench</code> 发现 HyBench 在执行时会加载 <code>${HY_WORKSPACE}/hybench/lib</code> 中的所有 <code>.jar</code> 包。
+所以只需要把 openGauss JDBC 驱动移动到这个目录里就行。</p>
+<p><a href="https://opengauss.org/zh/download">https://opengauss.org/zh/download</a></p>
+<p>这里的驱动下载 6.0.1 版本。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>cd ${</span><span style="color:#ffb964;">HY_WORKSPACE</span><span>}
+</span><span style="color:#ffb964;">mkdir</span><span> pkg &amp;&amp; cd pkg
+</span><span>
+</span><span style="color:#ffb964;">wget</span><span> https://opengauss.obs.cn-south-1.myhuaweicloud.com/6.0.1/openEuler22.03/arm/openGauss-JDBC-6.0.1.tar.gz
+</span><span style="color:#ffb964;">tar -zxf</span><span> openGauss-JDBC-6.0.1.tar.gz
+</span><span style="color:#ffb964;">mv</span><span> opengauss-jdbc-6.0.1.jar ${</span><span style="color:#ffb964;">HY_WORKSPACE</span><span>}/hybench/lib
+</span><span>
+</span><span>cd ${</span><span style="color:#ffb964;">HY_WORKSPACE</span><span>}
+</span><span style="color:#ffb964;">rm -rf</span><span> pkg
+</span></code></pre>
+<h2 id="bu-shu-opengauss">部署 openGauss</h2>
+<h3 id="an-zhuang-opengauss">安装 openGauss</h3>
+<p>为了方便描述，同样将 openGauss 的工作路径配置到环境变量中：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">OG_WORKSPACE</span><span>=</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/og
+</span></code></pre>
+<p>继续配置环境变量：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">GAUSSHOME</span><span>=</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">OG_WORKSPACE</span><span style="color:#99ad6a;">}/install
+</span><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">PGDATA</span><span>=</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">OG_WORKSPACE</span><span style="color:#99ad6a;">}/data
+</span><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">PGPORT</span><span>=</span><span style="color:#99ad6a;">2333
+</span><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">PGDATABASE</span><span>=</span><span style="color:#99ad6a;">postgres
+</span><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">LD_LIBRARY_PATH</span><span>=</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">GAUSSHOME</span><span style="color:#99ad6a;">}/lib:${</span><span style="color:#ffb964;">LD_LIBRARY_PATH</span><span style="color:#99ad6a;">}
+</span><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">PATH</span><span>=</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">GAUSSHOME</span><span style="color:#99ad6a;">}/bin:${</span><span style="color:#ffb964;">PATH</span><span style="color:#99ad6a;">}
+</span></code></pre>
+<p><a href="https://opengauss.org/zh/download">https://opengauss.org/zh/download</a></p>
+<p>这里我下载的是 6.0.1 企业版，下载完之后解压到 <code>${GAUSSHOME}</code> 目录中。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>cd ${</span><span style="color:#ffb964;">OG_WORKSPACE</span><span>}
+</span><span style="color:#ffb964;">mkdir</span><span> pkg &amp;&amp; cd pkg
+</span><span>
+</span><span style="color:#ffb964;">wget</span><span> https://opengauss.obs.cn-south-1.myhuaweicloud.com/6.0.1/openEuler22.03/arm/openGauss-All-6.0.1-openEuler22.03-aarch64.tar.gz
+</span><span style="color:#ffb964;">tar -zxf</span><span> openGauss-All-6.0.1-openEuler22.03-aarch64.tar.gz
+</span><span>
+</span><span style="color:#ffb964;">mkdir </span><span>${</span><span style="color:#ffb964;">GAUSSHOME</span><span>}
+</span><span style="color:#ffb964;">tar -C </span><span>${</span><span style="color:#ffb964;">GAUSSHOME</span><span>}</span><span style="color:#ffb964;"> -jxf</span><span> openGauss-Server-6.0.1-openEuler22.03-aarch64.tar.bz2
+</span><span>
+</span><span>cd ${</span><span style="color:#ffb964;">OG_WORKSPACE</span><span>}
+</span><span style="color:#ffb964;">rm -rf</span><span> pkg
+</span></code></pre>
+<h3 id="zhun-bei-shu-ju-ku-jie-dian">准备数据库节点</h3>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">gs_initdb --nodename</span><span>=single_node</span><span style="color:#ffb964;"> -w </span><span>&lt;password&gt;
+</span></code></pre>
+<p>数据库节点会被生成在 <code>${PGDATA}</code> 目录中，于是启动数据库：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">gs_ctl</span><span> start
+</span></code></pre>
+<h3 id="chuang-jian-shu-ju-ku-yu-yong-hu">创建数据库与用户</h3>
+<p>连接数据库：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">gsql -r
+</span></code></pre>
+<p>为 HyBench 单独创建数据库与用户：</p>
+<pre data-lang="sql" style="background-color:#151515;color:#e8e8d3;" class="language-sql "><code class="language-sql" data-lang="sql"><span>CREATE DATABASE </span><span style="color:#fad07a;">hybench_1x</span><span>;
+</span><span>
+</span><span>CREATE USER hybench PASSWORD &#39;</span><span style="color:#fad07a;">&lt;pasword&gt;</span><span>&#39;;
+</span><span>GRANT ALL PRIVILEGES ON DATABASE hybench_1x TO hybench;
+</span><span>
+</span><span>\c hybench_1x
+</span><span>GRANT ALL PRIVILEGES ON SCHEMA public TO hybench;
+</span></code></pre>
+<h2 id="zhuang-zai-shu-ju-ji">装载数据集</h2>
+<h3 id="jian-biao">建表</h3>
+<p>这里直接使用 HyBench 自带的建表脚本就行：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>cd ${</span><span style="color:#ffb964;">HY_WORKSPACE</span><span>}/hybench
+</span><span style="color:#ffb964;">./hybench -t</span><span> sql</span><span style="color:#ffb964;"> -f</span><span> conf/ddl_og.sql</span><span style="color:#ffb964;"> -c</span><span> conf/og.props
+</span></code></pre>
+<h3 id="sheng-cheng-shu-ju-ji">生成数据集</h3>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>cd ${</span><span style="color:#ffb964;">HY_WORKSPACE</span><span>}/hybench
+</span><span style="color:#ffb964;">./hybench -t</span><span> gendata</span><span style="color:#ffb964;"> -c</span><span> conf/og.props
+</span></code></pre>
+<p>数据集是八个 <code>.csv</code> 文件，分别对应八张表，会被生成在 <code>${HY_WORKSPACE}/hybench/Data_1x</code> 目录内。</p>
+<h3 id="dao-ru-shu-ju-ji">导入数据集</h3>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">gsql -d</span><span> hybench_1x</span><span style="color:#ffb964;"> -c </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">COPY checking FROM &#39;${</span><span style="color:#ffb964;">HY_WORKSPACE</span><span style="color:#99ad6a;">}/hybench/Data_1x/checking.csv&#39; WITH (FORMAT &#39;text&#39;, DELIMITER &#39;,&#39;);</span><span style="color:#556633;">&quot;
+</span><span style="color:#ffb964;">gsql -d</span><span> hybench_1x</span><span style="color:#ffb964;"> -c </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">COPY checkingaccount FROM &#39;${</span><span style="color:#ffb964;">HY_WORKSPACE</span><span style="color:#99ad6a;">}/hybench/Data_1x/checkingAccount.csv&#39; WITH (FORMAT &#39;text&#39;, DELIMITER &#39;,&#39;);</span><span style="color:#556633;">&quot;
+</span><span style="color:#ffb964;">gsql -d</span><span> hybench_1x</span><span style="color:#ffb964;"> -c </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">COPY company FROM &#39;${</span><span style="color:#ffb964;">HY_WORKSPACE</span><span style="color:#99ad6a;">}/hybench/Data_1x/company.csv&#39; WITH (FORMAT &#39;text&#39;, DELIMITER &#39;,&#39;);</span><span style="color:#556633;">&quot;
+</span><span style="color:#ffb964;">gsql -d</span><span> hybench_1x</span><span style="color:#ffb964;"> -c </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">COPY customer FROM &#39;${</span><span style="color:#ffb964;">HY_WORKSPACE</span><span style="color:#99ad6a;">}/hybench/Data_1x/customer.csv&#39; WITH (FORMAT &#39;text&#39;, DELIMITER &#39;,&#39;);</span><span style="color:#556633;">&quot;
+</span><span style="color:#ffb964;">gsql -d</span><span> hybench_1x</span><span style="color:#ffb964;"> -c </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">COPY loanapps FROM &#39;${</span><span style="color:#ffb964;">HY_WORKSPACE</span><span style="color:#99ad6a;">}/hybench/Data_1x/loanApps.csv&#39; WITH (FORMAT &#39;text&#39;, DELIMITER &#39;,&#39;);</span><span style="color:#556633;">&quot;
+</span><span style="color:#ffb964;">gsql -d</span><span> hybench_1x</span><span style="color:#ffb964;"> -c </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">COPY loantrans FROM &#39;${</span><span style="color:#ffb964;">HY_WORKSPACE</span><span style="color:#99ad6a;">}/hybench/Data_1x/loanTrans.csv&#39; WITH (FORMAT &#39;text&#39;, DELIMITER &#39;,&#39;);</span><span style="color:#556633;">&quot;
+</span><span style="color:#ffb964;">gsql -d</span><span> hybench_1x</span><span style="color:#ffb964;"> -c </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">COPY savingaccount FROM &#39;${</span><span style="color:#ffb964;">HY_WORKSPACE</span><span style="color:#99ad6a;">}/hybench/Data_1x/savingAccount.csv&#39; WITH (FORMAT &#39;text&#39;, DELIMITER &#39;,&#39;);</span><span style="color:#556633;">&quot;
+</span><span style="color:#ffb964;">gsql -d</span><span> hybench_1x</span><span style="color:#ffb964;"> -c </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">COPY transfer FROM &#39;${</span><span style="color:#ffb964;">HY_WORKSPACE</span><span style="color:#99ad6a;">}/hybench/Data_1x/transfer.csv&#39; WITH (FORMAT &#39;text&#39;, DELIMITER &#39;,&#39;);</span><span style="color:#556633;">&quot;
+</span></code></pre>
+<h3 id="jian-suo-yin">建索引</h3>
+<p>一般习惯是导入数据之后再建索引，能节约一些时间。
+这里同样使用 HyBench 自带的脚本：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>cd ${</span><span style="color:#ffb964;">HY_WORKSPACE</span><span>}/hybench
+</span><span style="color:#ffb964;">./hybench -t</span><span> sql</span><span style="color:#ffb964;"> -f</span><span> conf/ddl_og_afterload.sql</span><span style="color:#ffb964;"> -c</span><span> conf/og.props
+</span></code></pre>
+<h2 id="zhi-xing-ji-zhun-ce-shi-fu-zai">执行基准测试负载</h2>
+<p>在执行之前，HyBench 要求查询各表记录数，以确认数据集正常：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">gsql -r -d</span><span> hybench_1x
+</span></code></pre>
+<pre data-lang="sql" style="background-color:#151515;color:#e8e8d3;" class="language-sql "><code class="language-sql" data-lang="sql"><span>SELECT count(</span><span style="color:#ffb964;">*</span><span>) FROM checking;
+</span><span>SELECT count(</span><span style="color:#ffb964;">*</span><span>) FROM checkingaccount;
+</span><span>SELECT count(</span><span style="color:#ffb964;">*</span><span>) FROM company;
+</span><span>SELECT count(</span><span style="color:#ffb964;">*</span><span>) FROM customer;
+</span><span>SELECT count(</span><span style="color:#ffb964;">*</span><span>) FROM loanapps;
+</span><span>SELECT count(</span><span style="color:#ffb964;">*</span><span>) FROM loantrans;
+</span><span>SELECT count(</span><span style="color:#ffb964;">*</span><span>) FROM savingaccount;
+</span><span>SELECT count(</span><span style="color:#ffb964;">*</span><span>) FROM transfer;
+</span></code></pre>
+<p>确认记录数正确后，需要先检查负载语句的配置是否正常。
+HyBench 自带的负载语句配置文件是 <code>${HY_WORKSPACE}/hybench/conf/stmt_opengauss.toml</code>。
+直接用这个文件跑的话会出问题，需要做一些修改：</p>
+<pre data-lang="toml" style="background-color:#151515;color:#e8e8d3;" class="language-toml "><code class="language-toml" data-lang="toml"><span>[</span><span style="color:#ffb964;">TP-9</span><span>]
+</span><span style="color:#ffb964;">sql </span><span>= [
+</span><span>    </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">SELECT balance FROM savingAccount WHERE accountid = ?;</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>    </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">UPDATE savingaccount SET balance = balance - ? where accountid = ?;</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>    </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">UPDATE savingaccount SET balance = balance + ? where accountid = ?;</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>    </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">INSERT INTO transfer VALUES (DEFAULT, ?, ?, ?, ?, ?);</span><span style="color:#556633;">&quot;
+</span><span>]
+</span><span>
+</span><span>[</span><span style="color:#ffb964;">TP-13</span><span>]
+</span><span style="color:#ffb964;">sql </span><span>= [
+</span><span>    </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">INSERT INTO loantrans VALUES(DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?);</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>    </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">UPDATE customer SET loan_balance = loan_balance + ? where custid = ?;</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>    </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">UPDATE company SET loan_balance = loan_balance + ? where companyid = ?;</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>    </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">UPDATE loanapps SET status = ? WHERE id = ?;</span><span style="color:#556633;">&quot;
+</span><span>]
+</span><span>
+</span><span>[</span><span style="color:#ffb964;">TP-14</span><span>]
+</span><span style="color:#ffb964;">sql </span><span>= [
+</span><span>    </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">UPDATE savingaccount SET balance = balance + ? WHERE accountid = ?;</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>    </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">UPDATE loantrans SET status = &#39;lent&#39;, timestamp = ? WHERE id = ?;</span><span style="color:#556633;">&quot;
+</span><span>]
+</span><span>
+</span><span>[</span><span style="color:#ffb964;">TP-16</span><span>]
+</span><span style="color:#ffb964;">sql </span><span>= [
+</span><span>    </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">SELECT balance FROM savingaccount WHERE accountid = ?;</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>    </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">UPDATE savingaccount SET balance = balance - ? WHERE accountid = ?;</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>    </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">UPDATE loantrans SET status = &#39;repaid&#39;, timestamp = ? WHERE id = ?;</span><span style="color:#556633;">&quot;
+</span><span>]
+</span><span>
+</span><span>[</span><span style="color:#ffb964;">AppQueue</span><span>]
+</span><span style="color:#ffb964;">sql </span><span>= </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">SELECT id, applicantid, amount, duration, status, timestamp FROM loanapps WHERE status= ? LIMIT 10000;</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span>[</span><span style="color:#ffb964;">TransQueue</span><span>]
+</span><span style="color:#ffb964;">sql </span><span>= </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">SELECT id, applicantid, appid, amount, status, timestamp, duration, contract_timestamp, delinquency FROM loantrans WHERE status = ? LIMIT 10000;</span><span style="color:#556633;">&quot;
+</span></code></pre>
+<p>最后执行基准测试的负载：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">./hybench -t</span><span> runall</span><span style="color:#ffb964;"> -f</span><span> conf/stmt_opengauss.toml</span><span style="color:#ffb964;"> -c</span><span> conf/og.props
+</span></code></pre>
+<p>其中 <code>stmt_opengauss.toml</code> 指定了负载语句的模板。
+HyBench 执行负载时会生成随机值填充到模板中。</p>
+<p><code>og.props</code> 指定了并发量与执行时间。
+HyBench 负载的执行分为三个阶段（AP、TP、XP），每个阶段依据并发量创建线程分别执行负载语句。
+每个线程会按照特定比例以随机的顺序执行该阶段的所有语句。
+比如在 AP 阶段，每个线程实际上会被分配一个随机排序的语句队列，保证每条 AP 语句都各执行一次。
+因此并发量足够高的情况下，语句的执行是均匀的。</p>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202503102205/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">内网 openEuler 常用配置</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202503161558/">
+                                <span class="button__text">openGauss 执行 BenchmarkSQL 基准测试</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

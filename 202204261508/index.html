@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Kademlia 算法 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="Kademlia 算法 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202204261508/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="Kademlia 算法 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202204261508/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202204261508/">Kademlia 算法</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2022-04-26
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/kademlia/">#Kademlia</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/p2p/">#P2P</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/fen-bu-shi/">#分布式</a></span>
+    
+
+        <div class="post-content">
+            <p>建立 P2P 网络时我们需要面对的一个问题就是一个节点如何高效访问网络中的其他节点中存储的资源。
+Kademlia 算法在各个节点上使用某种策略建立路由表以支持节点之间的高效访问，并且支持在网络中进行资源存储与访问。</p>
+<span id="continue-reading"></span><h2 id="lu-you-biao-wei-hu">路由表维护</h2>
+<p>先不考虑资源的部分，我们希望网络中的两个节点能够高效的连接。
+每个节点上都需要维护一个路由表，路由表中的每一条记录包括一个其他节点的地址等信息，表示这两个节点之间能够直接相连。
+把这个直接相连看作是边，那么边和节点就构成一张图。
+两个非直连的节点想要连接就只能经过图上的一条路径，我们希望这条路径的长度能控制在一个合理的范围内。
+为什么一定要走一条路径呢？
+因为路由表不可能无限大，你不可能把网络中所有节点都塞进去，内存会爆。</p>
+<h3 id="si-lu">思路</h3>
+<p>有没有一种可能，可以用二分来设计路由表的维护策略，使得寻找某个节点时路由转发的次数降到 log 级别。
+Kademlia 就是这样干的。</p>
+<p>它要求每个节点自己生成一个唯一的无符号整型 ID。
+至于怎么唯一，只要随机出来的范围足够大，那么就能认为 ID 冲突的概率可以忽略不计。
+所以我们把 ID 的范围整大一点，这里就使用常见的 160 位。
+然后把这个 ID 当成二进制来看，也就是看作是零一序列。
+这个零一序列是不是可以看成是一棵二叉树上的路径：从高位到低位，零的话往左，一的话往右。
+把这条路径看作是根节点到叶子的路径，于是每个 ID 对应一个路径，也对应一个叶子节点。
+于是网络中所有节点的 ID 就构成了一棵二叉树。</p>
+<p>这个时候，我们希望有一种路由策略，对于一个源节点，给出一个目标节点的 ID，能够在 log 级的时间内，在网络中查询到目标节点。
+当然路由表的空间复杂度也要是 log 级。
+于是对于源节点来说，我们发现它在二叉树上的路径把整个二叉树切割成了若干个子树。
+假设这条路径是从根节点出发，那么路径每走一个节点就会切出来一个子树，已走的路径越长，子树的根在整棵二叉树中的深度也就越大。
+显然这些子树的这个深度都是唯一且递增的，为了方便，我们就用这个深度来称呼它们（也可以当作是编号）。
+目标节点一定会在这些子树的其中一棵里面。
+然后惊奇的发现我们可以通过目标节点的 ID 确定它在哪棵子树中：通过检查目标节点与源节点的 ID 的前缀有多少位相同，就知道它在哪个深度的子树上。
+更具体的说就是对目标节点与源节点的 ID 做一个异或，再找到异或结果的最高位，这个最高位是第几位，所在子树的深度就是几。
+这个异或的结果也就是 Kademlia 算法中所说的节点之间的“距离”。
+找到子树之后就好办了，这个时候对于源节点来说，我们只要能够访问到这个子树中的任意一个节点，再把它作为新的源节点重复执行查询目标节点的操作，然后估算一下复杂度，神奇的事情就发生了。
+因为根据刚刚说的操作，这个新的源节点是跟目标节点在同一个子树里的，所以它们的 ID 前缀相同的位比起最初的源节点相同的位，就会至少会多一位。
+如果新的源节点重复执行这个操作，下一个源节点前缀相同的位又会至少多一位。
+因为这里假设 ID 的位数是 160 位，所以最坏情况下跑 160 次也能找到目标节点，复杂度是 log 级的。</p>
+<h3 id="shi-xian">实现</h3>
+<p>原理弄清楚了，接下来的问题就是具体实现。</p>
+<p>其一是路由表的结构。
+在每个节点的机器上，ID 对应的路径切出来一堆子树，对于每棵子树，理论上我们存一个节点就够了。
+但是 P2P 网络中节点是会失效的，所以我们多存几个，比如说 K 个。
+这个 K 是不是很眼熟，如果看过别的资料，你就会发现这个子树实际就是 Kademlia 中的 k-bucket。
+所以一种实现就是每棵子树开一个 k-bucket，限制它的最大容量为 K，每接触到新的节点就考虑给它加入到对应的 k-bucket 中。
+于是还有一个问题是，是不是一定要每棵子树都要开一个 k-bucket。
+因为机器初始化所有的 k-bucket 是需要时间的，可能很长一段时间内这些 k-bucket 里都没什么东西。
+所以有另一种实现是初始只有一个 k-bucket，然后直接存，存满 K 个之后再根据子树的划分进行分裂。
+我们的路由表就是由这些 k-bucket 组成的。</p>
+<p>其二是目标节点的查询。
+根据前文，源节点已经发现目标节点在某棵子树中，那么它只要往这个子树对应的 k-bucket 里的节点发查询请求就行了。
+但是发一个肯定是不够的，于是我们定一个参数 α，让它在里面随机找 α 个节点发出去。
+如果这个 k-bucket 里面节点的数量不足 α 个，那就要从相邻的 k-bucket 里面凑数，还不够的话，就继续再找相邻的凑。
+如果节点刚刚接入网络，路由表还不完善的情况下，很有可能出现摁凑都凑不齐的情况，不过问题不大。
+接下来收到查询请求的这 α 个节点，会各自在自己的路由表中找到目标节点对应的 k-bucket。
+于是这些节点就从各自的 k-bucket 中又各自拿出 α 个节点，返回给源节点。
+源节点这个时候就对这些收到的节点，每个都再发一遍查询请求。
+这些节点继续各自返回 α 个节点。
+直到找到目标节点。
+在这个过程中，源节点还可以顺带更新自己的路由表，收到查询请求的节点也可以考虑把源节点更新到自己的路由表中。
+当然如果目标节点不在线或者根本就不存在，那就爆炸了。
+所以我们还需要定一下终止条件，但是我还没有查到比较靠谱的资料，所以我只能说一下我自己的猜想。
+一种可能的策略是源节点肯定要哈希去重，避免反复骚扰同一个节点。
+另一种可能的策略是，收到查询请求的节点如果目标节点对应的 k-bucket 中什么都没有，它就返回它自己，因为很可能这个节点跟目标节点的 ID 非常接近导致 k-bucket 里面东西本来就少，可以视为查询结果。
+为什么我们可以把跟目标节点靠的近的节点作为查询结果呢？
+因为 P2P 网络中节点随时可能会下线，因此我们精确查询某个节点是没有意义的。
+如果某个资源仅仅存在某个节点上，它一旦下线那就拿不到了。
+所以我们可以考虑把资源存在跟这个节点距离靠近的若干个节点上，这样还有抢救的机会。
+另外，由于 Kademlia 算法存储资源的策略（见后文），被指定用来存储某个资源的节点 ID 可能根本就不存在，所以我们只能选取一些距离相近的节点来存储这个资源。</p>
+<p>其三则是路由表的维护。
+路由表一开始是空的啊，玩毛线。
+所以我们需要用爱发电，买一些廉价服务器作为公共节点。
+在一个新的节点接入网络时，直接把这些公共节点给他硬编码进到那些 k-bucket 里。
+接下来就简单了，我们可以采用很多玄学策略来更新自己的路由表。
+一种常见的策略就是对某个目标节点进行查询的时候就顺便维护路由表，因为查询时我们会得到很多中间途经的节点的信息。
+对于每个途径的新节点，找到对应的 k-bucket，如果没有满就直接插入到末尾。
+如果满了那就 ping 一下 k-bucket 的第一个节点，如果 ping 不通说明这个节点失效了，给他移除掉，新节点就能插入到末尾。
+如果第一个节点 ping 通了那就把这个节点移动到末尾，然后直接把新节点扔掉不管就行了。
+听起来有一点像内存的缓存替换策略。
+这只是一种简单的实现，实际上应该也有更多的玄学替换策略。
+另外如果 k-bucket 是会分裂的那种，那就只有在分裂到不能再分裂时才需要考虑替换。
+当然，还有一种很容易理解的策略就是，每个节点可以周期性地更新路由表，比如说每隔半分钟就直接查询一个指定的 ID。
+但是怎么确定查哪个 ID，这个就是跟资源相关的内容了。
+不过还有一种我口胡的方法是：看哪个 k-bucket 比较空就往哪里查。
+最后一个问题，一个节点如果要下线怎么办？
+不用管，直接跑路就行了。</p>
+<h2 id="zi-yuan-de-cun-chu-yu-fang-wen">资源的存储与访问</h2>
+<p>这一块就比较简单了。
+DHT 是分布式哈希表，所以它维护的东西实际上是一堆 key-value 对。
+假设每个资源都是文件或者一坨数据之类的东西，这个时候我们就可以把文件名、文件哈希或者这坨数据的关键字作为 key-value 对中的 value。
+对这个 value 做一次哈希就能得到 key。
+但是除了 key-value 对，DHT 还需要维护具体的数据，也就是文件的内容或者一坨数据。
+比如说，如果用户想要查找某个文件，他需要把文件名做个哈希得到 key，然后在这个 DHT 中就能查找到这个文件名，以及文件中的内容。</p>
+<p>然后问题来了，为什么要对文件名或者文件哈希啥的再做一次哈希呢，我直接拿文件名做 key 不行吗？
+其实是为了方便处理。
+因为这个 key 是有要求的：我们希望把 key 跟网络中节点的 ID 做一个对应关系。
+也就是说我们希望对于一个 key，能够大概知道这个 key-value 对会被存储在什么地方。
+Kademlia 算法要求 key 是一个无符号整型，它的位数跟节点 ID 的位数是一样的，并且它应当被存储在节点的 ID 跟 key 相近的节点上。
+也就是说理想情况下，对于存储着一个 key-value 对的节点，它的节点 ID 是跟 key 相等的。</p>
+<p>于是存储的策略就很简单了，如果用户在某个节点上发起了存储某个文件的操作，这个节点首先算出这个文件的 key，然后直接把 key 当作节点 ID 做一次查询操作。
+接下来节点就会得到好几个距离这个 key 相近的节点的信息。
+最后直接把文件发送给这些节点就行了。
+另外，因为并不是所有节点时刻都在线，所以这一整套流程可能要每隔一段时间反复执行，使得这个文件能够在网络中得到充足的备份。
+需要注意的是，这套流程里面包含了查询操作，根据前文我们知道查询是会更新路由表的，因此路由表实际上会随着周期性的存储而不断更新。</p>
+<p>那么访问资源就更简单了，直接把 key 当作目标节点 ID 摁查。
+查出来好几个比较近的节点，挨个索要这个资源就行了。</p>
+<h2 id="xiao-xi-lei-xing">消息类型</h2>
+<p>前文中的实现细节其实是通过 RPC 消息来实现的，但是避免概念过多引起混乱就没有考虑放到前面。
+所以最后再补充一下 Kademlia 规定的四种消息类型，现在来看就很好理解了。</p>
+<ul>
+<li><code>PING</code>：用于检查节点的在线状态。</li>
+<li><code>STORE</code>：要求一个在某个节点上存储一个 key-value 对。</li>
+<li><code>FIND_NODE</code>：给出一个目标节点的 ID，查询距离这个 ID 最近的 K 个节点。</li>
+<li><code>FIND_VALUE</code>：跟 <code>FIND_NODE</code> 相同，但是如果被查询的节点正好持有需要查询的 key-value 对，它将会把相应的 value 返回。</li>
+</ul>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202204252313/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">NAT 穿透</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202204280044/">
+                                <span class="button__text">加密算法</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>P2P 网络学习 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="P2P 网络学习 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202204252003/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="P2P 网络学习 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202204252003/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202204252003/">P2P 网络学习</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2022-04-25
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/p2p/">#P2P</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/fen-bu-shi/">#分布式</a></span>
+    
+
+        <div class="post-content">
+            <p>P2P 网络是一个有别于中心化网络的东西，本文简单介绍一些实现 P2P 网络的思路。</p>
+<span id="continue-reading"></span><h2 id="zhong-xin-hua-wang-luo">中心化网络</h2>
+<p>首先介绍一下中心化的网络，对于中心化的网络而言，资源的存取非常简单。
+大概就是把资源存放在一台服务器或者一组集群上，客户端直接访问这些服务器就可以获取资源。
+中心化的设计要简单很多，而且不需要花很多功夫就能得到很好的性能。
+主要问题是服务器的维护本身需要成本，而且资源存取的速度会受到服务器带宽和集群的限制，更高的带宽与更庞大的集群意味着更高的成本。
+如果我们想要做一些用爱发电的事情，做成中心化是很难维持的。</p>
+<h2 id="hun-he-mo-xing">混合模型</h2>
+<p>于是我们发现如果能直接把资源放在客户端上，就能缓解服务端的压力，很多年前著名的 Napster 就是采用的这个做法。
+具体来说，当一个客户端请求某个资源时，服务端负责返回这个资源存在哪个客户端上，于是客户端之间就能直接连接共享这个资源，服务端也就不需要存储资源了。
+实际上就是服务端仅仅起到一个对客户端之间进行路由的作用，而资源的存储就完全交给客户端。</p>
+<p>这就是最早的 P2P 模型：混合模型。
+这种想法其实已经很节约了，然而服务端的维护成本对于个人来说仍然难以承受，用爱发电仍然很难。
+而且它仍然具有中心化的特点：如果服务端炸了，那还是一样全部爆炸。</p>
+<h2 id="fei-jie-gou-hua-wang-luo">非结构化网络</h2>
+<p>再接下来我们考虑能不能把路由的功能也做成分布式的。
+有一种简单的做法，P2P 网络中每个节点需要查询某个资源时，它向它的已知的一些节点（称为邻居）发送查询请求，邻居再把它的请求发送给邻居的邻居，直到找到资源。
+这种做法一听就非常操蛋，我想要找一个资源就要把消息一层一层转发给网络中的一大堆节点，我的节点本身也要时常处理网络中其他人发来的查询请求。
+所以直接摁发肯定是不行的，优化的策略有很多：避免广播、约束转发的上限、优化网络的拓扑结构等等。</p>
+<p>那么这个网络拓扑是怎么构建起来的呢？
+这种思路要求每个节点应当维护一个邻居的列表（路由表），初始时当然是空的，所以需要有一些用爱发电的公共节点作为初始的邻居。
+每个节点会跟邻居进行通信，动态地获取网络上可用的其他节点，据此来维护自己的路由表，并做一些持久化。
+通过邻居关系连接各个节点，网络拓扑就建立起来了。</p>
+<p>这其实也就是出现在混合模型之后的非结构化 P2P，典型代表有 Gnutella 协议和比特币。
+它的优点很明显，节点之间路由关系的维护可以直接交给各个节点，只需要购买一些廉价服务器做公共节点，整个 P2P 网络自己就能慢慢构建起来。
+缺点也很明显：寻找资源需要消耗大量的网络资源；查询速度非常慢；即使目标节点在线也有可能查不到资源。</p>
+<h2 id="jie-gou-hua-wang-luo">结构化网络</h2>
+<p>继非结构化网络之后，结构化的 P2P 出现了，实际上它是在拓扑结构上进行了特殊优化。
+它对 P2P 网络的拓扑结构有特定的要求，并且能够确保节点对资源的访问是高效的且稳定的。
+典型的例子就是以太坊。</p>
+<p>最常见的结构化网络就是分布式哈希表（DHT），它使用一个哈希函数来把每个文件分配给对应的节点管理。
+这样整个网络就构成一个哈希表，节点想要查询某个资源，就用它资源名的哈希值在表中查询到对应的节点获取该资源。
+当然资源的查询请求仍然是需要在节点之间互相转发的，因此就需要对拓扑结构进行优化，以保证转发的路径不要太离谱。
+具体来说就是路由表的维护策略，比如 Kademlia 算法采用二分的思路进行设计。
+因为 DHT 是哈希表，所以理所当然模糊匹配是比较难实现的。
+另外 P2P 网络中在线节点不稳定，拓扑结构变化会非常频繁，优秀的 DHT 设计应当充分考虑这一问题。
+负载均衡也是 DHT 需要考虑的问题。</p>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202204171923/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">Spring Boot 测试经验总结</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202204252313/">
+                                <span class="button__text">NAT 穿透</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

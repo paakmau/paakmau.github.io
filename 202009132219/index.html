@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Vulkan 画三角形第十一章：创建图形流水线 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="Vulkan 画三角形第十一章：创建图形流水线 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202009132219/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="Vulkan 画三角形第十一章：创建图形流水线 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202009132219/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202009132219/">Vulkan 画三角形第十一章：创建图形流水线</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2020-09-13
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/vulkan/">#Vulkan</a></span>
+    
+
+        <div class="post-content">
+            <p>首先还是添加一个成员函数并在 <code>initVulkan</code> 中调用它</p>
+<span id="continue-reading"></span><pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">initVulkan</span><span>() {
+</span><span>    </span><span style="color:#ffb964;">createInstance</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createSurface</span><span>();
+</span><span>    </span><span style="color:#ffb964;">pickPhysicalDevice</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createLogicalDevice</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createSwapchain</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createImageViews</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createRenderPass</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createGraphicsPipeline</span><span>();
+</span><span>}
+</span><span>
+</span><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">createGraphicsPipeline</span><span>() {
+</span><span>
+</span><span>}
+</span></code></pre>
+<h2 id="zhao-se-qi">着色器</h2>
+<p>首先我们使用上一篇文章中的工具方法，载入编译好的着色器，并填充到 <code>VkPipelineShaderStageCreateInfo</code> 结构体中</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">auto</span><span> vertShaderCode = </span><span style="color:#ffb964;">readFile</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">shaders/vert.spv</span><span style="color:#556633;">&quot;</span><span>);
+</span><span style="color:#8fbfdc;">auto</span><span> fragShaderCode = </span><span style="color:#ffb964;">readFile</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">shaders/frag.spv</span><span style="color:#556633;">&quot;</span><span>);
+</span><span>
+</span><span>VkShaderModule vertShaderModule = </span><span style="color:#ffb964;">createShaderModule</span><span>(vertShaderCode);
+</span><span>VkShaderModule fragShaderModule = </span><span style="color:#ffb964;">createShaderModule</span><span>(fragShaderCode);
+</span><span>
+</span><span>VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
+</span><span>vertShaderStageInfo.</span><span style="color:#ffb964;">sType </span><span>= VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+</span><span>vertShaderStageInfo.</span><span style="color:#ffb964;">stage </span><span>= VK_SHADER_STAGE_VERTEX_BIT;
+</span><span>vertShaderStageInfo.</span><span style="color:#ffb964;">module </span><span>= vertShaderModule;
+</span><span>vertShaderStageInfo.</span><span style="color:#ffb964;">pName </span><span>= </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">main</span><span style="color:#556633;">&quot;</span><span>;
+</span><span>
+</span><span>VkPipelineShaderStageCreateInfo fragShaderStageInfo = {};
+</span><span>fragShaderStageInfo.</span><span style="color:#ffb964;">sType </span><span>= VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+</span><span>fragShaderStageInfo.</span><span style="color:#ffb964;">stage </span><span>= VK_SHADER_STAGE_FRAGMENT_BIT;
+</span><span>fragShaderStageInfo.</span><span style="color:#ffb964;">module </span><span>= fragShaderModule;
+</span><span>fragShaderStageInfo.</span><span style="color:#ffb964;">pName </span><span>= </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">main</span><span style="color:#556633;">&quot;</span><span>;
+</span><span>
+</span><span>VkPipelineShaderStageCreateInfo shaderStages[] = {vertShaderStageInfo, fragShaderStageInfo};
+</span></code></pre>
+<p>对于上面的代码，我们直接介绍 <code>VkPipelineShaderStageCreateInfo</code> 结构体</p>
+<p><code>stage</code> 用来指定着色器会被用于哪一个流水线阶段</p>
+<p><code>module</code> 指定包含着色器代码的着色器模块</p>
+<p><code>pName</code> 则是着色器代码中的入口点，这意味着我们把多个着色器结合在同一个着色器模块，然后指定不同的入口点来控制着色器不同的行为。当然这里我们使用标准的 <code>main</code> 函数来作为入口点</p>
+<p>最后我们需要定义一个数组把所有的着色器扔进去</p>
+<p>需要注意，着色器模块需要手动销毁，而这里我们只有在创建图形流水线之后才能销毁着色器模块，为了保证代码的顺序，我们将会在文章的末尾才贴出这段代码</p>
+<h2 id="gu-ding-gong-neng">固定功能</h2>
+<p>早期的图形 API 会为图形流水线的大多数阶段都提供默认状态。而在 Vulkan 中我们必须显式地指定一切东西，从视口大小到颜色混合函数。于是我们来通过填充结构体来配置所有的这些固定功能的操作</p>
+<h3 id="ding-dian-shu-ru">顶点输入</h3>
+<p><code>VkPipelineVertexInputStateCreateInfo</code> 结构体描述了将会被传递给顶点着色器的顶点的格式。有以下两个内容</p>
+<ul>
+<li>绑定描述。指定了数据之间的间隔，以及每个数据条目是一个顶点还是一个实例</li>
+<li>属性描述。指定了传递给顶点着色器的顶点数据的各个属性的类型</li>
+</ul>
+<p>因为我们已经把顶点数据硬编码在顶点着色器中，所以我们只需要在这个结构体中指定不需要顶点数据作为输入</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
+</span><span>vertexInputInfo.</span><span style="color:#ffb964;">sType </span><span>= VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+</span><span>vertexInputInfo.</span><span style="color:#ffb964;">vertexBindingDescriptionCount </span><span>= </span><span style="color:#cf6a4c;">0</span><span>;
+</span><span>vertexInputInfo.</span><span style="color:#ffb964;">pVertexBindingDescriptions </span><span>= nullptr;
+</span><span>vertexInputInfo.</span><span style="color:#ffb964;">vertexAttributeDescriptionCount </span><span>= </span><span style="color:#cf6a4c;">0</span><span>;
+</span><span>vertexInputInfo.</span><span style="color:#ffb964;">pVertexAttributeDescriptions </span><span>= nullptr;
+</span></code></pre>
+<p>其中，<code>pVertexBindingDescriptions</code> 和 <code>pVertexAttributeDescriptions</code> 都是指向相应结构体数组的指针，分别用来指定上面提到的绑定描述和属性描述</p>
+<h3 id="shu-ru-zhuang-pei">输入装配</h3>
+<p><code>VkPipelineInputAssemblyStateCreateInfo</code> 结构体描述了两个东西：根据输入顶点应当画出什么样的几何图形，以及是否需要图元重启。</p>
+<p>第一个可以在 <code>topology</code> 成员中指定，有以下几种取值</p>
+<ul>
+<li>
+<p><code>VK_PRIMITIVE_TOPOLOGY_POINT_LIST</code></p>
+<p>输入的顶点各自是独立的点图元</p>
+</li>
+<li>
+<p><code>VK_PRIMITIVE_TOPOLOGY_LINE_LIST</code></p>
+<p>每两个顶点构成一条线段图元，也就是说一个顶点只会出现在一条线段中</p>
+</li>
+<li>
+<p><code>VK_PRIMITIVE_TOPOLOGY_LINE_STRIP</code></p>
+<p>与上一个类似，但是每个线段图元的终止顶点会作为下一个线段图元的起点，也就是说所有的点依次相连</p>
+</li>
+<li>
+<p><code>VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST</code></p>
+<p>每三个顶点构成一个三角形图元，同样意味着一个顶点只会出现在一个三角形中</p>
+</li>
+<li>
+<p><code>VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP</code></p>
+<p>与上一个类似，但是每个三角形图元的最后两个顶点会作为下一个三角形图元的前两个顶点，也就是说相邻的两个三角形会共享两个点，所有的三角形连成一长条</p>
+</li>
+</ul>
+<p>通常来说，从顶点缓冲区中载入的顶点是以数组中的索引为顺序的，但是我们可以使用元素缓冲区来手动指定索引，从而实现更优化的性能，比如复用顶点。如果把 <code>primitiveRestart</code> 设为 <code>VK_TRUE</code>，那么对于带有 <code>_STRIP</code> 后缀的拓扑模式，我们就可以使用一个特殊的索引值 <code>0xFFFF</code> 或 <code>0xFFFFFFFF</code>，来中断当前连续的线段或连续的三角形，重新开启新的一系列线段或一系列三角形</p>
+<p>我们要画的是一个三角形，所以这样写</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
+</span><span>inputAssembly.</span><span style="color:#ffb964;">sType </span><span>= VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+</span><span>inputAssembly.</span><span style="color:#ffb964;">topology </span><span>= VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+</span><span>inputAssembly.</span><span style="color:#ffb964;">primitiveRestartEnable </span><span>= VK_FALSE;
+</span></code></pre>
+<h3 id="shi-kou-he-jian-cai">视口和剪裁</h3>
+<p>一个视口主要描述帧缓冲区中会被渲染的区域。它几乎都会被设置为 <code>(0, 0)</code> 到 <code>(width, height)</code> ，且本文也会这样设置</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkViewport viewport = {};
+</span><span>viewport.</span><span style="color:#ffb964;">x </span><span>= </span><span style="color:#cf6a4c;">0.0</span><span style="color:#8fbfdc;">f</span><span>;
+</span><span>viewport.</span><span style="color:#ffb964;">y </span><span>= </span><span style="color:#cf6a4c;">0.0</span><span style="color:#8fbfdc;">f</span><span>;
+</span><span>viewport.</span><span style="color:#ffb964;">width </span><span>= (</span><span style="color:#8fbfdc;">float</span><span>) swapchainExtent.</span><span style="color:#ffb964;">width</span><span>;
+</span><span>viewport.</span><span style="color:#ffb964;">height </span><span>= (</span><span style="color:#8fbfdc;">float</span><span>) swapchainExtent.</span><span style="color:#ffb964;">height</span><span>;
+</span><span>viewport.</span><span style="color:#ffb964;">minDepth </span><span>= </span><span style="color:#cf6a4c;">0.0</span><span style="color:#8fbfdc;">f</span><span>;
+</span><span>viewport.</span><span style="color:#ffb964;">minDepth </span><span>= </span><span style="color:#cf6a4c;">1.0</span><span style="color:#8fbfdc;">f</span><span>;
+</span></code></pre>
+<p>需要注意交换链及其图像的尺寸可能和窗体的不同。交换链图像在之后会作为帧缓冲区使用，因此我们这里要使用交换链的尺寸</p>
+<p><code>minDepth</code> 与 <code>maxDepth</code> 指定了用于帧缓冲区的深度值范围。它们的值必须在 <code>[0.0f, 1.0f]</code> 之内，但是 <code>minDepth</code> 可以比 <code>maxDepth</code> 高。如果不是有特殊情况，应当使用标准值 <code>0.0f</code> 和 <code>1.0f</code></p>
+<p>视口定义了从图像到帧缓冲区的变换，而剪裁矩形定义了实际会被存储的像素的区域。在剪裁矩形之外的任何像素都会被光栅化阶段抛弃。这个功能比起变换更像是过滤器</p>
+<p>我们这里只是要简单地绘制整个帧缓冲区，所以我们指定一个覆盖了所有区域剪裁矩形</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkRect2D scissor = {};
+</span><span>scissor.</span><span style="color:#ffb964;">offset </span><span>= {</span><span style="color:#cf6a4c;">0</span><span>, </span><span style="color:#cf6a4c;">0</span><span>};
+</span><span>scissor.</span><span style="color:#ffb964;">extent </span><span>= swapchainExtent;
+</span></code></pre>
+<p>接下来我们把视口和剪裁矩形通过 <code>VkPipelineViewportStateCreateInfo</code> 结构体结合起来。对于某些显卡而言，可以有多个视口与剪裁矩形，因此它的成员可以是一个数组的指针，这需要在逻辑设备创建的时候启用相关的 GPU 特性</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkPipelineViewportStateCreateInfo viewportState = {};
+</span><span>viewportState.</span><span style="color:#ffb964;">sType </span><span>= VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+</span><span>viewportState.</span><span style="color:#ffb964;">viewportCount </span><span>= </span><span style="color:#cf6a4c;">1</span><span>;
+</span><span>viewportState.</span><span style="color:#ffb964;">pViewports </span><span>= &amp;viewport;
+</span><span>viewportState.</span><span style="color:#ffb964;">scissorCount </span><span>= </span><span style="color:#cf6a4c;">1</span><span>;
+</span><span>viewportState.</span><span style="color:#ffb964;">pScissors </span><span>= &amp;scissor;
+</span></code></pre>
+<h3 id="guang-zha-hua">光栅化</h3>
+<p>光栅化阶段可以把来自于顶点着色器的顶点组成的几何体转换成片元着色器所需要的片元。它同样会进行深度测试，面剔除，以及剪裁测试，并且它可以配置输出的片元会填充整个多边形还是仅仅是线框渲染。这些都会在 <code>VkPipelineRasterizationStateCreateInfo</code> 中配置</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkPipelineRasterizationStateCreateInfo rasterizer = {};
+</span><span>rasterizer.</span><span style="color:#ffb964;">sType </span><span>= VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+</span><span>rasterizer.</span><span style="color:#ffb964;">depthClampEnable </span><span>= VK_FALSE;
+</span><span>rasterizer.</span><span style="color:#ffb964;">rasterizerDiscardEnable </span><span>= VK_FALSE;
+</span><span>rasterizer.</span><span style="color:#ffb964;">polygonMode </span><span>= VK_POLYGON_MODE_FILL;
+</span><span>rasterizer.</span><span style="color:#ffb964;">lineWidth </span><span>= </span><span style="color:#cf6a4c;">1.0</span><span style="color:#8fbfdc;">f</span><span>;
+</span><span>rasterizer.</span><span style="color:#ffb964;">cullMode </span><span>= VK_CULL_MODE_BACK_BIT;
+</span><span>rasterizer.</span><span style="color:#ffb964;">frontFace </span><span>= VK_FRONT_FACE_CLOCKWISE;
+</span><span>rasterizer.</span><span style="color:#ffb964;">depthBiasEnable </span><span>= VK_FALSE;
+</span></code></pre>
+<p>如果把 <code>depthClampEnable</code> 设为 <code>VK_TRUE</code>，那么在近裁和远裁平面之外的片元会被截断在平面上，而不是直接丢弃。这在阴影贴图等特殊情况下非常的实用。使用它也需要开启相应的 GPU 特性</p>
+<p>如果把 <code>rasterizerDiscardEnable</code> 设为 <code>VK_TRUE</code>，那么几何体将不会通过光栅化阶段。它从根本上禁止了到帧缓冲区的任何输出</p>
+<p><code>polygonMode</code> 决定了如何为几何体生成片元，有以下几种模式：</p>
+<ul>
+<li>
+<p><code>VK_POLYGON_MODE_FILL</code></p>
+<p>使用片元填充多边形的区域</p>
+</li>
+<li>
+<p><code>VK_POLYGON_MODE_LINE</code></p>
+<p>只显示多边形的边</p>
+</li>
+<li>
+<p><code>VK_POLYGON_MODE_POINT</code></p>
+<p>只显示多边形的点</p>
+</li>
+</ul>
+<p><code>lineWidth</code> 成员十分显然，它描述了线的厚度，也就是片元的数量。最大线宽的支持取决于硬件，且如果要让它高于 <code>1.0f</code>，我们还需要启用 <code>wideLines</code> 的 GPU 特性</p>
+<p><code>cullMode</code> 变量决定了面剪裁的类型，我们可以禁用剪裁、剪裁前面、剪裁后面或者剪裁全部的面</p>
+<p><code>frontFace</code> 变量指定了前面的顶点序，顺时针或者逆时针</p>
+<p>光栅化阶段能通过加上一个常量或者基于片元的斜率改变深度值。有时可以用在阴影贴图上，但是这里我们不需要它。于是把 <code>depthBiasEnable</code> 设为 <code>VK_FALSE</code></p>
+<h3 id="duo-zhong-cai-yang">多重采样</h3>
+<p>也就是在游戏中常见的的 MSAA。我们使用 <code>VkPipelineMultisampleStateCreateInfo</code> 结构体来配置多重采样，多重采样是抗锯齿的一种方式。如果有多个几何体在光栅化后有某些像素重合，在片元着色器阶段之后，多重采样可以把这些像素混合起来。这种情况主要发生在边上，且在边上的锯齿问题也是最为严重的。因为如果只有一个多边形被映射为一个像素的话，对于这个像素就不需要多次执行片元着色器，所以多重采样的性能优势就远远大于简单的先高分辨率渲染再压缩图像。如果要使用多重采样的话，也需要启用对应的 GPU 特性</p>
+<p>当然目前我们只需要禁用它就行</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkPipelineMultisampleStateCreateInfo multisampling = {};
+</span><span>multisampling.</span><span style="color:#ffb964;">sType </span><span>= VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+</span><span>multisampling.</span><span style="color:#ffb964;">sampleShadingEnable </span><span>= VK_FALSE;
+</span><span>multisampling.</span><span style="color:#ffb964;">rasterizationSamples </span><span>= VK_SAMPLE_COUNT_1_BIT;
+</span></code></pre>
+<h3 id="shen-du-yu-mo-ban-ce-shi">深度与模板测试</h3>
+<p>如果使用深度或模板缓冲，就需要使用 <code>VkPipelineDepthStencilStateCreateInfo</code> 结构体来配置深度和模板测试。目前我们也不需要它，所以只需要在后面创建流水线的时候简单地传入 <code>nullptr</code>，而不是这个结构体的指针</p>
+<h3 id="yan-se-hun-he">颜色混合</h3>
+<p>片元着色器已经返回了一个颜色之后，它需要与帧缓冲区中已经存在的颜色进行结合，有以下两种方式。</p>
+<ul>
+<li>把旧的值跟新的值混合起来产生最终的颜色</li>
+<li>把旧的值跟新的值使用位运算结合</li>
+</ul>
+<p>配置颜色混合需要两种结构体。第一种是 <code>VkPipelineColorBlendAttachmentState</code>，描述了每个被附着的帧缓冲区的配置；第二种是 <code>VkPipelineColorBlendStateCreateInfo</code>，描述了全局的颜色混合设置</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+</span><span>colorBlendAttachment.</span><span style="color:#ffb964;">colorWriteMask </span><span>= VK_COLOR_COMPONENT_R_BIT  VK_COLOR_COMPONENT_G_BIT  VK_COLOR_COMPONENT_B_BIT  VK_COLOR_COMPONENT_A_BIT;
+</span><span>colorBlendAttachment.</span><span style="color:#ffb964;">blendEnable </span><span>= VK_FALSE;
+</span><span>
+</span><span>VkPipelineColorBlendStateCreateInfo colorBlending = {};
+</span><span>colorBlending.</span><span style="color:#ffb964;">sType </span><span>= VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+</span><span>colorBlending.</span><span style="color:#ffb964;">logicOpEnable </span><span>= VK_FALSE;
+</span><span>colorBlending.</span><span style="color:#ffb964;">attachmentCount </span><span>= </span><span style="color:#cf6a4c;">1</span><span>;
+</span><span>colorBlending.</span><span style="color:#ffb964;">pAttachments </span><span>= &amp;colorBlendAttachment;
+</span></code></pre>
+<p>第一种结构体是对于每一个帧缓冲区配置的，不过这里我们只有一个帧缓冲区。它可以配置上面提到的颜色混合的第一种方式。使用颜色混合最常见的方式是实现 alpha 混合，也就是通过透明度来把新颜色跟旧颜色混合起来。不过我们不管它，把 <code>blendEnable</code> 设为 <code>VK_FALSE</code> 来直接使用新颜色覆盖掉旧的颜色</p>
+<p>第二种结构体持有了所有的第一种结构体的数组，且它可以为颜色混合的第一种方式（也就是第一种结构体中配置的混合方式）设置常量。它还可以使用第二种混合方式，这时就要把 <code>logicOpEnable</code> 设为 <code>VK_TRUE</code> 来启用位运算，再配置具体的位运算操作。当然这里我们直接禁用掉就行</p>
+<h3 id="dong-tai-zhuang-tai">动态状态</h3>
+<p>我们在之前配置的结构体中有一部分状态实际上是可以在不重新创建流水线的情况下被改变的。比如视口的尺寸、线宽、混合常量等。如果有这样的需要，就应当在 <code>VkPipelineDynamicStateCreateInfo</code> 中进行配置，然后在结构体中配置的这些状态将会失效，于是就需要在绘制的时候再进行指定。当然现在我们不需要它，所以在创建流水线的时候传入 <code>nullptr</code> 就行了</p>
+<h2 id="liu-shui-xian-bu-ju">流水线布局</h2>
+<p>我们可以在着色器中使用 <code>uniform</code> 变量，它是全局变量。它可以在绘制的时候进行动态修改来改变着色器的行为，而不需要重新创建着色器，这有一点类似于动态状态中的变量。这种变量通常用于为顶点着色器传递变换矩阵，或者在片元着色器中创建纹理采样器</p>
+<p>这些变量需要在创建流水线的过程中使用 <code>VkPipelineLayout</code> 对象指定。尽管我们不需要使用它，但还是需要创建一个空的流水线布局</p>
+<p>我们需要创建一个成员变量来存储它，因为后续还有别的函数需要调用它</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkPipelineLayout pipelineLayout;
+</span></code></pre>
+<p>然后还是在 <code>createGraphicsPipeline</code> 函数中接着写</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
+</span><span>pipelineLayoutInfo.</span><span style="color:#ffb964;">sType </span><span>= VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+</span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">vkCreatePipelineLayout</span><span>(device, &amp;pipelineLayoutInfo, nullptr, &amp;pipelineLayout) != VK_SUCCESS)
+</span><span>    </span><span style="color:#8fbfdc;">throw </span><span>std::</span><span style="color:#ffb964;">runtime_error</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">failed to create pipeline layout!</span><span style="color:#556633;">&quot;</span><span>);
+</span></code></pre>
+<p>最后注意要在 <code>cleanup</code> 中销毁它</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">cleanup</span><span>() {
+</span><span>    </span><span style="color:#ffb964;">vkDestroyPipelineLayout</span><span>(device, pipelineLayout, nullptr);
+</span><span>    </span><span style="color:#ffb964;">vkDestroyRenderPass</span><span>(device, renderPass, nullptr);
+</span><span>    </span><span style="color:#8fbfdc;">for </span><span>(</span><span style="color:#8fbfdc;">auto</span><span> imageView : swapchainImageViews)
+</span><span>        </span><span style="color:#ffb964;">vkDestroyImageView</span><span>(device, imageView, nullptr);
+</span><span>    </span><span style="color:#ffb964;">vkDestroySwapchainKHR</span><span>(device, swapchain, nullptr);
+</span><span>    </span><span style="color:#ffb964;">vkDestroyDevice</span><span>(device, nullptr);
+</span><span>    </span><span style="color:#ffb964;">vkDestroySurfaceKHR</span><span>(instance, surface, nullptr);
+</span><span>    </span><span style="color:#ffb964;">vkDestroyInstance</span><span>(instance, nullptr);
+</span><span>
+</span><span>    </span><span style="color:#ffb964;">glfwDestroyWindow</span><span>(window);
+</span><span>    </span><span style="color:#ffb964;">glfwTerminate</span><span>();
+</span><span>}
+</span></code></pre>
+<h2 id="tu-xing-liu-shui-xian">图形流水线</h2>
+<p>首先，还是要添加一个成员变量用于持有 <code>VkPipeline</code> 对象</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkPipeline graphicsPipeline;
+</span></code></pre>
+<p>终于，我们可以开始创建图形流水线了，这需要把上面配置好的所有结构体结合起来，我们先来回顾一下之前做了什么</p>
+<ul>
+<li>
+<p>着色器阶段</p>
+<p>配置了着色器模块，来定义图形流水线中可编程阶段的功能</p>
+</li>
+<li>
+<p>固定功能阶段</p>
+<p>配置了图形流水线中固定功能阶段所需要的所有结构体，比如输入装配、光栅化、视口、颜色混合等</p>
+</li>
+<li>
+<p>渲染路径</p>
+<p>流水线阶段中使用到的附着及其作用</p>
+</li>
+<li>
+<p>流水线布局</p>
+<p>指定了着色器会用到的，可以在绘制时修改的 <code>uniform</code> 变量</p>
+</li>
+</ul>
+<p>把这些东西结合起来，就是完整的图形流水线的功能，于是我们就使用它们来填充 <code>VkGraphicsPipelineCreateInfo</code> 结构体，再创建图形流水线</p>
+<p>然后我们开始填充结构体并创建图形流水线</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkGraphicsPipelineCreateInfo pipelineInfo = {};
+</span><span>pipelineInfo.</span><span style="color:#ffb964;">sType </span><span>= VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+</span><span>pipelineInfo.</span><span style="color:#ffb964;">stageCount </span><span>= </span><span style="color:#cf6a4c;">2</span><span>;
+</span><span>pipelineInfo.</span><span style="color:#ffb964;">pStages </span><span>= shaderStages;
+</span><span>pipelineInfo.</span><span style="color:#ffb964;">pVertexInputState </span><span>= &amp;vertexInputInfo;
+</span><span>pipelineInfo.</span><span style="color:#ffb964;">pInputAssemblyState </span><span>= &amp;inputAssembly;
+</span><span>pipelineInfo.</span><span style="color:#ffb964;">pViewportState </span><span>= &amp;viewportState;
+</span><span>pipelineInfo.</span><span style="color:#ffb964;">pRasterizationState </span><span>= &amp;rasterizer;
+</span><span>pipelineInfo.</span><span style="color:#ffb964;">pMultisampleState </span><span>= &amp;multisampling;
+</span><span>pipelineInfo.</span><span style="color:#ffb964;">pDepthStencilState </span><span>= nullptr;
+</span><span>pipelineInfo.</span><span style="color:#ffb964;">pColorBlendState </span><span>= &amp;colorBlending;
+</span><span>pipelineInfo.</span><span style="color:#ffb964;">pDynamicState </span><span>= nullptr;
+</span><span>pipelineInfo.</span><span style="color:#ffb964;">layout </span><span>= pipelineLayout;
+</span><span>pipelineInfo.</span><span style="color:#ffb964;">renderPass </span><span>= renderPass;
+</span><span>pipelineInfo.</span><span style="color:#ffb964;">subpass </span><span>= </span><span style="color:#cf6a4c;">0</span><span>;
+</span><span>pipelineInfo.</span><span style="color:#ffb964;">basePipelineHandle </span><span>= VK_NULL_HANDLE;
+</span><span>pipelineInfo.</span><span style="color:#ffb964;">basePipelineIndex </span><span>= -</span><span style="color:#cf6a4c;">1</span><span>;
+</span><span>
+</span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">vkCreateGraphicsPipelines</span><span>(device, VK_NULL_HANDLE, </span><span style="color:#cf6a4c;">1</span><span>, &amp;pipelineInfo, nullptr, &amp;graphicsPipeline) != VK_SUCCESS)
+</span><span>    </span><span style="color:#8fbfdc;">throw </span><span>std::</span><span style="color:#ffb964;">runtime_error</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">failed to create graphics pipeline!</span><span style="color:#556633;">&quot;</span><span>);
+</span></code></pre>
+<p>填充 <code>VkGraphicsPipelineCreateInfo</code> 结构体的前半部分就是把上文填好的结构体扔进去</p>
+<p>需要注意的是对于渲染路径而言，需要传入图形流水线所用于的子路径索引。之后这条流水线同样可以选择其他的渲染路径，而不是这个特定的实例，但它们都应当兼容当前所选的的渲染路径。当然我们不需要用到</p>
+<p>还有 <code>basePipelineHandle</code> 与 <code>basePipelineIndex</code> 这两个参数。Vulkan 允许我们根据一条已经存在的流水线派生出新的流水线。流水线派生的优势在于，根据一条已有的流水线创建具有类似功能的流水线开销会更小，且在父流水线相同的流水线之间切换也会更快。我们可以通过 <code>basePipelineHandle</code> 指定一条已存在的流水线的句柄，也可以通过 <code>basePipelineIndex</code> 指定即将被创建的流水线的索引。当然现在我们只需要创建一条流水线，直接指定空的句柄和无效索引即可。并且这些值只有在 <code>VkGraphicsPipelineCreateInfo</code> 的 <code>flags</code> 成员中打上 <code>VK_PIPELINE_CREATE_DERIVATIVE_BIT</code> 位域标记才会生效</p>
+<p>最后在 <code>cleanup</code> 中销毁流水线</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">cleanup</span><span>() {
+</span><span>    </span><span style="color:#ffb964;">vkDestroyPipeline</span><span>(device, graphicsPipeline, nullptr);
+</span><span>    </span><span style="color:#ffb964;">vkDestroyPipelineLayout</span><span>(device, pipelineLayout, nullptr);
+</span><span>    </span><span style="color:#ffb964;">vkDestroyRenderPass</span><span>(device, renderPass, nullptr);
+</span><span>    </span><span style="color:#8fbfdc;">for </span><span>(</span><span style="color:#8fbfdc;">auto</span><span> imageView : swapchainImageViews)
+</span><span>        </span><span style="color:#ffb964;">vkDestroyImageView</span><span>(device, imageView, nullptr);
+</span><span>    </span><span style="color:#ffb964;">vkDestroySwapchainKHR</span><span>(device, swapchain, nullptr);
+</span><span>    </span><span style="color:#ffb964;">vkDestroyDevice</span><span>(device, nullptr);
+</span><span>    </span><span style="color:#ffb964;">vkDestroySurfaceKHR</span><span>(instance, surface, nullptr);
+</span><span>    </span><span style="color:#ffb964;">vkDestroyInstance</span><span>(instance, nullptr);
+</span><span>
+</span><span>    </span><span style="color:#ffb964;">glfwDestroyWindow</span><span>(window);
+</span><span>    </span><span style="color:#ffb964;">glfwTerminate</span><span>();
+</span><span>}
+</span></code></pre>
+<h2 id="e-wai-gong-zuo">额外工作</h2>
+<p>上文已经提到过了，我们的着色器模块需要在创建流水线之后手动销毁，所以在 <code>createGraphicsPipeline</code> 函数的最后加上这段代码</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#ffb964;">vkDestroyShaderModule</span><span>(device, fragShaderModule, nullptr);
+</span><span style="color:#ffb964;">vkDestroyShaderModule</span><span>(device, vertShaderModule, nullptr);
+</span></code></pre>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202009120028/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">Vulkan 画三角形第十章：着色器模块</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202009142226/">
+                                <span class="button__text">Vulkan 画三角形第十二章：创建帧缓冲区</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

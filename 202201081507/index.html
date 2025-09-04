@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>使用 xmake 管理 C++ 项目 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="使用 xmake 管理 C++ 项目 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202201081507/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="使用 xmake 管理 C++ 项目 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202201081507/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202201081507/">使用 xmake 管理 C++ 项目</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2022-01-08
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/c/">#C++</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/xmake/">#xmake</a></span>
+    
+
+        <div class="post-content">
+            <p>受够了 CMake 的折磨，用了 xmake 之后我的心中只剩下感恩。</p>
+<span id="continue-reading"></span>
+<p>还是先贴一个比较完善的模板项目。</p>
+<p><a href="https://github.com/paakmau/xmake-template">Xmake Template</a></p>
+<p>实际上 xmake 跟 CMake 还是非常相似的，但是它更加简洁，而且功能可能也比 CMake 更强大。
+作者也对这个项目充满了热情，前景还是比较好的。</p>
+<p>另外提一嘴之前一段神奇的事情。我那个时候给嵌入式写了一个库。因为依赖问题非常操蛋，不得已试了一下 xmake。实际上我对它的交叉编译是没有信心的。结果我查完文档，直接一行命令直接配好了甲方给的工具链，然后直接给他构建好，我当时直接一个感动直接两只眼睛直接流下热泪。</p>
+<p>因为 xmake 的设计跟 CMake 极为类似，所以 CMake 用户过渡到 xmake 是非常丝滑的。
+本文也会少说点废话，直接贴代码。</p>
+<h2 id="xiang-mu">项目</h2>
+<p>配置项目名和项目版本。</p>
+<pre data-lang="lua" style="background-color:#151515;color:#e8e8d3;" class="language-lua "><code class="language-lua" data-lang="lua"><span style="color:#ffb964;">set_project</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Demo</span><span style="color:#556633;">&quot;</span><span>)
+</span><span style="color:#ffb964;">set_version</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">0.0.1</span><span style="color:#556633;">&quot;</span><span>, {</span><span style="color:#99ad6a;">build </span><span>= </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">%Y%m%d%H%M</span><span style="color:#556633;">&quot;</span><span>})
+</span></code></pre>
+<h2 id="zhi-ding-xmake-ban-ben">指定 xmake 版本</h2>
+<p>指定构建工具的版本是一个好习惯。</p>
+<pre data-lang="lua" style="background-color:#151515;color:#e8e8d3;" class="language-lua "><code class="language-lua" data-lang="lua"><span style="color:#ffb964;">set_xmakever</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">2.6.1</span><span style="color:#556633;">&quot;</span><span>)
+</span></code></pre>
+<h2 id="zhi-ding-yu-yan-biao-zhun">指定语言标准</h2>
+<p>如果当前没有目标，那就会全局配置。</p>
+<pre data-lang="lua" style="background-color:#151515;color:#e8e8d3;" class="language-lua "><code class="language-lua" data-lang="lua"><span style="color:#ffb964;">set_languages</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">cxx20</span><span style="color:#556633;">&quot;</span><span>)
+</span></code></pre>
+<p>也可以同时指定 C++ 和 C 的标准</p>
+<pre data-lang="lua" style="background-color:#151515;color:#e8e8d3;" class="language-lua "><code class="language-lua" data-lang="lua"><span style="color:#ffb964;">set_languages</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">c99</span><span style="color:#556633;">&quot;</span><span>, </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">cxx11</span><span style="color:#556633;">&quot;</span><span>)
+</span></code></pre>
+<h2 id="mu-biao">目标</h2>
+<p>跟 CMake 里的目标一样，xmake 中每个目标也是一个相对独立的构建单元。
+一个目标的构建结果可以是一个可执行文件或一个类库。</p>
+<p>可执行文件目标就可以长这样。</p>
+<pre data-lang="lua" style="background-color:#151515;color:#e8e8d3;" class="language-lua "><code class="language-lua" data-lang="lua"><span style="color:#ffb964;">target</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Hello</span><span style="color:#556633;">&quot;</span><span>)
+</span><span>    </span><span style="color:#ffb964;">set_kind</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">binary</span><span style="color:#556633;">&quot;</span><span>)
+</span><span>    </span><span style="color:#ffb964;">add_files</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Hello.cpp</span><span style="color:#556633;">&quot;</span><span>)
+</span></code></pre>
+<p>静态类的目标就会长这样。</p>
+<pre data-lang="lua" style="background-color:#151515;color:#e8e8d3;" class="language-lua "><code class="language-lua" data-lang="lua"><span style="color:#ffb964;">target</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">HelloLib</span><span style="color:#556633;">&quot;</span><span>)
+</span><span>    </span><span style="color:#ffb964;">set_kind</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">static</span><span style="color:#556633;">&quot;</span><span>)
+</span><span>    </span><span style="color:#ffb964;">add_files</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">src/*.cpp</span><span style="color:#556633;">&quot;</span><span>)
+</span><span>    </span><span style="color:#ffb964;">add_includedirs</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">include</span><span style="color:#556633;">&quot;</span><span>, { </span><span style="color:#99ad6a;">public </span><span>= true })
+</span><span>    </span><span style="color:#ffb964;">add_headerfiles</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">include/(HelloLib/*.h)</span><span style="color:#556633;">&quot;</span><span>)
+</span></code></pre>
+<p>注意， <code>add_includedirs</code> 是用于添加头文件搜索路径，而 <code>add_headerfiles</code> 则是需要安装的头文件。</p>
+<h2 id="mu-biao-yi-lai">目标依赖</h2>
+<p>如果需要 <code>Hello</code> 目标依赖 <code>HelloLib</code> 这个类库目标并暴露类库的公有头文件，那就可以这样写。</p>
+<pre data-lang="lua" style="background-color:#151515;color:#e8e8d3;" class="language-lua "><code class="language-lua" data-lang="lua"><span style="color:#ffb964;">target</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Hello</span><span style="color:#556633;">&quot;</span><span>)
+</span><span>    </span><span style="color:#ffb964;">set_kind</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">binary</span><span style="color:#556633;">&quot;</span><span>)
+</span><span>    </span><span style="color:#ffb964;">add_deps</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Protocon</span><span style="color:#556633;">&quot;</span><span>)
+</span><span>    </span><span style="color:#ffb964;">add_files</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Hello.cpp</span><span style="color:#556633;">&quot;</span><span>)
+</span></code></pre>
+<h2 id="bao-yi-lai">包依赖</h2>
+<p>包是可以用 xmake 管理的外部库。
+可以在 <a href="https://xrepo.xmake.io/">xrepo</a> 上查看其文档与仓库中目前所有的包。</p>
+<p>作为示例，我们导入 <code>gtest</code> 并使用它来给 <code>HelloLib</code> 做单元测试。</p>
+<p>首先我们在项目中添加需要依赖的 <code>gtest</code> 这个包。
+同样的，指定版本号是一个好习惯。</p>
+<pre data-lang="lua" style="background-color:#151515;color:#e8e8d3;" class="language-lua "><code class="language-lua" data-lang="lua"><span style="color:#ffb964;">add_requires</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">gtest 1.11.0</span><span style="color:#556633;">&quot;</span><span>)
+</span></code></pre>
+<p>其次定义一个 <code>Tests</code> 的可执行文件目标。
+其中我们用 <code>set_default</code> 把这个目标设为非默认目标，这样就把这个测试跟类库本身区分开。
+链接到我们需要测试的 <code>HelloLib</code>。
+添加测试的源文件。
+在 Windows 下我们需要特判一下加一个链接器标记，因为我们不想手写 <code>main</code> 函数，直接用 <code>gtest</code> 的类库里提供的。
+用 <code>add_package</code> 把 <code>gtest</code> 这个包链接到我们的 <code>Tests</code> 目标上。</p>
+<pre data-lang="lua" style="background-color:#151515;color:#e8e8d3;" class="language-lua "><code class="language-lua" data-lang="lua"><span style="color:#ffb964;">target</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Tests</span><span style="color:#556633;">&quot;</span><span>)
+</span><span>    </span><span style="color:#ffb964;">set_kind</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">binary</span><span style="color:#556633;">&quot;</span><span>)
+</span><span>    </span><span style="color:#ffb964;">set_default</span><span>(false)
+</span><span>    </span><span style="color:#ffb964;">add_deps</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">HelloLib</span><span style="color:#556633;">&quot;</span><span>)
+</span><span>    </span><span style="color:#ffb964;">add_files</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">*.cpp</span><span style="color:#556633;">&quot;</span><span>)
+</span><span>    </span><span style="color:#8fbfdc;">if </span><span style="color:#ffb964;">is_plat</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">windows</span><span style="color:#556633;">&quot;</span><span>) </span><span style="color:#8fbfdc;">then
+</span><span>        </span><span style="color:#ffb964;">add_ldflags</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">/subsystem:console</span><span style="color:#556633;">&quot;</span><span>)
+</span><span>    </span><span style="color:#8fbfdc;">end
+</span><span>    </span><span style="color:#ffb964;">add_packages</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">gtest</span><span style="color:#556633;">&quot;</span><span>)
+</span></code></pre>
+<p>然后正常写测试就行了。</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">#include </span><span style="color:#556633;">&lt;</span><span style="color:#99ad6a;">gtest/gtest.h</span><span style="color:#556633;">&gt;
+</span><span>
+</span><span style="color:#ffb964;">TEST</span><span>(TestSimple, HelloWorldOk) {
+</span><span>    </span><span style="color:#ffb964;">EXPECT_EQ</span><span>(</span><span style="color:#cf6a4c;">1 </span><span>+ </span><span style="color:#cf6a4c;">1</span><span>, </span><span style="color:#cf6a4c;">2</span><span>);
+</span><span>}
+</span></code></pre>
+<p>接下来我们敲这个命令直接构建所有的目标并确认下载安装所需的 <code>gtest</code> 依赖包。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">xmake -ay
+</span></code></pre>
+<p>最后敲这个命令跑我们的测试。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">xmake</span><span> r Tests
+</span></code></pre>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202201042338/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">现代 CMake 项目的正确姿势</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202201312133/">
+                                <span class="button__text">封装 Spring Boot 库并使用 GitHub Packages 发布</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

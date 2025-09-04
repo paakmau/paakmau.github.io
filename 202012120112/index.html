@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>CMake 项目结构最佳实践 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="CMake 项目结构最佳实践 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202012120112/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="CMake 项目结构最佳实践 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202012120112/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202012120112/">CMake 项目结构最佳实践</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2020-12-12
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/c/">#C++</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/cmake/">#CMake</a></span>
+    
+
+        <div class="post-content">
+            <p>CMake 是一种比较灵活的构建工具，正因如此导致很多 CMake 项目的结构混乱不堪，甚至包括国外某知名大厂的高 star 项目，本文将介绍一种目前广泛使用的比较合理的 CMake 项目结构</p>
+<span id="continue-reading"></span>
+<p>一般来说，项目中会有 <code>src</code> 文件夹、<code>include</code> 文件夹和 <code>external</code> 文件夹</p>
+<p><code>src</code> 文件夹中存放项目源文件和私有的头文件，私有的头文件是指仅供目标内部使用的头文件，其他目标不应当有权访问这些头文件，出于简洁考虑，就跟源文件堆在一起好了</p>
+<p><code>include</code> 文件夹存放公有的头文件，可以提供给链接了本目标的其他目标使用，把本目标的 API 暴露给其他目标，一般安装类库后就直接把里面的东西都扔进类似 <code>/usr/include</code> 的路径下</p>
+<p><code>external</code> 文件夹存放项目所依赖的外部开源库，也有人喜欢命名为 <code>third_party</code></p>
+<p>需要注意一个问题是 C++20 提出的 Modules，它允许我们使用代码来指定暴露给外部的 API，这样的话也许根本就不需要区分公有跟私有头文件，并且头文件分开两个路径放也非常的难受，但是按照目前编译器对 Modules 的支持来看，还是一两年后再说吧<br>
+等 Modules 都能普及了说不定 CMake 早就凉透了本文也没用了哈哈没想到吧</p>
+<h2 id="dan-lei-ku-xiang-mu">单类库项目</h2>
+<p>于是我们直接来看一个单类库项目的例子，单类库就是指项目只包含一个库目标，其他项目中的目标链接这个单独的目标就能访问该单类库项目提供的所有 API</p>
+<h3 id="xiang-mu-de-mu-lu-jie-gou">项目的目录结构</h3>
+<pre data-lang="txt" style="background-color:#151515;color:#e8e8d3;" class="language-txt "><code class="language-txt" data-lang="txt"><span>- example_library
+</span><span>  - CMakeLists.txt
+</span><span>  - external
+</span><span>    - CMakeLists.txt
+</span><span>  - include
+</span><span>    - example_library
+</span><span>      - public_example_library.h
+</span><span>  - src
+</span><span>    - private_example_library.h
+</span><span>    - example_application.cpp
+</span></code></pre>
+<h3 id="example-library-cmakelists-txt"><code>example_library/CMakeLists.txt</code></h3>
+<p>稍微解释一下这段代码<br>
+添加 <code>external</code> 子目录，注意 <code>external</code> 子目录下的 <code>CMakeLists.txt</code> 可以直接为空文件，因为我们项目里没有外部库；添加一个库目标 <code>example_library</code>，它的源文件只有 <code>example_library/src/example_library.cpp</code>；把 <code>example_library/include/example_library</code> 中的头文件提供给外部目标使用；而 <code>example_library/src</code> 为私有头文件目录，仅供目标 <code>example_library</code> 内部使用</p>
+<pre data-lang="cmake" style="background-color:#151515;color:#e8e8d3;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span>cmake_minimum_required(</span><span style="color:#ffb964;">VERSION </span><span>3.0.0)
+</span><span>project(example_library)
+</span><span>
+</span><span>add_subdirectory(external)
+</span><span>
+</span><span>add_library(example_library src/example_library.cpp)
+</span><span>
+</span><span>target_include_directories(example_library </span><span style="color:#ffb964;">PUBLIC </span><span>include)
+</span><span>target_include_directories(example_library </span><span style="color:#ffb964;">PRIVATE </span><span>src)
+</span></code></pre>
+<h3 id="example-library-src-utils-h"><code>example_library/src/utils.h</code></h3>
+<p>提供一个内联方法用来输出一个字符串</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">#ifndef</span><span> UTILS_H
+</span><span style="color:#8fbfdc;">#define </span><span style="color:#ffb964;">UTILS_H
+</span><span>
+</span><span style="color:#8fbfdc;">#include </span><span style="color:#556633;">&lt;</span><span style="color:#99ad6a;">cstdio</span><span style="color:#556633;">&gt;
+</span><span>
+</span><span style="color:#8fbfdc;">inline void </span><span style="color:#fad07a;">print_hello</span><span>() {
+</span><span>    std::printf(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Hello, world!\n</span><span style="color:#556633;">&quot;</span><span>);
+</span><span>}
+</span><span>
+</span><span style="color:#8fbfdc;">#endif  </span><span style="color:#888888;">// UTILS_H
+</span></code></pre>
+<h3 id="example-library-include-example-library-example-library-h"><code>example_library/include/example_library/example_library.h</code></h3>
+<p>给外部暴露一个 <code>print()</code> 全局函数的声明</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">#ifndef</span><span> EXAMPLE_LIBRARY_H
+</span><span style="color:#8fbfdc;">#define </span><span style="color:#ffb964;">EXAMPLE_LIBRARY_H
+</span><span>
+</span><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">print</span><span>();
+</span><span>
+</span><span style="color:#8fbfdc;">#endif  </span><span style="color:#888888;">// EXAMPLE_LIBRARY_H
+</span></code></pre>
+<h3 id="example-library-src-example-library-cpp"><code>example_library/src/example_library.cpp</code></h3>
+<p>定义刚刚声明的函数，并使用 <code>utils.h</code> 中提供的内联函数</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">#include </span><span style="color:#556633;">&lt;</span><span style="color:#99ad6a;">example_library/example_library.h</span><span style="color:#556633;">&gt;
+</span><span>
+</span><span style="color:#8fbfdc;">#include </span><span style="color:#556633;">&lt;</span><span style="color:#99ad6a;">utils.h</span><span style="color:#556633;">&gt;
+</span><span>
+</span><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">print</span><span>() {
+</span><span>    </span><span style="color:#ffb964;">print_hello</span><span>();
+</span><span>}
+</span></code></pre>
+<h3 id="chan-shu">阐述</h3>
+<p>这样对于其他目标而言，可以使用 <code>target_link_libraries</code> 链接 <code>example_library</code>，然后在代码里添加一个 <code>#include &lt;example_library/example_library.h&gt;</code>，就能调用这个单类库项目提供的 <code>print</code> 方法了<br>
+然后 <code>utils.h</code> 只能 <code>example_library</code> 内部使用，对于其他目标来说是不可见的</p>
+<p>注意到一个问题是 <code>example_library/include</code> 里面没有直接存放头文件，而是多套了一个 <code>example_library</code> 文件夹，这样设计看起来非常冗余，但是其实它的目的是避免头文件重名而造成冲突<br>
+另外的考量在于，安装项目的时候，<code>example_library/include</code> 目录下的东西应当被扔进系统安装路径的 <code>include</code> 文件夹里，这样设计会比较清晰</p>
+<h2 id="dan-ying-yong-xiang-mu">单应用项目</h2>
+<p>单应用项目构建后只会生成一个可执行程序，用于构建一个应用程序</p>
+<p>相比于单类库项目，它不会被别的目标链接，所以不需要暴露头文件，因此不需要 <code>include</code> 文件夹</p>
+<p>目录结构如下，具体代码就不贴了</p>
+<pre data-lang="txt" style="background-color:#151515;color:#e8e8d3;" class="language-txt "><code class="language-txt" data-lang="txt"><span>- example_application
+</span><span>  - CMakeLists.txt
+</span><span>  - external
+</span><span>    - CMakeLists.txt
+</span><span>  - src
+</span><span>    - example_application.h
+</span><span>    - example_application.cpp
+</span></code></pre>
+<h2 id="dan-lei-ku-dan-ying-yong-xiang-mu">单类库单应用项目</h2>
+<p>就是既包含一个类库，又包含一个可执行程序的项目</p>
+<p>目录结构如下，里面的源文件头文件因为太乱就省略了</p>
+<pre data-lang="txt" style="background-color:#151515;color:#e8e8d3;" class="language-txt "><code class="language-txt" data-lang="txt"><span>- your_project_name
+</span><span>  - app
+</span><span>    - CMakeLists.txt
+</span><span>    - src
+</span><span>  - CMakeLists.txt
+</span><span>  - external
+</span><span>    - CMakeLists.txt
+</span><span>  - lib
+</span><span>    - CMakeLists.txt
+</span><span>    - include
+</span><span>      - your_library_name
+</span><span>    - src
+</span></code></pre>
+<h2 id="duo-lei-ku-dan-ying-yong-xiang-mu">多类库单应用项目</h2>
+<p>比较复杂的项目，类库需要拆分成多个，所以所有的具体类库目录都扔进一个 <code>libs</code> 目录下保持项目的整洁</p>
+<pre data-lang="txt" style="background-color:#151515;color:#e8e8d3;" class="language-txt "><code class="language-txt" data-lang="txt"><span>- your_project_name
+</span><span>  - app
+</span><span>    - CMakeLists.txt
+</span><span>    - src
+</span><span>  - CMakeLists.txt
+</span><span>  - external
+</span><span>    - CMakeLists.txt
+</span><span>  - libs
+</span><span>    - CMakeLists.txt
+</span><span>    - library_a
+</span><span>      - CMakeLists.txt
+</span><span>      - include
+</span><span>        - library_a
+</span><span>      - src
+</span><span>    - library_b
+</span><span>      - CMakeLists.txt
+</span><span>      - include
+</span><span>        - library_b
+</span><span>      - src
+</span></code></pre>
+<h2 id="qi-ta-qing-kuang">其他情况</h2>
+<p>如果是多应用的情况可以建一个 <code>apps</code> 目录，把各个具体的应用目录扔进去</p>
+<p>如果是多类库带多个使用例子的情况可以参考多应用的情况，把 <code>apps</code> 目录改成 <code>examples</code> 目录</p>
+<p>实际情况中可以做类似的修改，保证项目目录结构的整齐简洁就行了</p>
+<h2 id="guan-yu-tuo-feng-ming-ming-fa">关于驼峰命名法</h2>
+<p>没错，很关键，虽然 C++ 标准库用的是全小写的下划线命名法，C++ 标准委员会也推荐下划线，但是下划线随随便便一个变量就会长长一坨，不用驼峰这能忍吗，这不能忍</p>
+<p>如果使用驼峰，首先就是源文件头文件内的变量、函数和类都使用驼峰命名法</p>
+<p>然后是 <code>CMakeLists.txt</code> 中的目标名和项目名都应当使用驼峰命名</p>
+<p>最后到了目录结构，项目根目录、具体类库目录、具体应用目录、头文件和源文件都应当使用首字母大写的驼峰，其他目录仍然保持下划线命名法<br>
+因为 <code>include</code> 目录最好跟系统的 <code>include</code> 路径保持一致，并且兼容旧有项目，所以都是用下划线命名法；而头文件和源文件应当与类名保持一致，具体类库和具体应用与 <code>CMakeLists.txt</code> 中的目标名保持一致，项目根目录跟 <code>CMakeLists.txt</code> 中的项目名保持一致，所以统一使用驼峰命名法</p>
+<p>不过混用有一点丑，激进一点的可以直接全部换成驼峰</p>
+<p>比如多类库单应用项目的目录结构就可以长这样</p>
+<pre data-lang="txt" style="background-color:#151515;color:#e8e8d3;" class="language-txt "><code class="language-txt" data-lang="txt"><span>- YourProjectName
+</span><span>  - app
+</span><span>    - CMakeLists.txt
+</span><span>    - src
+</span><span>      - App.h
+</span><span>      - App.cpp
+</span><span>  - CMakeLists.txt
+</span><span>  - external
+</span><span>    - CMakeLists.txt
+</span><span>  - libs
+</span><span>    - CMakeLists.txt
+</span><span>    - LibraryA
+</span><span>      - CMakeLists.txt
+</span><span>      - include
+</span><span>        - LibraryA
+</span><span>          - LibraryA.h
+</span><span>      - src
+</span><span>        - LibraryA.cpp
+</span><span>    - LibraryB
+</span><span>      - CMakeLists.txt
+</span><span>      - include
+</span><span>        - LibraryB
+</span><span>          - LibraryA.h
+</span><span>      - src
+</span><span>        - LibraryA.cpp
+</span></code></pre>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202012112141/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">VS Code 写一切：CMake</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202012200030/">
+                                <span class="button__text">C++ Core Guidelines 命名与布局规则</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

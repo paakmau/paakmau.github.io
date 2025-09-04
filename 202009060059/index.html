@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Vulkan 画三角形第四章：选取物理设备 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="Vulkan 画三角形第四章：选取物理设备 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202009060059/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="Vulkan 画三角形第四章：选取物理设备 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202009060059/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202009060059/">Vulkan 画三角形第四章：选取物理设备</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2020-09-06
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/vulkan/">#Vulkan</a></span>
+    
+
+        <div class="post-content">
+            <p>创建了表面之后我们接下来就可以在系统中选取一张显卡，事实上我们可以选取多张显卡并同时使用它们，但是在本文中我们只用一张显卡作为示范</p>
+<span id="continue-reading"></span>
+<p>还是一样，我们先添加一个私有成员变量</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+</span></code></pre>
+<p>然后同样添加一个成员函数 <code>pickPhysicalDevice</code> 用于选取物理设备，并在 <code>initVulkan</code> 函数中调用它</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">initVulkan</span><span>() {
+</span><span>    </span><span style="color:#ffb964;">createInstance</span><span>();
+</span><span>    </span><span style="color:#ffb964;">pickPhysicalDevice</span><span>();
+</span><span>}
+</span></code></pre>
+<p>接下来我们开始填充这个函数</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">pickPhysicalDevice</span><span>() {
+</span><span>    </span><span style="color:#888888;">// 获取设备数量
+</span><span>    uint32_t deviceCount = </span><span style="color:#cf6a4c;">0</span><span>;
+</span><span>    </span><span style="color:#ffb964;">vkEnumeratePhysicalDevices</span><span>(instance, &amp;deviceCount, nullptr);
+</span><span>    </span><span style="color:#8fbfdc;">if </span><span>(deviceCount == </span><span style="color:#cf6a4c;">0</span><span>)
+</span><span>        </span><span style="color:#8fbfdc;">throw </span><span>std::</span><span style="color:#ffb964;">runtime_error</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">failed to find GPUs with Vulkan support!</span><span style="color:#556633;">&quot;</span><span>);
+</span><span>    </span><span style="color:#888888;">// 获取所有可用的设备
+</span><span>    std::vector&lt;VkPhysicalDevice&gt; </span><span style="color:#ffb964;">devices</span><span>(deviceCount);
+</span><span>    </span><span style="color:#ffb964;">vkEnumeratePhysicalDevices</span><span>(instance, &amp;deviceCount, devices.</span><span style="color:#ffb964;">data</span><span>());
+</span><span>}
+</span></code></pre>
+<p>可以看到上面的代码先是调用一个函数获取了物理设备的数量，然后根据设备数量开缓冲区，接着再次调用这个函数把设备获取出来扔进缓冲区里。这是 Vulkan 的特色，不要问我为什么，后面的文章中你们也会看到许多类似的用法</p>
+<p>于是我们就可以遍历所有的物理设备，选一个合适的来进行后面的操作。简单起见，本文选择了一张集成显卡，感兴趣的可以选自己的独显试试</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#888888;">// 选取一个合适的设备
+</span><span style="color:#8fbfdc;">for </span><span>(</span><span style="color:#8fbfdc;">const auto </span><span>&amp;device : devices) {
+</span><span>    </span><span style="color:#888888;">// 查询物理设备属性
+</span><span>    VkPhysicalDeviceProperties deviceProperties;
+</span><span>    </span><span style="color:#ffb964;">vkGetPhysicalDeviceProperties</span><span>(device, &amp;deviceProperties);
+</span><span>    </span><span style="color:#8fbfdc;">bool</span><span> integratedGraphicsCard = deviceProperties.</span><span style="color:#ffb964;">deviceType </span><span>== VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU;
+</span><span>    </span><span style="color:#888888;">// 选择集显
+</span><span>    </span><span style="color:#8fbfdc;">if </span><span>(integratedGraphicsCard) {
+</span><span>        physicalDevice = device;
+</span><span>        </span><span style="color:#8fbfdc;">break</span><span>;
+</span><span>    }
+</span><span>}
+</span><span>
+</span><span style="color:#8fbfdc;">if </span><span>(physicalDevice == VK_NULL_HANDLE)
+</span><span>    </span><span style="color:#8fbfdc;">throw </span><span>std::</span><span style="color:#ffb964;">runtime_error</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">failed to find a suitable GPU!</span><span style="color:#556633;">&quot;</span><span>);
+</span></code></pre>
+<p>在遍历物理设备的寻找集显的时候，我们还需要检测显卡是否支持我们需要的功能</p>
+<h2 id="jian-ce-dui-lie-zu">检测队列族</h2>
+<p>在此之前，我们先引入一个队列族的概念。Vulkan 中的所有操作都需要把命令提交到一个队列中，比如绘制、传输贴图等。然后会有许多个属于不同队列族的不同队列，并且一种队列族只会允许某一类命令。举个例子，可能有的队列族只允许提交计算命令而有的队列族只允许提交内存传递相关的命令</p>
+<p>在这里，我们需要检测显卡是否具有支持图形命令的队列族，这类队列族可以传入顶点数据进行图形计算并将结果绘制到帧缓冲区中。</p>
+<p>然后还需要检测显卡是否具有支持我们的窗体表面的队列族，我们可以通过这类队列族将帧缓冲区中的绘制结果通过窗体表面显示在屏幕上</p>
+<p>而事实上，可能会有一个队列族同时支持这两种功能</p>
+<p>简单起见，我们就直接寻找一个同时支持图形命令且支持我们的窗体表面的队列族，于是添加一个成员函数来获取它</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>std::optional&lt;uint32_t&gt; </span><span style="color:#fad07a;">findQueueFamily</span><span>(VkPhysicalDevice </span><span style="color:#ffb964;">device</span><span>) {
+</span><span>    </span><span style="color:#888888;">// 获取所有的队列族
+</span><span>    uint32_t queueFamilyCount = </span><span style="color:#cf6a4c;">0</span><span>;
+</span><span>    </span><span style="color:#ffb964;">vkGetPhysicalDeviceQueueFamilyProperties</span><span>(device, &amp;queueFamilyCount, nullptr);
+</span><span>    std::vector&lt;VkQueueFamilyProperties&gt; </span><span style="color:#ffb964;">queueFamilies</span><span>(queueFamilyCount);
+</span><span>    </span><span style="color:#ffb964;">vkGetPhysicalDeviceQueueFamilyProperties</span><span>(device, &amp;queueFamilyCount, queueFamilies.</span><span style="color:#ffb964;">data</span><span>());
+</span><span>    </span><span style="color:#888888;">// 选取队列族
+</span><span>    </span><span style="color:#8fbfdc;">for </span><span>(</span><span style="color:#8fbfdc;">int</span><span> i = </span><span style="color:#cf6a4c;">0</span><span>; i &lt; queueFamilies.</span><span style="color:#ffb964;">size</span><span>(); i++) {
+</span><span>        </span><span style="color:#888888;">// 支持表面
+</span><span>        VkBool32 presentSupport = false;
+</span><span>        </span><span style="color:#ffb964;">vkGetPhysicalDeviceSurfaceSupportKHR</span><span>(device, i, surface, &amp;presentSupport);
+</span><span>        </span><span style="color:#888888;">// 支持图形命令
+</span><span>        VkBool32 graphicsSupport = queueFamilies[i].</span><span style="color:#ffb964;">queueFlags </span><span>&amp; VK_QUEUE_GRAPHICS_BIT;
+</span><span>        </span><span style="color:#8fbfdc;">if </span><span>(graphicsSupport &amp;&amp; presentSupport)
+</span><span>            </span><span style="color:#8fbfdc;">return</span><span> i;
+</span><span>    }
+</span><span>    </span><span style="color:#8fbfdc;">return </span><span>std::</span><span style="color:#ffb964;">optional</span><span>&lt;uint32_t&gt;();
+</span><span>}
+</span></code></pre>
+<p>注意到 <code>uint32_t</code> 的任何取值都有可能是一个真实存在的队列族索引，因此我们使用 <code>std::optional</code> 来处理获取失败的情况</p>
+<p>然后我们修改 <code>pickPhysicalDevice</code> 中遍历物理设备并选择集显的那部分代码，在其中尝试获取这个显卡支持的我们需要的队列族，并判断是否获取成功</p>
+<p>这部分的完整代码如下</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#888888;">// 选取一个合适的设备
+</span><span style="color:#8fbfdc;">for </span><span>(</span><span style="color:#8fbfdc;">const auto </span><span>&amp;device : devices) {
+</span><span>    </span><span style="color:#888888;">// 查询物理设备属性
+</span><span>    VkPhysicalDeviceProperties deviceProperties;
+</span><span>    </span><span style="color:#ffb964;">vkGetPhysicalDeviceProperties</span><span>(device, &amp;deviceProperties);
+</span><span>    </span><span style="color:#8fbfdc;">bool</span><span> integratedGraphicsCard = deviceProperties.</span><span style="color:#ffb964;">deviceType </span><span>== VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU;
+</span><span>    </span><span style="color:#888888;">// 查询合适的队列族
+</span><span>    std::optional&lt;uint32_t&gt; queueFamily = </span><span style="color:#ffb964;">findQueueFamily</span><span>(device);
+</span><span>    </span><span style="color:#8fbfdc;">bool</span><span> queueFamilySupported = queueFamily.</span><span style="color:#ffb964;">has_value</span><span>();
+</span><span>    </span><span style="color:#888888;">// 选择具有合适的队列族的集显
+</span><span>    </span><span style="color:#8fbfdc;">if </span><span>(integratedGraphicsCard &amp;&amp; queueFamilySupported) {
+</span><span>        physicalDevice = device;
+</span><span>        </span><span style="color:#8fbfdc;">break</span><span>;
+</span><span>    }
+</span><span>}
+</span><span>
+</span><span style="color:#8fbfdc;">if </span><span>(physicalDevice == VK_NULL_HANDLE)
+</span><span>    </span><span style="color:#8fbfdc;">throw </span><span>std::</span><span style="color:#ffb964;">runtime_error</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">failed to find a suitable GPU!</span><span style="color:#556633;">&quot;</span><span>);
+</span></code></pre>
+<h2 id="jiao-huan-lian-zhi-chi">交换链支持</h2>
+<p>Vulkan 没有默认缓冲区这样的概念，因此我们在把图像展示到屏幕之前，需要一个东西来存放用于渲染这些图像的缓冲区。这个东西就是交换链，且它必须被显式的创建</p>
+<p>并不是所有的显卡都能够把图像直接展示到屏幕上，比如有些显卡为服务器设计并不需要输出。因此我们需要查询显卡是否支持交换链扩展</p>
+<p>此外，我们还需要查询一下交换链细节，包括物理设备支持的表面格式、表面展示模式</p>
+<p>关于交换链的具体知识会在后续的文章中讨论，我们可以暂时不管</p>
+<p>于是我们在之前的基础上继续修改这段代码<br>
+为了避免混乱，还是把修改过后的完整代码贴出来</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#888888;">// 选取一个合适的设备
+</span><span style="color:#8fbfdc;">for </span><span>(</span><span style="color:#8fbfdc;">const auto </span><span>&amp;device : devices) {
+</span><span>    </span><span style="color:#888888;">// 查询物理设备属性
+</span><span>    VkPhysicalDeviceProperties deviceProperties;
+</span><span>    </span><span style="color:#ffb964;">vkGetPhysicalDeviceProperties</span><span>(device, &amp;deviceProperties);
+</span><span>    </span><span style="color:#8fbfdc;">bool</span><span> integratedGraphicsCard = deviceProperties.</span><span style="color:#ffb964;">deviceType </span><span>== VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU;
+</span><span>    </span><span style="color:#888888;">// 查询合适的队列族
+</span><span>    std::optional&lt;uint32_t&gt; queueFamily = </span><span style="color:#ffb964;">findQueueFamily</span><span>(device);
+</span><span>    </span><span style="color:#8fbfdc;">bool</span><span> queueFamilySupported = queueFamily.</span><span style="color:#ffb964;">has_value</span><span>();
+</span><span>    </span><span style="color:#888888;">// 查询交换链支持
+</span><span>    std::string swapchainExtensionName = VK_KHR_SWAPCHAIN_EXTENSION_NAME;
+</span><span>    uint32_t extensionCount;
+</span><span>    </span><span style="color:#ffb964;">vkEnumerateDeviceExtensionProperties</span><span>(device, nullptr, &amp;extensionCount, nullptr);
+</span><span>    std::vector&lt;VkExtensionProperties&gt; </span><span style="color:#ffb964;">availableExtensions</span><span>(extensionCount);
+</span><span>    </span><span style="color:#ffb964;">vkEnumerateDeviceExtensionProperties</span><span>(device, nullptr, &amp;extensionCount, availableExtensions.</span><span style="color:#ffb964;">data</span><span>());
+</span><span>    </span><span style="color:#8fbfdc;">bool</span><span> swapchainExtensionSupported = false;
+</span><span>    </span><span style="color:#8fbfdc;">for </span><span>(</span><span style="color:#8fbfdc;">auto</span><span> properties : availableExtensions)
+</span><span>        </span><span style="color:#8fbfdc;">if </span><span>(properties.</span><span style="color:#ffb964;">extensionName </span><span>== swapchainExtensionName)
+</span><span>            swapchainExtensionSupported = true;
+</span><span>    </span><span style="color:#8fbfdc;">bool</span><span> swapchainSupported = false;
+</span><span>    </span><span style="color:#8fbfdc;">if </span><span>(swapchainExtensionSupported) {
+</span><span>        uint32_t formatCount;
+</span><span>        uint32_t presentModeCount;
+</span><span>        </span><span style="color:#ffb964;">vkGetPhysicalDeviceSurfaceFormatsKHR</span><span>(device, surface, &amp;formatCount, nullptr);
+</span><span>        </span><span style="color:#ffb964;">vkGetPhysicalDeviceSurfacePresentModesKHR</span><span>(device, surface, &amp;presentModeCount, nullptr);
+</span><span>        swapchainSupported = formatCount &amp;&amp; presentModeCount;
+</span><span>    }
+</span><span>    </span><span style="color:#888888;">// 选择具有合适的队列族且支持交换链的集显
+</span><span>    </span><span style="color:#8fbfdc;">if </span><span>(integratedGraphicsCard &amp;&amp; queueFamilySupported &amp;&amp; swapchainSupported) {
+</span><span>        physicalDevice = device;
+</span><span>        </span><span style="color:#8fbfdc;">break</span><span>;
+</span><span>    }
+</span><span>}
+</span><span>
+</span><span style="color:#8fbfdc;">if </span><span>(physicalDevice == VK_NULL_HANDLE)
+</span><span>    </span><span style="color:#8fbfdc;">throw </span><span>std::</span><span style="color:#ffb964;">runtime_error</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">failed to find a suitable GPU!</span><span style="color:#556633;">&quot;</span><span>);
+</span></code></pre>
+<p>最后说一下物理设备会在 Vulkan 实例被销毁时隐式地销毁掉，因此我们不需要在 <code>cleanup</code> 中做任何操作</p>
+<p>另外，可能有的读者会觉得随便选张显卡就行了，其实一般也就两块显卡，但直接进入下一步可能会因为显卡踩到巨坑，因此本文就还是简单说了一下显卡的支持检测</p>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202009052302/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">Vulkan 画三角形第三章：创建窗体表面</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202009080019/">
+                                <span class="button__text">Vulkan 画三角形第五章：创建逻辑设备</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

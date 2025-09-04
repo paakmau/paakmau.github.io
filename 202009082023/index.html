@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Vulkan 画三角形第六章：创建交换链 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="Vulkan 画三角形第六章：创建交换链 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202009082023/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="Vulkan 画三角形第六章：创建交换链 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202009082023/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202009082023/">Vulkan 画三角形第六章：创建交换链</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2020-09-08
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/vulkan/">#Vulkan</a></span>
+    
+
+        <div class="post-content">
+            <p>我们在把图像展示到屏幕之前，需要先把它们渲染到缓冲区中，而交换链就是存放缓冲区的地方。交换链本质上是一个存放需要展示到屏幕的图像的队列。我们的应用程序要做的就是从这个队列中取出一个图像，然后在上面渲染，最后再返回给队列。这个队列是怎么工作的以及队列中的图像什么时候展示到屏幕上，它们都取决于交换链是怎么创建的，但是交换链一般的目的都是同步图像展示和屏幕刷新率</p>
+<span id="continue-reading"></span>
+<p>为了能够使用交换链，我们需要在创建逻辑设备的时候启用交换链扩展，此外也可以在选取物理设备的时候检查显卡是否支持交换链。之前文章的代码中已经包含了这些内容，所以我们继续往下看</p>
+<p>还是先创建一个成员变量</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkSwapchainKHR swapchain;
+</span></code></pre>
+<p>然后添加一个成员函数并在 <code>initVulkan</code> 中调用它</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">initVulkan</span><span>() {
+</span><span>    </span><span style="color:#ffb964;">createInstance</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createSurface</span><span>();
+</span><span>    </span><span style="color:#ffb964;">pickPhysicalDevice</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createLogicalDevice</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createSwapchain</span><span>();
+</span><span>}
+</span><span>
+</span><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">createSwapchain</span><span>() {
+</span><span>
+</span><span>}
+</span></code></pre>
+<p>于是我们就可以开始填充这个函数了</p>
+<h2 id="xuan-qu-jiao-huan-lian-de-zheng-que-pei-zhi">选取交换链的正确配置</h2>
+<p>为了最优化效果，我们在创建交换链之前，需要为它选择一些配置。我们需要决定三种类型的配置</p>
+<ul>
+<li>表面格式（颜色深度，每个颜色通道的位数）</li>
+<li>展示模式（什么条件下把图像展示到屏幕上）</li>
+<li>交换范围（交换链中图像的分辨率）</li>
+</ul>
+<h3 id="xuan-qu-biao-mian-ge-shi">选取表面格式</h3>
+<p>首先是表面格式。我们需要查询显卡支持的表面格式，然后从中选取一个合适的</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#888888;">// 选取表面格式
+</span><span>uint32_t formatCount;
+</span><span style="color:#ffb964;">vkGetPhysicalDeviceSurfaceFormatsKHR</span><span>(physicalDevice, surface, &amp;formatCount, nullptr);
+</span><span>std::vector&lt;VkSurfaceFormatKHR&gt; </span><span style="color:#fad07a;">formats</span><span>(</span><span style="color:#ffb964;">formatCount</span><span>);
+</span><span style="color:#ffb964;">vkGetPhysicalDeviceSurfaceFormatsKHR</span><span>(physicalDevice, surface, &amp;formatCount, formats.</span><span style="color:#ffb964;">data</span><span>());
+</span><span>VkSurfaceFormatKHR formatChosen = formats[</span><span style="color:#cf6a4c;">0</span><span>];
+</span><span style="color:#8fbfdc;">for </span><span>(</span><span style="color:#8fbfdc;">const auto </span><span>&amp;availableFormat : formats) {
+</span><span>    </span><span style="color:#8fbfdc;">if </span><span>(availableFormat.</span><span style="color:#ffb964;">format </span><span>== VK_FORMAT_B8G8R8A8_SRGB &amp;&amp; availableFormat.</span><span style="color:#ffb964;">colorSpace </span><span>== VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
+</span><span>        formatChosen = availableFormat;
+</span><span>        </span><span style="color:#8fbfdc;">break</span><span>;
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>稍微说明一下，<code>VkSurfaceFormatKHR</code> 结构体包含 <code>format</code> 和 <code>colorSpace</code> <code>两个成员。format</code> 成员表示颜色通道和类型，例如最常见的 <code>VK_FORMAT_B8G8R8A8_SRGB</code> 格式就意味着每个像素由 B、G、R、A 四个通道组成，每个通道各占 8 位，总共 32 位。而 <code>colorSpace</code> 通过 <code>VK_COLOR_SPACE_SRGB_NONLINEAR_KHR</code> 标记来是否支持 SRGB 的颜色空间</p>
+<p>然后上面的代码中，我们优先选择颜色空间为 SRGB 且格式为 <code>VK_FORMAT_B8G8R8A8_SRGB</code> 的表面格式，如果没有就直接使用数组中的第一个格式</p>
+<h3 id="xuan-qu-zhan-shi-mo-shi">选取展示模式</h3>
+<p>接下来我们选择展示模式</p>
+<p>展示模式是交换链的最重要的配置，因为它代表了把图片显示到屏幕上的实际条件。Vulkan 中有四种可选的展示模式</p>
+<ul>
+<li>
+<p><code>VK_PRESENT_MODE_IMMEDIATE_KHR</code></p>
+<p>应用程序提交的图像会被立刻传递到屏幕上，这可能会造成撕裂现象</p>
+</li>
+<li>
+<p><code>VK_PRESENT_MODE_FIFO_KHR</code></p>
+<p>交换链是一个队列，当显示器刷新时会取走队首的图像进行展示，应用程序在队尾插入渲染好的图像。如果队列满了，应用程序将会需要等待屏幕刷新。非常类似于现代游戏中的垂直同步。另外显示器刷新的瞬间也被称为 vertical blank</p>
+</li>
+<li>
+<p><code>VK_PRESENT_MODE_FIFO_RELAXED_KHR</code></p>
+<p>与第二个模式类似，唯一的不同是如果应用程序渲染比较慢导致队列为空，而显示器却需要刷新的时候，显示器不会等待到下一次刷新（或者说 vertical blank），而是在图像被应用程序渲染好之后立刻展示图像。这同样可能会导致撕裂</p>
+</li>
+<li>
+<p><code>VK_PRESENT_MODE_MAILBOX_KHR</code></p>
+<p>这又是第二个模式的另一个变种。不同之处在于，队列满的时候不会阻塞应用程序，而是把队列中的旧图像直接替换为应用程序新渲染好的图像。这个模式可以用于实现三重缓冲，比起垂直同步的双重缓冲，它能够减少很多的延迟问题，且也能避免撕裂现象</p>
+</li>
+</ul>
+<p>不过只有 <code>VK_PRESENT_MODE_FIFO_KHR</code> 模式是确保能够可用的，为了方便，我们可以直接使用这个模式</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#888888;">// 选取展示模式
+</span><span>VkPresentModeKHR presentModeChosen = VK_PRESENT_MODE_FIFO_KHR;
+</span></code></pre>
+<h3 id="xuan-qu-jiao-huan-fan-wei">选取交换范围</h3>
+<p>这个就比较简单了，就是通过窗体的分辨率来指定交换链中图像的宽和高。我们可以通过获取 <code>VkSurfaceCapabilitiesKHR</code> 结构体来得到窗体的当前分辨率</p>
+<p>但是有的窗体管理器可能不太一样，它们允许我们指定不同的值。这种情况下，表示当前窗体分辨率的成员 <code>currentExtent</code> 中的高和宽都是 <code>uint32_t</code> 的最大值，我们需要通过 <code>minImageExtent</code> 和 <code>maxImageExtent</code> 来选择一个合适的交换范围。下面的代码就处理了这种情况</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#888888;">// 选择交换范围
+</span><span>VkSurfaceCapabilitiesKHR capabilities;
+</span><span style="color:#ffb964;">vkGetPhysicalDeviceSurfaceCapabilitiesKHR</span><span>(physicalDevice, surface, &amp;capabilities);
+</span><span>VkExtent2D actualExtent = capabilities.</span><span style="color:#ffb964;">currentExtent</span><span>;
+</span><span style="color:#8fbfdc;">if </span><span>(capabilities.</span><span style="color:#ffb964;">currentExtent</span><span>.</span><span style="color:#ffb964;">width </span><span>== UINT32_MAX) {
+</span><span>    actualExtent = {WIDTH, HEIGHT};
+</span><span>    actualExtent.</span><span style="color:#ffb964;">width </span><span>= std::</span><span style="color:#ffb964;">max</span><span>(capabilities.</span><span style="color:#ffb964;">minImageExtent</span><span>.</span><span style="color:#ffb964;">width</span><span>, std::</span><span style="color:#ffb964;">min</span><span>(capabilities.</span><span style="color:#ffb964;">maxImageExtent</span><span>.</span><span style="color:#ffb964;">width</span><span>, actualExtent.</span><span style="color:#ffb964;">width</span><span>));
+</span><span>    actualExtent.</span><span style="color:#ffb964;">height </span><span>= std::</span><span style="color:#ffb964;">max</span><span>(capabilities.</span><span style="color:#ffb964;">minImageExtent</span><span>.</span><span style="color:#ffb964;">height</span><span>, std::</span><span style="color:#ffb964;">min</span><span>(capabilities.</span><span style="color:#ffb964;">maxImageExtent</span><span>.</span><span style="color:#ffb964;">height</span><span>, actualExtent.</span><span style="color:#ffb964;">height</span><span>));
+</span><span>}
+</span></code></pre>
+<h2 id="chuang-jian-jiao-huan-lian">创建交换链</h2>
+<p>跟之前的一样，在创建之前我们需要先填充一个结构体</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkSwapchainCreateInfoKHR createInfo = {};
+</span><span>createInfo.</span><span style="color:#ffb964;">sType </span><span>= VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+</span><span>createInfo.</span><span style="color:#ffb964;">surface </span><span>= surface;
+</span><span>createInfo.</span><span style="color:#ffb964;">minImageCount </span><span>= capabilities.</span><span style="color:#ffb964;">minImageCount</span><span>;
+</span><span>createInfo.</span><span style="color:#ffb964;">imageFormat </span><span>= formatChosen.</span><span style="color:#ffb964;">format</span><span>;
+</span><span>createInfo.</span><span style="color:#ffb964;">imageColorSpace </span><span>= formatChosen.</span><span style="color:#ffb964;">colorSpace</span><span>;
+</span><span>createInfo.</span><span style="color:#ffb964;">imageExtent </span><span>= actualExtent;
+</span><span>createInfo.</span><span style="color:#ffb964;">imageArrayLayers </span><span>= </span><span style="color:#cf6a4c;">1</span><span>;
+</span><span>createInfo.</span><span style="color:#ffb964;">imageUsage </span><span>= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+</span></code></pre>
+<p>上面这段代码大部分内容只是把之前选取好的配置填进去<br>
+后面的 <code>imageArrayLayers</code> 表示每张图像由多少层组成，如果不是要开发立体三维应用，填一就行了<br>
+最后的 <code>imageUsage</code> 是一个位域，用于指定我们会使用交换链中的图像来做什么类型的操作。我们只是需要直接渲染到图像上，这意味着交换链中的图像只是被当作颜色附着来使用，所以使用了 <code>VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT</code> 的标志位</p>
+<p>接下来需要指定图像的共享模式</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>createInfo.</span><span style="color:#ffb964;">imageSharingMode </span><span>= VK_SHARING_MODE_EXCLUSIVE;
+</span></code></pre>
+<p>共享模式指定了图像在不同队列之间传递规则，比如说如果我们的图形队列跟展示队列不是同一个队列，我们就需要通过图形队列在交换链中的图像上渲染，再在展示队列上提交它们，这就需要图像在不同队列中共享</p>
+<p>有两种共享模式</p>
+<ul>
+<li>
+<p><code>VK_SHARING_MODE_EXCLUSIVE</code></p>
+<p>一个图像只能被一个队列族所有，如果要用于其他的队列族，必须显式地传递所有权。这个模式具有最优的性能</p>
+</li>
+<li>
+<p><code>VK_SHARING_MODE_CONCURRENT</code></p>
+<p>图像能被用于多个不同的队列族，不需要显式的所有权传递</p>
+</li>
+</ul>
+<p>不过对于大多数硬件而言，图形队列族和展示队列族都可以是同一个队列族，并且前文中我们所选择的队列族也同时支持图形与展示，图像不会在不同队列族之间共享。因此我们使用 <code>VK_SHARING_MODE_EXCLUSIVE</code> 就行了<br>
+另外，如果是 <code>VK_SHARING_MODE_CONCURRENT</code> 的话，还需要在结构体中指定哪些队列族之间需要共享图像</p>
+<p>然后指定交换链中图像的变换，比如旋转 90 度或者垂直翻转这些。我们不需要这样的功能，因此使用当前变换即可</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>createInfo.</span><span style="color:#ffb964;">preTransform </span><span>= capabilities.</span><span style="color:#ffb964;">currentTransform</span><span>;
+</span></code></pre>
+<p>接着指定一下混合透明度，<code>compositeAlpha</code> 成员用于指定 Alpha 通道是否用于跟窗体系统中的其他窗体进行混合，我们几乎不需要考虑这种情况，因此使用 <code>VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR</code></p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>createInfo.</span><span style="color:#ffb964;">compositeAlpha </span><span>= VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+</span></code></pre>
+<p>接下来传入 <code>presentMode</code></p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>createInfo.</span><span style="color:#ffb964;">presentMode </span><span>= presentModeChosen;
+</span></code></pre>
+<p>然后是指定剪裁，把 <code>clipped</code> 设为 <code>VK_TRUE</code> 意味着我们不考虑被遮挡的像素的颜色，比如它前面可能有一别的窗体。除非真的有回读这些像素的需要，为了最佳的性能，我们还是启用剪裁</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>createInfo.</span><span style="color:#ffb964;">clipped </span><span>= VK_TRUE;
+</span></code></pre>
+<p>下一个是 <code>oldSwapchain</code>。在运行过程中，你的交换链可能会失效或者失去优化，比如窗体的尺寸被用户调整的时候。这种情况下我们需要重新从头开始创建交换链，之前的交换链就必须在这里被传入。这是一个非常复杂的话题，我们先暂时假设我们只会创建一个交换链</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>createInfo.</span><span style="color:#ffb964;">oldSwapchain </span><span>= VK_NULL_HANDLE;
+</span></code></pre>
+<p>最后，我们终于可以根据这个结构体创建交换链了</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">vkCreateSwapchainKHR</span><span>(device, &amp;createInfo, nullptr, &amp;swapchain))
+</span><span>    </span><span style="color:#8fbfdc;">throw </span><span>std::</span><span style="color:#ffb964;">runtime_error</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">failed to create swapchain!</span><span style="color:#556633;">&quot;</span><span>);
+</span></code></pre>
+<h2 id="xiao-hui-jiao-huan-lian">销毁交换链</h2>
+<p>修改 <code>cleanup</code> 函数如下</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">cleanup</span><span>() {
+</span><span>    </span><span style="color:#ffb964;">vkDestroySwapchainKHR</span><span>(device, swapchain, nullptr);
+</span><span>    </span><span style="color:#ffb964;">vkDestroyDevice</span><span>(device, nullptr);
+</span><span>    </span><span style="color:#ffb964;">vkDestroySurfaceKHR</span><span>(instance, surface, nullptr);
+</span><span>    </span><span style="color:#ffb964;">vkDestroyInstance</span><span>(instance, nullptr);
+</span><span>
+</span><span>    </span><span style="color:#ffb964;">glfwDestroyWindow</span><span>(window);
+</span><span>    </span><span style="color:#ffb964;">glfwTerminate</span><span>();
+</span><span>}
+</span></code></pre>
+<h2 id="qu-hui-jiao-huan-lian-de-tu-xiang">取回交换链的图像</h2>
+<p>创建了交换链之后，我们需要取回交换链中图像的句柄</p>
+<p>添加一个成员变量用于保存它们的句柄</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>std::vector&lt;VkImage&gt; swapchainImages;
+</span></code></pre>
+<p>然后在 <code>createSwapchain</code> 函数的末尾添加如下代码</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>uint32_t imageCount;
+</span><span style="color:#ffb964;">vkGetSwapchainImagesKHR</span><span>(device, swapchain, &amp;imageCount, nullptr);
+</span><span>swapchainImages.</span><span style="color:#ffb964;">resize</span><span>(imageCount);
+</span><span style="color:#ffb964;">vkGetSwapchainImagesKHR</span><span>(device, swapchain, &amp;imageCount, swapchainImages.</span><span style="color:#ffb964;">data</span><span>());
+</span></code></pre>
+<h2 id="bao-cun-ge-shi-yu-fan-wei">保存格式与范围</h2>
+<p>我们需要在成员变量中保存一下之前为交换链选取的格式与范围以备之后的使用</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkFormat swapchainImageFormat;
+</span><span>VkExtent2D swapchainExtent;
+</span></code></pre>
+<p>再在 <code>createSwapchain</code> 函数的末尾添加如下代码</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>swapchainImageFormat = formatChosen.</span><span style="color:#ffb964;">format</span><span>;
+</span><span>swapchainExtent = actualExtent;
+</span></code></pre>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202009080019/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">Vulkan 画三角形第五章：创建逻辑设备</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202009082304/">
+                                <span class="button__text">Vulkan 画三角形第七章：创建图像视图</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

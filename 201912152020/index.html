@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>支持 .NET Core 以及 Unity 的轻量级可靠 UDP 库 LiteNetLib 介绍 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="支持 .NET Core 以及 Unity 的轻量级可靠 UDP 库 LiteNetLib 介绍 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/201912152020/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="支持 .NET Core 以及 Unity 的轻量级可靠 UDP 库 LiteNetLib 介绍 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/201912152020/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/201912152020/">支持 .NET Core 以及 Unity 的轻量级可靠 UDP 库 LiteNetLib 介绍</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2019-12-15
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/net-core/">#.NET Core</a></span>
+    
+
+        <div class="post-content">
+            <p>之前做 Unity 网络游戏开发的时候，想着后端也用 C# 就很方便，于是看上了开源跨平台的 .NET Core，当时网络模块就是用了 LiteNetLib 实现的。</p>
+<span id="continue-reading"></span>
+<p>这个东西依然支持 .NET Core 3.1 和 .NET Framework 4.x（虽然官网都没写）。功能不多，用起来方便，很适合小规模的实时联机游戏。</p>
+<p><a href="https://github.com/RevenantX/LiteNetLib">https://github.com/RevenantX/LiteNetLib</a></p>
+<h2 id="gai-gua">概括</h2>
+<p>跟随本文实现 Unity 前端与 .NET Core 后端互相发送信息</p>
+<p>Unity 的 .NET 版本为.NET Framework 4.x，后端为 .NET Core 3.1，LiteNetLib 库使用 0.8.x 稳定版本</p>
+<h2 id="unity-qian-duan">Unity 前端</h2>
+<p>注意：Unity 里应当用源码而不是预编译的 DLL 文件，因为源码中使用了条件编译以避开 Unity 的 Bug。</p>
+<p>直接从 GitHub 上 Clone 下来，把其中的 <code>LiteNetLib</code> 拷贝到 Unity 项目里就能使用了。</p>
+<p>为了方便，我们简单写一个实现 <code>INetEventListener</code> 接口的 <code>MonoBehaviour</code> 就好，注释比较详细。</p>
+<p><code>LiteNetLibHello.cs</code> 如下：</p>
+<pre data-lang="cs" style="background-color:#151515;color:#e8e8d3;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#8fbfdc;">using </span><span>System.Net;
+</span><span style="color:#8fbfdc;">using </span><span>System.Net.Sockets;
+</span><span style="color:#8fbfdc;">using </span><span>LiteNetLib;
+</span><span style="color:#8fbfdc;">using </span><span>LiteNetLib.Utils;
+</span><span style="color:#8fbfdc;">using </span><span>UnityEngine;
+</span><span>
+</span><span style="color:#888888;">/// &lt;</span><span style="color:#ffb964;">summary</span><span style="color:#888888;">&gt; 作为 MonoBehaviour，该类也是监听器 &lt;/</span><span style="color:#ffb964;">summary</span><span style="color:#888888;">&gt;
+</span><span style="color:#8fbfdc;">public class </span><span style="color:#ffb964;">LiteNetLibHello </span><span>: </span><span style="color:#ffb964;">MonoBehaviour</span><span>, </span><span style="color:#ffb964;">INetEventListener </span><span>{
+</span><span>
+</span><span>    </span><span style="color:#888888;">/// &lt;</span><span style="color:#ffb964;">summary</span><span style="color:#888888;">&gt; server 的监听端口 &lt;/</span><span style="color:#ffb964;">summary</span><span style="color:#888888;">&gt;
+</span><span>    </span><span style="color:#8fbfdc;">private const int </span><span style="color:#ffb964;">c_serverPort </span><span>= </span><span style="color:#cf6a4c;">23333</span><span>;
+</span><span>
+</span><span>    </span><span style="color:#888888;">/// &lt;</span><span style="color:#ffb964;">summary</span><span style="color:#888888;">&gt; 连接口令 &lt;/</span><span style="color:#ffb964;">summary</span><span style="color:#888888;">&gt;
+</span><span>    </span><span style="color:#8fbfdc;">private const string </span><span style="color:#ffb964;">c_connectKey </span><span>= </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">HelloWorld</span><span style="color:#556633;">&quot;</span><span>;
+</span><span>
+</span><span>    </span><span style="color:#888888;">/// &lt;</span><span style="color:#ffb964;">summary</span><span style="color:#888888;">&gt; 发送 hello 消息的间隔 &lt;/</span><span style="color:#ffb964;">summary</span><span style="color:#888888;">&gt;
+</span><span>    </span><span style="color:#8fbfdc;">private const float </span><span style="color:#ffb964;">c_helloInterval </span><span>= </span><span style="color:#cf6a4c;">1</span><span>;
+</span><span>
+</span><span>    </span><span style="color:#888888;">/// &lt;</span><span style="color:#ffb964;">summary</span><span style="color:#888888;">&gt; hello 计时器 &lt;/</span><span style="color:#ffb964;">summary</span><span style="color:#888888;">&gt;
+</span><span>    </span><span style="color:#8fbfdc;">private float </span><span style="color:#ffb964;">m_helloTimer</span><span>;
+</span><span>
+</span><span>    </span><span style="color:#888888;">/// &lt;</span><span style="color:#ffb964;">summary</span><span style="color:#888888;">&gt; LiteNetLib 核心的网络管理器，用来主动连接、断开、触发事件回调等 &lt;/</span><span style="color:#ffb964;">summary</span><span style="color:#888888;">&gt;
+</span><span>    </span><span style="color:#8fbfdc;">private </span><span>NetManager </span><span style="color:#ffb964;">m_clientManager</span><span>;
+</span><span>
+</span><span>    </span><span style="color:#888888;">/// &lt;</span><span style="color:#ffb964;">summary</span><span style="color:#888888;">&gt; 服务器 Peer &lt;/</span><span style="color:#ffb964;">summary</span><span style="color:#888888;">&gt;
+</span><span>    </span><span style="color:#8fbfdc;">private </span><span>NetPeer </span><span style="color:#ffb964;">m_server</span><span>;
+</span><span>
+</span><span>    </span><span style="color:#888888;">/// &lt;</span><span style="color:#ffb964;">summary</span><span style="color:#888888;">&gt; Writer &lt;/</span><span style="color:#ffb964;">summary</span><span style="color:#888888;">&gt;
+</span><span>    </span><span style="color:#8fbfdc;">private </span><span>NetDataWriter </span><span style="color:#ffb964;">m_writer </span><span>= new NetDataWriter ();
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">Start </span><span>() {
+</span><span>        </span><span style="color:#888888;">// 将自身作为事件监听器传入
+</span><span>        </span><span style="color:#ffb964;">m_clientManager </span><span>= new NetManager (</span><span style="color:#ffb964;">this</span><span>);
+</span><span>
+</span><span>        </span><span style="color:#888888;">// 接收断线信息
+</span><span>        </span><span style="color:#ffb964;">m_clientManager</span><span>.</span><span style="color:#ffb964;">UnconnectedMessagesEnabled </span><span>= true;
+</span><span>
+</span><span>        </span><span style="color:#ffb964;">m_clientManager</span><span>.</span><span style="color:#ffb964;">Start </span><span>();
+</span><span>
+</span><span>        </span><span style="color:#888888;">// 主动连接后端
+</span><span>        </span><span style="color:#ffb964;">m_clientManager</span><span>.</span><span style="color:#ffb964;">Connect </span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">localhost</span><span style="color:#556633;">&quot;</span><span>, </span><span style="color:#ffb964;">c_serverPort</span><span>, </span><span style="color:#ffb964;">c_connectKey</span><span>);
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">Update </span><span>() {
+</span><span>        </span><span style="color:#888888;">// 调用该函数会遍历并清空 Manager 的消息队列，并回调到监听器的相应位置
+</span><span>        </span><span style="color:#ffb964;">m_clientManager</span><span>.</span><span style="color:#ffb964;">PollEvents </span><span>();
+</span><span>
+</span><span>        </span><span style="color:#888888;">// 定时
+</span><span>        </span><span style="color:#ffb964;">m_helloTimer </span><span>-= </span><span style="color:#ffb964;">Time</span><span>.</span><span style="color:#ffb964;">deltaTime</span><span>;
+</span><span>        </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">m_helloTimer </span><span>&lt;= </span><span style="color:#cf6a4c;">0</span><span>) {
+</span><span>            </span><span style="color:#ffb964;">m_helloTimer </span><span>= </span><span style="color:#ffb964;">c_helloInterval</span><span>;
+</span><span>
+</span><span>            </span><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">peer </span><span>= </span><span style="color:#ffb964;">m_clientManager</span><span>.</span><span style="color:#ffb964;">FirstPeer</span><span>;
+</span><span>            </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">peer </span><span>!= null &amp;&amp; </span><span style="color:#ffb964;">peer</span><span>.</span><span style="color:#ffb964;">ConnectionState </span><span>== </span><span style="color:#ffb964;">ConnectionState</span><span>.</span><span style="color:#ffb964;">Connected</span><span>) { </span><span style="color:#888888;">// 若已连接到 Server 则发送 Hello World
+</span><span>                </span><span style="color:#ffb964;">m_writer</span><span>.</span><span style="color:#ffb964;">Put </span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Hello, I&#39;m client.</span><span style="color:#556633;">&quot;</span><span>);
+</span><span>                </span><span style="color:#888888;">// 不可靠 UDP 方式直接发送消息
+</span><span>                </span><span style="color:#ffb964;">peer</span><span>.</span><span style="color:#ffb964;">Send </span><span>(</span><span style="color:#ffb964;">m_writer</span><span>, </span><span style="color:#ffb964;">DeliveryMethod</span><span>.</span><span style="color:#ffb964;">Unreliable</span><span>);
+</span><span>                </span><span style="color:#ffb964;">m_writer</span><span>.</span><span style="color:#ffb964;">Reset </span><span>();
+</span><span>            } </span><span style="color:#8fbfdc;">else </span><span style="color:#888888;">// 未连接则尝试连接
+</span><span>                </span><span style="color:#ffb964;">m_clientManager</span><span>.</span><span style="color:#ffb964;">Connect </span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">localhost</span><span style="color:#556633;">&quot;</span><span>, </span><span style="color:#ffb964;">c_serverPort</span><span>, </span><span style="color:#ffb964;">c_connectKey</span><span>);
+</span><span>        }
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">OnDestroy </span><span>() {
+</span><span>        </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">m_clientManager </span><span>!= null)
+</span><span>            </span><span style="color:#ffb964;">m_clientManager</span><span>.</span><span style="color:#ffb964;">Stop </span><span>();
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#888888;">/// &lt;</span><span style="color:#ffb964;">summary</span><span style="color:#888888;">&gt; 有 peer 连接成功的事件回调 &lt;/</span><span style="color:#ffb964;">summary</span><span style="color:#888888;">&gt;
+</span><span>    </span><span style="color:#8fbfdc;">public void </span><span style="color:#fad07a;">OnPeerConnected </span><span>(NetPeer </span><span style="color:#ffb964;">peer</span><span>) {
+</span><span>        </span><span style="color:#ffb964;">Debug</span><span>.</span><span style="color:#ffb964;">Log </span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">连接到了 </span><span style="color:#556633;">&quot; </span><span>+ </span><span style="color:#ffb964;">peer</span><span>.</span><span style="color:#ffb964;">EndPoint</span><span>);
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#888888;">/// &lt;</span><span style="color:#ffb964;">summary</span><span style="color:#888888;">&gt; 网络错误 &lt;/</span><span style="color:#ffb964;">summary</span><span style="color:#888888;">&gt;
+</span><span>    </span><span style="color:#8fbfdc;">public void </span><span style="color:#fad07a;">OnNetworkError </span><span>(IPEndPoint </span><span style="color:#ffb964;">endPoint</span><span>, SocketError </span><span style="color:#ffb964;">socketErrorCode</span><span>) {
+</span><span>        </span><span style="color:#ffb964;">Debug</span><span>.</span><span style="color:#ffb964;">Log </span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">网络错误：</span><span style="color:#556633;">&quot; </span><span>+ </span><span style="color:#ffb964;">socketErrorCode</span><span>);
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#888888;">/// &lt;</span><span style="color:#ffb964;">summary</span><span style="color:#888888;">&gt; 接收信息 &lt;/</span><span style="color:#ffb964;">summary</span><span style="color:#888888;">&gt;
+</span><span>    </span><span style="color:#8fbfdc;">public void </span><span style="color:#fad07a;">OnNetworkReceive </span><span>(NetPeer </span><span style="color:#ffb964;">peer</span><span>, NetPacketReader </span><span style="color:#ffb964;">reader</span><span>, DeliveryMethod </span><span style="color:#ffb964;">deliveryMethod</span><span>) {
+</span><span>        </span><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">msg </span><span>= </span><span style="color:#ffb964;">reader</span><span>.</span><span style="color:#ffb964;">GetString </span><span>();
+</span><span>        </span><span style="color:#ffb964;">Debug</span><span>.</span><span style="color:#ffb964;">Log </span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">接收到消息：</span><span style="color:#556633;">&quot; </span><span>+ </span><span style="color:#ffb964;">msg</span><span>);
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">public void </span><span style="color:#fad07a;">OnNetworkReceiveUnconnected </span><span>(IPEndPoint </span><span style="color:#ffb964;">remoteEndPoint</span><span>, NetPacketReader </span><span style="color:#ffb964;">reader</span><span>, UnconnectedMessageType </span><span style="color:#ffb964;">messageType</span><span>) { }
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">public void </span><span style="color:#fad07a;">OnNetworkLatencyUpdate </span><span>(NetPeer </span><span style="color:#ffb964;">peer</span><span>, </span><span style="color:#8fbfdc;">int </span><span style="color:#ffb964;">latency</span><span>) { }
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">public void </span><span style="color:#fad07a;">OnConnectionRequest </span><span>(ConnectionRequest </span><span style="color:#ffb964;">request</span><span>) { }
+</span><span>
+</span><span>    </span><span style="color:#888888;">/// &lt;</span><span style="color:#ffb964;">summary</span><span style="color:#888888;">&gt; 断线 &lt;/</span><span style="color:#ffb964;">summary</span><span style="color:#888888;">&gt;
+</span><span>    </span><span style="color:#8fbfdc;">public void </span><span style="color:#fad07a;">OnPeerDisconnected </span><span>(NetPeer </span><span style="color:#ffb964;">peer</span><span>, DisconnectInfo </span><span style="color:#ffb964;">disconnectInfo</span><span>) {
+</span><span>        </span><span style="color:#ffb964;">Debug</span><span>.</span><span style="color:#ffb964;">Log </span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">断线，原因：</span><span style="color:#556633;">&quot; </span><span>+ </span><span style="color:#ffb964;">disconnectInfo</span><span>.</span><span style="color:#ffb964;">Reason</span><span>);
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<h2 id="dotnet-core-hou-duan">DotNet Core 后端</h2>
+<p>为了方便，只写一个类并直接运行。</p>
+<p><code>HelloLiteNetLib.cs</code> 如下：</p>
+<pre data-lang="cs" style="background-color:#151515;color:#e8e8d3;" class="language-cs "><code class="language-cs" data-lang="cs"><span style="color:#8fbfdc;">using </span><span>System.Threading;
+</span><span style="color:#8fbfdc;">using </span><span>System;
+</span><span style="color:#8fbfdc;">using </span><span>System.Collections.Generic;
+</span><span style="color:#8fbfdc;">using </span><span>System.Net;
+</span><span style="color:#8fbfdc;">using </span><span>System.Net.Sockets;
+</span><span style="color:#8fbfdc;">using </span><span>LiteNetLib;
+</span><span style="color:#8fbfdc;">using </span><span>LiteNetLib.Utils;
+</span><span>
+</span><span style="color:#8fbfdc;">public class </span><span style="color:#ffb964;">HelloLiteNetLib </span><span>: </span><span style="color:#ffb964;">INetEventListener </span><span>{
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">private const int </span><span style="color:#ffb964;">c_serverPort </span><span>= </span><span style="color:#cf6a4c;">23333</span><span>;
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">private const string </span><span style="color:#ffb964;">c_connectKey </span><span>= </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">HelloWorld</span><span style="color:#556633;">&quot;</span><span>;
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">private </span><span>NetManager </span><span style="color:#ffb964;">m_serverManager</span><span>;
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">private </span><span>List&lt;NetPeer&gt; </span><span style="color:#ffb964;">m_peerList </span><span>= new List&lt;NetPeer&gt; ();
+</span><span>
+</span><span>    NetDataWriter </span><span style="color:#ffb964;">m_writer </span><span>= new NetDataWriter ();
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">public </span><span style="color:#fad07a;">HelloLiteNetLib </span><span>() {
+</span><span>        </span><span style="color:#ffb964;">m_serverManager </span><span>= new NetManager (</span><span style="color:#ffb964;">this</span><span>);
+</span><span>        </span><span style="color:#ffb964;">m_serverManager</span><span>.</span><span style="color:#ffb964;">Start </span><span>(</span><span style="color:#ffb964;">c_serverPort</span><span>);
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">public void </span><span style="color:#fad07a;">Tick </span><span>() {
+</span><span>        </span><span style="color:#ffb964;">m_serverManager</span><span>.</span><span style="color:#ffb964;">PollEvents </span><span>();
+</span><span>        </span><span style="color:#ffb964;">m_writer</span><span>.</span><span style="color:#ffb964;">Put </span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Hello, I&#39;m server.</span><span style="color:#556633;">&quot;</span><span>);
+</span><span>        </span><span style="color:#ffb964;">m_serverManager</span><span>.</span><span style="color:#ffb964;">SendToAll </span><span>(</span><span style="color:#ffb964;">m_writer</span><span>, </span><span style="color:#ffb964;">DeliveryMethod</span><span>.</span><span style="color:#ffb964;">Unreliable</span><span>);
+</span><span>        </span><span style="color:#ffb964;">m_writer</span><span>.</span><span style="color:#ffb964;">Reset </span><span>();
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">public void </span><span style="color:#fad07a;">OnConnectionRequest </span><span>(ConnectionRequest </span><span style="color:#ffb964;">request</span><span>) {
+</span><span>        </span><span style="color:#ffb964;">Console</span><span>.</span><span style="color:#ffb964;">WriteLine </span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">接收到连接请求</span><span style="color:#556633;">&quot;</span><span>);
+</span><span>        </span><span style="color:#ffb964;">request</span><span>.</span><span style="color:#ffb964;">AcceptIfKey </span><span>(</span><span style="color:#ffb964;">c_connectKey</span><span>);
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">public void </span><span style="color:#fad07a;">OnNetworkError </span><span>(IPEndPoint </span><span style="color:#ffb964;">endPoint</span><span>, SocketError </span><span style="color:#ffb964;">socketError</span><span>) {
+</span><span>        </span><span style="color:#ffb964;">Console</span><span>.</span><span style="color:#ffb964;">WriteLine </span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">网络错误, 客户端：</span><span style="color:#556633;">&quot; </span><span>+ </span><span style="color:#ffb964;">endPoint </span><span>+ </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">，错误信息：</span><span style="color:#556633;">&quot; </span><span>+ </span><span style="color:#ffb964;">socketError</span><span>);
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">public void </span><span style="color:#fad07a;">OnNetworkLatencyUpdate </span><span>(NetPeer </span><span style="color:#ffb964;">peer</span><span>, </span><span style="color:#8fbfdc;">int </span><span style="color:#ffb964;">latency</span><span>) { }
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">public void </span><span style="color:#fad07a;">OnNetworkReceive </span><span>(NetPeer </span><span style="color:#ffb964;">peer</span><span>, NetPacketReader </span><span style="color:#ffb964;">reader</span><span>, DeliveryMethod </span><span style="color:#ffb964;">deliveryMethod</span><span>) {
+</span><span>        </span><span style="color:#ffb964;">Console</span><span>.</span><span style="color:#ffb964;">WriteLine </span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">接收到了消息：</span><span style="color:#556633;">&quot; </span><span>+ </span><span style="color:#ffb964;">reader</span><span>.</span><span style="color:#ffb964;">GetString </span><span>());
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">public void </span><span style="color:#fad07a;">OnNetworkReceiveUnconnected </span><span>(IPEndPoint </span><span style="color:#ffb964;">endPoint</span><span>, NetPacketReader </span><span style="color:#ffb964;">reader</span><span>, UnconnectedMessageType </span><span style="color:#ffb964;">messageType</span><span>) { }
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">public void </span><span style="color:#fad07a;">OnPeerConnected </span><span>(NetPeer </span><span style="color:#ffb964;">peer</span><span>) {
+</span><span>        </span><span style="color:#ffb964;">Console</span><span>.</span><span style="color:#ffb964;">WriteLine </span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">连接到了 </span><span style="color:#556633;">&quot; </span><span>+ </span><span style="color:#ffb964;">peer</span><span>.</span><span style="color:#ffb964;">EndPoint</span><span>);
+</span><span>        </span><span style="color:#ffb964;">m_peerList</span><span>.</span><span style="color:#ffb964;">Add </span><span>(</span><span style="color:#ffb964;">peer</span><span>);
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">public void </span><span style="color:#fad07a;">OnPeerDisconnected </span><span>(NetPeer </span><span style="color:#ffb964;">peer</span><span>, DisconnectInfo </span><span style="color:#ffb964;">info</span><span>) {
+</span><span>        </span><span style="color:#ffb964;">Console</span><span>.</span><span style="color:#ffb964;">WriteLine </span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">断线，EndPoint：</span><span style="color:#556633;">&quot; </span><span>+ </span><span style="color:#ffb964;">peer</span><span>.</span><span style="color:#ffb964;">EndPoint </span><span>+ </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">，原因：</span><span style="color:#556633;">&quot; </span><span>+ </span><span style="color:#ffb964;">info</span><span>.</span><span style="color:#ffb964;">Reason</span><span>);
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">static void </span><span style="color:#fad07a;">Main </span><span>(</span><span style="color:#8fbfdc;">string</span><span>[] </span><span style="color:#ffb964;">args</span><span>) {
+</span><span>        </span><span style="color:#8fbfdc;">var </span><span style="color:#ffb964;">helloLiteNetLib </span><span>= new HelloLiteNetLib ();
+</span><span>        </span><span style="color:#8fbfdc;">while </span><span>(true) {
+</span><span>            </span><span style="color:#ffb964;">Thread</span><span>.</span><span style="color:#ffb964;">Sleep </span><span>(</span><span style="color:#cf6a4c;">2000</span><span>);
+</span><span>            </span><span style="color:#ffb964;">helloLiteNetLib</span><span>.</span><span style="color:#ffb964;">Tick </span><span>();
+</span><span>        }
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<h2 id="litenetlib-nei-bu-shi-xian-jie-shao">LiteNetLib 内部实现介绍</h2>
+<p>会用就行，可以直接跳过</p>
+<h3 id="jie-shou-xin-xi">接收信息</h3>
+<p>首先，这个网络库使用事件监听的思路来把网络消息传递给上游模块。
+他会把网络消息转化为连接、断开、数据传输、网络错误等事件并适时调用上游的事件监听器的相应接口。</p>
+<p>然后，它开一个线程监听端口，接收消息并把转换为事件储存在队列里。
+上游模块需要定时 PollEvent，让他一次性地访问整个队列（当然队列会被清空），根据每个事件调用监听器相应的接口。</p>
+<p>因此，虽然消息的获取是异步的，但事件监听是同步的，使用时不必担心线程问题。</p>
+<h3 id="fa-song-xin-xi">发送信息</h3>
+<p>简单得多。数据发送，都被放入发送队列，然后内部有一个线程定时把整个队列发送。
+有兴趣去看源码，很好理解。</p>
+<p>总之就是线程安全、使用简单（瞎几把用就行）</p>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/201912121724/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">Docker 部署 .NET Core 3.0 控制台项目</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/201912180059/">
+                                <span class="button__text">Express + MySQL + Session 搭建 Web 后端脚手架</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

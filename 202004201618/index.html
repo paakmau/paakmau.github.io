@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>乒乓缓存与伪共享 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="乒乓缓存与伪共享 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202004201618/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="乒乓缓存与伪共享 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202004201618/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202004201618/">乒乓缓存与伪共享</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2020-04-20
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/bing-fa/">#并发</a></span>
+    
+
+        <div class="post-content">
+            <p>这两个东西都是并行程序设计中必须考虑的问题<br>
+他跟多核 CPU 的缓存机制有关</p>
+<span id="continue-reading"></span><h2 id="cpu-huan-cun">CPU 缓存</h2>
+<p>因为 CPU 处理的速度远大于内存读写，因此在 CPU 的每个核心都会有小容量的高速缓存用于保存内存中的数据，CPU 的处理都会直接基于缓存而不是内存</p>
+<p>把内存的东西搬到缓存里开销是比较大的，因此每次缓存的时候会把一块比较大的连续内存区域搬进去，这块区域就是一条 Cache Line<br>
+整块内存就会被划分为一条一条的 Cache Line</p>
+<p>所以一个核心如果要访问某块内存，他必须要把这个块内存所在的 Cache Line 搬进自己的缓存里</p>
+<h2 id="ping-pang-huan-cun">乒乓缓存</h2>
+<p>如果两个在跑在不同核心上的线程同时访问同一块内存，比如访问同一个全局的原子变量<br>
+那么这两个核心的缓存中就都会有包含该变量的 Cache Line</p>
+<p>然后一个线程使用原子操作修改了这个原子变量，那么另一个线程所在的核心就应该修改这个变量所在的 Cache Line，来让这两个核心上的这条 Cache Line 保持一致</p>
+<p>于是另一个线程不得不等待缓存更新后才能继续处理<br>
+如果这样的线程很多，就会导致这条 Cache Line 在多个 CPU 核心之间传来传去，这就是乒乓缓存</p>
+<p>这样的话，多个线程对同一个原子变量的原子操作，由于需要等待 Cache Line 反复传递，就会非常缓慢，即使这些线程是并行的</p>
+<p>互斥锁也同理<br>
+但是有一个区别，互斥锁一般是操作系统级别，而原子操作一般是处理器级别<br>
+那么在等待缓存更新时，使用互斥锁的情况下，操作系统可以安排别的线程先执行；而如果使用原子操作，处理器只能继续当前的线程，也就是只能等待缓存的更新</p>
+<p>另外，除了原子操作和互斥锁，java 中的 volatile 变量以及 C++ 中的内存屏障也都可能引发乒乓缓存</p>
+<h2 id="wei-gong-xiang">伪共享</h2>
+<p>跟乒乓缓存相类似，如果两个核心访问的不是同一原子变量，但是这两个原子变量在同一个 Cache Line 里，那么一旦产生修改这条 Cache Line 还是会被传来传去</p>
+<p>举个简单的例子，一个处理器的四个核心各跑一个线程，分别处理一个长度为四的数组的四个原子变量（假设它们都在同一个 Cache Line 中）<br>
+看起来这四个核心互不影响，但一旦出现写操作，Cache Line 就还是会传来传去</p>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202004060221/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">C++ 右值引用与转移语义简要介绍</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202004212139/">
+                                <span class="button__text">快排的多线程优化</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

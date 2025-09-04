@@ -1,0 +1,2092 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Celestial</title>
+    <link rel="self" type="application/atom+xml" href="https://paakmau.github.io/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://paakmau.github.io"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2025-07-02T21:07:05+00:00</updated>
+    <id>https://paakmau.github.io/atom.xml</id>
+    <entry xml:lang="en">
+        <title>openGauss 安装与升级过程记录</title>
+        <published>2025-07-02T21:07:05+00:00</published>
+        <updated>2025-07-02T21:07:05+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202507022107/"/>
+        <id>https://paakmau.github.io/202507022107/</id>
+        
+        <summary type="html">&lt;p&gt;本文记录 openGauss 交互式安装与升级到新版本的过程。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>服务器整体性能调优学习笔记</title>
+        <published>2025-05-09T22:17:41+00:00</published>
+        <updated>2025-05-09T22:17:41+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202505092217/"/>
+        <id>https://paakmau.github.io/202505092217/</id>
+        
+        <summary type="html">&lt;p&gt;在服务器整机上部署的应用出现性能问题时，可先在服务器层面尝试调优。
+本文记录了服务器硬件信息查询方法、性能指标的常用监测方法以及与性能相关的服务器配置等。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>NUMA 架构设备的网卡中断绑核</title>
+        <published>2025-05-05T21:50:38+00:00</published>
+        <updated>2025-05-05T21:50:38+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202505052150/"/>
+        <id>https://paakmau.github.io/202505052150/</id>
+        
+        <summary type="html">&lt;p&gt;为网卡中断绑核是一种常见的优化，在高并发场景下能够提升性能，并且更稳定。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Jenkinsfile 使用笔记</title>
+        <published>2025-04-05T21:45:11+00:00</published>
+        <updated>2025-04-05T21:45:11+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202504052145/"/>
+        <id>https://paakmau.github.io/202504052145/</id>
+        
+        <summary type="html">&lt;p&gt;Jenkins 流水线用于实现自动化且可复现的 CI&#x2F;CD 流水线，支持声明式与脚本式两种语法。
+一种公认的最佳实践是将流水线脚本编写为 &lt;code&gt;Jenkinsfile&lt;&#x2F;code&gt;，并托管在远程仓库（比如 GitHub）中。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>openGauss 慢 SQL 诊断</title>
+        <published>2025-03-17T22:40:27+00:00</published>
+        <updated>2025-03-17T22:40:27+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202503172240/"/>
+        <id>https://paakmau.github.io/202503172240/</id>
+        
+        <summary type="html">&lt;p&gt;openGauss 有一个慢 SQL 诊断特性，数据库会依据配置自动记录慢 SQL 执行过程中的诊断信息，提供表与函数两种查询接口。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>openGauss 执行 BenchmarkSQL 基准测试</title>
+        <published>2025-03-16T15:58:34+00:00</published>
+        <updated>2025-03-16T15:58:34+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202503161558/"/>
+        <id>https://paakmau.github.io/202503161558/</id>
+        
+        <summary type="html">&lt;p&gt;BenchmarkSQL 是一种类似 TPC-C 的测试工具。
+TPC-C 是一种 OLTP 的基准测试，通过并发事务测试数据库的性能，衡量的标准是每分钟事务数（tpmC）。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>openGauss 执行 HyBench 基准测试</title>
+        <published>2025-03-11T23:08:40+00:00</published>
+        <updated>2025-03-11T23:08:40+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202503112308/"/>
+        <id>https://paakmau.github.io/202503112308/</id>
+        
+        <summary type="html">&lt;p&gt;HyBench 是一个 HTAP 数据库基准测试，用于评估数据库在事务与分析混合处理场景下的性能。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;benchmark.tempos.cn&#x2F;beachmarkDesc-htap.html&quot;&gt;https:&#x2F;&#x2F;benchmark.tempos.cn&#x2F;beachmarkDesc-htap.html&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>内网 openEuler 常用配置</title>
+        <published>2025-03-10T22:05:31+00:00</published>
+        <updated>2025-03-10T22:05:31+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202503102205/"/>
+        <id>https://paakmau.github.io/202503102205/</id>
+        
+        <summary type="html">&lt;p&gt;openEuler 通常会安装在一些内网设备上，并且有些命令行工具也不方便安装。
+本文将会以这些限制为前提，记录一些惯用的配置。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>openGauss 的 NUMA-aware 部署</title>
+        <published>2025-02-20T22:37:50+00:00</published>
+        <updated>2025-02-20T22:37:50+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202502202237/"/>
+        <id>https://paakmau.github.io/202502202237/</id>
+        
+        <summary type="html">&lt;p&gt;openGauss 针对鲲鹏 NUMA 架构的设备做了一些优化，能在发挥多核并行优势的同时减少跨 NUMA 节点访存的问题。
+本文记录以 NUMA-aware 方式部署 openGauss 的过程。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>NUMA 相关命令速查笔记</title>
+        <published>2025-02-19T21:54:33+00:00</published>
+        <updated>2025-02-19T21:54:33+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202502192154/"/>
+        <id>https://paakmau.github.io/202502192154/</id>
+        
+        <summary type="html">&lt;p&gt;NUMA（non-uniform memory access）是一种用于多处理器系统的内存设计，其中内存访问的时间取决于内存与处理器的距离。
+本文将会记录与 NUMA 相关的常用命令。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>为 openGauss 导入 TPC-H 数据集</title>
+        <published>2025-02-06T22:19:07+00:00</published>
+        <updated>2025-02-06T22:19:07+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202502062219/"/>
+        <id>https://paakmau.github.io/202502062219/</id>
+        
+        <summary type="html">&lt;p&gt;TPC-H 是一个决策支持基准测试。
+它由一套面向业务的即席查询与并发数据修改组成。
+其数据集与查询具有广泛的行业相关性。
+这个基准测试模拟了一个决策支持系统，该系统会对大规模的数据执行高复杂度的查询以回答关键商务问题。&lt;&#x2F;p&gt;
+&lt;p&gt;本文会记录将 TPC-H 数据集导入 openGauss 的过程。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>为 openGauss 配置大页内存</title>
+        <published>2025-01-25T11:02:25+00:00</published>
+        <updated>2025-01-25T11:02:25+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202501251102/"/>
+        <id>https://paakmau.github.io/202501251102/</id>
+        
+        <summary type="html">&lt;p&gt;openGauss 支持使用标准大页来分配共享内存，以提高数据库性能。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>通过 MySQL Connector&#x2F;J 连接 openGauss</title>
+        <published>2025-01-18T22:47:18+00:00</published>
+        <updated>2025-01-18T22:47:18+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202501182247/"/>
+        <id>https://paakmau.github.io/202501182247/</id>
+        
+        <summary type="html">&lt;p&gt;MySQL Connector&#x2F;J 是 MySQL 官方的 JDBC 驱动。
+本文将记录使用该驱动连接 openGauss B 库的过程。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>MySQL Server 构建、安装、运行与调试</title>
+        <published>2025-01-03T19:29:55+00:00</published>
+        <updated>2025-01-03T19:29:55+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202501031929/"/>
+        <id>https://paakmau.github.io/202501031929/</id>
+        
+        <summary type="html">&lt;p&gt;&lt;code&gt;MySQL&lt;&#x2F;code&gt; 是一个开源的关系型数据库。
+本文以 &lt;code&gt;8.0.40&lt;&#x2F;code&gt; 版本为例，记录 MySQL Server 的构建、安装、运行与调试。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>openGauss-server 构建、安装、运行与调试</title>
+        <published>2024-12-16T21:06:18+00:00</published>
+        <updated>2024-12-16T21:06:18+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202412162106/"/>
+        <id>https://paakmau.github.io/202412162106/</id>
+        
+        <summary type="html">&lt;p&gt;&lt;code&gt;openGauss&lt;&#x2F;code&gt; 是一个开源的关系型数据库，兼容多个主流数据库的语法。
+本文以 &lt;code&gt;master&lt;&#x2F;code&gt; 分支为例，记录 &lt;code&gt;openGauss-server&lt;&#x2F;code&gt; 的构建、安装、运行与调试。
+参考的是官方文档：&lt;a href=&quot;https:&#x2F;&#x2F;gitcode.com&#x2F;opengauss&#x2F;openGauss-server#%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4%E7%BC%96%E8%AF%91%E4%BB%A3%E7%A0%81&quot;&gt;https:&#x2F;&#x2F;gitcode.com&#x2F;opengauss&#x2F;openGauss-server#%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4%E7%BC%96%E8%AF%91%E4%BB%A3%E7%A0%81&lt;&#x2F;a&gt;。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>使用火焰图分析程序性能</title>
+        <published>2024-12-10T21:35:52+00:00</published>
+        <updated>2024-12-10T21:35:52+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202412102135/"/>
+        <id>https://paakmau.github.io/202412102135/</id>
+        
+        <summary type="html">&lt;p&gt;火焰图是对层次数据的可视化。
+我们通常可以将性能分析工具采集到的调用栈信息以火焰图的方式进行可视化。
+从而直观且准确地观察到频繁调用的代码路径。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>POSIX shell 脚本使用笔记</title>
+        <published>2024-11-05T23:25:12+00:00</published>
+        <updated>2024-11-05T23:25:12+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202411052325/"/>
+        <id>https://paakmau.github.io/202411052325/</id>
+        
+        <summary type="html">&lt;p&gt;命令行脚本在很多场景下都会用到，比如自动化任务、流水线、构建镜像等。
+本文会结合一些常用命令，记录 POSIX shell（&lt;code&gt;sh&lt;&#x2F;code&gt;）命令行脚本的编写方法与技巧。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Docker 速查笔记</title>
+        <published>2024-11-04T22:38:07+00:00</published>
+        <updated>2024-11-04T22:38:07+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202411042238/"/>
+        <id>https://paakmau.github.io/202411042238/</id>
+        
+        <summary type="html">&lt;p&gt;记录一些 Docker 常用命令。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>openGauss 内存管理</title>
+        <published>2024-10-30T21:45:23+00:00</published>
+        <updated>2024-10-30T21:45:23+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202410302145/"/>
+        <id>https://paakmau.github.io/202410302145/</id>
+        
+        <summary type="html">&lt;p&gt;openGauss 中内存的分配与释放是基于内存上下文（&lt;code&gt;MemoryContext&lt;&#x2F;code&gt;）管理的，这种管理方式使得开发者可以不手动释放内存，能减少内存泄漏问题。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>TCP 协议学习</title>
+        <published>2022-08-11T17:19:35+00:00</published>
+        <updated>2022-08-11T17:19:35+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202208111719/"/>
+        <id>https://paakmau.github.io/202208111719/</id>
+        
+        <summary type="html">&lt;p&gt;TCP 是现在最常见的协议之一，比如 HTTP、MQTT 这些协议都是在 TCP 的基础上实现的。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>MassEntity 学习</title>
+        <published>2022-05-13T14:35:45+00:00</published>
+        <updated>2022-05-13T14:35:45+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202205131435/"/>
+        <id>https://paakmau.github.io/202205131435/</id>
+        
+        <summary type="html">&lt;p&gt;MassEntity 是 UE5 里面一个面向数据的框架，与 Unity DOTS 非常相似。
+引入 ECS 的主要目的也是要充分利用多核 CPU 的并行能力，发挥缓存的优势，从而提高性能。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>数据库事务处理</title>
+        <published>2022-05-12T18:48:52+00:00</published>
+        <updated>2022-05-12T18:48:52+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202205121848/"/>
+        <id>https://paakmau.github.io/202205121848/</id>
+        
+        <summary type="html">&lt;p&gt;整理一下事务处理相关内容。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>青椒炒蛋</title>
+        <published>2022-05-04T20:50:28+00:00</published>
+        <updated>2022-05-04T20:50:28+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202205042050/"/>
+        <id>https://paakmau.github.io/202205042050/</id>
+        
+        <summary type="html">&lt;p&gt;蛋、青椒、洋葱、油、盐、糖、葱。&lt;&#x2F;p&gt;
+&lt;p&gt;咸。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>加密算法</title>
+        <published>2022-04-28T00:44:28+00:00</published>
+        <updated>2022-04-28T00:44:28+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202204280044/"/>
+        <id>https://paakmau.github.io/202204280044/</id>
+        
+        <summary type="html">&lt;p&gt;网络通信中我们很多时候会需要保证信息不被窃听或者不被篡改，于是就会需要对信息进行加密。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Kademlia 算法</title>
+        <published>2022-04-26T15:08:36+00:00</published>
+        <updated>2022-04-26T15:08:36+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202204261508/"/>
+        <id>https://paakmau.github.io/202204261508/</id>
+        
+        <summary type="html">&lt;p&gt;建立 P2P 网络时我们需要面对的一个问题就是一个节点如何高效访问网络中的其他节点中存储的资源。
+Kademlia 算法在各个节点上使用某种策略建立路由表以支持节点之间的高效访问，并且支持在网络中进行资源存储与访问。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>NAT 穿透</title>
+        <published>2022-04-25T23:13:27+00:00</published>
+        <updated>2022-04-25T23:13:27+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202204252313/"/>
+        <id>https://paakmau.github.io/202204252313/</id>
+        
+        <summary type="html">&lt;p&gt;P2P 网络需要考虑的一个非常折磨的细节就是并非每个节点都有固定的公网 IP。
+于是就要开始考虑 NAT 穿透的问题了。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>P2P 网络学习</title>
+        <published>2022-04-25T20:03:05+00:00</published>
+        <updated>2022-04-25T20:03:05+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202204252003/"/>
+        <id>https://paakmau.github.io/202204252003/</id>
+        
+        <summary type="html">&lt;p&gt;P2P 网络是一个有别于中心化网络的东西，本文简单介绍一些实现 P2P 网络的思路。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Spring Boot 测试经验总结</title>
+        <published>2022-04-17T19:23:42+00:00</published>
+        <updated>2022-04-17T19:23:42+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202204171923/"/>
+        <id>https://paakmau.github.io/202204171923/</id>
+        
+        <summary type="html">&lt;p&gt;总结一下 Spring Boot 中写单元测试和集成测试的经验。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>五花肉炒包菜</title>
+        <published>2022-04-16T19:21:55+00:00</published>
+        <updated>2022-04-16T19:21:55+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202204161921/"/>
+        <id>https://paakmau.github.io/202204161921/</id>
+        
+        <summary type="html">&lt;p&gt;五花肉、包菜、盐、酱油、姜、蒜。&lt;&#x2F;p&gt;
+&lt;p&gt;咸。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>番茄炒蛋</title>
+        <published>2022-04-05T22:27:48+00:00</published>
+        <updated>2022-04-05T22:27:48+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202204052227/"/>
+        <id>https://paakmau.github.io/202204052227/</id>
+        
+        <summary type="html">&lt;p&gt;蛋、番茄、油、盐、糖、葱、蒜。&lt;&#x2F;p&gt;
+&lt;p&gt;咸，甜。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>腐乳空心菜</title>
+        <published>2022-04-03T19:44:45+00:00</published>
+        <updated>2022-04-03T19:44:45+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202204031944/"/>
+        <id>https://paakmau.github.io/202204031944/</id>
+        
+        <summary type="html">&lt;p&gt;空心菜、油、腐乳、蒜。&lt;&#x2F;p&gt;
+&lt;p&gt;口味咸。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>油闷大虾</title>
+        <published>2022-04-03T19:23:34+00:00</published>
+        <updated>2022-04-03T19:23:34+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202204031923/"/>
+        <id>https://paakmau.github.io/202204031923/</id>
+        
+        <summary type="html">&lt;p&gt;虾、油、盐、糖、料酒、葱、姜、蒜。&lt;&#x2F;p&gt;
+&lt;p&gt;口味主要是咸，略甜。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>封装 Spring Boot 库并使用 GitHub Packages 发布</title>
+        <published>2022-01-31T21:33:14+00:00</published>
+        <updated>2022-01-31T21:33:14+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202201312133/"/>
+        <id>https://paakmau.github.io/202201312133/</id>
+        
+        <summary type="html">&lt;p&gt;后端写多了一些常用的东西可以封装成一个库，最好还能发布到什么地方直接加个仓库就能加依赖。
+因为我的项目大部分是托管在 GitHub 上的，于是可以考虑直接使用 GitHub Packages 进行发布。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>使用 xmake 管理 C++ 项目</title>
+        <published>2022-01-08T15:07:52+00:00</published>
+        <updated>2022-01-08T15:07:52+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202201081507/"/>
+        <id>https://paakmau.github.io/202201081507/</id>
+        
+        <summary type="html">&lt;p&gt;受够了 CMake 的折磨，用了 xmake 之后我的心中只剩下感恩。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>现代 CMake 项目的正确姿势</title>
+        <published>2022-01-04T23:38:42+00:00</published>
+        <updated>2022-01-04T23:38:42+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202201042338/"/>
+        <id>https://paakmau.github.io/202201042338/</id>
+        
+        <summary type="html">&lt;p&gt;本文总结了现代 CMake 项目实践中的一些经验。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>RESTful 接口设计经验总结</title>
+        <published>2021-12-31T22:31:35+00:00</published>
+        <updated>2021-12-31T22:31:35+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202112312231/"/>
+        <id>https://paakmau.github.io/202112312231/</id>
+        
+        <summary type="html">&lt;p&gt;本文归纳了 RESTful 接口设计实践中的一些经验。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>使用 WSL2 安装 minikube</title>
+        <published>2021-11-01T12:19:55+00:00</published>
+        <updated>2021-11-01T12:19:55+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202111011219/"/>
+        <id>https://paakmau.github.io/202111011219/</id>
+        
+        <summary type="html">&lt;p&gt;体验 k8s 比较省事的一个的方法就是直接装 minikube 单机部署。
+为了更省事，可以考虑直接在 WSL2 中操作。
+&lt;del&gt;省事个锤子，这是折磨。&lt;&#x2F;del&gt;
+本文将使用 Podman 作为 minikube 的驱动，而非 Docker。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>C++ Core Guidelines 命名与布局规则</title>
+        <published>2020-12-20T00:30:45+00:00</published>
+        <updated>2020-12-20T00:30:45+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202012200030/"/>
+        <id>https://paakmau.github.io/202012200030/</id>
+        
+        <summary type="html">&lt;p&gt;C++ Core Guidelines 是现代 C++（目前是 C++17）的一套核心指导方针，考虑了未来的增强与 ISO 技术规格。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>CMake 项目结构最佳实践</title>
+        <published>2020-12-12T01:12:24+00:00</published>
+        <updated>2020-12-12T01:12:24+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202012120112/"/>
+        <id>https://paakmau.github.io/202012120112/</id>
+        
+        <summary type="html">&lt;p&gt;CMake 是一种比较灵活的构建工具，正因如此导致很多 CMake 项目的结构混乱不堪，甚至包括国外某知名大厂的高 star 项目，本文将介绍一种目前广泛使用的比较合理的 CMake 项目结构&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>VS Code 写一切：CMake</title>
+        <published>2020-12-11T21:41:47+00:00</published>
+        <updated>2020-12-11T21:41:47+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202012112141/"/>
+        <id>https://paakmau.github.io/202012112141/</id>
+        
+        <summary type="html">&lt;p&gt;VS Code 写 CMake 感觉十分舒适，比 VS 爽多了&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>CMake 从零开始快速上手</title>
+        <published>2020-12-11T20:35:12+00:00</published>
+        <updated>2020-12-11T20:35:12+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202012112035/"/>
+        <id>https://paakmau.github.io/202012112035/</id>
+        
+        <summary type="html">&lt;p&gt;CMake 是一个跨平台的构建、测试、打包工具，被广泛使用于 C++ 开源项目中&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Vulkan 画三角形第十五章：总结</title>
+        <published>2020-09-24T14:03:51+00:00</published>
+        <updated>2020-09-24T14:03:51+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202009241403/"/>
+        <id>https://paakmau.github.io/202009241403/</id>
+        
+        <summary type="html">&lt;p&gt;现在我们已经成功地渲染并在屏幕上展示了一个三角形，更重要的是，我们把 Vulkan 中的大部分知识都过了一遍，现在让我们来回顾一下它的每个步骤&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Vulkan 画三角形第十四章：渲染和展示</title>
+        <published>2020-09-19T17:50:24+00:00</published>
+        <updated>2020-09-19T17:50:24+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202009191750/"/>
+        <id>https://paakmau.github.io/202009191750/</id>
+        
+        <summary type="html">&lt;p&gt;本文中我们将会结合之前的东西，最后在屏幕上把三角形画出来&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Vulkan 画三角形第十三章：创建命令缓冲区</title>
+        <published>2020-09-17T00:07:30+00:00</published>
+        <updated>2020-09-17T00:07:30+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202009170007/"/>
+        <id>https://paakmau.github.io/202009170007/</id>
+        
+        <summary type="html">&lt;p&gt;命令在 Vulkan 中，比如绘图操作和内存传递，并不能直接经过函数调用来执行。我们必须要把所有需要执行的操作记录到命令缓冲区对象中。这样做的优势在于配置绘图命令的复杂工作能够提前且多线程进行。这之后，我们只需要在主循环中通知 Vulkan 执行这些命令&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Vulkan 画三角形第十二章：创建帧缓冲区</title>
+        <published>2020-09-14T22:26:27+00:00</published>
+        <updated>2020-09-14T22:26:27+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202009142226/"/>
+        <id>https://paakmau.github.io/202009142226/</id>
+        
+        <summary type="html">&lt;p&gt;在之前的文章中已经讨论了很多帧缓冲区相关的东西，并且我们已经配置了渲染路径，渲染路径基于一个单独的与交换链图像具有相同格式的帧缓冲区，但我们实际上还没有创建它&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Vulkan 画三角形第十一章：创建图形流水线</title>
+        <published>2020-09-13T22:19:47+00:00</published>
+        <updated>2020-09-13T22:19:47+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202009132219/"/>
+        <id>https://paakmau.github.io/202009132219/</id>
+        
+        <summary type="html">&lt;p&gt;首先还是添加一个成员函数并在 &lt;code&gt;initVulkan&lt;&#x2F;code&gt; 中调用它&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Vulkan 画三角形第十章：着色器模块</title>
+        <published>2020-09-12T00:28:34+00:00</published>
+        <updated>2020-09-12T00:28:34+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202009120028/"/>
+        <id>https://paakmau.github.io/202009120028/</id>
+        
+        <summary type="html">&lt;p&gt;与早期 API 不同，Vulkan 中的着色器代码必须要以字节码的格式指定，而不是像 GLSL、HLSL 这样人类可读的语法。这种字节码格式是 SPIR-V，它可以用于 Vulkan 和 OpenCL。它是一个用来写图形与计算着色器的格式，但是现在我们只关心可用于 Vulkan 图形流水线的着色器&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Vulkan 画三角形第九章：渲染路径</title>
+        <published>2020-09-11T14:30:21+00:00</published>
+        <updated>2020-09-11T14:30:21+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202009111430/"/>
+        <id>https://paakmau.github.io/202009111430/</id>
+        
+        <summary type="html">&lt;p&gt;我们需要配置渲染时需要使用的帧缓冲区附着的相关信息。我们需要指定有多少个颜色和深度缓冲区，它们的采样数以及通过渲染操作应当如何处理它们的内容。所有的这些信息都会被封装到渲染路径对象中，于是我们添加一个成员变量来保存它&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Vulkan 画三角形第八章：图形流水线介绍</title>
+        <published>2020-09-08T23:50:04+00:00</published>
+        <updated>2020-09-08T23:50:04+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202009082350/"/>
+        <id>https://paakmau.github.io/202009082350/</id>
+        
+        <summary type="html">&lt;p&gt;接下来的文章我们将会配置图形流水线来绘制我们的三角形。图形流水线就是一系列的操作，这些操作把我们的网格体中的顶点和纹理转换成渲染目标上的像素点&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Vulkan 画三角形第七章：创建图像视图</title>
+        <published>2020-09-08T23:04:35+00:00</published>
+        <updated>2020-09-08T23:04:35+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202009082304/"/>
+        <id>https://paakmau.github.io/202009082304/</id>
+        
+        <summary type="html">&lt;p&gt;为了能够使用 &lt;code&gt;VkImage&lt;&#x2F;code&gt;，包括交换链中的在内，我们需要在渲染管线中创建 &lt;code&gt;VkImageView&lt;&#x2F;code&gt;。一个图像视图真的就是字面意思的图像的视图。它描述了如何访问这个图像以及访问这个图像的哪个部分，例如图像可能被当作不需要 Mipmap 的二维深度贴图&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Vulkan 画三角形第六章：创建交换链</title>
+        <published>2020-09-08T20:23:43+00:00</published>
+        <updated>2020-09-08T20:23:43+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202009082023/"/>
+        <id>https://paakmau.github.io/202009082023/</id>
+        
+        <summary type="html">&lt;p&gt;我们在把图像展示到屏幕之前，需要先把它们渲染到缓冲区中，而交换链就是存放缓冲区的地方。交换链本质上是一个存放需要展示到屏幕的图像的队列。我们的应用程序要做的就是从这个队列中取出一个图像，然后在上面渲染，最后再返回给队列。这个队列是怎么工作的以及队列中的图像什么时候展示到屏幕上，它们都取决于交换链是怎么创建的，但是交换链一般的目的都是同步图像展示和屏幕刷新率&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Vulkan 画三角形第五章：创建逻辑设备</title>
+        <published>2020-09-08T00:19:25+00:00</published>
+        <updated>2020-09-08T00:19:25+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202009080019/"/>
+        <id>https://paakmau.github.io/202009080019/</id>
+        
+        <summary type="html">&lt;p&gt;选取了物理设备之后，我们需要创建一个逻辑设备来跟它进行交互。逻辑设备的创建过程跟实例的创建过程类似，我们需要描述要用到的特性。我们还需要根据之前查询好的队列族，指定需要创建的队列。我们甚至可以对于同一个物理设备创建多个逻辑设备来应对不同的需求&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Vulkan 画三角形第四章：选取物理设备</title>
+        <published>2020-09-06T00:59:35+00:00</published>
+        <updated>2020-09-06T00:59:35+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202009060059/"/>
+        <id>https://paakmau.github.io/202009060059/</id>
+        
+        <summary type="html">&lt;p&gt;创建了表面之后我们接下来就可以在系统中选取一张显卡，事实上我们可以选取多张显卡并同时使用它们，但是在本文中我们只用一张显卡作为示范&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Vulkan 画三角形第三章：创建窗体表面</title>
+        <published>2020-09-05T23:02:56+00:00</published>
+        <updated>2020-09-05T23:02:56+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202009052302/"/>
+        <id>https://paakmau.github.io/202009052302/</id>
+        
+        <summary type="html">&lt;p&gt;Vulkan 是一个跨平台的 API，它不能够直接与不同平台的窗体系统进行交互。为了在 Vulkan 与窗体系统之间建立连接来把渲染结果展示到屏幕上，我们需要使用一些 WSI 扩展。本文将会介绍 &lt;code&gt;VK_KHR_surface&lt;&#x2F;code&gt; 扩展。它暴露一个 &lt;code&gt;VkSurfaceKHR&lt;&#x2F;code&gt; 对象，这个对象代表一个我们可以把图像渲染上去的抽象表面&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Vulkan 画三角形第二章：创建 Vulkan 实例</title>
+        <published>2020-09-04T20:49:09+00:00</published>
+        <updated>2020-09-04T20:49:09+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202009042049/"/>
+        <id>https://paakmau.github.io/202009042049/</id>
+        
+        <summary type="html">&lt;p&gt;开始一切之前，我们先引入 Vulkan 的头文件&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Vulkan 画三角形第一章：概要与环境配置</title>
+        <published>2020-09-03T20:23:56+00:00</published>
+        <updated>2020-09-03T20:23:56+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202009032023/"/>
+        <id>https://paakmau.github.io/202009032023/</id>
+        
+        <summary type="html">&lt;p&gt;Vulkan 是一个跨平台的图形与计算 API，本系列文章将使用 Vulkan 绘制一个三角形，旨在为上手 Vulkan 提供帮助&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>并发环境下实现懒加载</title>
+        <published>2020-07-14T17:56:04+00:00</published>
+        <updated>2020-07-14T17:56:04+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202007141756/"/>
+        <id>https://paakmau.github.io/202007141756/</id>
+        
+        <summary type="html">&lt;p&gt;懒加载是指在用到某个变量时才进行初始化&lt;br&gt;
+然后并发环境下懒加载可能会有访问冲突、重复初始化等问题，很容易爆炸&lt;br&gt;
+因此需要一些操作&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Win10 下 Perforce 命令行快速上手</title>
+        <published>2020-07-11T20:38:43+00:00</published>
+        <updated>2020-07-11T20:38:43+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202007112038/"/>
+        <id>https://paakmau.github.io/202007112038/</id>
+        
+        <summary type="html">&lt;p&gt;相对于 Git 和 SVN，Perforce 在管理二进制文件上更方便&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>使用 Vue.js 和 Spring Boot 配置 WebSocket</title>
+        <published>2020-07-07T18:21:46+00:00</published>
+        <updated>2020-07-07T18:21:46+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202007071821/"/>
+        <id>https://paakmau.github.io/202007071821/</id>
+        
+        <summary type="html">&lt;p&gt;HTTP 协议中的请求只能由客户端发起，如果需要服务端主动向客户端发送信息，就会用到 WebSocket&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>UE4 材质编辑器中材质结点的数据结构源码阅读</title>
+        <published>2020-05-15T23:47:36+00:00</published>
+        <updated>2020-05-15T23:47:36+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202005152347/"/>
+        <id>https://paakmau.github.io/202005152347/</id>
+        
+        <summary type="html">&lt;p&gt;UE4 的材质编辑器中我们可以创建材质结点然后给它们连线来创建材质&lt;&#x2F;p&gt;
+&lt;p&gt;本文将根据源码解析材质结点在内存中的数据结构&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>解析游戏开发中环境场景的模块化设计</title>
+        <published>2020-05-14T21:07:40+00:00</published>
+        <updated>2020-05-14T21:07:40+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202005142107/"/>
+        <id>https://paakmau.github.io/202005142107/</id>
+        
+        <summary type="html">&lt;p&gt;在游戏工业中的模块化设计是指把可复用、可内联的模块组织起来形成更大的结构或者环境，以此降低工作量，同时还能减少运行时内存消耗&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>UE4 材质结点生成 HLSL 代码源码阅读</title>
+        <published>2020-05-11T21:50:26+00:00</published>
+        <updated>2020-05-11T21:50:26+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202005112150/"/>
+        <id>https://paakmau.github.io/202005112150/</id>
+        
+        <summary type="html">&lt;p&gt;使用 UE4 的材质编辑器的时候我们可以为材质的颜色、粗糙度、金属度等连接一个常量或者纹理结点，如果要实现复杂效果可能还会用到混合结点，最后就可能看到一个完整的材质其实是由一堆结点和它们之间的连线组成&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>渲染管线学习</title>
+        <published>2020-05-06T23:56:00+00:00</published>
+        <updated>2020-05-06T23:56:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202005062356/"/>
+        <id>https://paakmau.github.io/202005062356/</id>
+        
+        <summary type="html">&lt;p&gt;渲染管线会把内存中的三维模型输出到二维的屏幕上，它具有明显的先后顺序，每一个阶段的输出都会作为下一个阶段的输入。它也可以翻译为渲染流水线&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>快排的多线程优化</title>
+        <published>2020-04-21T21:39:49+00:00</published>
+        <updated>2020-04-21T21:39:49+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202004212139/"/>
+        <id>https://paakmau.github.io/202004212139/</id>
+        
+        <summary type="html">&lt;p&gt;讲真我从高中到现在就没有手写过一次快排（是 &lt;code&gt;sort&lt;&#x2F;code&gt; 不够好吗）&lt;br&gt;&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>乒乓缓存与伪共享</title>
+        <published>2020-04-20T16:18:27+00:00</published>
+        <updated>2020-04-20T16:18:27+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202004201618/"/>
+        <id>https://paakmau.github.io/202004201618/</id>
+        
+        <summary type="html">&lt;p&gt;这两个东西都是并行程序设计中必须考虑的问题&lt;br&gt;
+他跟多核 CPU 的缓存机制有关&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>C++ 右值引用与转移语义简要介绍</title>
+        <published>2020-04-06T02:21:00+00:00</published>
+        <updated>2020-04-06T02:21:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202004060221/"/>
+        <id>https://paakmau.github.io/202004060221/</id>
+        
+        <summary type="html">&lt;p&gt;在 C++11 之前，值类型变量的传递会导致把它完整的拷贝一份&lt;br&gt;&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Lock-free 数据结构设计</title>
+        <published>2020-04-06T00:19:29+00:00</published>
+        <updated>2020-04-06T00:19:29+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202004060019/"/>
+        <id>https://paakmau.github.io/202004060019/</id>
+        
+        <summary type="html">&lt;p&gt;根据名字我们知道它的内部没有使用锁，可以通过原语和一些蛇皮操作来实现&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>使用 Mockito 对 SpringBoot 项目单元测试</title>
+        <published>2020-03-30T20:30:55+00:00</published>
+        <updated>2020-03-30T20:30:55+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202003302030/"/>
+        <id>https://paakmau.github.io/202003302030/</id>
+        
+        <summary type="html">&lt;p&gt;使用 Mockito 可以用来给模块打桩，实现单元测试&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>使用 MockMvc 对 SpringBoot 项目集成测试</title>
+        <published>2020-03-30T20:12:40+00:00</published>
+        <updated>2020-03-30T20:12:40+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202003302012/"/>
+        <id>https://paakmau.github.io/202003302012/</id>
+        
+        <summary type="html">&lt;p&gt;对后端进行集成测试的时候，我们一般都希望从发送 HTTP 请求开始对后端进行完整的测试，可能会考虑用 Postman 或者 Postwoman 这类东西，但是直觉告诉我们应该也可以把集成测试写在代码里&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>SpringBoot JPA 快速上手</title>
+        <published>2020-03-30T19:31:41+00:00</published>
+        <updated>2020-03-30T19:31:41+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202003301931/"/>
+        <id>https://paakmau.github.io/202003301931/</id>
+        
+        <summary type="html">&lt;p&gt;现在 SpringBoot 上比较主流的持久层 ORM 框架应该就是 MyBatis 和 JPA 了。JPA 对于简单查询（特别是作业）非常方便，可以说开箱即用，但是面对复杂查询就要稍微多学一点；而 MyBatis 写起来虽然没那么简洁，但在复杂查询的时候直接上 SQL 语句就完事了&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>C++ 标准库笔记：智能指针</title>
+        <published>2020-03-27T13:33:00+00:00</published>
+        <updated>2020-03-27T13:33:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202003271333/"/>
+        <id>https://paakmau.github.io/202003271333/</id>
+        
+        <summary type="html">&lt;p&gt;C++ 没有垃圾回收，因此 &lt;code&gt;new&lt;&#x2F;code&gt; 出来的对象都要自己管理&lt;br&gt;&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>C++ Lambda 快速上手</title>
+        <published>2020-03-22T23:02:00+00:00</published>
+        <updated>2020-03-22T23:02:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202003222302/"/>
+        <id>https://paakmau.github.io/202003222302/</id>
+        
+        <summary type="html">&lt;p&gt;Lambda 听起来非常的牛逼，很容易就会联想到函数式编程或者 Lambda 演算这样的东西。但是在 C++ 里，没那么复杂，就把它当匿名函数用就好了&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>UE4 TaskGraph 学习笔记：源码阅读</title>
+        <published>2020-03-22T20:52:18+00:00</published>
+        <updated>2020-03-22T20:52:18+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202003222052/"/>
+        <id>https://paakmau.github.io/202003222052/</id>
+        
+        <summary type="html">&lt;p&gt;跟随本文阅读 TaskGraph 的源码来了解其实现细节&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>UE4 TaskGraph 学习笔记：介绍与实践</title>
+        <published>2020-03-19T13:21:19+00:00</published>
+        <updated>2020-03-19T13:21:19+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202003191321/"/>
+        <id>https://paakmau.github.io/202003191321/</id>
+        
+        <summary type="html">&lt;p&gt;这个东西跟 Unity 中的 Job 很相似，都是基于任务的并行程序设计，可以处理资源竞争与执行顺序问题&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Unity Physics 学习笔记第七章：精确的碰撞管理</title>
+        <published>2020-03-15T22:07:48+00:00</published>
+        <updated>2020-03-15T22:07:48+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202003152207/"/>
+        <id>https://paakmau.github.io/202003152207/</id>
+        
+        <summary type="html">&lt;p&gt;官方手册里有提到，但是没有具体描述。本文主要参考官方示例代码并进行实践。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Unity Physics 学习笔记第六章：触发器事件与碰撞事件</title>
+        <published>2020-02-11T01:01:00+00:00</published>
+        <updated>2020-02-11T01:01:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202002110101/"/>
+        <id>https://paakmau.github.io/202002110101/</id>
+        
+        <summary type="html">&lt;p&gt;这部分内容手册中没有，本文参考的是官方示例代码与官方论坛&lt;br&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;Unity-Technologies&#x2F;EntityComponentSystemSamples&quot;&gt;https:&#x2F;&#x2F;github.com&#x2F;Unity-Technologies&#x2F;EntityComponentSystemSamples&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Unity Physics 学习笔记第五章：核心组件</title>
+        <published>2020-02-08T21:55:32+00:00</published>
+        <updated>2020-02-08T21:55:32+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202002082155/"/>
+        <id>https://paakmau.github.io/202002082155/</id>
+        
+        <summary type="html">&lt;p&gt;在编辑器为 GameObject 挂载 &lt;code&gt;Physics Body&lt;&#x2F;code&gt; 和 &lt;code&gt;Physics Shape&lt;&#x2F;code&gt; 这两个 Authoring 脚本会为转化出的 Entity 添加很多个组件。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Unity Physics 学习笔记第四章：碰撞查询</title>
+        <published>2020-02-07T23:39:46+00:00</published>
+        <updated>2020-02-07T23:39:46+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202002072339/"/>
+        <id>https://paakmau.github.io/202002072339/</id>
+        
+        <summary type="html">&lt;p&gt;跟主流物理引擎一样，Unity Physics 也具有碰撞查询的功能&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Unity Physics 学习笔记第三章：刚体的运动状态</title>
+        <published>2020-02-05T23:42:00+00:00</published>
+        <updated>2020-02-05T23:42:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202002052342/"/>
+        <id>https://paakmau.github.io/202002052342/</id>
+        
+        <summary type="html">&lt;p&gt;本文介绍获取与修改刚体速度的方法&lt;br&gt;
+并实现控制立方体每隔一段时间朝随机方向运动，具有匀速运动与施加冲量两种方式&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Unity Physics 学习笔记第二章：配置刚体与碰撞器属性</title>
+        <published>2020-02-04T23:56:57+00:00</published>
+        <updated>2020-02-04T23:56:57+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202002042356/"/>
+        <id>https://paakmau.github.io/202002042356/</id>
+        
+        <summary type="html">&lt;p&gt;前文展示了一个简单的 Hello World，本文将进一步介绍其中用到的 &lt;code&gt;Physics Shape&lt;&#x2F;code&gt; 和 &lt;code&gt;Physics Body&lt;&#x2F;code&gt; 这两个脚本的参数设置&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Unity Physics 学习笔记第一章：简要介绍与 Hello World</title>
+        <published>2020-02-04T22:09:43+00:00</published>
+        <updated>2020-02-04T22:09:43+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202002042209/"/>
+        <id>https://paakmau.github.io/202002042209/</id>
+        
+        <summary type="html">&lt;p&gt;现在 Unity 的 Package Manager 中已经有了适用于 ECS 框架的物理引擎，功能比较完善。
+这个系列会介绍目前 Unity Physics 中的绝大多数内容，与 Havok Physics 关系不大。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Unity ECS 框架摸索第六章：更灵活的筛选与遍历</title>
+        <published>2020-02-04T01:23:00+00:00</published>
+        <updated>2020-02-04T01:23:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202002040123/"/>
+        <id>https://paakmau.github.io/202002040123/</id>
+        
+        <summary type="html">&lt;p&gt;前文中我们用 &lt;code&gt;IJobForEach&lt;&#x2F;code&gt; 或者 &lt;code&gt;JobComponentSystem.Entities.ForEach&lt;&#x2F;code&gt; 都只能筛选并遍历具有特定 Component 的 Entity，但其实有更灵活且同样高效的方式&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Unity ECS 框架摸索第五章：利用 Prefab 实例化 Entity 及其销毁</title>
+        <published>2020-02-03T14:05:00+00:00</published>
+        <updated>2020-02-03T14:05:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202002031405/"/>
+        <id>https://paakmau.github.io/202002031405/</id>
+        
+        <summary type="html">&lt;p&gt;一般游戏中都避不开实体的动态生成与动态销毁。&lt;&#x2F;p&gt;
+&lt;p&gt;本文演示使用 Prefab 创建旋转的立方体方阵并定时销毁。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Unity ECS 框架摸索第四章：Chunk</title>
+        <published>2020-02-03T01:37:42+00:00</published>
+        <updated>2020-02-03T01:37:42+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202002030137/"/>
+        <id>https://paakmau.github.io/202002030137/</id>
+        
+        <summary type="html">&lt;p&gt;本文将介绍 Unity ECS 中对于 Component 的内存管理&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Unity ECS 框架摸索第三章：Hello World 后续</title>
+        <published>2020-02-01T20:34:04+00:00</published>
+        <updated>2020-02-01T20:34:04+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202002012034/"/>
+        <id>https://paakmau.github.io/202002012034/</id>
+        
+        <summary type="html">&lt;p&gt;上一章介绍了 ECS 并行处理的实现，接下来就这个 Hello World 进行更进一步的摸索。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Unity ECS 框架摸索第二章：Hello World</title>
+        <published>2020-01-31T15:15:00+00:00</published>
+        <updated>2020-01-31T15:15:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202001311515/"/>
+        <id>https://paakmau.github.io/202001311515/</id>
+        
+        <summary type="html">&lt;p&gt;跟随本文，创建一个立方体 Entity，利用一个 System 控制它不断旋转。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Unity ECS 框架摸索第一章：ECS 简介</title>
+        <published>2020-01-31T13:48:00+00:00</published>
+        <updated>2020-01-31T13:48:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202001311348/"/>
+        <id>https://paakmau.github.io/202001311348/</id>
+        
+        <summary type="html">&lt;p&gt;之前接触 ECS 是因为看了守望先锋的架构分析。了解了一下发现这种架构天生支持多线程，而且对缓存非常友好，似乎做联网同步也很方便，感觉这应该是个挺有前途的设计思路。&lt;br&gt;&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Vuex 学习笔记</title>
+        <published>2020-01-20T23:38:17+00:00</published>
+        <updated>2020-01-20T23:38:17+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202001202338/"/>
+        <id>https://paakmau.github.io/202001202338/</id>
+        
+        <summary type="html">&lt;p&gt;官网说 Vuex 是为 Vue.js 应用开发的状态管理模式。个人理解就是管理全局变量的单例，支持响应式，存储状态或数据。
+可以用来处理多个页面数据共享，父子组件信息交互等麻烦的问题。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Vue Router 入门学习笔记</title>
+        <published>2020-01-17T20:06:02+00:00</published>
+        <updated>2020-01-17T20:06:02+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/202001172006/"/>
+        <id>https://paakmau.github.io/202001172006/</id>
+        
+        <summary type="html">&lt;p&gt;Vue Router 是 Vue.js 官方提供的路由管理器，快速构建单页应用&lt;br&gt;
+本文将会使用 Vue CLI 创建脚手架，内容包括动态路径参数、嵌套路由、命名视图、懒加载。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>使用 Vue CLI 快速搭建 Vue.js 脚手架</title>
+        <published>2019-12-27T10:24:33+00:00</published>
+        <updated>2019-12-27T10:24:33+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/201912271024/"/>
+        <id>https://paakmau.github.io/201912271024/</id>
+        
+        <summary type="html">&lt;p&gt;Vue CLI 是 Vue.js 提供的命令行工具。
+我们可以使用它来快速创建一个脚手架项目。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>C++ 标准库多线程编程不完全指南</title>
+        <published>2019-12-26T14:06:17+00:00</published>
+        <updated>2019-12-26T14:06:17+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/201912261406/"/>
+        <id>https://paakmau.github.io/201912261406/</id>
+        
+        <summary type="html">&lt;p&gt;某门课在讲管程，给的伪码十分丑陋看的我头痛，于是自己用 C++ 写了一遍&lt;br&gt;&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Docker Compose 部署饥荒服务器</title>
+        <published>2019-12-23T21:05:11+00:00</published>
+        <updated>2019-12-23T21:05:11+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/201912232105/"/>
+        <id>https://paakmau.github.io/201912232105/</id>
+        
+        <summary type="html">&lt;p&gt;参考的是这个项目：&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;mathielo&#x2F;dst-dedicated-server&quot;&gt;https:&#x2F;&#x2F;github.com&#x2F;mathielo&#x2F;dst-dedicated-server&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>【poj 1694】An Old Stone Game</title>
+        <published>2019-12-19T17:51:23+00:00</published>
+        <updated>2019-12-19T17:51:23+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/201912191751/"/>
+        <id>https://paakmau.github.io/201912191751/</id>
+        
+        <summary type="html">&lt;p&gt;一题简单的树形 DP&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>【hdu 2955】Robberies</title>
+        <published>2019-12-19T00:40:51+00:00</published>
+        <updated>2019-12-19T00:40:51+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/201912190040/"/>
+        <id>https://paakmau.github.io/201912190040/</id>
+        
+        <summary type="html">&lt;p&gt;一个 01 背包问题&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>【luogu 1880】石子合并</title>
+        <published>2019-12-18T23:10:22+00:00</published>
+        <updated>2019-12-18T23:10:22+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/201912182310/"/>
+        <id>https://paakmau.github.io/201912182310/</id>
+        
+        <summary type="html">&lt;p&gt;退役了退役了，刷点水题准备面试&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Docker 下使用 Let&#x27;s Encrypt 与 nginx 搭建支持 HTTPS 的 WordPress 博客</title>
+        <published>2019-12-18T19:16:13+00:00</published>
+        <updated>2019-12-18T19:16:13+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/201912181916/"/>
+        <id>https://paakmau.github.io/201912181916/</id>
+        
+        <summary type="html">&lt;p&gt;Let&#x27;s Encrypt 提供免费 SSL 证书的自动签发续签服务，我们可以用它来为博客启用 HTTPS&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Express + MySQL + Session 搭建 Web 后端脚手架</title>
+        <published>2019-12-18T00:59:09+00:00</published>
+        <updated>2019-12-18T00:59:09+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/201912180059/"/>
+        <id>https://paakmau.github.io/201912180059/</id>
+        
+        <summary type="html">&lt;p&gt;因为是我某门课的作业才顺便写的，因为感觉 js 后端偏向玩具所以不太感兴趣。但还是不得不说这玩具真好玩，贼牛逼。Express 框架用几十行代码就能搭出几乎完整的后端脚手架。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>支持 .NET Core 以及 Unity 的轻量级可靠 UDP 库 LiteNetLib 介绍</title>
+        <published>2019-12-15T20:20:31+00:00</published>
+        <updated>2019-12-15T20:20:31+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/201912152020/"/>
+        <id>https://paakmau.github.io/201912152020/</id>
+        
+        <summary type="html">&lt;p&gt;之前做 Unity 网络游戏开发的时候，想着后端也用 C# 就很方便，于是看上了开源跨平台的 .NET Core，当时网络模块就是用了 LiteNetLib 实现的。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Docker 部署 .NET Core 3.0 控制台项目</title>
+        <published>2019-12-12T17:24:24+00:00</published>
+        <updated>2019-12-12T17:24:24+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/201912121724/"/>
+        <id>https://paakmau.github.io/201912121724/</id>
+        
+        <summary type="html">&lt;p&gt;本文将光速创建一个 Hello World，然后使用 Docker 进行部署&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Docker 远程连接以及 TLS 加密</title>
+        <published>2019-12-11T21:26:36+00:00</published>
+        <updated>2019-12-11T21:26:36+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/201912112126/"/>
+        <id>https://paakmau.github.io/201912112126/</id>
+        
+        <summary type="html">&lt;p&gt;Docker Daemon 运行在 Debian 上，Docker Client 在 macOS 上&lt;&#x2F;p&gt;
+&lt;p&gt;因为不想在本地安装 Docker，考虑在本地用 Docker Client 远程连接到远程服务器的 Docker Daemon 上。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Docker 简单介绍与安装</title>
+        <published>2019-12-11T20:16:43+00:00</published>
+        <updated>2019-12-11T20:16:43+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/201912112016/"/>
+        <id>https://paakmau.github.io/201912112016/</id>
+        
+        <summary type="html">&lt;p&gt;本文将介绍 Docker 的概念，并记录在 Debian 上安装 Docker 的过程。&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Docker 部署 WordPress 与数据备份</title>
+        <published>2019-12-11T19:14:31+00:00</published>
+        <updated>2019-12-11T19:14:31+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://paakmau.github.io/201912111914/"/>
+        <id>https://paakmau.github.io/201912111914/</id>
+        
+        <summary type="html">&lt;p&gt;阅读本文了解 Docker 上的 WordPress 快速部署，及其数据备份获取&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+</feed>

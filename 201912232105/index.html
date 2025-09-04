@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Docker Compose 部署饥荒服务器 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="Docker Compose 部署饥荒服务器 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/201912232105/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="Docker Compose 部署饥荒服务器 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/201912232105/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/201912232105/">Docker Compose 部署饥荒服务器</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2019-12-23
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/docker/">#Docker</a></span>
+    
+
+        <div class="post-content">
+            <p>参考的是这个项目：</p>
+<p><a href="https://github.com/mathielo/dst-dedicated-server">https://github.com/mathielo/dst-dedicated-server</a></p>
+<span id="continue-reading"></span><h2 id="xiang-mu-clone">项目 Clone</h2>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">git</span><span> clone https://github.com/mathielo/dst-dedicated-server.git
+</span></code></pre>
+<h2 id="token-pei-zhi">Token 配置</h2>
+<p>游戏中可以在控制台里输入如下命令生成 Token：</p>
+<pre data-lang="lua" style="background-color:#151515;color:#e8e8d3;" class="language-lua "><code class="language-lua" data-lang="lua"><span style="color:#ffb964;">TheNet</span><span>:</span><span style="color:#ffb964;">GenerateClusterToken</span><span>()
+</span></code></pre>
+<p>也可以用图形化界面生成（进游戏之后 xjb 乱按就能找到）</p>
+<p>然后把得到的 Token 存入项目中的文件 <code>dstclusterconfig/cluster_token.txt</code> 中，注意只有一行</p>
+<h2 id="you-xi-fu-wu-qi-pei-zhi">游戏服务器配置</h2>
+<h3 id="dstclusterconfig-cluster-ini"><code>DSTClusterConfig/cluster.ini</code></h3>
+<p>各种房间设置，大概有这些：</p>
+<ul>
+<li><code>cluster_name</code>：房间名</li>
+<li><code>cluster_description</code>：房间描述</li>
+<li><code>cluster_password</code>：密码</li>
+</ul>
+<h3 id="dstclusterconfig-mods-dedicated-server-mods-setup-lua"><code>DSTClusterConfig/mods/dedicated_server_mods_setup.lua</code></h3>
+<p>用于安装 Mod，同目录下有个示例，照着写就行</p>
+<h3 id="dstclusterconfig-mods-modoverrides-lua"><code>DSTClusterConfig/mods/modoverrides.lua</code></h3>
+<p>用于配置 Mod，同目录下有个示例，还是照着写就行</p>
+<h2 id="fu-wu-qi-qi-dong">服务器启动</h2>
+<p>切到项目根目录，执行以下命令即可</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">sudo</span><span> docker-compose up</span><span style="color:#ffb964;"> -d
+</span></code></pre>
+<h2 id="fu-wu-qi-zan-ting">服务器暂停</h2>
+<p>如果需要停止服务器，需要 <code>attach</code> 到 <code>dst_master</code> 容器中手动停止</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">sudo</span><span> docker attach dst_master
+</span></code></pre>
+<p>然后会进入饥荒服务器的控制台。<br>
+我们可以输入各种命令进行操作：</p>
+<ul>
+<li><code>c_shutdown()</code>：停止</li>
+<li><code>c_save()</code>：保存</li>
+<li><code>c_rollback(count)</code>：回档</li>
+</ul>
+<p>存档会被保存到对应的数据卷中。
+所以此时将容器删除都不用担心。</p>
+<h2 id="fu-wu-qi-qiang-zhi-guan-bi">服务器强制关闭</h2>
+<p>注意，这样关闭，数据不会被保存：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">sudo</span><span> docker-compose down
+</span></code></pre>
+<h2 id="fu-wu-qi-zhong-qi-huo-geng-xin">服务器重启或更新</h2>
+<p>饥荒更新之后，一般服务器也要相应更新。</p>
+<p>先依照上文所述暂停服务器。然后还是依照上文所述启动就行了，容器启动的时候会自动更新。</p>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/201912191751/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">【poj 1694】An Old Stone Game</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/201912261406/">
+                                <span class="button__text">C++ 标准库多线程编程不完全指南</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

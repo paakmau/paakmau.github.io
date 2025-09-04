@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Vulkan 画三角形第五章：创建逻辑设备 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="Vulkan 画三角形第五章：创建逻辑设备 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202009080019/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="Vulkan 画三角形第五章：创建逻辑设备 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202009080019/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202009080019/">Vulkan 画三角形第五章：创建逻辑设备</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2020-09-08
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/vulkan/">#Vulkan</a></span>
+    
+
+        <div class="post-content">
+            <p>选取了物理设备之后，我们需要创建一个逻辑设备来跟它进行交互。逻辑设备的创建过程跟实例的创建过程类似，我们需要描述要用到的特性。我们还需要根据之前查询好的队列族，指定需要创建的队列。我们甚至可以对于同一个物理设备创建多个逻辑设备来应对不同的需求</p>
+<span id="continue-reading"></span><h2 id="chuang-jian-luo-ji-she-bei">创建逻辑设备</h2>
+<p>同样的，让我们添加一个成员变量</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkDevice device;
+</span></code></pre>
+<p>然后添加一个 <code>createLogicalDevice</code> 成员函数，在 <code>initVulkan</code> 里调用它</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">initVulkan</span><span>() {
+</span><span>    </span><span style="color:#ffb964;">createInstance</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createSurface</span><span>();
+</span><span>    </span><span style="color:#ffb964;">pickPhysicalDevice</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createLogicalDevice</span><span>();
+</span><span>}
+</span><span>
+</span><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">createLogicalDevice</span><span>() {
+</span><span>
+</span><span>}
+</span></code></pre>
+<p>接着我们就可以开始填充这个成员函数。创建逻辑设备需要我们在结构体里指定很多的细节</p>
+<p>第一个就是 <code>VkDeviceQueueCreateInfo</code>，这个结构体描述了对于一个队列族我们需要创建的队列数量以及各自的优先级</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>uint32_t queueFamilyIndex = </span><span style="color:#ffb964;">findQueueFamily</span><span>(physicalDevice).</span><span style="color:#ffb964;">value</span><span>();
+</span><span>VkDeviceQueueCreateInfo queueCreateInfo = {};
+</span><span>queueCreateInfo.</span><span style="color:#ffb964;">sType </span><span>= VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+</span><span>queueCreateInfo.</span><span style="color:#ffb964;">queueFamilyIndex </span><span>= queueFamilyIndex;
+</span><span>queueCreateInfo.</span><span style="color:#ffb964;">queueCount </span><span>= </span><span style="color:#cf6a4c;">1</span><span>;
+</span><span style="color:#8fbfdc;">float</span><span> queuePriority = </span><span style="color:#cf6a4c;">1.0</span><span style="color:#8fbfdc;">f</span><span>;
+</span><span>queueCreateInfo.</span><span style="color:#ffb964;">pQueuePriorities </span><span>= &amp;queuePriority;
+</span></code></pre>
+<p>对于一个队列族，目前可用的驱动只允许我们创建少量的队列，并且我们也不会真的遇到多于一个的情况。因为我们可以为每个线程创建命令缓冲区，然后在主线程中用一个低开销的调用把它们全部提交</p>
+<p>Vulkan 允许我们为队列指定优先级，这会影响命令缓冲区执行规划，优先级由一个零到一的浮点数指定。即使只有一个队列我们也需要为它指定优先级</p>
+<p>接下来我们需要指定设备的特性。我们可以通过 <code>vkGetPhysicalDeviceFeatures</code> 来查询物理设备的特性支持，比如几何着色器。但现在我们不需要任何特性，所以我们就直接简单定义它并把所有的值设为零</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkPhysicalDeviceFeatures deviceFeatures = {};
+</span></code></pre>
+<p>然后我们就可以开始填充逻辑设备的创建信息并通过它来创建逻辑设备了</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkDeviceCreateInfo createInfo = {};
+</span><span>createInfo.</span><span style="color:#ffb964;">sType </span><span>= VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+</span><span>createInfo.</span><span style="color:#ffb964;">queueCreateInfoCount </span><span>= </span><span style="color:#cf6a4c;">1</span><span>;
+</span><span>createInfo.</span><span style="color:#ffb964;">pQueueCreateInfos </span><span>= &amp;queueCreateInfo;
+</span><span>createInfo.</span><span style="color:#ffb964;">pEnabledFeatures </span><span>= &amp;deviceFeatures;
+</span><span style="color:#8fbfdc;">const</span><span> std::vector&lt;</span><span style="color:#8fbfdc;">const char</span><span>*&gt; extensionNames = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+</span><span>createInfo.</span><span style="color:#ffb964;">enabledExtensionCount </span><span>= static_cast&lt;uint32_t&gt;(extensionNames.</span><span style="color:#ffb964;">size</span><span>());
+</span><span>createInfo.</span><span style="color:#ffb964;">ppEnabledExtensionNames </span><span>= extensionNames.</span><span style="color:#ffb964;">data</span><span>();
+</span><span>
+</span><span style="color:#8fbfdc;">if</span><span>(</span><span style="color:#ffb964;">vkCreateDevice</span><span>(physicalDevice, &amp;createInfo, nullptr, &amp;device) != VK_SUCCESS)
+</span><span>    </span><span style="color:#8fbfdc;">throw </span><span>std::</span><span style="color:#ffb964;">runtime_error</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">failed to create logical device</span><span style="color:#556633;">&quot;</span><span>);
+</span><span>}
+</span></code></pre>
+<p>可以看到创建逻辑设备主要是把上面的队列创建信息和设备特性传进去，最后指定一下逻辑设备需要启用的扩展，这里传入了 <code>VK_KHR_swapchain</code> 来让我们能够使用交换链，交换链将会在后面的文章中介绍</p>
+<h2 id="qu-hui-dui-lie-ju-bing">取回队列句柄</h2>
+<p>创建逻辑设备的同时会根据传入的队列创建信息创建相应的队列，所以我们需要取回对队列句柄</p>
+<p>还是先添加一个成员变量</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkQueue graphicsAndPresentQueue;
+</span></code></pre>
+<p>然后在创建逻辑设备之后添加如下代码</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#ffb964;">vkGetDeviceQueue</span><span>(device, queueFamilyIndex, </span><span style="color:#cf6a4c;">0</span><span>, &amp;graphicsAndPresentQueue)
+</span></code></pre>
+<p>可以使用 <code>vkGetDeviceQueue</code> 函数对每个队列族取回队列句柄，参数依次分别是逻辑设备、队列族索引、队列索引、用于存储队列句柄的变量的指针，然后因为我们的这个队列族只有一个队列，所以直接使用零作为队列索引</p>
+<h2 id="xiao-hui-luo-ji-she-bei">销毁逻辑设备</h2>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">cleanup</span><span>() {
+</span><span>    </span><span style="color:#ffb964;">vkDestroyDevice</span><span>(device, nullptr);
+</span><span>    </span><span style="color:#ffb964;">vkDestroySurfaceKHR</span><span>(instance, surface, nullptr);
+</span><span>    </span><span style="color:#ffb964;">vkDestroyInstance</span><span>(instance, nullptr);
+</span><span>
+</span><span>    </span><span style="color:#ffb964;">glfwDestroyWindow</span><span>(window);
+</span><span>    </span><span style="color:#ffb964;">glfwTerminate</span><span>();
+</span><span>}
+</span></code></pre>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202009060059/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">Vulkan 画三角形第四章：选取物理设备</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202009082023/">
+                                <span class="button__text">Vulkan 画三角形第六章：创建交换链</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

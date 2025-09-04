@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>CMake 从零开始快速上手 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="CMake 从零开始快速上手 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202012112035/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="CMake 从零开始快速上手 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202012112035/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202012112035/">CMake 从零开始快速上手</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2020-12-11
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/c/">#C++</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/cmake/">#CMake</a></span>
+    
+
+        <div class="post-content">
+            <p>CMake 是一个跨平台的构建、测试、打包工具，被广泛使用于 C++ 开源项目中</p>
+<span id="continue-reading"></span>
+<p>本文将介绍 CMake 在 C++ 项目中的通常用法</p>
+<p>本文的例子使用 CMake 常用的规范项目结构，因此可以直接当作 C++ 项目的脚手架</p>
+<h2 id="huan-jing-pei-zhi">环境配置</h2>
+<h3 id="macos">macOS</h3>
+<p>首先我们需要 C++ 编译器和调试器，于是我们可以输入以下命令直接安装 Xcode 的命令行工具来使用它自带的 Clang</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">xcode-select --install
+</span></code></pre>
+<p>然后使用 <code>brew</code> 安装 CMake 就行了</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">brew</span><span> install cmake
+</span></code></pre>
+<h3 id="windows">Windows</h3>
+<p>推荐使用 MSYS2 直接安装集成到 mingw-w64 上的 CMake 和 Clang，打开 MSYS2 Shell 输入以下命令，当然你最好要把放着 CMake 和 Clang 的 <code>bin</code> 文件夹扔到 <code>PATH</code> 环境变量里</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">pacman -S</span><span> mingw-w64-x86_64-cmake
+</span><span style="color:#ffb964;">pacman -S</span><span> mingw-w64-x86_64-clang
+</span></code></pre>
+<p>当然也可以直接到 CMake 官网下载安装包，再去装 mingw-w64 的编译器集成，甚至可以装个 Visual Studio 来使用微软提供的 C++ 编译器，但是很麻烦</p>
+<h2 id="helllo-world">Helllo World</h2>
+<h3 id="xiang-mu-de-mu-lu-jie-gou">项目的目录结构</h3>
+<p>创建一个文件夹命名为 <code>HelloWorld</code>，在其中创建一个 <code>CMakeLists.txt</code> 文件，<code>build</code> 和 <code>src</code> 这两个文件夹。
+把 <code>Hello.cpp</code> 放 <code>src</code> 文件夹里，项目结构大概长这样</p>
+<pre data-lang="txt" style="background-color:#151515;color:#e8e8d3;" class="language-txt "><code class="language-txt" data-lang="txt"><span>- HelloWorld
+</span><span>  - build
+</span><span>  - src
+</span><span>    - Hello.cpp
+</span><span>  - CMakeLists.txt
+</span></code></pre>
+<h3 id="helloworld-cmakelists-txt"><code>HelloWorld/CMakeLists.txt</code></h3>
+<p>这个是 CMake 项目的配置文件，用来描述项目中包含哪些目标，有什么源文件、头文件等等</p>
+<p>它会被 CMake 读取，用于配置 <code>HelloWorld</code> 项目<br>
+看下面它的代码，显然就是字面意义上的限定 CMake 最低版本的要求，然后项目名叫做 <code>HelloWorld</code>，添加一个名为 <code>Hello</code> 的可执行目标，它包括了 <code>src</code> 文件夹里的 <code>Hello.cpp</code> 这个源文件<br>
+最后编译出来就是一个二进制可执行文件，并以 <code>src/Hello.cpp</code> 里的 <code>main</code> 函数作为入口点</p>
+<pre data-lang="cmake" style="background-color:#151515;color:#e8e8d3;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span>cmake_minimum_required(</span><span style="color:#ffb964;">VERSION </span><span>3.0.0)
+</span><span>project(HelloWorld)
+</span><span>
+</span><span>add_executable(Hello src/Hello.cpp)
+</span></code></pre>
+<h3 id="helloworld-src-hello-cpp"><code>HelloWorld/src/Hello.cpp</code></h3>
+<p>这是即将被编译的源文件，包含 <code>main</code> 函数，输出一个字符串</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">#include </span><span style="color:#556633;">&lt;</span><span style="color:#99ad6a;">iostream</span><span style="color:#556633;">&gt;
+</span><span>
+</span><span style="color:#8fbfdc;">int </span><span style="color:#fad07a;">main</span><span>(</span><span style="color:#ffb964;">int</span><span>, </span><span style="color:#8fbfdc;">char</span><span>**) {
+</span><span>    std::cout &lt;&lt; </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Hello, world!\n</span><span style="color:#556633;">&quot;</span><span>;
+</span><span>    </span><span style="color:#8fbfdc;">return </span><span style="color:#cf6a4c;">0</span><span>;
+</span><span>}
+</span></code></pre>
+<h3 id="xiang-mu-gou-jian">项目构建</h3>
+<p>于是我们就可以开始编译了，CMake 不会直接构建项目，它会生成构建所需的与平台有关的中间文件，这是 CMake 跨平台的实现方法，这样对于同一个项目，我们在不同的平台上都能生成对应的中间文件来进行构建<br>
+比如在 Windows 上可以生成 Visual Studio 项目文件，然后用 VS 打开它来编译；类 UNIX 上可以生成 <code>Makefile</code>；此外也可以选择生成跨平台的 <code>build.ninja</code>、macOS 上的 Xcode 项目文件等等</p>
+<p>但是 CMake 生成的这些中间文件很混乱，因此习惯上我们会新建一个 <code>build</code> 文件夹来存放它们，也就是上面项目目录结构里的那个 <code>build</code> 文件夹<br>
+于是在终端中切到 <code>HelloWorld/build</code> 目录，使用生成器生成中间文件，依据操作系统可能需要选择不同的生成器</p>
+<h4 id="linux-he-macos">Linux 和 macOS</h4>
+<p>类 UNIX 系统上默认会生成 <code>Makefile</code>，于是使用 <code>cmake</code> 命令之后再用 <code>make</code> 命令就能编译出可执行文件，直接运行就可以了</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>cd build
+</span><span style="color:#ffb964;">cmake</span><span> ..
+</span><span style="color:#ffb964;">make
+</span><span style="color:#ffb964;">./Hello
+</span></code></pre>
+<h4 id="windows-1">Windows</h4>
+<p>Windows 上不知道默认会生成什么，CMake 文档中没说，Windows 也不会自带 VS 或者 mingw32-make 这样的东西，而且不同 VS 版本的项目还不怎么兼容，因此我们最好使用 <code>-G</code> 参数来手动指定，比如在 PowerShell 中输入下面的命令会在 <code>build</code> 目录下生成 VS 2019 项目</p>
+<pre data-lang="ps1" style="background-color:#151515;color:#e8e8d3;" class="language-ps1 "><code class="language-ps1" data-lang="ps1"><span>cd build
+</span><span>cmake.exe .. -G </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Visual Studio 16 2019</span><span style="color:#556633;">&quot;
+</span></code></pre>
+<p><code>build</code> 目录下应该会有一个 <code>HelloWorld.sln</code>，接下来就直接用 VS 2019 打开它，正常构建就行了</p>
+<p>你也可以安装一个 mingw32-make，然后选择对应的生成器来生成中间文件，这样就能用类似 <code>make</code> 的方式来构建项目</p>
+<p>在 MSYS2 Shell 中安装 mingw32-make</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">pacman -S</span><span> mingw-w64-x86_64-make
+</span></code></pre>
+<p>PowerShell 切到 <code>HelloWorld</code> 目录之后</p>
+<pre data-lang="ps1" style="background-color:#151515;color:#e8e8d3;" class="language-ps1 "><code class="language-ps1" data-lang="ps1"><span>cd build
+</span><span>cmake.exe .. -G </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">MinGW Makefiles</span><span style="color:#556633;">&quot;
+</span><span>mingw32-make.exe
+</span><span>.\Hello.exe
+</span></code></pre>
+<p>具体能生成什么可以输入下面的命令来查询 CMake 支持的所有生成器</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">cmake --help
+</span></code></pre>
+<h2 id="ku-de-pei-zhi-yu-lian-jie">库的配置与链接</h2>
+<p>刚刚我们构建了一个可执行目标 <code>Hello</code>，但是我们可能需要引入外部的开源库或者项目本身的库，这时我们就需要把 <code>Hello</code> 跟这堆库链接起来，并且把库的头文件暴露给 <code>Hello</code></p>
+<p>假设有一个外部库 <code>HelloExternalLib</code>，一般习惯把外部库单独放在一个文件夹里，于是我们创建一个 <code>external</code> 文件夹把它扔进去<br>
+项目结构长这样</p>
+<pre data-lang="txt" style="background-color:#151515;color:#e8e8d3;" class="language-txt "><code class="language-txt" data-lang="txt"><span>- HelloWorld
+</span><span>  - build
+</span><span>  - external
+</span><span>    - HelloExternalLib
+</span><span>      - include
+</span><span>        - HelloExternalLib
+</span><span>          - HelloExternalLib.h
+</span><span>      - src
+</span><span>        - HelloExternalLib.cpp
+</span><span>      - CMakeLists.txt
+</span><span>    - CMakeLists.txt
+</span><span>  - src
+</span><span>    - Hello.cpp
+</span><span>  - CMakeLists.txt
+</span></code></pre>
+<p><code>HelloWorld/external/HelloExternalLib/include/HelloExternalLib/HelloExternalLib.h</code></p>
+<p>是这个库的一个头文件，随便声明一个方法好了</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">#ifndef</span><span> HELLO_EXTERNAL_LIB_H
+</span><span style="color:#8fbfdc;">#define </span><span style="color:#ffb964;">HELLO_EXTERNAL_LIB_H
+</span><span>
+</span><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">sayHello</span><span>();
+</span><span>
+</span><span style="color:#8fbfdc;">#endif  </span><span style="color:#888888;">// HELLO_EXTERNAL_LIB_H
+</span></code></pre>
+<p><code>HelloWorld/external/HelloExternalLib/src/HelloExternalLib.cpp</code></p>
+<p>在这个文件中定义那个方法</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">#include </span><span style="color:#556633;">&lt;</span><span style="color:#99ad6a;">HelloExternalLib/HelloExternalLib.h</span><span style="color:#556633;">&gt;
+</span><span>
+</span><span style="color:#8fbfdc;">#include </span><span style="color:#556633;">&lt;</span><span style="color:#99ad6a;">iostream</span><span style="color:#556633;">&gt;
+</span><span>
+</span><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">sayHello</span><span>() {
+</span><span>    std::cout &lt;&lt; </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Hello, world!\n</span><span style="color:#556633;">&quot;</span><span>;
+</span><span>}
+</span></code></pre>
+<p><code>HelloWorld/external/HelloExternalLib/CMakeLists.txt</code></p>
+<p>这个文件用于构建 <code>HelloExternalLib</code> 这个库本身，添加了 <code>HelloExternalLib</code> 的库目标，包括 <code>HelloExternalLib.cpp</code> 这个源文件<br>
+其中的 <code>target_include_directories</code> 用于指定库的头文件路径，<code>PUBLIC</code> 代表如果库被链接这些头文件对外部是可见的，改成 <code>PRIVATE</code> 的话就是对外部不可见，只有库本身的源文件能够找到这些头文件，比如 <code>Hello</code> 目标链接了 <code>HelloExternalLib</code>，<code>include</code> 文件夹中的头文件都是对 <code>Hello</code> 可见的</p>
+<pre data-lang="cmake" style="background-color:#151515;color:#e8e8d3;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span>cmake_minimum_required(</span><span style="color:#ffb964;">VERSION </span><span>3.0.0)
+</span><span>project(HelloExternalLib)
+</span><span>
+</span><span>add_library(HelloExternalLib src/HelloExternalLib.cpp)
+</span><span>
+</span><span>target_include_directories(HelloExternalLib </span><span style="color:#ffb964;">PUBLIC </span><span>include)
+</span></code></pre>
+<p><code>HelloWorld/external/CMakeLists.txt</code></p>
+<p>这个文件仅仅是通过 <code>add_subdirectory</code> 把子文件夹添加到 CMake 项目中，也就是把 <code>HelloExternalLib</code> 这个文件夹加进来，这样 CMake 才会读取子文件夹中的 <code>CMakeLists.txt</code> 文件并进行相应的构建工作<br>
+注意子文件夹可以有多级目录嵌套，并且是递归进行的，当然需要在每一级目录下都编写 <code>CMakeList.txt</code> 然后加上 <code>add_subdirectory</code></p>
+<pre data-lang="cmake" style="background-color:#151515;color:#e8e8d3;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span>add_subdirectory(HelloExternalLib)
+</span></code></pre>
+<p><code>HelloWorld/CMakeLists.txt</code></p>
+<p>这个文件就是刚刚用来配置 <code>HelloWorld</code> 项目的</p>
+<p>我们加一行 <code>add_subdirectory</code> 来让它添加 <code>external</code> 子目录</p>
+<p>并且使用 <code>target_link_libraries</code> 把 <code>Hello</code> 这个可执行目标跟 <code>HelloExternalLib</code> 这个库目标链接起来，并使用 <code>PRIVATE</code> 的链接方式<br>
+<code>PRIVATE</code> 这种链接方式表示 <code>HelloExternalLib</code> 不会被暴露给链接了 <code>Hello</code> 的其他目标，如果使用 <code>PUBLIC</code> 链接方式，其他的目标链接 <code>Hello</code> 时也会自动链接 <code>HelloExternalLib</code>，尽可能使用 <code>PRIVATE</code>，这样可以避免很多潜在的问题<br>
+而对于可执行目标来说，它不会被其它的目标链接，所以可以全部使用 <code>PRIVATE</code></p>
+<pre data-lang="cmake" style="background-color:#151515;color:#e8e8d3;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span>cmake_minimum_required(</span><span style="color:#ffb964;">VERSION </span><span>3.0.0)
+</span><span>project(HelloWorld)
+</span><span>
+</span><span>add_subdirectory(external)
+</span><span>
+</span><span>add_executable(Hello src/Hello.cpp)
+</span><span>
+</span><span>target_link_libraries(Hello </span><span style="color:#ffb964;">PRIVATE </span><span>HelloExternalLib)
+</span></code></pre>
+<p><code>HelloWorld/src/Hello.cpp</code></p>
+<p>这时我们的源文件中就可以包含外部库的头文件并调用里面声明的方法了</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">#include </span><span style="color:#556633;">&lt;</span><span style="color:#99ad6a;">HelloExternalLib/HelloExternalLib.h</span><span style="color:#556633;">&gt;
+</span><span>
+</span><span style="color:#8fbfdc;">int </span><span style="color:#fad07a;">main</span><span>(</span><span style="color:#ffb964;">int</span><span>, </span><span style="color:#8fbfdc;">char</span><span>**) {
+</span><span>    </span><span style="color:#ffb964;">sayHello</span><span>();
+</span><span>}
+</span></code></pre>
+<p>然后生成中间文件<br>
+macOS 和 Linux 下可以这样，Windows 下就根据上文添加 <code>-G</code> 参数并选择合适的生成器</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>cd build
+</span><span style="color:#ffb964;">cmake</span><span> ..
+</span></code></pre>
+<p>最后使用 <code>make</code> 或者 Windows 下的其他工具构建就行了</p>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202009241403/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">Vulkan 画三角形第十五章：总结</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202012112141/">
+                                <span class="button__text">VS Code 写一切：CMake</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

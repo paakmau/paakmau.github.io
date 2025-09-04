@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>openGauss 的 NUMA-aware 部署 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="openGauss 的 NUMA-aware 部署 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202502202237/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="openGauss 的 NUMA-aware 部署 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202502202237/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202502202237/">openGauss 的 NUMA-aware 部署</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2025-02-20
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/numa/">#NUMA</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/opengauss/">#openGauss</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/shu-ju-ku/">#数据库</a></span>
+    
+
+        <div class="post-content">
+            <p>openGauss 针对鲲鹏 NUMA 架构的设备做了一些优化，能在发挥多核并行优势的同时减少跨 NUMA 节点访存的问题。
+本文记录以 NUMA-aware 方式部署 openGauss 的过程。</p>
+<span id="continue-reading"></span><h2 id="huan-jing">环境</h2>
+<p>两路鲲鹏 920 7260，每路 64 核；四个 NUMA 节点，每节点 32 核：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">$</span><span> lscpu | </span><span style="color:#ffb964;">grep</span><span> NUMA
+</span><span style="color:#ffb964;">NUMA</span><span> node(s):                       4
+</span><span style="color:#ffb964;">NUMA</span><span> node0 CPU(s):                  0-31
+</span><span style="color:#ffb964;">NUMA</span><span> node1 CPU(s):                  32-63
+</span><span style="color:#ffb964;">NUMA</span><span> node2 CPU(s):                  64-95
+</span><span style="color:#ffb964;">NUMA</span><span> node3 CPU(s):                  96-127
+</span></code></pre>
+<p>系统发行版：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">$</span><span> distro
+</span><span style="color:#ffb964;">Name:</span><span> openEuler 22.03 (LTS-SP4)
+</span><span style="color:#ffb964;">Version:</span><span> 22.03 (LTS-SP4)
+</span><span style="color:#ffb964;">Codename:</span><span> LTS-SP4
+</span></code></pre>
+<h2 id="wei-wal-writer-xian-cheng-xuan-ze-cpu-he-xin">为 WAL writer 线程选择 CPU 核心</h2>
+<p>首先检查 <code>pg_xlog</code> 目录是否为软链接：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>cd ${</span><span style="color:#ffb964;">PGDATA</span><span>}
+</span><span style="color:#ffb964;">file</span><span> pg_xlog
+</span></code></pre>
+<p>随后查询目录挂载磁盘信息：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">df -h
+</span></code></pre>
+<p>本文环境中查询到的挂载设备为 <code>/dev/nvme1n1</code>。
+于是去查询该磁盘对应的 NUMA 节点：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">cat</span><span> /sys/class/nvme/nvme1/device/numa_node
+</span></code></pre>
+<p>这里我查询到的 NUMA 节点编号为 2。
+接下来查询该 NUMA 节点对应的 CPU 核心编号范围：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">lscpu
+</span></code></pre>
+<p>这里查询出来节点 2 中 CPU 核心编号为 <code>NUMA node2 CPU(s): 64-95</code>。
+一般选择编号最小的核心就行，这里我们选择 64。
+最后配置 GUC 参数将 WAL writer 线程绑定到 64 号 CPU 上：</p>
+<pre data-lang="conf" style="background-color:#151515;color:#e8e8d3;" class="language-conf "><code class="language-conf" data-lang="conf"><span style="color:#ffb964;">walwriter_cpu_bind </span><span>= </span><span style="color:#cf6a4c;">64
+</span></code></pre>
+<h2 id="wei-xian-cheng-chi-xuan-ze-cpu-he-xin-fan-wei">为线程池选择 CPU 核心范围</h2>
+<p>本文所用环境具有四个 NUMA 节点，每节点 32 个核心。
+WAL writer 已经独占了一个核心（64）。
+由于客户端一般与数据库分离部署，因此考虑每节点保留 3 个核心用于处理网络中断，具体可参考<a href="https://paakmau.github.io/202505052150/">NUMA 架构设备的网卡中断绑核</a>。
+于是选择 0-28、32-60、65-92、96-124 总共 115 个核心用于线程池。
+考虑为每个核心分配 3 个线程，于是线程池容量为 115 * 3 = 345。
+线程分组数与 NUMA 节点数量保持一致，配置为 4。</p>
+<p>最后配置 GUC 参数：</p>
+<pre data-lang="conf" style="background-color:#151515;color:#e8e8d3;" class="language-conf "><code class="language-conf" data-lang="conf"><span style="color:#ffb964;">enable_thread_pool </span><span>= on
+</span><span style="color:#ffb964;">thread_pool_attr </span><span>= </span><span style="color:#99ad6a;">&#39;345, 4, (cpubind: 0-28, 32-60, 65-92, 96-124)&#39;
+</span></code></pre>
+<p>这里仅提供一个绑核思路，具体可依据实际情况（如并发量、客户端部署方式等）进行调整。</p>
+<h2 id="tong-guo-numactl-qi-dong-shu-ju-ku">通过 <code>numactl</code> 启动数据库</h2>
+<p>通过 <code>numactl</code> 启动 openGauss 的目的是为主线程绑核，不会影响线程池的绑核。
+主线程只需要避开 WAL writer 对应的核心就行，建议与线程池绑核保持一致：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">numactl -C</span><span> 0-28,32-60,65-92,96-124 gs_ctl start</span><span style="color:#ffb964;"> -D </span><span>${</span><span style="color:#ffb964;">PGDATA</span><span>}
+</span></code></pre>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202502192154/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">NUMA 相关命令速查笔记</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202503102205/">
+                                <span class="button__text">内网 openEuler 常用配置</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

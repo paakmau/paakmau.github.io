@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>现代 CMake 项目的正确姿势 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="现代 CMake 项目的正确姿势 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202201042338/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="现代 CMake 项目的正确姿势 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202201042338/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202201042338/">现代 CMake 项目的正确姿势</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2022-01-04
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/c/">#C++</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/cmake/">#CMake</a></span>
+    
+
+        <div class="post-content">
+            <p>本文总结了现代 CMake 项目实践中的一些经验。</p>
+<span id="continue-reading"></span>
+<p>这里贴一个比较完善的模板项目。</p>
+<p><a href="https://github.com/paakmau/modern-cmake-template">Modern CMake Template</a></p>
+<h2 id="zhi-ding-cmake-ban-ben">指定 CMake 版本</h2>
+<p>首先需要在根目录的 <code>CMakeLists.txt</code> 中指定项目所需的 CMake 版本。
+下面这个例子指定项目所需的 CMake 最低版本为 3.15。</p>
+<pre data-lang="cmake" style="background-color:#151515;color:#e8e8d3;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span>cmake_minimum_required(</span><span style="color:#ffb964;">VERSION </span><span>3.15)
+</span></code></pre>
+<p>在 3.12 之后，CMake 还支持指定最高版本。
+例如下面的例子不仅指定了最低版本为 3.15，还指定了最高为 3.21。</p>
+<pre data-lang="cmake" style="background-color:#151515;color:#e8e8d3;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span>cmake_minimum_required(</span><span style="color:#ffb964;">VERSION </span><span>3.15...3.21)
+</span></code></pre>
+<p>不过 CMake 大版本中的小版本应该都是向下兼容的，所以要求不高的情况下也可以仅指定最低版本。</p>
+<h2 id="project">Project</h2>
+<p>我觉得没什么好说的，可以直接看示例。</p>
+<pre data-lang="cmake" style="background-color:#151515;color:#e8e8d3;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span>project(
+</span><span>  hello
+</span><span>  </span><span style="color:#ffb964;">VERSION </span><span>0.0.1
+</span><span>  DESCRIPTION </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">A simple hello world</span><span style="color:#556633;">&quot;
+</span><span>  </span><span style="color:#ffb964;">LANGUAGES </span><span>CXX)
+</span></code></pre>
+<h2 id="target">Target</h2>
+<p>一个基于 CMake 的构建系统是由若干个逻辑上的 Target 组织起来的。
+每个 Target 对应到一个可执行文件或一个类库，又或者是包含一些自定义命令的自定义 Target。</p>
+<h2 id="executable">Executable</h2>
+<p>一个 executable target 最后构建的产物是一个可执行文件。</p>
+<pre data-lang="cmake" style="background-color:#151515;color:#e8e8d3;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span>add_executable(hello src/hello.cpp include/hello.h)
+</span></code></pre>
+<p>上面这个例子中，<code>hello</code> 既是目标名，也是最终构建出的可执行文件的名称。
+而紧随其后的 <code>hello.cpp</code> 和 <code>hello.h</code> 则是它的源文件和头文件。
+实际上头文件并不需要添加在目标中，因为在编译目标时，CMake 只是把这些文件一起传递给编译器，编译器只编译源文件，这些头文件会被直接忽略。
+但是有个问题是某些 IDE 会读取目标中的文件，如果不把头文件一起添加进去，它们可能不会被 IDE 识别。
+因此仍然建议把头文件添加进目标中。</p>
+<h2 id="library">Library</h2>
+<p>一个 library target 最后构建的产物是一个类库。</p>
+<pre data-lang="cmake" style="background-color:#151515;color:#e8e8d3;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span>add_library(hello src/hello.cpp include/hello.h)
+</span></code></pre>
+<p>同样的，<code>hello</code> 既是目标名，也是编译出的类库不含扩展名和 <code>lib</code> 前缀的文件名。
+至于扩展名是什么，取决于库是动态库还是静态库，当然也跟操作系统有关。</p>
+<p>如果不手动指定，默认是静态库。
+如果想修改默认行为，可以使用 CMake 提供的 <a href="https://cmake.org/cmake/help/latest/variable/BUILD_SHARED_LIBS.html#variable:BUILD_SHARED_LIBS"><code>BUILD_SHARED_LIBS</code></a> 全局变量。
+不过我们也可以显式指定静态库，这样就不会受到 <code>BUILD_SHARED_LIBS</code> 影响。</p>
+<pre data-lang="cmake" style="background-color:#151515;color:#e8e8d3;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span>add_library(hello </span><span style="color:#ffb964;">STATIC </span><span>src/hello.cpp include/hello.h)
+</span></code></pre>
+<p>对于普通的类库，<code>STATIC</code> 可以换成 <code>SHARED</code> 和 <code>MODULE</code>。
+前两个分别是静态链接和动态链接。
+<code>MODULE</code> 则是不会在构建时链接，但是运行时可能通过类似 <code>dlopen</code> 的函数加载。</p>
+<p>特别的，我们可以用 <code>INTERFACE</code> 指定一个 header-only 的类库，它不需要编译。</p>
+<p>更特别的，我们可以用 <code>ALIAS</code> 为一个 library target 添加别名。
+常见的情况是我们会用它来给目标套上一个命名空间。</p>
+<h2 id="zi-dong-tian-jia-wen-jian">自动添加文件</h2>
+<p>问题来了，源文件很多我不想一个一个手写怎么办？
+CMake 提供了一个命令，可以找出某个目录下的所有源文件，扔进一个变量里。
+那么我们上面的例子就可以写成这样。</p>
+<pre data-lang="cmake" style="background-color:#151515;color:#e8e8d3;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span>aux_source_directory(src SOURCE_LIST)
+</span><span>add_executable(hello ${</span><span style="color:#ffb964;">SOURCE_LIST</span><span>} include/hello.h)
+</span></code></pre>
+<p>那么问题又来了，头文件怎么办？
+很遗憾 CMake 没有找头文件的命令。
+那我们只能使用 <code>file</code> 命令手动找了。
+最后可以写成这样。</p>
+<pre data-lang="cmake" style="background-color:#151515;color:#e8e8d3;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span>file(</span><span style="color:#ffb964;">GLOB </span><span>HEADER_LIST include/*.h)
+</span><span>aux_source_directory(src SOURCE_LIST)
+</span><span>add_executable(hello ${</span><span style="color:#ffb964;">SOURCE_LIST</span><span>} ${</span><span style="color:#ffb964;">HEADER_LIST</span><span>})
+</span></code></pre>
+<p>但是需要注意，根据<a href="https://cmake.org/cmake/help/latest/command/file.html#filesystem">文档</a>，CMake 不提倡使用 <code>GLOB</code> 或者 <code>aux_source_directory</code> 来自动添加文件。
+因为在新增或删除文件时，<code>CMakeLists.txt</code> 没有发生改变，于是 CMake 也就无法自动重新生成构建系统。
+没错，也就是说，正确的做法是像最开始那样手动添加每一个文件。
+是的，这非常的离谱。
+不过有些 IDE 会自动处理这些问题，勇敢无畏的程序员也可以很轻松地手动重新生成。
+所以我认为这也不是太大的问题。</p>
+<h2 id="zhi-ding-tou-wen-jian-mu-lu">指定头文件目录</h2>
+<p>对于这个目标，我们可以指定它的头文件目录。
+这个目录会在编译的时候被用到。</p>
+<pre data-lang="cmake" style="background-color:#151515;color:#e8e8d3;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span>target_include_directories(hello </span><span style="color:#ffb964;">PUBLIC </span><span>include)
+</span></code></pre>
+<p>提一下 <code>PUBLIC</code>、<code>PRIVATE</code> 和 <code>INTERFACE</code> 的区别。
+<code>PUBLIC</code> 的目录会被暴露给链接到该目标的其他目标，对于 executable target 而言 <code>PUBLIC</code> 是没有意义的。
+<code>PRIVATE</code> 则是该目标的私有头文件目录。
+<code>INTERFACE</code> 则是会暴露给其他目标，但不会用于该目标的编译，一般只用于 header-only 的类库。
+具体来说， <code>PUBLIC</code> 和 <code>PRIVATE</code> 产生 <a href="https://cmake.org/cmake/help/latest/prop_tgt/INCLUDE_DIRECTORIES.html#prop_tgt:INCLUDE_DIRECTORIES"><code>INCLUDE_DIRECTORIES</code></a> 属性，该属性最终传递给编译器；<code>PUBLIC</code> 和 <code>INTERFACE</code> 会产生 <a href="https://cmake.org/cmake/help/latest/prop_tgt/INTERFACE_INCLUDE_DIRECTORIES.html#prop_tgt:INTERFACE_INCLUDE_DIRECTORIES"><code>INTERFACE_INCLUDE_DIRECTORIES</code></a> 属性，最终传递给依赖该目标的其他目标。</p>
+<h2 id="lian-jie-lei-ku">链接类库</h2>
+<p>这个功能非常重要，链接一个类库，就可以得到它的 <code>PUBLIC</code> 头文件，在编译后也会链接到这个类库。
+链接也分为 <code>PUBLIC</code> 和 <code>PRIVATE</code>，区别在于链接是否会传递。</p>
+<pre data-lang="cmake" style="background-color:#151515;color:#e8e8d3;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span>target_link_libraries(other_target </span><span style="color:#ffb964;">PRIVATE </span><span>hello)
+</span></code></pre>
+<h2 id="xun-zhao-wai-bu-ku">寻找外部库</h2>
+<p>我们在需要一些外部库的时候，可能会使用系统包管理来直接安装，比如直接用 <code>apt</code> 安装 glm。
+这些库或者发行版的维护者可能会提供 CMake 支持。
+这个时候我们只需要使用 <code>find_package</code> 命令就能把这些外部库导入成一个目标了。</p>
+<pre data-lang="cmake" style="background-color:#151515;color:#e8e8d3;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span>find_package(glm </span><span style="color:#ffb964;">REQUIRED</span><span>)
+</span><span>target_link_libraries(hello </span><span style="color:#ffb964;">PRIVATE </span><span>glm::glm)
+</span></code></pre>
+<h2 id="an-zhuang">安装</h2>
+<p>那么对于自己实现的可执行文件或类库，我们也可以使用 CMake 来配置安装。</p>
+<p>首先我们要修改一下头文件目录的指定。
+因为头文件目录的相对路径在构建与安装中是不同的。
+于是我们使用 <code>BUILD_INTERFACE</code> 与 <code>INSTALL_INTERFACE</code> 来区分对待构建与安装情况下的头文件目录。
+有一点类似条件编译，构造时我们使用 <code>CMAKE_CURRENT_SOURCE_DIR</code> 变量找到头文件目录，安装时我们直接相对于安装前缀找到头文件目录的路径。</p>
+<pre data-lang="cmake" style="background-color:#151515;color:#e8e8d3;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span>target_include_directories(
+</span><span>  hello </span><span style="color:#ffb964;">PUBLIC
+</span><span>  $&lt;</span><span style="color:#ffb964;">BUILD_INTERFACE</span><span>:${</span><span style="color:#ffb964;">CMAKE_CURRENT_SOURCE_DIR</span><span>}/</span><span style="color:#ffb964;">include</span><span>&gt;
+</span><span>  $&lt;</span><span style="color:#ffb964;">INSTALL_INTERFACE</span><span>:</span><span style="color:#ffb964;">include</span><span>&gt;)
+</span></code></pre>
+<p>然后我们安装类库编译出来的二进制文件。</p>
+<p>其中 <code>EXPORT</code> 是用于支持 <code>find_package</code> 的。
+它必须写在其他的选项之前。
+但是它不会直接安装具体的 export 文件，我们需要再写一个 <code>install(EXPORT)</code> 命令来完成它，具体见后文。</p>
+<pre data-lang="cmake" style="background-color:#151515;color:#e8e8d3;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span>install(
+</span><span>  </span><span style="color:#ffb964;">TARGETS </span><span>hello
+</span><span>  </span><span style="color:#ffb964;">EXPORT </span><span>helloConfig
+</span><span>  </span><span style="color:#ffb964;">ARCHIVE
+</span><span>  </span><span style="color:#ffb964;">LIBRARY
+</span><span>  </span><span style="color:#ffb964;">RUNTIME</span><span>)
+</span></code></pre>
+<p><code>ARCHIVE</code> 基本上是静态库，默认安装在 <code>lib</code> 中；<code>LIBRARY</code> 基本上是动态库，默认安装在 <code>lib</code> 中；<code>RUNTIME</code> 基本上是可执行文件，默认安装在 <code>bin</code> 中。</p>
+<p>需要注意的是，头文件我们需要手动把头文件的目录安装到指定路径下，一般是 <code>include</code>。</p>
+<pre data-lang="cmake" style="background-color:#151515;color:#e8e8d3;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span>install(</span><span style="color:#ffb964;">DIRECTORY </span><span>include </span><span style="color:#ffb964;">DESTINATION </span><span>include)
+</span></code></pre>
+<p>接下来我们安装 export 文件，这样就能支持其他项目使用 <code>find_package</code> 导入我们的目标了。</p>
+<pre data-lang="cmake" style="background-color:#151515;color:#e8e8d3;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span>install(
+</span><span>  </span><span style="color:#ffb964;">EXPORT </span><span>helloConfig
+</span><span>  </span><span style="color:#ffb964;">DESTINATION </span><span>lib/cmake/hello
+</span><span>  NAMESPACE hello::
+</span><span>  </span><span style="color:#ffb964;">FILE </span><span>helloConfig.cmake)
+</span></code></pre>
+<p>不过要注意一下，这个命令给我们的目标加上了命名空间，所以导入的目标名应该是 <code>hello::hello</code>。
+另外，有一些奇妙的流派可能会更喜欢用下划线而不是冒号。</p>
+<p>最后我们创建并安装包的版本文件。</p>
+<pre data-lang="cmake" style="background-color:#151515;color:#e8e8d3;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span style="color:#8fbfdc;">include</span><span>(CMakePackageConfigHelpers)
+</span><span>
+</span><span style="color:#ffb964;">write_basic_package_version_file</span><span>(
+</span><span>  helloConfigVersion.cmake
+</span><span>  </span><span style="color:#ffb964;">COMPATIBILITY </span><span>AnyNewerVersion)
+</span><span>
+</span><span>install(
+</span><span>  </span><span style="color:#ffb964;">FILES </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">PROJECT_BINARY_DIR</span><span style="color:#99ad6a;">}/helloConfigVersion.cmake</span><span style="color:#556633;">&quot;
+</span><span>  </span><span style="color:#ffb964;">DESTINATION </span><span>lib/cmake/hello)
+</span></code></pre>
+<p>对于 <code>write_basic_package_version_file</code> 命令，如果不指定 <code>VERSION</code> 参数，默认会使用 <code>PROJECT_VERSION</code>，但是如果项目的版本也没有指定，CMake 就会报错。</p>
+<p>另外提一嘴，如果需要安装的库使用 <code>find_package</code> 依赖了系统中其他外部库，这个时候就比较复杂了。
+我们就不能简单的直接导出最终的 <code>helloConfig.cmake</code>，需要先导出一个 <code>helloTargets.cmake</code>。
+还要写一个 <code>helloConfig.cmake.in</code> 文件，在里面导入依赖，并引入这个 <code>helloTargets.cmake</code>。
+使用 <code>configure_file</code> 命令根据 <code>helloConfig.cmake.in</code> 文件生成最终的 <code>helloConfig.cmake</code>，才可以安装它。
+这个东西非常折磨，虽然说我们可以不使用系统提供的库，但是有时候可怜的程序员会陷入纠结，比如 boost。
+有的外部库还提供了一些清奇的思路，比如 vulkan 就是在程序运行时动态加载的。</p>
+<h2 id="xia-zai-wai-bu-ku">下载外部库</h2>
+<p>之前说的都是把库安装到系统中，但是库的版本不好控制。
+于是我们考虑直接把库的指定版本下载下来。
+这是 CMake 原生支持的比较没那么折磨但是其实也很折磨的导入外部库的一种方式了。</p>
+<p>比如导入 Google Benchmark 就可以像这样。</p>
+<pre data-lang="cmake" style="background-color:#151515;color:#e8e8d3;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span style="color:#ffb964;">FetchContent_Declare</span><span>(
+</span><span>  googlebenchmark
+</span><span>  </span><span style="color:#ffb964;">GIT_REPOSITORY </span><span>https://github.com/google/benchmark.git
+</span><span>  </span><span style="color:#ffb964;">GIT_TAG </span><span>v1.6.0)
+</span><span>set(</span><span style="color:#ffb964;">BENCHMARK_ENABLE_TESTING </span><span>OFF </span><span style="color:#ffb964;">CACHE </span><span style="color:#8fbfdc;">BOOL </span><span style="color:#556633;">&quot;&quot; </span><span style="color:#ffb964;">FORCE</span><span>)
+</span><span>set(</span><span style="color:#ffb964;">BENCHMARK_ENABLE_INSTALL </span><span>OFF </span><span style="color:#ffb964;">CACHE </span><span style="color:#8fbfdc;">BOOL </span><span style="color:#556633;">&quot;&quot; </span><span style="color:#ffb964;">FORCE</span><span>)
+</span><span style="color:#ffb964;">FetchContent_MakeAvailable</span><span>(googlebenchmark)
+</span></code></pre>
+<p>需要注意就是这样下载下来经常需要把测试和安装关掉，不然你会很痛苦。</p>
+<p>接下来正常链接就可以了。</p>
+<pre data-lang="cmake" style="background-color:#151515;color:#e8e8d3;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span>add_executable(Benches BenchSimple.cpp)
+</span><span>target_link_libraries(Benches hello benchmark::benchmark_main)
+</span></code></pre>
+<h2 id="can-kao-zi-liao">参考资料</h2>
+<p><a href="https://gitlab.com/CLIUtils/modern-cmake">Modern CMake</a></p>
+<p><a href="https://cmake.org/cmake/help/latest/">CMake Reference Documentation</a></p>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202112312231/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">RESTful 接口设计经验总结</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202201081507/">
+                                <span class="button__text">使用 xmake 管理 C++ 项目</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

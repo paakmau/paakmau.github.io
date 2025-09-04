@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Jenkinsfile 使用笔记 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="Jenkinsfile 使用笔记 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202504052145/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="Jenkinsfile 使用笔记 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202504052145/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202504052145/">Jenkinsfile 使用笔记</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2025-04-05
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/jenkins/">#Jenkins</a></span>
+    
+
+        <div class="post-content">
+            <p>Jenkins 流水线用于实现自动化且可复现的 CI/CD 流水线，支持声明式与脚本式两种语法。
+一种公认的最佳实践是将流水线脚本编写为 <code>Jenkinsfile</code>，并托管在远程仓库（比如 GitHub）中。</p>
+<span id="continue-reading"></span>
+<p>参考文档：</p>
+<p><a href="https://www.jenkins.io/doc/pipeline/tour/getting-started">https://www.jenkins.io/doc/pipeline/tour/getting-started</a></p>
+<p><a href="https://www.jenkins.io/doc/book/pipeline/syntax">https://www.jenkins.io/doc/book/pipeline/syntax</a></p>
+<h2 id="sheng-ming-shi-liu-shui-xian">声明式流水线</h2>
+<p>声明式流水线可读性比较好，上手比较简单，但是没有那么灵活。</p>
+<p>使用远程仓库托管流水线脚本的情况下，仓库会被下载到流水线的工作路径中。
+可以用 <code>pwd</code> 命令或者环境变量 <code>WORKSPACE</code> 确认实际的工作路径，一般是 <code>&lt;agent-remote-directory&gt;/workspace/&lt;pipeline-name&gt;</code>。</p>
+<p>Jenkins 流水线配置中默认的轻量级检出只会获取流水线脚本文件本身（比如常用的 <code>Jenkinsfile</code>），仓库中的其他文件将不会被检出。
+但是 <code>pipeline</code> 实际上包含了一个隐式的 <code>checkout scm</code>，它会执行额外的命令，来将仓库的指定分支完整地检出到节点上。</p>
+<h3 id="declarative-pipeline-simple-example">声明式流水线简单示例</h3>
+<p>先提供一个部署服务端的简单示例：</p>
+<pre data-lang="groovy" style="background-color:#151515;color:#e8e8d3;" class="language-groovy "><code class="language-groovy" data-lang="groovy"><span>pipeline {
+</span><span>    agent any
+</span><span>    parameters {
+</span><span>        string(</span><span style="color:#7697d6;">name</span><span>: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">PORT</span><span style="color:#556633;">&#39;</span><span>, </span><span style="color:#7697d6;">defaultValue</span><span>: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">8080</span><span style="color:#556633;">&#39;</span><span>, </span><span style="color:#7697d6;">description</span><span>: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">The port which the application will listen on.</span><span style="color:#556633;">&#39;</span><span>)
+</span><span>    }
+</span><span>    stages {
+</span><span>        stage(</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">Prepare</span><span style="color:#556633;">&#39;</span><span>) {
+</span><span>            steps {
+</span><span>                sh </span><span style="color:#556633;">&#39;&#39;&#39;
+</span><span style="color:#99ad6a;">                    cd ./script
+</span><span style="color:#99ad6a;">                    chmod +x ./*.sh
+</span><span style="color:#99ad6a;">                </span><span style="color:#556633;">&#39;&#39;&#39;
+</span><span>            }
+</span><span>        }
+</span><span>        stage(</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">Deploy</span><span style="color:#556633;">&#39;</span><span>) {
+</span><span>            steps {
+</span><span>                echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Deploying to agent on port ${</span><span style="color:#8fbfdc;">params.PORT</span><span style="color:#99ad6a;">}.</span><span style="color:#556633;">&quot;
+</span><span>                sh </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">./script/deploy.sh ${</span><span style="color:#8fbfdc;">params.PORT</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span><span>            }
+</span><span>        }
+</span><span>    }
+</span><span>    post {
+</span><span>        success {
+</span><span>            echo </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">Deployment succeeded!</span><span style="color:#556633;">&#39;
+</span><span>        }
+</span><span>        failure {
+</span><span>            echo </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">Deployment failed!</span><span style="color:#556633;">&#39;
+</span><span>        }
+</span><span>        cleanup {
+</span><span>            echo </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">This will always run last.</span><span style="color:#556633;">&#39;
+</span><span>            sh </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">./script/cleanup.sh</span><span style="color:#556633;">&#39;
+</span><span>        }
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>上面的脚本将具体的命令封装在脚本里，因此需要将 <code>Jenkinsfile</code> 跟脚本一起托管在仓库中，并以 <code>Pipeline script from SCM</code> 的方式进行配置。</p>
+<p>项目目录结构：</p>
+<pre data-lang="txt" style="background-color:#151515;color:#e8e8d3;" class="language-txt "><code class="language-txt" data-lang="txt"><span>.
+</span><span>├── Jenkinsfile
+</span><span>└── script
+</span><span>    ├── cleanup.sh
+</span><span>    └── deploy.sh
+</span></code></pre>
+<p>它的大致效果：</p>
+<ul>
+<li>Jenkins 随机选择一个可用的节点，在该节点上执行脚本中的各个 <code>stage</code>。</li>
+<li>在 Jenkins 界面上提供一个 <code>PORT</code> 参数，用于指定部署的端口号。</li>
+<li>为 <code>./script</code> 路径内的 <code>.sh</code> 脚本添加可执行权限，随后执行部署脚本。</li>
+<li>视部署成功与否执行对应的清理脚本，最终再执行公共清理脚本</li>
+</ul>
+<p>接下来简单介绍一下使用到的语法：</p>
+<ul>
+<li>
+<p><code>pipeline</code></p>
+<p>声明式流水线必须写在 <code>pipeline</code> 的内部。</p>
+</li>
+<li>
+<p><code>agent</code></p>
+<p>可以写在 <code>pipeline</code>、<code>matrix</code>、<code>stage</code> 下。</p>
+<p>用于指定作用域中任务的执行节点。
+可通过 <code>label</code> 限制节点的标签，可以使用标签条件，比如 <code>agent { label 'ubuntu-22.04 &amp;&amp; aarch64' }</code> 或 <code>agent { label 'ubuntu-22.04 || ubuntu-24.04' }</code>。</p>
+<p>作用域的执行节点由最接近它的 <code>agent</code> 决定，比如可以在 <code>pipeline</code> 指定全局的 <code>agent</code>，再对各个 <code>stage</code> 单独指定其 <code>agent</code>。
+每个 <code>agent</code> 的限制条件可能筛选出不止一个节点，但只会执行在单个节点上。</p>
+</li>
+<li>
+<p><code>parameters</code></p>
+<p>用于指定流水线的参数，执行一次后会自动同步到 Jenkins 界面上。</p>
+</li>
+<li>
+<p><code>stage</code></p>
+<p>流水线需要执行的任务。
+为了便于维护，不建议直接在 <code>Jenkinsfile</code> 中编写复杂的逻辑，最好把需要执行的命令封装在单独的脚本中。</p>
+</li>
+<li>
+<p><code>post</code></p>
+<p>可以写在 <code>pipeline</code>、<code>matrix</code>、<code>stage</code> 下。</p>
+<p>用于指定流水线执行完成后的一些附加命令，通常用于清理环境。</p>
+</li>
+</ul>
+<h3 id="matrix-shi-li"><code>matrix</code> 示例</h3>
+<p>再提供一个在不同 CPU 架构与不同操作系统的节点上进行构建与测试的示例，使用 <code>matrix</code> 实现：</p>
+<pre data-lang="groovy" style="background-color:#151515;color:#e8e8d3;" class="language-groovy "><code class="language-groovy" data-lang="groovy"><span>pipeline {
+</span><span>    agent none
+</span><span>    parameters {
+</span><span>        choice(
+</span><span>            </span><span style="color:#7697d6;">name</span><span>: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">ARCHITECTURE_FILTER</span><span style="color:#556633;">&#39;</span><span>,
+</span><span>            </span><span style="color:#7697d6;">choices</span><span>: [</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">all</span><span style="color:#556633;">&#39;</span><span>, </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">aarch64</span><span style="color:#556633;">&#39;</span><span>, </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">x86_64</span><span style="color:#556633;">&#39;</span><span>],
+</span><span>            </span><span style="color:#7697d6;">description</span><span>: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">The CPU Architecture of agent for build and test</span><span style="color:#556633;">&#39;
+</span><span>        )
+</span><span>    }
+</span><span>    stages {
+</span><span>        stage(</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">Build And Test</span><span style="color:#556633;">&#39;</span><span>) {
+</span><span>            matrix {
+</span><span>                agent {
+</span><span>                    label </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#7697d6;">ARCHITECTURE</span><span style="color:#99ad6a;">} &amp;&amp; ${</span><span style="color:#7697d6;">PLATFORM</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span><span>                }
+</span><span>                when { anyOf {
+</span><span>                    expression { </span><span style="color:#8fbfdc;">params.ARCHITECTURE_FILTER </span><span>== </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">all</span><span style="color:#556633;">&#39; </span><span>}
+</span><span>                    expression { </span><span style="color:#8fbfdc;">params.ARCHITECTURE_FILTER </span><span>== </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#7697d6;">ARCHITECTURE</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot; </span><span>}
+</span><span>                } }
+</span><span>                axes {
+</span><span>                    axis {
+</span><span>                        name </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">ARCHITECTURE</span><span style="color:#556633;">&#39;
+</span><span>                        values </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">aarch64</span><span style="color:#556633;">&#39;</span><span>, </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">x86_64</span><span style="color:#556633;">&#39;
+</span><span>                    }
+</span><span>                    axis {
+</span><span>                        name </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">PLATFORM</span><span style="color:#556633;">&#39;
+</span><span>                        values </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">ubuntu-22.04</span><span style="color:#556633;">&#39;</span><span>, </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">windows-2022</span><span style="color:#556633;">&#39;
+</span><span>                    }
+</span><span>                }
+</span><span>                excludes {
+</span><span>                    exclude {
+</span><span>                        axis {
+</span><span>                            name </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">ARCHITECTURE</span><span style="color:#556633;">&#39;
+</span><span>                            values </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">aarch64</span><span style="color:#556633;">&#39;
+</span><span>                        }
+</span><span>                        axis {
+</span><span>                            name </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">PLATFORM</span><span style="color:#556633;">&#39;
+</span><span>                            values </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">windows-2022</span><span style="color:#556633;">&#39;
+</span><span>                        }
+</span><span>                    }
+</span><span>                }
+</span><span>                stages {
+</span><span>                    stage(</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">Build</span><span style="color:#556633;">&#39;</span><span>) {
+</span><span>                        steps {
+</span><span>                            echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Building on ${</span><span style="color:#7697d6;">PLATFORM</span><span style="color:#99ad6a;">} (${</span><span style="color:#7697d6;">ARCHITECTURE</span><span style="color:#99ad6a;">})</span><span style="color:#556633;">&quot;
+</span><span>                        }
+</span><span>                    }
+</span><span>                    stage(</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">Test</span><span style="color:#556633;">&#39;</span><span>) {
+</span><span>                        steps {
+</span><span>                            echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Testing on ${</span><span style="color:#7697d6;">PLATFORM</span><span style="color:#99ad6a;">} (${</span><span style="color:#7697d6;">ARCHITECTURE</span><span style="color:#99ad6a;">})</span><span style="color:#556633;">&quot;
+</span><span>                        }
+</span><span>                    }
+</span><span>                }
+</span><span>                post {
+</span><span>                    cleanup {
+</span><span>                        echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Cleaning up on ${</span><span style="color:#7697d6;">PLATFORM</span><span style="color:#99ad6a;">} (${</span><span style="color:#7697d6;">ARCHITECTURE</span><span style="color:#99ad6a;">})</span><span style="color:#556633;">&quot;
+</span><span>                    }
+</span><span>                }
+</span><span>            }
+</span><span>        }
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>这个脚本用于在不同的 CPU 架构与操作系统上执行构建与测试。
+它提供两个参数维度（CPU 架构与操作系统），并为这两个参数分别指定一个静态的取值范围。
+通过 <code>excludes</code> 静态地排除掉 CPU 架构为 <code>aarch64</code> 且操作系统为 <code>windows-2022</code> 的参数组合。
+通过 <code>parameters</code> 在 Jenkins 界面中提供一个 <code>ARCHITECTURE_FILTER</code> 参数，使用 <code>when</code> 动态过滤出需要执行的 CPU 架构范围。
+对于过滤后的所有参数组合，并行地选择标签匹配的节点执行构建与测试。
+最后对每个组合分别进行清理。</p>
+<p>介绍一下脚本中涉及的 <code>matrix</code> 相关语法：</p>
+<ul>
+<li>
+<p><code>matrix</code></p>
+<p>需要写在 <code>stage</code> 中。</p>
+<p><code>matrix</code> 用于实现多维度参数组合的并行执行。
+但这些维度的取值范围只能由 <code>axes</code> 指定，不支持动态扩展。</p>
+<p><code>matrix</code> 内可以包含：</p>
+<ul>
+<li><code>agent</code></li>
+<li><code>environment</code></li>
+<li><code>post</code></li>
+</ul>
+</li>
+<li>
+<p><code>when</code></p>
+<p>可配合 <code>parameters</code> 使用，限制参数组合。</p>
+</li>
+<li>
+<p><code>axes</code></p>
+<p>指定若干静态的参数维度，每个维度是一个 <code>axis</code>，Jenkins 会遍历所有的参数组合去执行 <code>matrix</code> 内的 <code>stages</code></p>
+</li>
+<li>
+<p><code>excludes</code></p>
+<p>以静态的方式过滤部分参数组合。</p>
+</li>
+</ul>
+<h2 id="jiao-ben-shi-liu-shui-xian">脚本式流水线</h2>
+<p>脚本式流水线可读性稍弱一些，但是会更灵活，适合复杂的场景。</p>
+<h3 id="jiao-ben-shi-liu-shui-xian-jian-dan-shi-li">脚本式流水线简单示例</h3>
+<p>这个示例与上文<a href="https://paakmau.github.io/202504052145/#declarative-pipeline-simple-example">声明式流水线简单示例</a>实现的功能相同，都是部署一个服务端应用。</p>
+<pre data-lang="groovy" style="background-color:#151515;color:#e8e8d3;" class="language-groovy "><code class="language-groovy" data-lang="groovy"><span>properties([parameters([
+</span><span>    string(</span><span style="color:#7697d6;">name</span><span>: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">PORT</span><span style="color:#556633;">&#39;</span><span>, </span><span style="color:#7697d6;">defaultValue</span><span>: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">8080</span><span style="color:#556633;">&#39;</span><span>, </span><span style="color:#7697d6;">description</span><span>: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">The port which the application will listen on.</span><span style="color:#556633;">&#39;</span><span>)
+</span><span>])])
+</span><span>
+</span><span>node {
+</span><span>    </span><span style="color:#8fbfdc;">try </span><span>{
+</span><span>        stage(</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">Prepare</span><span style="color:#556633;">&#39;</span><span>) {
+</span><span>            checkout scm
+</span><span>            sh </span><span style="color:#556633;">&#39;&#39;&#39;
+</span><span style="color:#99ad6a;">                cd ./script
+</span><span style="color:#99ad6a;">                chmod +x ./*.sh
+</span><span style="color:#99ad6a;">            </span><span style="color:#556633;">&#39;&#39;&#39;
+</span><span>        }
+</span><span>        stage(</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">Deploy</span><span style="color:#556633;">&#39;</span><span>) {
+</span><span>            echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Deploying to agent on port ${</span><span style="color:#8fbfdc;">params.PORT</span><span style="color:#99ad6a;">}.</span><span style="color:#556633;">&quot;
+</span><span>            sh </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">./script/deploy.sh ${</span><span style="color:#8fbfdc;">params.PORT</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span><span>        }
+</span><span>    } </span><span style="color:#8fbfdc;">catch</span><span> (e) {
+</span><span>        echo </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">Deployment failed!</span><span style="color:#556633;">&#39;
+</span><span>        </span><span style="color:#8fbfdc;">throw</span><span> e
+</span><span>    } </span><span style="color:#8fbfdc;">finally </span><span>{
+</span><span>        </span><span style="color:#8fbfdc;">def</span><span> currentResult = currentBuild.result ?: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">SUCCESS</span><span style="color:#556633;">&#39;
+</span><span>
+</span><span>        </span><span style="color:#8fbfdc;">if</span><span> (currentResult == </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">SUCCESS</span><span style="color:#556633;">&#39;</span><span>) {
+</span><span>            echo </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">Deployment succeeded!</span><span style="color:#556633;">&#39;
+</span><span>        }
+</span><span>
+</span><span>        echo </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">This will always run last.</span><span style="color:#556633;">&#39;
+</span><span>        sh </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">./script/cleanup.sh</span><span style="color:#556633;">&#39;
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>代码很清晰，就不做过多解释了，简单提几点：</p>
+<ul>
+<li><code>node</code> 的作用与 <code>agent</code> 类似。
+<ul>
+<li>都可以筛选节点标签，比如 <code>node('ubuntu-22.04 &amp;&amp; aarch64')</code>。</li>
+<li><code>node</code> 发生嵌套时，实际执行节点由最接近的 <code>node</code> 决定。</li>
+<li>都能保证闭包内脚本执行在单个节点上。</li>
+</ul>
+</li>
+<li>与声明式不同，脚本式流水线需要显式调用 <code>checkout scm</code>。</li>
+<li><code>stage</code> 中不需要写 <code>steps</code>。</li>
+<li><code>post</code> 的功能由异常处理实现，代码可读性会变弱。</li>
+</ul>
+<h3 id="jiao-ben-shi-liu-shui-xian-ju-zhen-shi-li">脚本式流水线矩阵示例</h3>
+<pre data-lang="groovy" style="background-color:#151515;color:#e8e8d3;" class="language-groovy "><code class="language-groovy" data-lang="groovy"><span>properties([parameters([
+</span><span>    string(
+</span><span>        </span><span style="color:#7697d6;">name</span><span>: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">BM_TYPE_RANGE</span><span style="color:#556633;">&#39;</span><span>,
+</span><span>        </span><span style="color:#7697d6;">defaultValue</span><span>: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">oltp_read_only, oltp_write_only, oltp_read_write</span><span style="color:#556633;">&#39;</span><span>,
+</span><span>        </span><span style="color:#7697d6;">description</span><span>: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">The types of benchmark will be executed</span><span style="color:#556633;">&#39;
+</span><span>    ),
+</span><span>    string(
+</span><span>        </span><span style="color:#7697d6;">name</span><span>: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">BM_THREADS_RANGE</span><span style="color:#556633;">&#39;</span><span>,
+</span><span>        </span><span style="color:#7697d6;">defaultValue</span><span>: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">1, 64, 1024</span><span style="color:#556633;">&#39;</span><span>,
+</span><span>        </span><span style="color:#7697d6;">description</span><span>: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">Benchmark will be executed with each number of threads in the range</span><span style="color:#556633;">&#39;
+</span><span>    ),
+</span><span>])])
+</span><span>
+</span><span style="color:#8fbfdc;">def </span><span style="color:#7697d6;">BM_TYPE_RANGE </span><span>= </span><span style="color:#8fbfdc;">params.BM_TYPE_RANGE</span><span>.split(</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">,</span><span style="color:#556633;">&#39;</span><span>).collect { it.trim() }
+</span><span style="color:#8fbfdc;">def </span><span style="color:#7697d6;">BM_THREADS_RANGE </span><span>= </span><span style="color:#8fbfdc;">params.BM_THREADS_RANGE</span><span>.split(</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">,</span><span style="color:#556633;">&#39;</span><span>).collect { it.trim() }
+</span><span>
+</span><span style="color:#8fbfdc;">def</span><span> jobs = [:]
+</span><span>
+</span><span style="color:#7697d6;">BM_TYPE_RANGE</span><span>.each { </span><span style="color:#7697d6;">BM_TYPE </span><span>-&gt;
+</span><span>    </span><span style="color:#7697d6;">BM_THREADS_RANGE</span><span>.each { </span><span style="color:#7697d6;">BM_THREADS </span><span>-&gt;
+</span><span>        </span><span style="color:#8fbfdc;">def</span><span> name = </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#7697d6;">BM_TYPE</span><span style="color:#99ad6a;">}-${</span><span style="color:#7697d6;">BM_THREADS</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span><span>        jobs[name] = {
+</span><span>            node(</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">server</span><span style="color:#556633;">&#39;</span><span>) {
+</span><span>                </span><span style="color:#8fbfdc;">def </span><span style="color:#7697d6;">SERVER_IP </span><span>= </span><span style="color:#8fbfdc;">env.SERVER_IP
+</span><span>
+</span><span>                </span><span style="color:#8fbfdc;">try </span><span>{
+</span><span>                    stage(</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">Install Database</span><span style="color:#556633;">&#39;</span><span>) {
+</span><span>                        echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Installing database on ${</span><span style="color:#7697d6;">SERVER_IP</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span><span>                    }
+</span><span>
+</span><span>                    node(</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">client</span><span style="color:#556633;">&#39;</span><span>) {
+</span><span>                        withEnv([
+</span><span>                            </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">SERVER_IP=${</span><span style="color:#7697d6;">SERVER_IP</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>                            </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">BM_TYPE=${</span><span style="color:#7697d6;">BM_TYPE</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>                            </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">BM_THREADS=${</span><span style="color:#7697d6;">BM_THREADS</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;</span><span>,
+</span><span>                        ]) {
+</span><span>                            stage(</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">Run Benchmark</span><span style="color:#556633;">&#39;</span><span>) {
+</span><span>                                echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Running benchmark connection to ${</span><span style="color:#7697d6;">SERVER_IP</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span><span>                            }
+</span><span>                        }
+</span><span>                    }
+</span><span>                } </span><span style="color:#8fbfdc;">catch</span><span> (e) {
+</span><span>                    </span><span style="color:#8fbfdc;">throw</span><span> e
+</span><span>                } </span><span style="color:#8fbfdc;">finally </span><span>{
+</span><span>                    stage(</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">Cleanup</span><span style="color:#556633;">&#39;</span><span>) {
+</span><span>                        echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Cleaning up on server ${</span><span style="color:#7697d6;">SERVER_IP</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span><span>                    }
+</span><span>                }
+</span><span>            }
+</span><span>        }
+</span><span>    }
+</span><span>}
+</span><span>
+</span><span>stage(</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">Matrix Benchmarks</span><span style="color:#556633;">&#39;</span><span>) {
+</span><span>    parallel(jobs)
+</span><span>}
+</span></code></pre>
+<p>这个脚本用于以不同的线程数对数据库执行不同类型的基准测试。
+线程数与基准测试类型均通过参数控制，取值之间以逗号分隔。
+数据库服务端与基准测试客户端是分离部署的。
+但数据库服务端的实际执行节点不固定，因此需要在执行过程中动态获取其 IP。
+考虑到子网可能比较复杂，建议在配置节点时就把 IP 手动写在环境变量中，比如这个脚本里使用的 <code>SERVER_IP</code>。</p>
+<p>代码也比较清晰，注意几点就行：</p>
+<ul>
+<li>脚本式流水线在 <code>stage</code> 之间传递变量是比较灵活的，比方说这里获取了服务端的 <code>SERVER_IP</code> 之后再通过变量传递给客户端。</li>
+<li>并行执行是通过 <code>parallel</code> 实现的。</li>
+</ul>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202503172240/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">openGauss 慢 SQL 诊断</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202505052150/">
+                                <span class="button__text">NUMA 架构设备的网卡中断绑核</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

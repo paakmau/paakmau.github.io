@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>UE4 TaskGraph 学习笔记：源码阅读 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="UE4 TaskGraph 学习笔记：源码阅读 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202003222052/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="UE4 TaskGraph 学习笔记：源码阅读 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202003222052/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202003222052/">UE4 TaskGraph 学习笔记：源码阅读</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2020-03-22
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/tu-lun/">#图论</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/bing-fa/">#并发</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/tuo-bu-pai-xu/">#拓扑排序</a></span>
+    
+
+        <div class="post-content">
+            <p>跟随本文阅读 TaskGraph 的源码来了解其实现细节</p>
+<span id="continue-reading"></span><h2 id="taskgraph-shi-xian-gai-gua">TaskGraph 实现概括</h2>
+<p>首先是线程管理。我们创建的 <code>TGraphTask</code> 并不能直接运行，需要把它交给某个 <code>FTaskThreadBase</code> 对象来控制执行。这个 <code>FTaskThreadBase</code> 可以理解为一个线程，可以把很多个 <code>TGraphTask</code> 交给他，它会依次执行这些任务（当然也要满足依赖）</p>
+<p>另外注意到我们可以为 <code>TGraphTask</code> 指定想要让他执行的线程，于是我们发现对于游戏中的每一个线程都会产生一个 <code>FTaskThreadBase</code> 对象，这个对象持有他所对应的线程的指针。我们创建的 <code>TGraphTask</code> 对象会被交给对应的 <code>FTaskThreadBase</code> 对象，从而在正确的线程上执行</p>
+<p>然后是任务之间依赖关系的处理。我们在 <code>CreateTask</code> 的时候看起来是把依赖传给了任务，但其实是 <code>TGraphTask</code> 被他所依赖的所有 <code>FGraphEvent</code> 持有。这样在一个 <code>TGraphTask</code> 结束时，他就可以立刻通过 <code>FGraphEvent</code> 更新依赖于自己的其他 <code>TGraphTask</code> 的依赖入度，然后如果入度为零就放入执行队列</p>
+<h2 id="xian-cheng-guan-li">线程管理</h2>
+<p>TaskGraph 的线程管理是基于 Runnable 的，于是简单的介绍一下它</p>
+<p>一个线程其实是由一个 <code>FRunnableThread</code> 对象管理，包括了线程优先级，创建等；而我们想要在线程里执行逻辑代码就要需要通过 <code>FRunnable</code>，把逻辑代码写在它的 <code>Run</code> 方法里，然后把它丢给 <code>FRunnableThread</code> 让真实的线程去执行它</p>
+<p>而 TaskGraph 里的 <code>FTaskThreadBase</code> 其实就继承自 <code>FRunnable</code>；它同时还持有一个 <code>FWorkerThread</code> 对象，这个对象又持有 <code>FRunnableThread</code>。也就是 <code>FTaskThreadBase</code> 自己不但能够管理线程，同时还能控制线程去执行逻辑代码<br>
+另外所有的 <code>FTaskThreadBase</code> 都由一个 <code>FTaskGraphImplementation</code> 单例持有</p>
+<p>最后看一下 <code>FTaskThreadBase</code> 的 <code>Run</code> 方法，就是不断地执行任务<br>
+需要注意的是这些任务都是在满足了依赖之后才会被 <code>Run</code> 方法访问到，后文会详细描述<br>
+这里贴一下 <code>Run</code> 的源码</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">virtual</span><span> uint32 </span><span style="color:#fad07a;">Run</span><span>() </span><span style="color:#8fbfdc;">override
+</span><span>{
+</span><span>    </span><span style="color:#ffb964;">check</span><span>(OwnerWorker); </span><span style="color:#888888;">// make sure we are started up
+</span><span>    </span><span style="color:#ffb964;">ProcessTasksUntilQuit</span><span>(</span><span style="color:#cf6a4c;">0</span><span>);
+</span><span>    FMemory::</span><span style="color:#ffb964;">ClearAndDisableTLSCachesOnCurrentThread</span><span>();
+</span><span>    </span><span style="color:#8fbfdc;">return </span><span style="color:#cf6a4c;">0</span><span>;
+</span><span>}
+</span></code></pre>
+<h2 id="ftaskthreadbase-de-pai-sheng-lei"><code>FTaskThreadBase</code> 的派生类</h2>
+<p>查看源码我们发现这个东西有两个派生类，<code>FTaskThreadAnyThread</code> 和 <code>FNamedTaskThread</code>，这里简单介绍一下</p>
+<p><code>FTaskThreadAnyThread</code> 比较符合我们的想象（如果你跟我想的一样）<br>
+它由 <code>FTaskGraphImplementation</code> 单例在实例化的时候创建若干个。然后这个单例维护一个待执行任务的队列，每个 <code>FTaskThreadAnyThread</code> 在自己的任务执行完成后不断地调用这个单例的 <code>FindWork</code> 方法获取队列中的任务然后去执行它，可以说所有的 <code>FTaskThreadAnyThread</code> 共享同一个任务队列（如果不考虑优先级的话）<br>
+还是贴一下 <code>FindWork</code> 的源码</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>FBaseGraphTask* </span><span style="color:#fad07a;">FindWork</span><span>(ENamedThreads::Type </span><span style="color:#ffb964;">ThreadInNeed</span><span>)
+</span><span>{
+</span><span>    int32 LocalNumWorkingThread = </span><span style="color:#ffb964;">GetNumWorkerThreads</span><span>() + GNumWorkerThreadsToIgnore;
+</span><span>    int32 MyIndex = </span><span style="color:#ffb964;">int32</span><span>((</span><span style="color:#ffb964;">uint32</span><span>(ThreadInNeed) - NumNamedThreads) % NumTaskThreadsPerSet);
+</span><span>    int32 Priority = </span><span style="color:#ffb964;">int32</span><span>((</span><span style="color:#ffb964;">uint32</span><span>(ThreadInNeed) - NumNamedThreads) / NumTaskThreadsPerSet);
+</span><span>    </span><span style="color:#ffb964;">check</span><span>(MyIndex &gt;= </span><span style="color:#cf6a4c;">0 </span><span>&amp;&amp; MyIndex &lt; LocalNumWorkingThread &amp;&amp;
+</span><span>    MyIndex &lt; (PLATFORM_64BITS ? </span><span style="color:#cf6a4c;">63 </span><span>: </span><span style="color:#cf6a4c;">32</span><span>) &amp;&amp;
+</span><span>    Priority &gt;= </span><span style="color:#cf6a4c;">0 </span><span>&amp;&amp; Priority &lt; ENamedThreads::NumThreadPriorities);
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">return</span><span> IncomingAnyThreadTasks[Priority].</span><span style="color:#ffb964;">Pop</span><span>(MyIndex, true);
+</span><span>}
+</span></code></pre>
+<p>而 <code>FNamedTaskThread</code> 比较特殊，根据类名我们知道它管理的是具名线程，也就是主线程、渲染线程这些。而且线程本身也不是由 <code>TaskGraph</code> 负责创建的<br>
+并且每一个 <code>FNamedTaskThread</code> 的任务队列是自己负责管理的（因为每个具名线程都是唯一，所以不会存在共享任务队列的可能），这里贴一下它把任务塞进队列的小部分代码</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">virtual void </span><span style="color:#fad07a;">EnqueueFromThisThread</span><span>(int32 </span><span style="color:#ffb964;">QueueIndex</span><span>, FBaseGraphTask* </span><span style="color:#ffb964;">Task</span><span>) </span><span style="color:#8fbfdc;">override
+</span><span>{
+</span><span>    </span><span style="color:#ffb964;">checkThreadGraph</span><span>(Task &amp;&amp; </span><span style="color:#ffb964;">Queue</span><span>(QueueIndex).</span><span style="color:#ffb964;">StallRestartEvent</span><span>); </span><span style="color:#888888;">// make sure we are started up
+</span><span>    uint32 PriIndex = ENamedThreads::</span><span style="color:#ffb964;">GetTaskPriority</span><span>(Task-&gt;</span><span style="color:#ffb964;">ThreadToExecuteOn</span><span>) ? </span><span style="color:#cf6a4c;">0 </span><span>: </span><span style="color:#cf6a4c;">1</span><span>;
+</span><span>    int32 ThreadToStart = </span><span style="color:#ffb964;">Queue</span><span>(QueueIndex).</span><span style="color:#ffb964;">StallQueue</span><span>.</span><span style="color:#ffb964;">Push</span><span>(Task, PriIndex);
+</span><span>    </span><span style="color:#ffb964;">check</span><span>(ThreadToStart &lt; </span><span style="color:#cf6a4c;">0</span><span>); </span><span style="color:#888888;">// if I am stalled, then how can I be queueing a task?
+</span><span>}
+</span></code></pre>
+<h2 id="ren-wu-zhi-jian-de-yi-lai-guan-xi">任务之间的依赖关系</h2>
+<p>上文中提到一个任务只有在满足了依赖的情况下才会被扔进任务队列里，并且任务的完成是通过 <code>FGraphEvent</code> 来通知依赖于自己的其他任务的</p>
+<p>于是我们先看看 <code>FGraphEvent</code> 是怎么拿到其他任务的，在 <code>CreateTask</code> 的时候我们会传入一个 <code>FGraphEventRef</code> 的数组表示这个任务的依赖，然后跟随调用往下查我们发现有个 <code>SetupPrereqs</code> 函数它遍历了这个数组然后对每个 <code>FGraphEvent</code> 都调用它的 <code>AddSubsequent</code> 方法，把任务自身扔进这些事件的 <code>SubsequentList</code> 里<br>
+简单贴一下源码</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">bool </span><span style="color:#fad07a;">AddSubsequent</span><span>(</span><span style="color:#8fbfdc;">class</span><span> FBaseGraphTask* </span><span style="color:#ffb964;">Task</span><span>)
+</span><span>{
+</span><span>    </span><span style="color:#8fbfdc;">return</span><span> SubsequentList.</span><span style="color:#ffb964;">PushIfNotClosed</span><span>(Task);
+</span><span>}
+</span></code></pre>
+<p>然后在一个 <code>TGraphTask</code> 执行结束后，他会调用自己的 <code>FGraphEvent</code> 的 <code>DispatchSubsequents</code> 方法，这个方法把 <code>SubsequentList</code> 里的 <code>TGraphTask</code> 都 Pop 出来，调用它们的 <code>ConditionalQueueTask</code> 方法，把每个任务的依赖数（入度）减一，如果为零了意味着依赖满足，就可以把这个任务扔进任务队列里<br>
+再贴一下源码</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">ConditionalQueueTask</span><span>(ENamedThreads::Type </span><span style="color:#ffb964;">CurrentThread</span><span>)
+</span><span>{
+</span><span>    </span><span style="color:#8fbfdc;">if </span><span>(NumberOfPrerequistitesOutstanding.</span><span style="color:#ffb964;">Decrement</span><span>()==</span><span style="color:#cf6a4c;">0</span><span>)
+</span><span>    {
+</span><span>        </span><span style="color:#ffb964;">QueueTask</span><span>(CurrentThread);
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<h2 id="jie-yu">结语</h2>
+<p>源码终于啃完了，感觉很多写法非常的帅<br>
+发现自己 C++ 的语言特性还不是很熟悉，可能也是太久没碰 UE4 了，有空就去把改填的坑填了</p>
+<p>但是实现的思路感觉还是很好理解，甚至有一种写的比较随意的感觉（比如 <code>FTaskThreadAnyThread</code> 的公共任务队列就直接扔在 <code>FTaskGraphImplementation</code> 单例里）</p>
+<p>结合了 Runnable 的 TaskGraph 是很好的跨平台基于任务的多线程实现方案，如果要自己写引擎的话这个很好用（抄就完事了）</p>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202003191321/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">UE4 TaskGraph 学习笔记：介绍与实践</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202003222302/">
+                                <span class="button__text">C++ Lambda 快速上手</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

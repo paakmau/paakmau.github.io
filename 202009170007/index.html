@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Vulkan 画三角形第十三章：创建命令缓冲区 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="Vulkan 画三角形第十三章：创建命令缓冲区 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202009170007/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="Vulkan 画三角形第十三章：创建命令缓冲区 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202009170007/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202009170007/">Vulkan 画三角形第十三章：创建命令缓冲区</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2020-09-17
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/vulkan/">#Vulkan</a></span>
+    
+
+        <div class="post-content">
+            <p>命令在 Vulkan 中，比如绘图操作和内存传递，并不能直接经过函数调用来执行。我们必须要把所有需要执行的操作记录到命令缓冲区对象中。这样做的优势在于配置绘图命令的复杂工作能够提前且多线程进行。这之后，我们只需要在主循环中通知 Vulkan 执行这些命令</p>
+<span id="continue-reading"></span><h2 id="ming-ling-chi">命令池</h2>
+<p>在创建命令缓冲区之前，我们必须先创建一个命令池。命令池能够管理用于存储缓冲区的内存，命令缓冲区就从命令池中进行分配。我们添加一个成员变量用于保存 <code>VkCommandPool</code> 对象</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>VkCommandPool commandPool;
+</span></code></pre>
+<p>然后还是添加一个成员函数并在 <code>initVulkan</code> 中调用它</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">initVulkan</span><span>() {
+</span><span>    </span><span style="color:#ffb964;">createInstance</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createSurface</span><span>();
+</span><span>    </span><span style="color:#ffb964;">pickPhysicalDevice</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createLogicalDevice</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createSwapchain</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createImageViews</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createRenderPass</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createGraphicsPipeline</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createFramebuffers</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createCommandPool</span><span>();
+</span><span>}
+</span><span>
+</span><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">createCommandPool</span><span>() {
+</span><span>    uint32_t queueFamilyIndex = </span><span style="color:#ffb964;">findQueueFamily</span><span>(physicalDevice).</span><span style="color:#ffb964;">value</span><span>();
+</span><span>    VkCommandPoolCreateInfo poolInfo = {};
+</span><span>    poolInfo.</span><span style="color:#ffb964;">sType </span><span>= VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+</span><span>    poolInfo.</span><span style="color:#ffb964;">queueFamilyIndex </span><span>= queueFamilyIndex;
+</span><span>    poolInfo.</span><span style="color:#ffb964;">flags </span><span>= </span><span style="color:#cf6a4c;">0</span><span>;
+</span><span>    </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">vkCreateCommandPool</span><span>(device, &amp;poolInfo, nullptr, &amp;commandPool) != VK_SUCCESS)
+</span><span>        </span><span style="color:#8fbfdc;">throw </span><span>std::</span><span style="color:#ffb964;">runtime_error</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">failed to create command pool</span><span style="color:#556633;">&quot;</span><span>);
+</span><span>}
+</span></code></pre>
+<p>执行命令缓冲区，其实就是把其中的命令提交到某个设备队列中，比如图形队列和展示的队列。每一个命令池中分配的命令缓冲区都只能被提交到同一种队列。而我们之前选择的队列支持图形，因此使用它的队列族索引，就能分配用于绘制图像的命令缓冲区</p>
+<p>对于 <code>flags</code> 参数，有两种可能的标记</p>
+<ul>
+<li>
+<p><code>VK_COMMAND_POOL_CREATE_TRANSIENT_BIT</code></p>
+<p>表示命令缓冲区将会频繁地用于记录新的命令（可能会改变内存分配行为）</p>
+</li>
+<li>
+<p><code>VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT</code></p>
+<p>允许命令缓冲区对象之间互相独立，没有这个标记的话它们将会被一起重置</p>
+</li>
+</ul>
+<p>我们只有在程序开始时记录命令，之后会在主线程中多次执行，所以不需要这些标记</p>
+<p>最后在 <code>cleanup</code> 中销毁命令池</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">cleanup</span><span>() {
+</span><span>    </span><span style="color:#ffb964;">vkDestroyCommandPool</span><span>(device, commandPool, nullptr);
+</span><span>    </span><span style="color:#8fbfdc;">for </span><span>(</span><span style="color:#8fbfdc;">auto</span><span> framebuffer : swapchainFramebuffers)
+</span><span>        </span><span style="color:#ffb964;">vkDestroyFramebuffer</span><span>(device, framebuffer, nullptr);
+</span><span>    </span><span style="color:#ffb964;">vkDestroyPipeline</span><span>(device, graphicsPipeline, nullptr);
+</span><span>    </span><span style="color:#ffb964;">vkDestroyPipelineLayout</span><span>(device, pipelineLayout, nullptr);
+</span><span>    </span><span style="color:#ffb964;">vkDestroyRenderPass</span><span>(device, renderPass, nullptr);
+</span><span>    </span><span style="color:#8fbfdc;">for </span><span>(</span><span style="color:#8fbfdc;">auto</span><span> imageView : swapchainImageViews)
+</span><span>        </span><span style="color:#ffb964;">vkDestroyImageView</span><span>(device, imageView, nullptr);
+</span><span>    </span><span style="color:#ffb964;">vkDestroySwapchainKHR</span><span>(device, swapchain, nullptr);
+</span><span>    </span><span style="color:#ffb964;">vkDestroyDevice</span><span>(device, nullptr);
+</span><span>    </span><span style="color:#ffb964;">vkDestroySurfaceKHR</span><span>(instance, surface, nullptr);
+</span><span>    </span><span style="color:#ffb964;">vkDestroyInstance</span><span>(instance, nullptr);
+</span><span>
+</span><span>    </span><span style="color:#ffb964;">glfwDestroyWindow</span><span>(window);
+</span><span>    </span><span style="color:#ffb964;">glfwTerminate</span><span>();
+</span><span>}
+</span></code></pre>
+<h2 id="ming-ling-huan-chong-qu-fen-pei">命令缓冲区分配</h2>
+<p>我们现在可以开始分配命令缓冲区并在其中记录绘制命令了。因为有一个绘制命令涉及到绑定一个帧缓冲区，所以我们实际上必须要为交换链中的每一个图像都记录一个命令缓冲区。最后创建一个命令缓冲区的数组作为成员变量。命令缓冲区会在命令池销毁时自动销毁，因此不需要我们显式地销毁它们</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>std::vector&lt;VkCommandBuffer&gt; commandBuffers;
+</span></code></pre>
+<p>同样添加一个成员函数并在 <code>initVulkan</code> 中调用它</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">initVulkan</span><span>() {
+</span><span>    </span><span style="color:#ffb964;">createInstance</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createSurface</span><span>();
+</span><span>    </span><span style="color:#ffb964;">pickPhysicalDevice</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createLogicalDevice</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createSwapchain</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createImageViews</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createRenderPass</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createGraphicsPipeline</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createFramebuffers</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createCommandPool</span><span>();
+</span><span>    </span><span style="color:#ffb964;">createCommandBuffers</span><span>();
+</span><span>}
+</span><span>
+</span><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">createCommandBuffers</span><span>() {
+</span><span>
+</span><span>}
+</span></code></pre>
+<p>然后我们来填充它。使用 <code>VkCommandBufferAllocateInfo</code> 结构体来指定命令池以及缓冲区的数量，再调用 <code>vkAllocateCommandBuffers</code> 函数一次性创建缓冲区</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span>commandBuffers.</span><span style="color:#ffb964;">resize</span><span>(swapchainFramebuffers.</span><span style="color:#ffb964;">size</span><span>());
+</span><span>VkCommandBufferAllocateInfo allocInfo = {};
+</span><span>allocInfo.</span><span style="color:#ffb964;">sType </span><span>= VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+</span><span>allocInfo.</span><span style="color:#ffb964;">commandPool </span><span>= commandPool;
+</span><span>allocInfo.</span><span style="color:#ffb964;">level </span><span>= VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+</span><span>allocInfo.</span><span style="color:#ffb964;">commandBufferCount </span><span>= (uint32_t) commandBuffers.</span><span style="color:#ffb964;">size</span><span>();
+</span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">vkAllocateCommandBuffers</span><span>(device, &amp;allocInfo, commandBuffers.</span><span style="color:#ffb964;">data</span><span>()) != VK_SUCCESS)
+</span><span>    </span><span style="color:#8fbfdc;">throw </span><span>std::</span><span style="color:#ffb964;">runtime_error</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">failed to allocate command buffer</span><span style="color:#556633;">&quot;</span><span>);
+</span></code></pre>
+<p><code>level</code> 参数用于指定分配的命令缓冲区是主要命令缓冲区还是次要命令缓冲区</p>
+<ul>
+<li>
+<p><code>VK_COMMAND_BUFFER_LEVEL_PRIMARY</code></p>
+<p>能够被提交到队列来执行，但不能被其他命令缓冲区调用</p>
+</li>
+<li>
+<p><code>VK_COMMAND_BUFFER_LEVEL_SECONDARY</code></p>
+<p>不能被直接执行，但是可以被主要缓冲区调用</p>
+</li>
+</ul>
+<p>当然我们不需要使用次要缓冲区的功能，但你可以想象到，它对于复用一些常用操作会很有帮助</p>
+<h2 id="ji-lu-ming-ling-huan-chong-qu">记录命令缓冲区</h2>
+<p>于是我们来记录命令缓冲区</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">for </span><span>(size_t i = </span><span style="color:#cf6a4c;">0</span><span>; i &lt; commandBuffers.</span><span style="color:#ffb964;">size</span><span>(); i++) {
+</span><span>    VkCommandBufferBeginInfo beginInfo = {};
+</span><span>    beginInfo.</span><span style="color:#ffb964;">sType </span><span>= VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+</span><span>    </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">vkBeginCommandBuffer</span><span>(commandBuffers[i], &amp;beginInfo) != VK_SUCCESS)
+</span><span>        </span><span style="color:#8fbfdc;">throw </span><span>std::</span><span style="color:#ffb964;">runtime_error</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">failed to begin recording command buffer!</span><span style="color:#556633;">&quot;</span><span>);
+</span><span>
+</span><span>    VkRenderPassBeginInfo renderPassInfo = {};
+</span><span>    renderPassInfo.</span><span style="color:#ffb964;">sType </span><span>= VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+</span><span>    renderPassInfo.</span><span style="color:#ffb964;">renderPass </span><span>= renderPass;
+</span><span>    renderPassInfo.</span><span style="color:#ffb964;">framebuffer </span><span>= swapchainFramebuffers[i];
+</span><span>    renderPassInfo.</span><span style="color:#ffb964;">renderArea</span><span>.</span><span style="color:#ffb964;">offset </span><span>= {</span><span style="color:#cf6a4c;">0</span><span>, </span><span style="color:#cf6a4c;">0</span><span>};
+</span><span>    renderPassInfo.</span><span style="color:#ffb964;">renderArea</span><span>.</span><span style="color:#ffb964;">extent </span><span>= swapchainExtent;
+</span><span>    VkClearValue clearColor = {</span><span style="color:#cf6a4c;">0.0</span><span style="color:#8fbfdc;">f</span><span>, </span><span style="color:#cf6a4c;">0.0</span><span style="color:#8fbfdc;">f</span><span>, </span><span style="color:#cf6a4c;">0.0</span><span style="color:#8fbfdc;">f</span><span>, </span><span style="color:#cf6a4c;">1.0</span><span style="color:#8fbfdc;">f</span><span>};
+</span><span>    renderPassInfo.</span><span style="color:#ffb964;">clearValueCount </span><span>= </span><span style="color:#cf6a4c;">1</span><span>;
+</span><span>    renderPassInfo.</span><span style="color:#ffb964;">pClearValues </span><span>= &amp;clearColor;
+</span><span>    </span><span style="color:#ffb964;">vkCmdBeginRenderPass</span><span>(commandBuffers[i], &amp;renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+</span><span>    </span><span style="color:#ffb964;">vkCmdBindPipeline</span><span>(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+</span><span>    </span><span style="color:#ffb964;">vkCmdDraw</span><span>(commandBuffers[i], </span><span style="color:#cf6a4c;">3</span><span>, </span><span style="color:#cf6a4c;">1</span><span>, </span><span style="color:#cf6a4c;">0</span><span>, </span><span style="color:#cf6a4c;">0</span><span>);
+</span><span>    </span><span style="color:#ffb964;">vkCmdEndRenderPass</span><span>(commandBuffers[i]);
+</span><span>
+</span><span>    </span><span style="color:#8fbfdc;">if </span><span>(</span><span style="color:#ffb964;">vkEndCommandBuffer</span><span>(commandBuffers[i]) != VK_SUCCESS)
+</span><span>        </span><span style="color:#8fbfdc;">throw </span><span>std::</span><span style="color:#ffb964;">runtime_error</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">failed to record command buffer!</span><span style="color:#556633;">&quot;</span><span>);
+</span><span>}
+</span></code></pre>
+<p>其实代码非常地直观，就是先开启记录，然后记录命令，最后结束记录</p>
+<p>在记录过程中，需要先开启渲染路径，绑定渲染管线，开始绘制，最后结束渲染路径。注意到所有的命令都是以 <code>vkCmd</code> 为前缀</p>
+<p>着重介绍一下绘制命令 <code>vkCmdDraw</code> 的后四个参数</p>
+<ul>
+<li>
+<p><code>vertexCount</code></p>
+<p>尽管我们没有使用顶点缓冲区，但是我们把顶点数据硬编码在着色器中，因此还是有三个顶点需要绘制</p>
+</li>
+<li>
+<p><code>instanceCount</code></p>
+<p>如果不是用于实例渲染，应当设为一</p>
+</li>
+<li>
+<p><code>firstVertex</code></p>
+<p>用作顶点缓冲区的偏移量，定义了 <code>gl_VertexIndex</code> 的起始值</p>
+</li>
+<li>
+<p><code>firstInstance</code></p>
+<p>用作实例渲染中的偏移量，定义了 <code>gl_InstanceIndex</code> 的起始值</p>
+</li>
+</ul>
+<p>我们现在已经创建了命令缓冲区并在其中填入了相应的命令，下一章中我们将为主循环填写代码，从交换链中获取图像，执行正确的命令缓冲区，再把图像返还给交换链</p>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202009142226/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">Vulkan 画三角形第十二章：创建帧缓冲区</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202009191750/">
+                                <span class="button__text">Vulkan 画三角形第十四章：渲染和展示</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

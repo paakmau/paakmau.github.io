@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>封装 Spring Boot 库并使用 GitHub Packages 发布 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="封装 Spring Boot 库并使用 GitHub Packages 发布 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202201312133/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="封装 Spring Boot 库并使用 GitHub Packages 发布 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202201312133/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202201312133/">封装 Spring Boot 库并使用 GitHub Packages 发布</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2022-01-31
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/github-packages/">#GitHub Packages</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/gradle/">#Gradle</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/java/">#Java</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/maven/">#Maven</a></span>
+    
+
+        <div class="post-content">
+            <p>后端写多了一些常用的东西可以封装成一个库，最好还能发布到什么地方直接加个仓库就能加依赖。
+因为我的项目大部分是托管在 GitHub 上的，于是可以考虑直接使用 GitHub Packages 进行发布。</p>
+<span id="continue-reading"></span>
+<p>这样的好处在于，源码与发布都集中在同一个地方，方便管理。
+<del>更重要的是还不用担心自己的屎山污染中央仓库从而受到他人的谴责。</del></p>
+<p>需要注意一点是，如果库需要依赖 Spring Boot，那么打包的和发布都会跟普通的 Java 库有一点区别。</p>
+<p>另外，本文使用的构建工具是 Gradle。</p>
+<h2 id="can-kao-zi-liao">参考资料</h2>
+<p><a href="https://spring.io/guides/gs/multi-module/">Creating a Multi Module Project</a></p>
+<p><a href="https://piotrminkowski.com/2020/08/04/guide-to-building-spring-boot-library/">Guide to building Spring Boot library</a></p>
+<p><a href="https://docs.spring.io/spring-boot/docs/2.6.3/reference/html/features.html#features.developing-auto-configuration">Creating Your Own Auto-configuration</a></p>
+<p><a href="https://docs.github.com/en/actions/publishing-packages/publishing-java-packages-with-gradle">Publishing Java packages with Gradle</a></p>
+<h2 id="feng-zhuang-dong-ji">封装动机</h2>
+<p>考虑这样一个典中典场景：假设我是开外包公司的，我们要做好几个换壳应用，但是对于不同的甲方，这些应用会有一些功能上的小修改，而且根据报价和需求还会有功能上的删减。
+<del>于是显而易见每次外包就直接 fork 下来摁改就完事了。</del>
+合理的做法是把核心封装成若干个高度内聚的库，根据甲方的需要引相应库的依赖就好了。
+接下来我们又发现，普通的 Maven 库不够爽，每次我还是要在 Spring Boot 应用里面手动配置一遍 Service 啥的再把库里的东西拉出来搞七搞八。
+那么我们就考虑再开一个库，这个库依赖那个普通的 Maven 库，里面直接配置好 Spring Bean。
+只要引入这个库的依赖，我们就可以在应用里面直接自动注入这些 Bean 了。
+这个基于 Spring Boot 的库我们就称之为启动器（starter）。</p>
+<h2 id="ji-yu-spring-boot-de-ku">基于 Spring Boot 的库</h2>
+<p>一个基于 Spring Boot 的库会有一些坑。
+我们需要依赖 Spring Boot 的 Gradle 插件，但是这个插件默认执行 <code>bootJar</code> 任务，这个东西要求我们提供一个 <code>main</code> 函数，显然一个库不应当有 <code>main</code> 函数。
+于是我们需要把 Spring Boot 的 Gradle 插件禁用掉，但是仍然保留它的引入，因为我们需要它的依赖管理功能。</p>
+<p>最后大致的 <code>build.gradle</code> 就会长这样。</p>
+<pre data-lang="gradle" style="background-color:#151515;color:#e8e8d3;" class="language-gradle "><code class="language-gradle" data-lang="gradle"><span>plugins {
+</span><span>    id </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">org.springframework.boot</span><span style="color:#556633;">&#39;</span><span> version </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">2.6.3</span><span style="color:#556633;">&#39;</span><span> apply false
+</span><span>    id </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">io.spring.dependency-management</span><span style="color:#556633;">&#39;</span><span> version </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">1.0.11.RELEASE</span><span style="color:#556633;">&#39;
+</span><span>    id </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">java</span><span style="color:#556633;">&#39;
+</span><span>}
+</span><span>
+</span><span>group = </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">com.example</span><span style="color:#556633;">&#39;
+</span><span>version = </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">0.0.1-SNAPSHOT</span><span style="color:#556633;">&#39;
+</span><span>sourceCompatibility = </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">11</span><span style="color:#556633;">&#39;
+</span><span>
+</span><span>repositories {
+</span><span>    mavenCentral()
+</span><span>}
+</span><span>
+</span><span>dependencyManagement {
+</span><span>    imports {
+</span><span>        mavenBom </span><span style="color:#8fbfdc;">org.springframework.boot.gradle.plugin.SpringBootPlugin</span><span>.</span><span style="color:#7697d6;">BOM_COORDINATES
+</span><span>    }
+</span><span>}
+</span><span>
+</span><span>dependencies {
+</span><span>    implementation </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">org.springframework.boot:spring-boot-starter</span><span style="color:#556633;">&#39;
+</span><span>    testImplementation </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">org.springframework.boot:spring-boot-starter-test</span><span style="color:#556633;">&#39;
+</span><span>}
+</span></code></pre>
+<p>至于其他人说的禁用 <code>bootJar</code> 任务，启用 <code>jar</code> 任务应该也是可行的，但是在官方文档中被改成了现在这个版本。</p>
+<h2 id="qi-dong-qi">启动器</h2>
+<p>根据 Spring 的官方文档，一个自定义的启动器可以包含两个东西：自动配置模块和启动器模块。</p>
+<p>自动配置模块其实就是把需要集成到 Spring 上的 Maven 库提供的接口封装进 Spring Bean 里。
+当然一般还需要定义一些可选的配置键。
+此外，还可以定义可选依赖，比如有时候对于同一个功能我们会封装一个适配器，可以在若干个外部依赖中选择一个作为具体实现。</p>
+<p>而启动器模块只是引入了自动配置模块，当然还有普通的 Maven 库，此外还引入了自动配置模块提供的可选依赖中一些最常用的依赖库。
+简单地说就是启动器模块就只是做默认的依赖引入，从而实现开箱即用。
+用户在使用的时候也可以不选择这个启动器模块，而是自行引入自动配置模块以及其他的可选依赖，也就是自定义的启动器模块。</p>
+<p>不过这两个模块的划分并不是必要的，因为有些时候我们发现我们的库可能根本没那么复杂，也不需要什么可选依赖，那么官方的推荐做法就是把自动配置模块直接合并到启动器模块中。</p>
+<h2 id="ming-ming">命名</h2>
+<p>对于需要集成到 Spring 上的 Maven 库，自动配置模块我们命名为 <code>xxx-spring-boot-autoconfigure</code>，启动器模块我们命名为 <code>xxx-spring-boot-starter</code>。</p>
+<h2 id="pei-zhi-jian">配置键</h2>
+<p>在使用这个库的时候我们可能希望进行一些自定义配置，比如对于一些网络服务我们可能会想要修改默认的监听端口。
+这个时候我们就要自定义一些配置键，这样我们的 Spring Bean 就能够读取到它们。
+我们可以使用 <code>@ConfigurationProperties</code> 来定义配置键。
+需要注意的是一定要给每个属性添加 javadoc 以保证文档化。
+另外根据实践经验，配置键的前缀应当使用自定义的命名空间，不要跟 Spring Boot 用的命名空间揉在一起。</p>
+<p>比如在下面这个例子中，我们添加了一个 <code>lib.port</code> 的整型配置键，默认值为 8082。
+于是我们就可以使用 <code>@Autowired</code> 在其他 Bean 中自动注入这个东西获取配置键的实际值。</p>
+<pre data-lang="java" style="background-color:#151515;color:#e8e8d3;" class="language-java "><code class="language-java" data-lang="java"><span>@</span><span style="color:#ffb964;">ConfigurationProperties</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">lib</span><span style="color:#556633;">&quot;</span><span>)
+</span><span style="color:#8fbfdc;">public class </span><span style="color:#ffb964;">LibProperties </span><span>{
+</span><span>
+</span><span>    </span><span style="color:#888888;">/**
+</span><span style="color:#888888;">     * The listen port.
+</span><span style="color:#888888;">     */
+</span><span style="color:#888888;">    private int port = 8082;
+</span><span style="color:#888888;">
+</span><span style="color:#888888;">    // getters/setters ...
+</span><span style="color:#888888;">
+</span><span style="color:#888888;">}
+</span></code></pre>
+<p>另外需要注意的是，我们需要生成一些元数据供 IDE 识别，这样 IDE 才能在 <code>application.properties</code> 文件中对这些自定义的配置键提供自动补齐等支持。
+于是我们需要引入 <code>spring-boot-configuration-processor</code> 依赖。
+使用下面的例子引入即可，具体的解释可以参考 <a href="https://docs.spring.io/spring-boot/docs/2.6.3/reference/html/configuration-metadata.html#configuration-metadata.annotation-processor">Generating Your Own Metadata by Using the Annotation Processor</a>。</p>
+<pre data-lang="gradle" style="background-color:#151515;color:#e8e8d3;" class="language-gradle "><code class="language-gradle" data-lang="gradle"><span>dependencies {
+</span><span>    annotationProcessor </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">org.springframework.boot:spring-boot-configuration-processor</span><span style="color:#556633;">&#39;
+</span><span>}
+</span><span>
+</span><span>compileJava.dependsOn(processResources)
+</span></code></pre>
+<p>然而有一个遗憾的事情是，如果你在 VS Code 上用 Gradle，这个操作是无效的。
+因为 VS Code 的 Java 插件用 Eclipse JDT 来提供 Gradle 支持，然后 Gradle 不对 Eclipse 提供注解处理配置的支持。
+可以参考这个 <a href="https://github.com/spring-projects/sts4/issues/585">issue</a>。
+不过也有好消息，如果用 Maven 的话就没有这个问题。</p>
+<h2 id="fa-bu-yu-yin-ru">发布与引入</h2>
+<p>一般依赖包发布的地方跟代码托管的地方保持一致会令人觉得很爽。
+好消息是 GitHub 和 GitLab 都集成了免费的 Maven 仓库。
+于是这里我们以发布到 GitHub Packages 为例。</p>
+<p>首先看一下构建脚本，也就是 <code>build.gradle</code>，大概长这样。</p>
+<pre data-lang="gradle" style="background-color:#151515;color:#e8e8d3;" class="language-gradle "><code class="language-gradle" data-lang="gradle"><span>plugins {
+</span><span>  ...
+</span><span>  id </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">maven-publish</span><span style="color:#556633;">&#39;
+</span><span>}
+</span><span>
+</span><span>publishing {
+</span><span>  ...
+</span><span>
+</span><span>  repositories {
+</span><span>    maven {
+</span><span>      name = </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">GitHubPackages</span><span style="color:#556633;">&quot;
+</span><span>      url = </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">https://maven.pkg.github.com/&lt;owner&gt;/lib-spring-boot-starter</span><span style="color:#556633;">&quot;
+</span><span>      credentials {
+</span><span>        username = </span><span style="color:#8fbfdc;">System</span><span>.getenv(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">GITHUB_ACTOR</span><span style="color:#556633;">&quot;</span><span>)
+</span><span>        password = </span><span style="color:#8fbfdc;">System</span><span>.getenv(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">GITHUB_TOKEN</span><span style="color:#556633;">&quot;</span><span>)
+</span><span>      }
+</span><span>    }
+</span><span>  }
+</span><span>}
+</span></code></pre>
+<p>注意到这个 <code>url</code> 参数前缀是固定的，然后 <code>&lt;owner&gt;</code> 可以是个人的用户名也可以是组织名，后面跟着就是项目名。</p>
+<p>然后写一个持续集成脚本就行了，命名为 <code>publish.yml</code>。</p>
+<pre data-lang="yml" style="background-color:#151515;color:#e8e8d3;" class="language-yml "><code class="language-yml" data-lang="yml"><span style="color:#888888;"># This workflow uses actions that are not certified by GitHub.
+</span><span style="color:#888888;"># They are provided by a third-party and are governed by
+</span><span style="color:#888888;"># separate terms of service, privacy policy, and support
+</span><span style="color:#888888;"># documentation.
+</span><span>
+</span><span style="color:#ffb964;">name</span><span>: </span><span style="color:#99ad6a;">Publish package to GitHub Packages
+</span><span>on:
+</span><span>  </span><span style="color:#ffb964;">push</span><span>:
+</span><span>    </span><span style="color:#ffb964;">tags</span><span>:
+</span><span>      - </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">v[0-9]+.[0-9]+.[0-9]+</span><span style="color:#556633;">&#39;
+</span><span style="color:#ffb964;">jobs</span><span>:
+</span><span>  </span><span style="color:#ffb964;">publish</span><span>:
+</span><span>    </span><span style="color:#ffb964;">runs-on</span><span>: </span><span style="color:#99ad6a;">ubuntu-latest
+</span><span>    </span><span style="color:#ffb964;">permissions</span><span>:
+</span><span>      </span><span style="color:#ffb964;">contents</span><span>: </span><span style="color:#99ad6a;">read
+</span><span>      </span><span style="color:#ffb964;">packages</span><span>: </span><span style="color:#99ad6a;">write
+</span><span>    </span><span style="color:#ffb964;">steps</span><span>:
+</span><span>      - </span><span style="color:#ffb964;">uses</span><span>: </span><span style="color:#99ad6a;">actions/checkout@v2
+</span><span>      - </span><span style="color:#ffb964;">uses</span><span>: </span><span style="color:#99ad6a;">actions/setup-java@v2
+</span><span>        </span><span style="color:#ffb964;">with</span><span>:
+</span><span>          </span><span style="color:#ffb964;">java-version</span><span>: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">11</span><span style="color:#556633;">&#39;
+</span><span>          </span><span style="color:#ffb964;">distribution</span><span>: </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">adopt</span><span style="color:#556633;">&#39;
+</span><span>      - </span><span style="color:#ffb964;">name</span><span>: </span><span style="color:#99ad6a;">Validate Gradle wrapper
+</span><span>        </span><span style="color:#ffb964;">uses</span><span>: </span><span style="color:#99ad6a;">gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
+</span><span>      - </span><span style="color:#ffb964;">name</span><span>: </span><span style="color:#99ad6a;">Publish package
+</span><span>        </span><span style="color:#ffb964;">uses</span><span>: </span><span style="color:#99ad6a;">gradle/gradle-build-action@4137be6a8bf7d7133955359dbd952c0ca73b1021
+</span><span>        </span><span style="color:#ffb964;">with</span><span>:
+</span><span>          </span><span style="color:#ffb964;">arguments</span><span>: </span><span style="color:#99ad6a;">publish
+</span><span>        </span><span style="color:#ffb964;">env</span><span>:
+</span><span>          </span><span style="color:#ffb964;">GITHUB_TOKEN</span><span>: </span><span style="color:#99ad6a;">${{ secrets.GITHUB_TOKEN }}
+</span></code></pre>
+<p>这个东西的触发条件是有满足 <code>v[0-9]+.[0-9]+.[0-9]+</code> 正则表达式的 tag 的 push。</p>
+<p>最后我们就可以在其他项目中引入这个依赖了。</p>
+<pre data-lang="gradle" style="background-color:#151515;color:#e8e8d3;" class="language-gradle "><code class="language-gradle" data-lang="gradle"><span>repositories {
+</span><span>    maven {
+</span><span>        url = uri(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">https://maven.pkg.github.com/&lt;owner&gt;/lib-spring-boot-starter</span><span style="color:#556633;">&quot;</span><span>)
+</span><span>        credentials {
+</span><span>            username = </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">&lt;your-name&gt;</span><span style="color:#556633;">&quot;
+</span><span>            password = </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">&lt;your-token&gt;</span><span style="color:#556633;">&quot;
+</span><span>        }
+</span><span>    }
+</span><span>}
+</span><span>
+</span><span>dependencies {
+</span><span>    implementation </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">com.example:lib-spring-boot-starter:0.0.1-SNAPSHOT</span><span style="color:#556633;">&#39;
+</span><span>}
+</span></code></pre>
+<p>首先就是添加 GitHub Packages 提供的 Maven 仓库。
+同样注意到这个 <code>url</code> 参数跟我们发布时是相同的。
+但是根据 GitHub 员工所述，项目名并不重要，直接用 <code>&lt;owner&gt;/*</code> 即可，注意 <code>*</code> 是必要的。
+另外 <code>password</code> 参数不能使用真实的密码，应当在用户的设置界面申请一个具有 <code>read:packages</code> 权限的 token，并使用这个 token。
+尽管这个 token 只具有访问依赖包的权限，但是最好还是使用 actions secrets 避免明文挂在仓库中。
+最后正常引入依赖就行了。</p>
+<p>于是问题来了，我的仓库是开源的，发布的依赖包也是公开的，为什么访问一个公开的依赖包也需要身份认证？
+这个时候，请移步<a href="https://github.community/t/download-from-github-package-registry-without-authentication/14407/106">讨论区</a>。
+可以看到因为这个问题 GitHub 已经被吐槽了两年多了。
+其中有一个 GitHub 员工提出的比较好的解决方案是配置一个机器人账号并直接明文使用它的 <code>read:packages</code> 权限的 token。
+不过也有邪恶的人指出可以使用 GitHub Actions 发布到 GitLab 上，因为 GitLab 对公开的依赖包的访问不需要授权，并且还给出了详细的示例。</p>
+<h2 id="wan-zheng-shi-li">完整实例</h2>
+<p><a href="https://github.com/paakmau/spring-boot-starter-template">https://github.com/paakmau/spring-boot-starter-template</a></p>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202201081507/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">使用 xmake 管理 C++ 项目</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202204031923/">
+                                <span class="button__text">油闷大虾</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

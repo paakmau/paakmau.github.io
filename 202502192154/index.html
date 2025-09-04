@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>NUMA 相关命令速查笔记 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="NUMA 相关命令速查笔记 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202502192154/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="NUMA 相关命令速查笔记 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202502192154/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202502192154/">NUMA 相关命令速查笔记</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2025-02-19
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/numa/">#NUMA</a></span>
+    
+
+        <div class="post-content">
+            <p>NUMA（non-uniform memory access）是一种用于多处理器系统的内存设计，其中内存访问的时间取决于内存与处理器的距离。
+本文将会记录与 NUMA 相关的常用命令。</p>
+<span id="continue-reading"></span><h2 id="huan-jing">环境</h2>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">$</span><span> distro
+</span><span style="color:#ffb964;">Name:</span><span> openEuler 22.03 (LTS-SP4)
+</span><span style="color:#ffb964;">Version:</span><span> 22.03 (LTS-SP4)
+</span><span style="color:#ffb964;">Codename:</span><span> LTS-SP4
+</span></code></pre>
+<h2 id="cha-xun-ke-yong-jie-dian-xin-xi">查询可用节点信息</h2>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">numactl -H
+</span></code></pre>
+<ul>
+<li>各节点对应的 CPU 核心编号</li>
+<li>各节点内存的粗略使用情况</li>
+<li>节点之间的距离</li>
+</ul>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">lscpu
+</span></code></pre>
+<p><code>lscpu</code> 可用于查询 CPU 架构信息，包括：</p>
+<ul>
+<li>插槽（socket）：主板上的 CPU 插槽，也就是俗称的“路”。</li>
+<li>核心（core）：可以查询到每路 CPU 的核心数。</li>
+<li>线程（thread）：每个核心具有的硬件线程数，可能大于一，比如常见的超线程。</li>
+<li>NUMA 节点以及对应的核心编号。</li>
+</ul>
+<h2 id="cha-xun-dang-qian-jin-cheng-de-numa-ce-lue-pei-zhi">查询当前进程的 NUMA 策略配置</h2>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">numactl -s
+</span></code></pre>
+<p>NUMA 策略是配置在命令上的，且能够被其子进程继承。
+NUMA 策略包括：</p>
+<ul>
+<li>绑定的 NUMA 节点</li>
+<li>绑定的 CPU 核心</li>
+<li>偏好的 NUMA 节点，内存会被优先分配到该节点上</li>
+</ul>
+<h2 id="cha-xun-ge-numa-jie-dian-nei-cun-fen-pei-ming-zhong-qing-kuang">查询各 NUMA 节点内存分配命中情况</h2>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">numastat
+</span></code></pre>
+<p>不带任何参数的 <code>numastat</code> 命令能够查询各 NUMA 节点内存命中与否的统计信息，这些信息来自内核分配器。
+会对每个节点输出以下各个类型的内存页数量：</p>
+<ul>
+<li><code>numa_hit</code>：内存成功分配到预期的节点上。</li>
+<li><code>numa_miss</code>：进程偏好分配到其他节点上，但实际分配到了该节点上，与 <code>numa_foreign</code> 成对出现。</li>
+<li><code>numa_foreign</code>：内存预期分配到该节点，但实际分配到了其他节点上，与 <code>numa_miss</code> 承兑出现。</li>
+<li><code>interleave_hit</code>：预期交错分配的内存成功分配到该节点上。</li>
+<li><code>local_node</code>：进程与其分配的内存都在该节点上。</li>
+<li><code>other_node</code>：分配内存的进程运行在其他节点上。</li>
+</ul>
+<p>其中预期分配的节点一般是进程的本地节点或者是由 <code>--preferred</code> 参数指定的节点。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">numastat -c
+</span></code></pre>
+<p>带上 <code>-c</code> 参数后输出信息会更加紧凑，并且内存页数量会被换算为兆字节（MB）。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">watch -n</span><span> 1</span><span style="color:#ffb964;"> --differences</span><span>=cumulative numastat
+</span></code></pre>
+<p><code>numastat</code> 命令输出的是累积的统计信息，如果想查询一段时间内的分配情况，可以配合 <code>watch</code> 命令使用。</p>
+<h2 id="cha-xun-ge-jie-dian-nei-cun-shi-yong-qing-kuang">查询各节点内存使用情况</h2>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">numastat -m
+</span></code></pre>
+<p>各节点的输出信息与 <code>/proc/meminfo</code> 类似。</p>
+<p>或者也可以直接找到各个节点的 <code>meminfo</code>：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">cat</span><span> /sys/devices/system/node/node*/meminfo | </span><span style="color:#ffb964;">grep -e</span><span> MemUsed</span><span style="color:#ffb964;"> -e</span><span> MemFree</span><span style="color:#ffb964;"> -e</span><span> FilePages
+</span></code></pre>
+<h2 id="pei-zhi-jie-dian-nei-nei-cun-hui-shou-ce-lue">配置节点内内存回收策略</h2>
+<p><code>vm.zone_reclaim_mode</code> 用于指定单个 NUMA 节点内存不足时在节点内回收（reclaim）内存的策略。
+它的默认值为 <code>0</code>，表示不先进行回收，而是优先从其他 NUMA 节点尝试分配内存。
+激进的内存回收策略通常情况下会导致性能问题，一般来说保持默认值就行。
+可以对以下值做或运算，作为该参数的取值：</p>
+<ul>
+<li>1：开启区域回收，允许回收本节点的页缓存</li>
+<li>2：允许写回页缓存中的脏页</li>
+<li>4：允许释放匿名页并将其写入交换分区</li>
+</ul>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">sysctl -n</span><span> vm.zone_reclaim_mode
+</span><span style="color:#ffb964;">sysctl -w</span><span> vm.zone_reclaim_mode=0
+</span></code></pre>
+<h2 id="pei-zhi-zi-dong-numa-nei-cun-ping-heng">配置自动 NUMA 内存平衡</h2>
+<p><code>numa_balancing</code> 用于开启或关闭基于缺页的自动 NUMA 内存平衡。
+该内核参数开启时，内核会将内存移动到访问更频繁的 NUMA 节点，这能够减少跨 NUMA 的内存访问。
+系统内核会周期性地清除页表映射，在缺页中断时对各个线程访存情况进行采样，同时依据采样结果将被访问的数据迁移到合适的 NUMA 节点上。
+这些缺页中断会带来额外的开销。</p>
+<p>理想情况下，相比缺页的损耗，该特性减少的远端访存能够带来更高的收益。
+但如果应用本身的内存分配是 NUMA-aware 的，不需要依赖自动平衡，这种情况下就应该关闭该特性（配置为 <code>0</code>）。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">sysctl -n</span><span> kernel.numa_balancing
+</span><span style="color:#ffb964;">sysctl -w</span><span> kernel.numa_balancing=0
+</span></code></pre>
+<h2 id="cha-xun-pcie-she-bei-dui-ying-de-numa-jie-dian">查询 PCIe 设备对应的 NUMA 节点</h2>
+<p><code>/sys/class</code> 目录依据类别（网卡、磁盘等）存放系统中注册的各个设备，其子目录中存放的是各设备的软链接，指向 <code>/sys/devices</code> 中的对应目录。
+如下命令会遍历该目录中的设备并输出其 NUMA 节点信息（如果有）：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#8fbfdc;">for</span><span> file </span><span style="color:#8fbfdc;">in</span><span> /sys/class/*/*/device/numa_node; </span><span style="color:#8fbfdc;">do
+</span><span>  echo ${</span><span style="color:#ffb964;">file</span><span>}
+</span><span>  </span><span style="color:#ffb964;">cat </span><span>${</span><span style="color:#ffb964;">file</span><span>}
+</span><span style="color:#8fbfdc;">done
+</span></code></pre>
+<p>这里再提供一个示例。
+查询指定目录挂载 NVMe 磁盘对应的 NUMA 节点：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#888888;"># 查询挂载信息
+</span><span style="color:#ffb964;">df -h
+</span><span>
+</span><span style="color:#888888;"># 查询 NUMA 节点信息
+</span><span style="color:#ffb964;">cat</span><span> /sys/class/nvme/nvme0/numa_node
+</span></code></pre>
+<h2 id="numactl"><code>numactl</code></h2>
+<p>我们可以通过 <code>numactl</code> 命令启动应用，为其指定 NUMA 调度或内存分布策略。
+这个策略会被子进程继承，但子进程仍然可以改变策略。
+此外 <code>numactl</code> 还可以为共享内存或文件配置持久化的策略。</p>
+<h3 id="bang-he">绑核</h3>
+<p>可以写一个重 CPU 的多线程应用，然后使用 <code>numactl</code> 将应用绑定到指定核心上执行：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">numactl -C</span><span> 13,17,64-65 &lt;app&gt;
+</span></code></pre>
+<p>使用 <code>htop</code> 观察到这些核心的 CPU 使用率明显高于其他核心：</p>
+<pre data-lang="txt" style="background-color:#151515;color:#e8e8d3;" class="language-txt "><code class="language-txt" data-lang="txt"><span>   0[|0.7%]  16[ 0.0%]  32[ 0.0%]  48[ 0.0%]  64[100.0]  80[ 0.0%]  96[ 0.0%] 112[ 0.0%]
+</span><span>   1[ 0.0%]  17[100.0]  33[ 0.0%]  49[ 0.0%]  65[100.0]  81[ 0.0%]  97[ 0.0%] 113[ 0.0%]
+</span><span>   2[ 0.0%]  18[ 0.0%]  34[ 0.0%]  50[ 0.0%]  66[ 0.0%]  82[ 0.0%]  98[ 0.0%] 114[ 0.0%]
+</span><span>   3[ 0.0%]  19[ 0.0%]  35[ 0.0%]  51[ 0.0%]  67[ 0.0%]  83[ 0.0%]  99[ 0.0%] 115[ 0.0%]
+</span><span>   4[ 0.0%]  20[ 0.0%]  36[ 0.0%]  52[ 0.0%]  68[ 0.0%]  84[ 0.0%] 100[ 0.0%] 116[ 0.0%]
+</span><span>   5[ 0.0%]  21[ 0.0%]  37[ 0.0%]  53[ 0.0%]  69[ 0.0%]  85[ 0.0%] 101[ 0.0%] 117[ 0.0%]
+</span><span>   6[ 0.0%]  22[ 0.0%]  38[ 0.0%]  54[ 0.0%]  70[ 0.0%]  86[ 0.0%] 102[ 0.0%] 118[ 0.0%]
+</span><span>   7[ 0.0%]  23[ 0.0%]  39[ 0.0%]  55[ 0.0%]  71[ 0.0%]  87[ 0.0%] 103[ 0.0%] 119[ 0.0%]
+</span><span>   8[ 0.0%]  24[ 0.0%]  40[ 0.0%]  56[ 0.0%]  72[ 0.0%]  88[ 0.0%] 104[ 0.0%] 120[|1.3%]
+</span><span>   9[ 0.0%]  25[ 0.0%]  41[ 0.0%]  57[ 0.0%]  73[ 0.0%]  89[ 0.0%] 105[ 0.0%] 121[ 0.0%]
+</span><span>  10[ 0.0%]  26[ 0.0%]  42[ 0.0%]  58[ 0.0%]  74[ 0.0%]  90[ 0.0%] 106[ 0.0%] 122[ 0.0%]
+</span><span>  11[ 0.0%]  27[ 0.0%]  43[ 0.0%]  59[ 0.0%]  75[ 0.0%]  91[ 0.0%] 107[ 0.0%] 123[ 0.0%]
+</span><span>  12[ 0.0%]  28[ 0.0%]  44[ 0.0%]  60[ 0.0%]  76[ 0.0%]  92[ 0.0%] 108[ 0.0%] 124[ 0.0%]
+</span><span>  13[100.0]  29[ 0.0%]  45[ 0.0%]  61[ 0.0%]  77[ 0.0%]  93[ 0.0%] 109[ 0.0%] 125[ 0.0%]
+</span><span>  14[ 0.0%]  30[ 0.0%]  46[ 0.0%]  62[ 0.0%]  78[ 0.0%]  94[ 0.0%] 110[ 0.0%] 126[ 0.0%]
+</span><span>  15[ 0.0%]  31[ 0.0%]  47[ 0.0%]  63[ 0.0%]  79[ 0.0%]  95[ 0.0%] 111[ 0.0%] 127[ 0.0%]
+</span></code></pre>
+<h3 id="nei-cun-fen-pei-ce-lue">内存分配策略</h3>
+<p>轮询（round robin）交错分配：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">numactl --interleave</span><span>=&lt;nodes&gt; &lt;app&gt;
+</span><span style="color:#ffb964;">numactl -i </span><span>&lt;nodes&gt; &lt;app&gt;
+</span></code></pre>
+<p>这种分配策略能通过轮询的方式将内存均匀分配在指定的若干节点上。
+如果交错分配的目标节点上内存不足，内存会被分配到其他节点上。
+考虑这样一个场景：单节点内存耗尽后，被迫从其他节点分配内存，后续分配的内存均会导致跨节点访存开销，集中访问这些内存可能产生较大的性能波动。
+这种场景下，就可以使用交错分布的策略，避免单个节点内存耗尽，访存的时间会更均匀，减少波动问题。
+但交错分布的策略会导致本可以本地分配的内存被分配到其他节点上，通常来说总体的访存速度会变慢。</p>
+<p>内存绑定分配：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">numactl --membind</span><span>=&lt;nodes&gt; &lt;app&gt;
+</span><span style="color:#ffb964;">numactl -m </span><span>&lt;nodes&gt; &lt;app&gt;
+</span></code></pre>
+<p>仅在指定的节点上分配内存，当这些节点内存不足时，分配将会失败。</p>
+<p>优先分配：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">numactl --preferred-many</span><span>=&lt;nodes&gt; &lt;app&gt;
+</span><span style="color:#ffb964;">numactl -P </span><span>&lt;nodes&gt; &lt;app&gt;
+</span></code></pre>
+<p>在指定的若干节点上优先分配内存，当内存不足时，可回退到其他节点上分配。</p>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202502062219/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">为 openGauss 导入 TPC-H 数据集</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202502202237/">
+                                <span class="button__text">openGauss 的 NUMA-aware 部署</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

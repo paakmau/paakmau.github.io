@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>【poj 1694】An Old Stone Game | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="【poj 1694】An Old Stone Game | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/201912191751/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="【poj 1694】An Old Stone Game | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/201912191751/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/201912191751/">【poj 1694】An Old Stone Game</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2019-12-19
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/dong-tai-gui-hua/">#动态规划</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/shu-xing-dp/">#树形 DP</a></span>
+    
+
+        <div class="post-content">
+            <p>一题简单的树形 DP</p>
+<span id="continue-reading"></span><h2 id="ti-mu-miao-shu">题目描述</h2>
+<p>There is an old stone game, played on an arbitrary general tree <code>T</code>. The goal is to put one stone on the root of <code>T</code> observing the following rules:</p>
+<ol>
+<li>At the beginning of the game, the player picks <code>K</code> stones and puts them all in one bucket.</li>
+<li>At each step of the game, the player can pick one stone from the bucket and put it on any empty leaf.</li>
+<li>When all of the <code>r</code> immediate children of a node p each has one stone, the player may remove all of these <code>r</code> stones, and put one of the stones on <code>p</code>. The other <code>r - 1</code> stones are put back into the bucket, and can be used in the later steps of the game.</li>
+</ol>
+<p>The player wins the game if by following the above rules, he succeeds to put one stone on the root of the tree.<br>
+You are to write a program to determine the least number of stones to be picked at the beginning of the game (<code>K</code>), so that the player can win the game on the given input tree.</p>
+<h2 id="shu-ru-ge-shi">输入格式</h2>
+<p>The input describes several trees. The first line of this file is <code>M</code>, the number of trees (<code>1 &lt;= M &lt;= 10</code>). Description of these <code>M</code> trees comes next in the file. Each tree has <code>N &lt; 200</code> nodes, labeled <code>1, 2, ... N</code>, and each node can have any possible number of children. Root has label <code>1</code>. Description of each tree starts with <code>N</code> in a separate line. The following <code>N</code> lines describe the children of all nodes in order of their labels. Each line starts with a number <code>p</code> (<code>1 &lt;= p &lt;= N</code>, the label of one of the nodes), <code>r</code> the number of the immediate children of <code>p</code>, and then the labels of these <code>r</code> children.</p>
+<h2 id="shu-chu-ge-shi">输出格式</h2>
+<p>One line for each input tree showing the minimum number of stones to be picked in step 1 above, in order to win the game on that input tree.</p>
+<h2 id="shu-ru-yang-li">输入样例</h2>
+<pre data-lang="txt" style="background-color:#151515;color:#e8e8d3;" class="language-txt "><code class="language-txt" data-lang="txt"><span>2
+</span><span>7
+</span><span>1 2 2 3
+</span><span>2 2 5 4
+</span><span>3 2 6 7
+</span><span>4 0
+</span><span>5 0
+</span><span>6 0
+</span><span>7 0
+</span><span>12
+</span><span>1 3 2 3 4
+</span><span>2 0
+</span><span>3 2 5 6
+</span><span>4 3 7 8 9
+</span><span>5 3 10 11 12
+</span><span>6 0
+</span><span>7 0
+</span><span>8 0
+</span><span>9 0
+</span><span>10 0
+</span><span>11 0
+</span><span>12 0
+</span></code></pre>
+<h2 id="shu-chu-yang-li">输出样例</h2>
+<pre data-lang="txt" style="background-color:#151515;color:#e8e8d3;" class="language-txt "><code class="language-txt" data-lang="txt"><span>3
+</span><span>4
+</span></code></pre>
+<h2 id="ti-jie">题解</h2>
+<p>树形 DP<br>
+<code>F(p)</code> 表示 <code>p</code> 结点最少需要的石子数</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#8fbfdc;">#include </span><span style="color:#556633;">&lt;</span><span style="color:#99ad6a;">cstdio</span><span style="color:#556633;">&gt;
+</span><span style="color:#8fbfdc;">#include </span><span style="color:#556633;">&lt;</span><span style="color:#99ad6a;">cstring</span><span style="color:#556633;">&gt;
+</span><span style="color:#8fbfdc;">using namespace</span><span> std;
+</span><span style="color:#8fbfdc;">const int</span><span> MAXN = </span><span style="color:#cf6a4c;">205</span><span>;
+</span><span style="color:#8fbfdc;">int</span><span> T, N;
+</span><span style="color:#8fbfdc;">int</span><span> Head[MAXN];
+</span><span style="color:#8fbfdc;">int</span><span> A[MAXN];
+</span><span style="color:#8fbfdc;">int</span><span> To[MAXN], Next[MAXN], EL;
+</span><span style="color:#8fbfdc;">inline void </span><span style="color:#fad07a;">AddEdge</span><span>(</span><span style="color:#8fbfdc;">int </span><span style="color:#ffb964;">p</span><span>, </span><span style="color:#8fbfdc;">int </span><span style="color:#ffb964;">to</span><span>) {
+</span><span>    To[++EL] = to;
+</span><span>    Next[EL] = Head[p];
+</span><span>    Head[p] = EL;
+</span><span>}
+</span><span style="color:#8fbfdc;">int</span><span> F[MAXN];
+</span><span style="color:#8fbfdc;">void </span><span style="color:#fad07a;">DP</span><span>(</span><span style="color:#8fbfdc;">int </span><span style="color:#ffb964;">p</span><span>) {
+</span><span>    </span><span style="color:#8fbfdc;">if </span><span>(!A[p]) { F[p] = </span><span style="color:#cf6a4c;">1</span><span>; </span><span style="color:#8fbfdc;">return</span><span>; }
+</span><span>    </span><span style="color:#8fbfdc;">int</span><span> a[MAXN];
+</span><span>    </span><span style="color:#8fbfdc;">for </span><span>(</span><span style="color:#8fbfdc;">int</span><span> i = Head[p], j = </span><span style="color:#cf6a4c;">1</span><span>; i; i = Next[i], j++) {
+</span><span>        </span><span style="color:#ffb964;">DP</span><span>(To[i]);
+</span><span>        a[j] = F[To[i]];
+</span><span>    }
+</span><span>    </span><span style="color:#ffb964;">sort</span><span>(a + </span><span style="color:#cf6a4c;">1</span><span>, a + A[p] + </span><span style="color:#cf6a4c;">1</span><span>);
+</span><span>    </span><span style="color:#8fbfdc;">for </span><span>(</span><span style="color:#8fbfdc;">int</span><span> i = </span><span style="color:#cf6a4c;">2</span><span>; i &lt;= A[p]; i++)
+</span><span>        a[i] = </span><span style="color:#ffb964;">max </span><span>(a[i], a[i - </span><span style="color:#cf6a4c;">1</span><span>] + </span><span style="color:#cf6a4c;">1</span><span>);
+</span><span>    F[p] = a[A[p]];
+</span><span>}
+</span><span style="color:#8fbfdc;">int </span><span style="color:#fad07a;">main</span><span>() {
+</span><span>    scanf(</span><span style="color:#556633;">&quot;</span><span style="color:#7697d6;">%d</span><span style="color:#556633;">&quot;</span><span>, &amp;T);
+</span><span>    </span><span style="color:#8fbfdc;">while </span><span>(T--) {
+</span><span>        scanf(</span><span style="color:#556633;">&quot;</span><span style="color:#7697d6;">%d</span><span style="color:#556633;">&quot;</span><span>, &amp;N);
+</span><span>        memset(Head, </span><span style="color:#cf6a4c;">0</span><span>, sizeof(Head));
+</span><span>        EL = </span><span style="color:#cf6a4c;">0</span><span>;
+</span><span>        </span><span style="color:#8fbfdc;">for </span><span>(</span><span style="color:#8fbfdc;">int</span><span> i = </span><span style="color:#cf6a4c;">1</span><span>; i &lt;= N; i++) {
+</span><span>            </span><span style="color:#8fbfdc;">int</span><span> p, n;
+</span><span>            scanf(</span><span style="color:#556633;">&quot;</span><span style="color:#7697d6;">%d%d</span><span style="color:#556633;">&quot;</span><span>, &amp;p, &amp;n);
+</span><span>            A[p] = n;
+</span><span>            </span><span style="color:#8fbfdc;">while </span><span>(n--) {
+</span><span>                </span><span style="color:#8fbfdc;">int</span><span> to;
+</span><span>                scanf(</span><span style="color:#556633;">&quot;</span><span style="color:#7697d6;">%d</span><span style="color:#556633;">&quot;</span><span>, &amp;to);
+</span><span>                </span><span style="color:#ffb964;">AddEdge</span><span>(p, to);
+</span><span>            }
+</span><span>        }
+</span><span>        memset(F, </span><span style="color:#cf6a4c;">0x0f</span><span>, sizeof(F));
+</span><span>        </span><span style="color:#ffb964;">DP</span><span>(</span><span style="color:#cf6a4c;">1</span><span>);
+</span><span>        printf(</span><span style="color:#556633;">&quot;</span><span style="color:#7697d6;">%d</span><span style="color:#99ad6a;">\n</span><span style="color:#556633;">&quot;</span><span>, F[</span><span style="color:#cf6a4c;">1</span><span>]);
+</span><span>    }
+</span><span>    </span><span style="color:#8fbfdc;">return </span><span style="color:#cf6a4c;">0</span><span>;
+</span><span>}
+</span></code></pre>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/201912190040/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">【hdu 2955】Robberies</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/201912232105/">
+                                <span class="button__text">Docker Compose 部署饥荒服务器</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

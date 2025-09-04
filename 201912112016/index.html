@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Docker 简单介绍与安装 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="Docker 简单介绍与安装 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/201912112016/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="Docker 简单介绍与安装 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/201912112016/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/201912112016/">Docker 简单介绍与安装</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2019-12-11
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/docker/">#Docker</a></span>
+    
+
+        <div class="post-content">
+            <p>本文将介绍 Docker 的概念，并记录在 Debian 上安装 Docker 的过程。</p>
+<span id="continue-reading"></span><h2 id="jian-jie">简介</h2>
+<p>根据官方文档，Docker 是一个以容器形式构建、分享、运行应用的平台。</p>
+<p>民间说法，Docker 是一个虚拟机，只要制作了应用的虚拟机镜像，就能在几乎任何平台上一键部署我们的应用。而且这个虚拟机的性能非常好。</p>
+<p>举个部署后端的例子说明 Docker 部署流程</p>
+<p>首先制作一个镜像，这个镜像的内容是一个配置了 JRE 然后还存放着我们写的 Spring Boot 后端的 Ubuntu<br>
+然后把镜像交给 Docker，Docker 就能根据镜像生成容器并运行它。<br>
+这样我们的后端就部署成功了。</p>
+<h2 id="rong-qi">容器</h2>
+<p>是一个虚拟环境。这个环境可以是带了 JRE 和 Spring 后端的 Ubuntu，也可以是一个带了 nginx 与 静态页面的 Alpine，甚至可以自己从零开始编写。</p>
+<p>总之就是容器中运行着我们的应用。</p>
+<h2 id="jing-xiang">镜像</h2>
+<p>可以理解为容器的模板，可以用一个镜像生成很多个一模一样的容器。</p>
+<p>一个镜像可以作为另一个镜像的基础。比如我们可以基于 Ubuntu 的镜像制作一个带 JRE 的 Ubuntu 镜像。</p>
+<p>而 Docker 提供了许多的基础镜像，比如包括 Ubuntu 在内的各种 Linux 发行版、.NET、MySQL 等等。我们可以基于这些镜像快速的构建我们的应用镜像。</p>
+<h2 id="docker-compose">Docker Compose</h2>
+<p>在项目部署的时候，我们可能会用到多个容器，逐个配置就会很麻烦。可以使用 Docker Compose 同时配置管理多个容器</p>
+<h2 id="docker-an-zhuang">Docker 安装</h2>
+<p>这里以 Debian 10 为例</p>
+<p>使用 APT 安装，首先根据处理器架构添加合适的 APT 仓库，然后直接 <code>apt install</code> 即可。</p>
+<p>官方文档在这里：</p>
+<p><a href="https://docs.docker.com/install/linux/docker-ce/debian/">https://docs.docker.com/install/linux/docker-ce/debian/</a></p>
+<p>注意：如果已有旧版的 Docker，请移步上述官网教程按步骤卸载。</p>
+<p>首先安装依赖：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">sudo</span><span> apt update
+</span><span style="color:#ffb964;">sudo</span><span> apt install apt-transport-https ca-certificates
+</span><span style="color:#ffb964;">sudo</span><span> apt install curl gnupg2 software-properties-common
+</span></code></pre>
+<p>然后添加 Docker 提供的 GPGKey：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">curl -fsSL</span><span> https://download.docker.com/linux/debian/gpg  sudo apt-key add -
+</span></code></pre>
+<p>接下来根据服务器的 CPU 架构，添加 Docker 的 APT 仓库：</p>
+<p><code>x86_64</code> / <code>amd64</code></p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">sudo</span><span> add-apt-repository \
+</span><span>  </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">deb [arch=amd64] https://download.docker.com/linux/debian \
+</span><span style="color:#99ad6a;">  $(</span><span style="color:#ffb964;">lsb_release -cs</span><span style="color:#99ad6a;">) \
+</span><span style="color:#99ad6a;">  stable</span><span style="color:#556633;">&quot;
+</span></code></pre>
+<p><code>armhf</code></p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">sudo</span><span> add-apt-repository \
+</span><span>  </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">deb [arch=armhf] https://download.docker.com/linux/debian \
+</span><span style="color:#99ad6a;">  $(</span><span style="color:#ffb964;">lsb_release -cs</span><span style="color:#99ad6a;">) \
+</span><span style="color:#99ad6a;">  stable</span><span style="color:#556633;">&quot;
+</span></code></pre>
+<p><code>arm64</code></p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">sudo</span><span> add-apt-repository \
+</span><span>  </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">deb [arch=arm64] https://download.docker.com/linux/debian \
+</span><span style="color:#99ad6a;">  $(</span><span style="color:#ffb964;">lsb_release -cs</span><span style="color:#99ad6a;">) \
+</span><span style="color:#99ad6a;">  stable</span><span style="color:#556633;">&quot;
+</span></code></pre>
+<p>接下来更新 APT</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">sudo</span><span> apt update
+</span></code></pre>
+<p>安装 Docker</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">sudo</span><span> apt install docker-ce docker-ce-cli containerd.io
+</span></code></pre>
+<p>尝试 Hello World，没看到什么报错就说明安装成功了。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">sudo</span><span> docker run hello-world
+</span></code></pre>
+<h2 id="shi-yong-snap-an-zhuang-docker">使用 Snap 安装 Docker</h2>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">sudo</span><span> snap install docker
+</span></code></pre>
+<h2 id="docker-compose-an-zhuang">Docker Compose 安装</h2>
+<p>官方文档在这里：</p>
+<p><a href="https://docs.docker.com/compose/install/#alternative-install-options">https://docs.docker.com/compose/install/#alternative-install-options</a></p>
+<p>普通方法就直接用 <code>curl</code> 下载预编译的可执行文件然后改个权限就好了</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">sudo</span><span> curl</span><span style="color:#ffb964;"> -L </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">https://github.com/docker/compose/releases/download/1.25.0/docker-compose-$(</span><span style="color:#ffb964;">uname -s</span><span style="color:#99ad6a;">)-$(</span><span style="color:#ffb964;">uname -m</span><span style="color:#99ad6a;">)</span><span style="color:#556633;">&quot;</span><span style="color:#ffb964;"> -o</span><span> /usr/local/bin/docker-compose
+</span><span style="color:#ffb964;">sudo</span><span> chmod +x /usr/local/bin/docker-compose
+</span></code></pre>
+<p>然后发现 Docker Compose 也能在容器中运行，Docker 官方提供了脚本封装。
+因此还可以执行下面的命令安装：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">sudo</span><span> curl</span><span style="color:#ffb964;"> -L --fail</span><span> https://github.com/docker/compose/releases/download/1.25.0/run.sh</span><span style="color:#ffb964;"> -o</span><span> /usr/local/bin/docker-compose
+</span><span style="color:#ffb964;">sudo</span><span> chmod +x /usr/local/bin/docker-compose
+</span></code></pre>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/201912111914/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">Docker 部署 WordPress 与数据备份</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/201912112126/">
+                                <span class="button__text">Docker 远程连接以及 TLS 加密</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2025
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

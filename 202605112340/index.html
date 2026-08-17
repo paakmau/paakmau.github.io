@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>CentOS 7.9 常用配置 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="CentOS 7.9 常用配置 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202605112340/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="CentOS 7.9 常用配置 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202605112340/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202605112340/">CentOS 7.9 常用配置</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2026-05-11
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/centos/">#CentOS</a></span>
+    
+
+        <div class="post-content">
+            <p>CentOS 7.9 仍然常见于一些存量环境里，但它默认提供的软件版本偏旧，不过很多现代工具可通过第三方源或 Snap 来补齐。
+本文记录在这类环境下的常用配置，方便后续快速搭建可用的开发环境。</p>
+<span id="continue-reading"></span><h2 id="pei-zhi-jing-tai-ip">配置静态 IP</h2>
+<p>修改配置文件 <code>/etc/sysconfig/network-scripts/ifcfg-&lt;dev&gt;</code>：</p>
+<pre data-lang="conf" style="background-color:#151515;color:#e8e8d3;" class="language-conf "><code class="language-conf" data-lang="conf"><span style="color:#888888;"># 其默认值为 dhcp
+</span><span>BOOTPROTO=static
+</span><span>
+</span><span style="color:#888888;"># 系统启动时自动启用该网卡
+</span><span>ONBOOT=yes
+</span><span>
+</span><span style="color:#888888;"># 静态 IP
+</span><span>IPADDR=&lt;ip&gt;
+</span><span>
+</span><span style="color:#888888;"># 掩码长度
+</span><span>PREFIX=&lt;prefix&gt;
+</span><span>
+</span><span style="color:#888888;"># 网关 IP
+</span><span>GATEWAY=&lt;ip&gt;
+</span><span>
+</span><span style="color:#888888;"># DNS
+</span><span>DNS1=</span><span style="color:#7697d6;">114.114.114.114
+</span></code></pre>
+<p>重启服务：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">sudo</span><span> systemctl restart network
+</span></code></pre>
+<h2 id="wei-yum-pei-zhi-jing-xiang">为 Yum 配置镜像</h2>
+<p>CentOS Linux 7 已于 2024-06-30 结束生命周期（EOL），官方不再维护，因此改用国内镜像。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">sudo</span><span> curl</span><span style="color:#ffb964;"> -o</span><span> /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-7.repo
+</span><span style="color:#ffb964;">sudo</span><span> yum clean all
+</span><span style="color:#ffb964;">sudo</span><span> yum makecache fast
+</span></code></pre>
+<p>EPEL（Extra Packages for Enterprise Linux）是 Fedora 社区维护的扩展仓库，用于补充 CentOS 官方源缺少的软件：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">sudo</span><span> yum install epel-release
+</span><span style="color:#ffb964;">sudo</span><span> curl</span><span style="color:#ffb964;"> -o</span><span> /etc/yum.repos.d/epel.repo https://mirrors.aliyun.com/repo/epel-7.repo
+</span><span style="color:#ffb964;">sudo</span><span> yum clean all
+</span><span style="color:#ffb964;">sudo</span><span> yum makecache fast
+</span></code></pre>
+<p>SCL（Software Collections）是 Red Hat/CentOS 提供的一套并行安装机制，可在不替换系统默认版本的前提下安装较新的开发工具链（如新版 GCC、Python 等）。
+在 CentOS 7 这类老系统里，它常用于补齐默认源中过旧的软件版本。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">sudo</span><span> yum install centos-release-scl
+</span><span>
+</span><span style="color:#ffb964;">sudo</span><span> sed</span><span style="color:#ffb964;"> -E -e </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">s|^mirrorlist=|# mirrorlist=|g</span><span style="color:#556633;">&quot; </span><span>\
+</span><span style="color:#ffb964;">  -e </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">s|^# ?baseurl=http://mirror.centos.org/centos/7|baseurl=https://mirrors.aliyun.com/centos-vault/7.9.2009|g</span><span style="color:#556633;">&quot; </span><span>\
+</span><span style="color:#ffb964;">  -i</span><span>.bak \
+</span><span>  /etc/yum.repos.d/CentOS-SCLo-scl*.repo
+</span><span>
+</span><span style="color:#ffb964;">sudo</span><span> yum clean all
+</span><span style="color:#ffb964;">sudo</span><span> yum makecache fast
+</span></code></pre>
+<h2 id="an-zhuang-docker">安装 Docker</h2>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">sudo</span><span> yum-config-manager</span><span style="color:#ffb964;"> --add-repo</span><span> http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+</span><span style="color:#ffb964;">sudo</span><span> yum list docker-ce</span><span style="color:#ffb964;"> --showduplicates </span><span>| </span><span style="color:#ffb964;">sort -r
+</span><span style="color:#ffb964;">sudo</span><span> yum install docker-ce-24.0.9-1.el7 docker-ce-cli-24.0.9-1.el7 containerd.io
+</span><span>
+</span><span style="color:#888888;"># 启动 Docker 服务，并设置为开机自启。
+</span><span style="color:#ffb964;">sudo</span><span> systemctl enable</span><span style="color:#ffb964;"> --now</span><span> docker
+</span><span>
+</span><span style="color:#888888;"># 将当前用户加入 docker 组，之后不需要 sudo 即可直接使用 docker 命令。
+</span><span style="color:#ffb964;">sudo</span><span> usermod</span><span style="color:#ffb964;"> -aG</span><span> docker </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">USER</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span><span style="color:#888888;"># 重新登录当前用户，使新的组成员身份立即生效。
+</span><span style="color:#ffb964;">su</span><span> - </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">USER</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#ffb964;">docker</span><span> run</span><span style="color:#ffb964;"> --name</span><span> hello-world hello-world
+</span><span style="color:#ffb964;">docker</span><span> ps</span><span style="color:#ffb964;"> -a
+</span><span style="color:#ffb964;">docker</span><span> rm hello-world
+</span><span style="color:#ffb964;">docker</span><span> image rm hello-world
+</span><span>
+</span><span style="color:#888888;"># 创建 Docker 客户端配置目录，并为交互式容器统一配置脱离快捷键。
+</span><span style="color:#ffb964;">mkdir -p </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/.docker</span><span style="color:#556633;">&quot;
+</span><span style="color:#ffb964;">cat </span><span style="color:#99ad6a;">&lt;&lt; </span><span style="color:#556633;">&#39;</span><span style="color:#8fbfdc;">EOF</span><span style="color:#556633;">&#39; </span><span>&gt; </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/.docker/config.json</span><span style="color:#556633;">&quot;
+</span><span style="color:#99ad6a;">{
+</span><span style="color:#99ad6a;">  &quot;detachKeys&quot;: &quot;ctrl-\\,ctrl-q&quot;
+</span><span style="color:#99ad6a;">}
+</span><span style="color:#8fbfdc;">EOF
+</span></code></pre>
+<h2 id="an-zhuang-snap">安装 Snap</h2>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">sudo</span><span> yum install snapd
+</span><span style="color:#ffb964;">sudo</span><span> systemctl enable</span><span style="color:#ffb964;"> --now</span><span> snapd.socket
+</span><span style="color:#ffb964;">sudo</span><span> ln</span><span style="color:#ffb964;"> -s</span><span> /var/lib/snapd/snap /snap
+</span></code></pre>
+<h2 id="rustup">Rustup</h2>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">curl --proto </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">=https</span><span style="color:#556633;">&#39;</span><span style="color:#ffb964;"> --tlsv1</span><span>.2</span><span style="color:#ffb964;"> -sSf</span><span> https://sh.rustup.rs | </span><span style="color:#ffb964;">sh
+</span></code></pre>
+<h2 id="an-zhuang-helix">安装 Helix</h2>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">sudo</span><span> snap install helix
+</span><span style="color:#ffb964;">hx --health
+</span></code></pre>
+<p>由于 Snap 会附带一些守护进程，所以不会在部署或者性能测试环境安装 Snap。
+这时候需要源码构建。</p>
+<ul>
+<li>使用 <code>_GNU_SOURCE</code>，因为CentOS 7 glibc 2.17 不识别 <code>_DEFAULT_SOURCE</code>，需显式启用 GNU/BSD 扩展以提供 tree-sitter 依赖的 <code>le16toh</code>/<code>be16toh</code></li>
+<li><code>prolog</code>/<code>hare</code>/<code>gotmpl</code> 这些 tree-sitter grammar 的源码拉取有问题，跳过以避免构建失败</li>
+</ul>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">mkdir -p </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/dev-tools/Helix</span><span style="color:#556633;">&quot; </span><span>&amp;&amp; cd </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/dev-tools/Helix</span><span style="color:#556633;">&quot;
+</span><span style="color:#ffb964;">git</span><span> clone https://github.com/helix-editor/helix
+</span><span>cd helix
+</span><span style="color:#ffb964;">git</span><span> checkout 25.07.1
+</span><span>
+</span><span style="color:#ffb964;">sed -i </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">s/except = \[ &quot;wren&quot;, &quot;gemini&quot; \]/except = [ &quot;wren&quot;, &quot;gemini&quot;, &quot;prolog&quot;, &quot;hare&quot;, &quot;gotmpl&quot; ]/</span><span style="color:#556633;">&#39;</span><span> languages.toml
+</span><span style="color:#ffb964;">scl</span><span> enable devtoolset-11 -- env CFLAGS=</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">-D_GNU_SOURCE</span><span style="color:#556633;">&#39;</span><span> cargo install --path helix-term --locked
+</span></code></pre>
+<h2 id="an-zhuang-git">安装 Git</h2>
+<p>Gitea Runner 要求 Git 版本不能过低。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">sudo</span><span> yum install rh-git227
+</span><span>
+</span><span>echo </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;"># Enable git227</span><span style="color:#556633;">&#39; </span><span>&gt;&gt; </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/.bashrc</span><span style="color:#556633;">&quot;
+</span><span>echo </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">source /opt/rh/rh-git227/enable</span><span style="color:#556633;">&#39; </span><span>&gt;&gt; </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/.bashrc</span><span style="color:#556633;">&quot;
+</span><span>. </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/.bashrc</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#ffb964;">git --version
+</span></code></pre>
+<h2 id="an-zhuang-gitui">安装 GitUI</h2>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">sudo</span><span> yum install devtoolset-11-gcc openssl11-devel
+</span><span style="color:#ffb964;">scl</span><span> enable devtoolset-11 -- gcc --version
+</span><span>
+</span><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">OPENSSL_INCLUDE_DIR</span><span>=</span><span style="color:#99ad6a;">/usr/include/openssl11
+</span><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">OPENSSL_LIB_DIR</span><span>=</span><span style="color:#99ad6a;">/usr/lib64/openssl11
+</span><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">OPENSSL_NO_VENDOR</span><span>=</span><span style="color:#99ad6a;">1
+</span><span>
+</span><span style="color:#ffb964;">scl</span><span> enable devtoolset-11 -- cargo install --locked gitui
+</span><span style="color:#ffb964;">gitui --version
+</span><span>
+</span><span style="color:#ffb964;">mkdir -p </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/.config/gitui</span><span style="color:#556633;">&quot;
+</span><span style="color:#ffb964;">curl -L -o </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/.config/gitui/key_bindings.ron</span><span style="color:#556633;">&quot;</span><span> https://raw.githubusercontent.com/gitui-org/gitui/refs/heads/master/vim_style_key_config.ron
+</span></code></pre>
+<h2 id="an-zhuang-gitea">安装 Gitea</h2>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">mkdir -p </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/dev-tools/gitea/bin</span><span style="color:#556633;">&quot; </span><span>&amp;&amp; cd </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/dev-tools/gitea/bin</span><span style="color:#556633;">&quot;
+</span><span style="color:#ffb964;">curl -OL</span><span> https://dl.gitea.com/gitea/1.26.2/gitea-1.26.2-linux-amd64
+</span><span style="color:#ffb964;">mv</span><span> gitea-1.26.2-linux-amd64 gitea
+</span><span style="color:#ffb964;">chmod</span><span> +x gitea
+</span><span>
+</span><span>echo </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;"># PATH for Gitea</span><span style="color:#556633;">&#39; </span><span>&gt;&gt; </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/.bashrc</span><span style="color:#556633;">&quot;
+</span><span>echo </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">export PATH=&quot;${HOME}/dev-tools/gitea/bin:${PATH}&quot;</span><span style="color:#556633;">&#39; </span><span>&gt;&gt; </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/.bashrc</span><span style="color:#556633;">&quot;
+</span><span>. </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/.bashrc</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#ffb964;">gitea --version
+</span></code></pre>
+<h2 id="an-zhuang-gitea-runner">安装 Gitea Runner</h2>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">mkdir -p </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/dev-tools/gitea-runner/bin</span><span style="color:#556633;">&quot; </span><span>&amp;&amp; cd </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/dev-tools/gitea-runner/bin</span><span style="color:#556633;">&quot;
+</span><span style="color:#ffb964;">curl -OL</span><span> https://dl.gitea.com/gitea-runner/2.3.0/gitea-runner-2.3.0-linux-amd64
+</span><span style="color:#ffb964;">chmod</span><span> +x gitea-runner-2.3.0-linux-amd64
+</span><span>
+</span><span>echo </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;"># PATH for Gitea Runner</span><span style="color:#556633;">&#39; </span><span>&gt;&gt; </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/.bashrc</span><span style="color:#556633;">&quot;
+</span><span>echo </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">export PATH=&quot;${HOME}/dev-tools/gitea-runner/bin:${PATH}&quot;</span><span style="color:#556633;">&#39; </span><span>&gt;&gt; </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/.bashrc</span><span style="color:#556633;">&quot;
+</span><span>. </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/.bashrc</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#ffb964;">gitea-runner-2.3.0-linux-amd64 --version
+</span></code></pre>
+<h2 id="an-zhuang-clangd-yu-clang-format">安装 <code>clangd</code> 与 <code>clang-format</code></h2>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">mkdir </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/dev-tools/Clang</span><span style="color:#556633;">&quot; </span><span>&amp;&amp; cd </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/dev-tools/Clang</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#ffb964;">curl -LO</span><span> https://github.com/llvm/llvm-project/releases/download/llvmorg-8.0.1/clang+llvm-8.0.1-x86_64-linux-gnu-ubuntu-14.04.tar.xz
+</span><span style="color:#ffb964;">tar -Jxf </span><span>*.tar.xz
+</span><span>
+</span><span>echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;"># PATH for Clang</span><span style="color:#556633;">&quot; </span><span>&gt;&gt; </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/.bashrc</span><span style="color:#556633;">&quot;
+</span><span>echo </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">export PATH=&quot;${HOME}/dev-tools/Clang/clang+llvm-8.0.1-x86_64-linux-gnu-ubuntu-14.04/bin:${PATH}&quot;</span><span style="color:#556633;">&#39; </span><span>&gt;&gt; </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/.bashrc</span><span style="color:#556633;">&quot;
+</span><span>. </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/.bashrc</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#ffb964;">clangd --version
+</span></code></pre>
+<p>注意，不能装太新的版本，因为它依赖的 glibc 版本可能会比较高。
+查询系统中 glibc 版本：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">ldd --version
+</span></code></pre>
+<h2 id="an-zhuang-cmake">安装 CMake</h2>
+<p>这个版本支持 Workflow Preset。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">mkdir </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/dev-tools/CMake</span><span style="color:#556633;">&quot; </span><span>&amp;&amp; cd </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/dev-tools/CMake</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#ffb964;">curl -OL</span><span> https://github.com/Kitware/CMake/releases/download/v3.30.9/cmake-3.30.9-linux-x86_64.tar.gz
+</span><span style="color:#ffb964;">tar -zxf</span><span> cmake-3.30.9-linux-x86_64.tar.gz
+</span><span>
+</span><span>echo </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;"># PATH for CMake</span><span style="color:#556633;">&#39; </span><span>&gt;&gt; </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/.bashrc</span><span style="color:#556633;">&quot;
+</span><span>echo </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">export PATH=&quot;${HOME}/dev-tools/CMake/cmake-3.30.9-linux-x86_64/bin:${PATH}&quot;</span><span style="color:#556633;">&#39; </span><span>&gt;&gt; </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/.bashrc</span><span style="color:#556633;">&quot;
+</span><span>. </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/.bashrc</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#ffb964;">cmake --version
+</span></code></pre>
+<h2 id="an-zhuang-bear">安装 Bear</h2>
+<p><a href="https://github.com/rizsotto/Bear/tree/2.4.4">https://github.com/rizsotto/Bear/tree/2.4.4</a></p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">mkdir </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/dev-tools/Bear</span><span style="color:#556633;">&quot; </span><span>&amp;&amp; cd </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/dev-tools/Bear</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#ffb964;">install_dir</span><span>=</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/dev-tools/Bear/install</span><span style="color:#556633;">&quot;
+</span><span style="color:#ffb964;">mkdir -p </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">install_dir</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#ffb964;">curl -LO</span><span> https://github.com/rizsotto/Bear/archive/refs/tags/2.4.4.tar.gz
+</span><span style="color:#ffb964;">tar -zxf </span><span>*.tar.gz
+</span><span>cd Bear-2.4.4
+</span><span>
+</span><span style="color:#ffb964;">mkdir</span><span> build
+</span><span>cd build
+</span><span style="color:#ffb964;">cmake</span><span> ..</span><span style="color:#ffb964;"> -DCMAKE_BUILD_TYPE</span><span>=Release </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">-DCMAKE_INSTALL_PREFIX=${</span><span style="color:#ffb964;">install_dir</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span><span style="color:#ffb964;">make -j</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$(</span><span style="color:#ffb964;">nproc</span><span style="color:#99ad6a;">)</span><span style="color:#556633;">&quot;
+</span><span style="color:#ffb964;">make</span><span> install
+</span><span>
+</span><span>echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;"># PATH for Bear</span><span style="color:#556633;">&quot; </span><span>&gt;&gt; </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/.bashrc</span><span style="color:#556633;">&quot;
+</span><span>echo </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">export PATH=&quot;${HOME}/dev-tools/Bear/install/bin:${PATH}&quot;</span><span style="color:#556633;">&#39; </span><span>&gt;&gt; </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/.bashrc</span><span style="color:#556633;">&quot;
+</span><span>. </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/.bashrc</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#ffb964;">bear --version
+</span></code></pre>
+<h2 id="an-zhuang-nushell">安装 Nushell</h2>
+<p>如果希望 SSH 登录后默认进入 Nushell，最好通过 Cargo 安装；如果改用 Snap 安装会不太好处理。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">cargo</span><span> install nu
+</span><span style="color:#ffb964;">nu --version
+</span></code></pre>
+<p>配置 <code>$nu.config-path</code>：</p>
+<pre data-lang="nu" style="background-color:#151515;color:#e8e8d3;" class="language-nu "><code class="language-nu" data-lang="nu"><span>$env.config.buffer_editor = &#39;hx&#39;
+</span><span>
+</span><span>$env.config.history = {
+</span><span>    file_format: sqlite
+</span><span>    isolation: true
+</span><span>    sync_on_enter: true
+</span><span>}
+</span></code></pre>
+<p>配置 <code>$nu.env-path</code>：</p>
+<pre data-lang="nu" style="background-color:#151515;color:#e8e8d3;" class="language-nu "><code class="language-nu" data-lang="nu"><span>use std/util &#39;path add&#39;
+</span><span>path add (&#39;/usr/sbin&#39;)
+</span><span>path add (&#39;/sbin&#39;)
+</span><span>path add (&#39;/snap/bin&#39;)
+</span><span>path add ($env.HOME | path join &#39;.cargo&#39; &#39;bin&#39;)
+</span><span>
+</span><span>$env.EDITOR = &#39;hx&#39;
+</span><span>$env.VISUAL = &#39;hx&#39;
+</span><span>
+</span><span>$env.HOSTNAME = (hostname)
+</span><span>def create_left_prompt [] {
+</span><span>  let hostname = $env.HOSTNAME
+</span><span>  let dir = ($env.PWD)
+</span><span>  $&quot;(ansi green_bold)($hostname)(ansi reset) (ansi blue)($dir)(ansi reset)&quot;
+</span><span>}
+</span><span>$env.PROMPT_COMMAND = {|| create_left_prompt}
+</span></code></pre>
+<p>接下来配置登录 Shell，让 SSH 登录后默认进入 Nushell：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/.cargo/bin/nu</span><span style="color:#556633;">&quot; </span><span>| </span><span style="color:#ffb964;">sudo</span><span> tee</span><span style="color:#ffb964;"> -a</span><span> /etc/shells
+</span><span style="color:#ffb964;">chsh -s </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/.cargo/bin/nu</span><span style="color:#556633;">&quot;
+</span></code></pre>
+<p>如果切换后 SSH 登录异常，可以先查看最近的 SELinux 拒绝记录：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">sudo</span><span> ausearch</span><span style="color:#ffb964;"> -m</span><span> avc</span><span style="color:#ffb964;"> -ts</span><span> recent | </span><span style="color:#ffb964;">grep</span><span> nu
+</span></code></pre>
+<p>尝试临时将 SELinux 从强制模式切换到宽容模式：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">sudo</span><span> setenforce 0
+</span></code></pre>
+<p>此时如果 SSH 登录正常则说明与 SELinux 有关。</p>
+<h2 id="an-zhuang-wezterm">安装 Wezterm</h2>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">sudo</span><span> yum install devtoolset-11-gcc openssl11-devel
+</span><span style="color:#ffb964;">scl</span><span> enable devtoolset-11 -- gcc --version
+</span><span>
+</span><span style="color:#ffb964;">mkdir -p </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/dev-tools/Wezterm</span><span style="color:#556633;">&quot; </span><span>&amp;&amp; cd </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/dev-tools/Wezterm</span><span style="color:#556633;">&quot;
+</span><span style="color:#ffb964;">git</span><span> clone https://github.com/wezterm/wezterm.git
+</span><span>cd wezterm
+</span><span>
+</span><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">OPENSSL_INCLUDE_DIR</span><span>=</span><span style="color:#99ad6a;">/usr/include/openssl11
+</span><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">OPENSSL_LIB_DIR</span><span>=</span><span style="color:#99ad6a;">/usr/lib64/openssl11
+</span><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">OPENSSL_NO_VENDOR</span><span>=</span><span style="color:#99ad6a;">1
+</span><span>
+</span><span style="color:#ffb964;">scl</span><span> enable devtoolset-11 -- cargo build --release -p wezterm -p wezterm-mux-server
+</span><span style="color:#ffb964;">./target/release/wezterm --version
+</span><span>
+</span><span style="color:#ffb964;">mkdir -p </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/dev-tools/Wezterm/install</span><span style="color:#556633;">&quot;
+</span><span style="color:#ffb964;">install -m</span><span> 755 target/release/wezterm-mux-server </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/dev-tools/Wezterm/install/wezterm-mux-server</span><span style="color:#556633;">&quot;
+</span><span style="color:#ffb964;">install -m</span><span> 755 target/release/wezterm </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/dev-tools/Wezterm/install/wezterm</span><span style="color:#556633;">&quot;
+</span><span>echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;"># PATH for Wezterm</span><span style="color:#556633;">&quot; </span><span>&gt;&gt; </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/.bashrc</span><span style="color:#556633;">&quot;
+</span><span>echo </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">export PATH=&quot;${HOME}/dev-tools/Wezterm/install:${PATH}&quot;</span><span style="color:#556633;">&#39; </span><span>&gt;&gt; </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/.bashrc</span><span style="color:#556633;">&quot;
+</span><span>. </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/.bashrc</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#ffb964;">wezterm --version
+</span></code></pre>
+<h2 id="an-zhuang-copilot-cli">安装 Copilot CLI</h2>
+<p>Snap 装的有问题，只能自己写 Dockerfile 了。</p>
+<pre data-lang="Dockerfile" style="background-color:#151515;color:#e8e8d3;" class="language-Dockerfile "><code class="language-Dockerfile" data-lang="Dockerfile"><span style="color:#8fbfdc;">FROM</span><span> node:</span><span style="color:#ffb964;">24-bookworm
+</span><span>
+</span><span style="color:#8fbfdc;">ARG </span><span>COPILOT_VERSION
+</span><span>
+</span><span style="color:#8fbfdc;">RUN </span><span>npm config set registry https://registry.npmmirror.com
+</span><span>
+</span><span style="color:#8fbfdc;">RUN </span><span>npm install -g </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">@github/copilot@${COPILOT_VERSION}</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span>ENTRYPOINT [</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">copilot</span><span style="color:#556633;">&quot;</span><span>]
+</span></code></pre>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">version</span><span>=</span><span style="color:#99ad6a;">1.0.53
+</span><span>
+</span><span style="color:#ffb964;">docker</span><span> build</span><span style="color:#ffb964;"> -t </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">copilot:${</span><span style="color:#ffb964;">version</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot; </span><span>\
+</span><span style="color:#ffb964;">  --build-arg </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">COPILOT_VERSION=${</span><span style="color:#ffb964;">version</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot; </span><span>\
+</span><span style="color:#ffb964;">  --network</span><span> host \
+</span><span>  .
+</span><span style="color:#ffb964;">docker</span><span> tag </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">copilot:${</span><span style="color:#ffb964;">version</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;</span><span> copilot:latest
+</span><span>
+</span><span style="color:#ffb964;">cat </span><span style="color:#99ad6a;">&lt;&lt; </span><span style="color:#556633;">&#39;</span><span style="color:#8fbfdc;">EOF</span><span style="color:#556633;">&#39; </span><span>&gt;&gt; </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/.bashrc</span><span style="color:#556633;">&quot;
+</span><span style="color:#99ad6a;">alias copilot=&#39;docker run --rm -it \
+</span><span style="color:#99ad6a;">  --user &quot;$(id -u):$(id -g)&quot; \
+</span><span style="color:#99ad6a;">  -v /etc/passwd:/etc/passwd:ro \
+</span><span style="color:#99ad6a;">  -v /etc/group:/etc/group:ro \
+</span><span style="color:#99ad6a;">  -v &quot;${HOME}:${HOME}&quot; \
+</span><span style="color:#99ad6a;">  -v &quot;$(pwd):$(pwd)&quot; \
+</span><span style="color:#99ad6a;">  -w &quot;$(pwd)&quot; \
+</span><span style="color:#99ad6a;">  --network host \
+</span><span style="color:#99ad6a;">  copilot:latest&#39;
+</span><span style="color:#8fbfdc;">EOF
+</span><span>
+</span><span>. </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/.bashrc</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#ffb964;">copilot --version
+</span></code></pre>
+<p>更新：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">docker</span><span> pull node:24-bookworm
+</span><span>
+</span><span style="color:#ffb964;">version</span><span>=</span><span style="color:#99ad6a;">1.0.54
+</span><span>
+</span><span style="color:#ffb964;">docker</span><span> build</span><span style="color:#ffb964;"> -t </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">copilot:${</span><span style="color:#ffb964;">version</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot; </span><span>\
+</span><span style="color:#ffb964;">  --build-arg </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">COPILOT_VERSION=${</span><span style="color:#ffb964;">version</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot; </span><span>\
+</span><span style="color:#ffb964;">  --network</span><span> host \
+</span><span>  .
+</span><span style="color:#ffb964;">docker</span><span> tag </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">copilot:${</span><span style="color:#ffb964;">version</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;</span><span> copilot:latest
+</span><span>
+</span><span style="color:#ffb964;">copilot --version
+</span></code></pre>
+<p>如果确认旧版本不会再用，再清理旧镜像：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">docker</span><span> image rm </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">copilot:1.0.53</span><span style="color:#556633;">&quot;
+</span></code></pre>
+<ul>
+<li><code>--user "$(id -u):$(id -g)"</code>：让容器内进程以当前用户身份运行，避免在挂载目录里生成 <code>root</code> 属主的文件。</li>
+<li><code>-v /etc/passwd:/etc/passwd:ro</code> 与 <code>-v /etc/group:/etc/group:ro</code>：把宿主机的用户和组信息只读挂进容器，使容器正确解析当前 <code>uid</code> 与 <code>gid</code> 对应的用户名和组名。</li>
+<li><code>-v "${HOME}:${HOME}"</code>：挂载宿主机 <code>HOME</code>，使容器可以读写当前用户的配置与缓存。</li>
+<li><code>-v "$(pwd):$(pwd)"</code> 与 <code>-w "$(pwd)"</code>：把当前工作目录挂进容器，并将容器启动后的工作路径配置为同一路径。</li>
+<li><code>--network host</code>：直接复用宿主机网络。</li>
+</ul>
+<h2 id="an-zhuang-python-3-11">安装 Python 3.11</h2>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">curl</span><span> https://pyenv.run | </span><span style="color:#ffb964;">bash
+</span><span>
+</span><span style="color:#ffb964;">sudo</span><span> yum install openssl11-devel libffi-devel bzip2-devel \
+</span><span>  ncurses-devel readline-devel sqlite-devel tk-devel \
+</span><span>  xz-devel
+</span><span>
+</span><span style="color:#ffb964;">CPPFLAGS</span><span>=</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$(</span><span style="color:#ffb964;">pkg-config --cflags</span><span style="color:#99ad6a;"> openssl11)</span><span style="color:#556633;">&quot; </span><span>\
+</span><span style="color:#ffb964;">LDFLAGS</span><span>=</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$(</span><span style="color:#ffb964;">pkg-config --libs</span><span style="color:#99ad6a;"> openssl11)</span><span style="color:#556633;">&quot; </span><span>\
+</span><span style="color:#ffb964;">pyenv</span><span> install 3.11.15
+</span></code></pre>
+<h2 id="an-zhuang-xmake">安装 xmake</h2>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">mkdir -p </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/dev-tools/XMake</span><span style="color:#556633;">&quot;
+</span><span style="color:#ffb964;">prefix</span><span>=</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/dev-tools/XMake/install</span><span style="color:#556633;">&quot; </span><span>\
+</span><span>  </span><span style="color:#ffb964;">bash </span><span>&lt;(</span><span style="color:#ffb964;">curl -fsSL</span><span> https://xmake.io/shget.text)
+</span><span>
+</span><span>. </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/.bashrc</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#ffb964;">xmake --version
+</span></code></pre>
+<p>安装脚本会把 <code>XMAKE_ROOTDIR</code> 跟 <code>XMAKE_PROGRAM_DIR</code> 写进 <code>${HOME}/.xmake/profile</code>，并注入 <code>${HOME}/.bashrc</code>，不需要手动维护。</p>
+<h2 id="an-zhuang-openonload">安装 OpenOnload</h2>
+<p>先装依赖：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">sudo</span><span> yum groupinstall </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">Development Tools</span><span style="color:#556633;">&quot;
+</span><span style="color:#ffb964;">sudo</span><span> yum install kernel-devel kernel-headers
+</span></code></pre>
+<p><a href="https://www.amd.com/zh-cn/support/downloads/solarflare-previous-downloads.html/ethernet-adapters/solarflare/x2-series.html">https://www.amd.com/zh-cn/support/downloads/solarflare-previous-downloads.html/ethernet-adapters/solarflare/x2-series.html</a></p>
+<p>下载 <code>7.1.3.202</code> 版本的 <code>Release Package</code>。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">mkdir -p </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/dev-tools/OpenOnload/pkg</span><span style="color:#556633;">&quot;
+</span><span>cd </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/dev-tools/OpenOnload/pkg</span><span style="color:#556633;">&quot;
+</span><span style="color:#ffb964;">curl -OL</span><span> https://www.amd.com/content/dam/amd/en/support/downloads/solarflare/onload/openonload/7-1-3-202/SF-109585-LS-37-OpenOnload-release-package.zip
+</span><span>
+</span><span style="color:#ffb964;">unzip </span><span>*.zip
+</span><span style="color:#ffb964;">tar -zxf</span><span> onload-7.1.3.202.tgz</span><span style="color:#ffb964;"> -C</span><span> ..
+</span><span>
+</span><span>cd ../onload-7.1.3.202/scripts
+</span><span style="color:#ffb964;">./onload_install
+</span></code></pre>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202605041013/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">Leptos 学习笔记</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://paakmau.github.io/202606142125/">
+                                <span class="button__text">SVN 命令速查笔记</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2026
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

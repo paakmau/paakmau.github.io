@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>CentOS 7.9 构建 GCC 14 | Celestial</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://paakmau.github.io/style.css">
+    <link rel="stylesheet" href="https://paakmau.github.io/color/orange-auto.css">
+
+        <link rel="stylesheet" href="https://paakmau.github.io/color/background_auto.css">
+    
+    <link rel="stylesheet" href="https://paakmau.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="CentOS 7.9 构建 GCC 14 | Celestial">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://paakmau.github.io/202610271104/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="CentOS 7.9 构建 GCC 14 | Celestial">
+    <meta property="twitter:domain" content="paakmau.github.io">
+    <meta property="twitter:url" content="https://paakmau.github.io/202610271104/">
+
+                <link rel="alternate" type="application/rss+xml" title="Celestial RSS Feed" href="https://paakmau.github.io/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Celestial Atom Feed" href="https://paakmau.github.io/atom.xml" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral'
+        });
+    </script>
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://paakmau.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Celestial
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li class="active"><a href="https://paakmau.github.io">home</a></li>
+            
+                <li><a href="https://paakmau.github.io/tags">tags</a></li>
+            
+                <li><a href="https://github.com/paakmau" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://paakmau.github.io/202610271104/">CentOS 7.9 构建 GCC 14</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2026-10-27
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/c/">#C++</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/centos/">#CentOS</a>&nbsp;
+                <a class="post-tag" href="https://paakmau.github.io/tags/gcc/">#GCC</a></span>
+    
+
+        <div class="post-content">
+            <p>部署机还是 CentOS 7.9 且不会升级系统，但新项目想用 C++23。
+本文记录在 CentOS 7.9 上从源码构建 GCC 14.4.0 与 binutils 2.47，并让编出来的程序在原装 CentOS 7 上运行的过程。</p>
+<span id="continue-reading"></span><h2 id="wei-shen-me-yao-zi-ji-bian">为什么要自己编</h2>
+<ul>
+<li>devtoolset 最高只到 GCC 11，没有 <code>&lt;print&gt;</code>、<code>&lt;expected&gt;</code>。</li>
+<li>在 Rocky 9 等新系统上用 GCC 14 编，即使加了 <code>-static-libstdc++ -static-libgcc</code>，拿到 CentOS 7 上也跑不起来。
+静态链接只解决了 C++ 运行时，glibc 用的还是编译机的版本。</li>
+</ul>
+<p>在 Rocky 9.6（glibc 2.34）上用 gcc-toolset-14 编一个 C++23 程序：</p>
+<pre data-lang="cpp" style="background-color:#151515;color:#e8e8d3;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#888888;">// cxx23.cpp
+</span><span style="color:#8fbfdc;">#include </span><span style="color:#556633;">&lt;</span><span style="color:#99ad6a;">expected</span><span style="color:#556633;">&gt;
+</span><span style="color:#8fbfdc;">#include </span><span style="color:#556633;">&lt;</span><span style="color:#99ad6a;">print</span><span style="color:#556633;">&gt;
+</span><span style="color:#8fbfdc;">#include </span><span style="color:#556633;">&lt;</span><span style="color:#99ad6a;">string</span><span style="color:#556633;">&gt;
+</span><span>
+</span><span>std::expected&lt;</span><span style="color:#8fbfdc;">int</span><span>, std::string&gt; </span><span style="color:#fad07a;">Half</span><span>(</span><span style="color:#8fbfdc;">int </span><span style="color:#ffb964;">x</span><span>) {
+</span><span>  </span><span style="color:#8fbfdc;">if </span><span>(x % </span><span style="color:#cf6a4c;">2 </span><span>!= </span><span style="color:#cf6a4c;">0</span><span>) </span><span style="color:#8fbfdc;">return </span><span>std::</span><span style="color:#ffb964;">unexpected</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">odd</span><span style="color:#556633;">&quot;</span><span>);
+</span><span>  </span><span style="color:#8fbfdc;">return</span><span> x / </span><span style="color:#cf6a4c;">2</span><span>;
+</span><span>}
+</span><span>
+</span><span style="color:#8fbfdc;">int </span><span style="color:#fad07a;">main</span><span>() { std::</span><span style="color:#ffb964;">println</span><span>(</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">{} {}</span><span style="color:#556633;">&quot;</span><span>, *</span><span style="color:#ffb964;">Half</span><span>(</span><span style="color:#cf6a4c;">42</span><span>), </span><span style="color:#ffb964;">Half</span><span>(</span><span style="color:#cf6a4c;">3</span><span>).</span><span style="color:#ffb964;">error</span><span>()); }
+</span></code></pre>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">scl</span><span> enable gcc-toolset-14 -- g++ -std=c++23 -O2 cxx23.cpp -o cxx23 -static-libstdc++ -static-libgcc
+</span><span style="color:#ffb964;">ldd</span><span> ./cxx23
+</span><span style="color:#ffb964;">objdump -T</span><span> cxx23 | </span><span style="color:#ffb964;">grep -o -E </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">GLIBC_[0-9.]+</span><span style="color:#556633;">&#39; </span><span>| </span><span style="color:#ffb964;">sort -uV </span><span>| </span><span style="color:#ffb964;">tail -1
+</span></code></pre>
+<p><code>ldd</code> 里已经没有 <code>libstdc++</code> 和 <code>libgcc_s</code>，但依赖的 glibc 最高到 2.34：</p>
+<pre data-lang="txt" style="background-color:#151515;color:#e8e8d3;" class="language-txt "><code class="language-txt" data-lang="txt"><span>        linux-vdso.so.1 (0x00007fff79afe000)
+</span><span>        libm.so.6 =&gt; /lib64/libm.so.6 (0x00007fc55a59e000)
+</span><span>        libc.so.6 =&gt; /lib64/libc.so.6 (0x00007fc55a200000)
+</span><span>        /lib64/ld-linux-x86-64.so.2 (0x00007fc55a680000)
+</span><span>GLIBC_2.34
+</span></code></pre>
+<p>拷到 CentOS 7.9（glibc 2.17）上运行：</p>
+<pre data-lang="txt" style="background-color:#151515;color:#e8e8d3;" class="language-txt "><code class="language-txt" data-lang="txt"><span>./cxx23: /lib64/libc.so.6: version `GLIBC_2.26&#39; not found (required by ./cxx23)
+</span><span>./cxx23: /lib64/libc.so.6: version `GLIBC_2.25&#39; not found (required by ./cxx23)
+</span><span>./cxx23: /lib64/libc.so.6: version `GLIBC_2.34&#39; not found (required by ./cxx23)
+</span><span>./cxx23: /lib64/libc.so.6: version `GLIBC_2.32&#39; not found (required by ./cxx23)
+</span></code></pre>
+<p>所以只能在 glibc 2.17 的环境里，也就是 CentOS 7 本身上编。</p>
+<h2 id="an-zhuang-yi-lai">安装依赖</h2>
+<p>宿主编译器用 devtoolset-11，它在 SCL 源里。
+CentOS 7 已经 EOL，SCL 源要改指向 vault 镜像：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">sudo</span><span> yum install centos-release-scl
+</span><span>
+</span><span style="color:#ffb964;">sudo</span><span> sed</span><span style="color:#ffb964;"> -E -e </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">s|^mirrorlist=|# mirrorlist=|g</span><span style="color:#556633;">&quot; </span><span>\
+</span><span style="color:#ffb964;">  -e </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">s|^# ?baseurl=http://mirror.centos.org/centos/7|baseurl=https://mirrors.aliyun.com/centos-vault/7.9.2009|g</span><span style="color:#556633;">&quot; </span><span>\
+</span><span style="color:#ffb964;">  -i</span><span>.bak \
+</span><span>  /etc/yum.repos.d/CentOS-SCLo-scl*.repo
+</span><span>
+</span><span style="color:#ffb964;">sudo</span><span> yum clean all
+</span><span style="color:#ffb964;">sudo</span><span> yum makecache fast
+</span></code></pre>
+<p>安装 devtoolset-11 和构建依赖：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">sudo</span><span> yum install devtoolset-11-gcc-c++ bzip2 m4
+</span><span style="color:#ffb964;">scl</span><span> enable devtoolset-11 -- g++ --version
+</span></code></pre>
+<p>系统没有 texinfo 也没关系，正式发布的源码包里已经带了生成好的文档，构建时传 <code>MAKEINFO=true</code> 跳过即可。</p>
+<h2 id="xia-zai-yuan-ma">下载源码</h2>
+<p>源码走国内镜像，签名与 keyring 从 GNU 官方下载，用来校验镜像上的包没被篡改。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">mkdir -p </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/dev-tools/GCC/src</span><span style="color:#556633;">&quot; </span><span>&amp;&amp; cd </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/dev-tools/GCC/src</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#ffb964;">curl -OL</span><span> https://mirrors.aliyun.com/gnu/gcc/gcc-14.4.0/gcc-14.4.0.tar.xz
+</span><span style="color:#ffb964;">curl -OL</span><span> https://mirrors.aliyun.com/gnu/binutils/binutils-2.47.tar.xz
+</span><span style="color:#ffb964;">curl -OL</span><span> https://ftp.gnu.org/gnu/gcc/gcc-14.4.0/gcc-14.4.0.tar.xz.sig
+</span><span style="color:#ffb964;">curl -OL</span><span> https://ftp.gnu.org/gnu/binutils/binutils-2.47.tar.xz.sig
+</span><span style="color:#ffb964;">curl -OL</span><span> https://ftp.gnu.org/gnu/gnu-keyring.gpg
+</span><span>
+</span><span style="color:#ffb964;">gpgv --keyring</span><span> ./gnu-keyring.gpg gcc-14.4.0.tar.xz.sig gcc-14.4.0.tar.xz
+</span><span style="color:#ffb964;">gpgv --keyring</span><span> ./gnu-keyring.gpg binutils-2.47.tar.xz.sig binutils-2.47.tar.xz
+</span><span>
+</span><span style="color:#ffb964;">tar -Jxf</span><span> gcc-14.4.0.tar.xz
+</span><span style="color:#ffb964;">tar -Jxf</span><span> binutils-2.47.tar.xz
+</span></code></pre>
+<p>GMP、MPFR、MPC、ISL 用 GCC 自带的脚本下载，它会放进源码树一起编，并做 sha512 校验：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>cd gcc-14.4.0
+</span><span style="color:#ffb964;">./contrib/download_prerequisites
+</span><span>cd ..
+</span></code></pre>
+<h2 id="gou-jian-binutils">构建 binutils</h2>
+<p>CentOS 7 自带的 binutils 是 2.27，汇编不了 GCC 14 生成的部分代码，所以要一起编。
+binutils 与 GCC 装到同一个前缀，GCC 会按自身位置的相对路径找到 <code>as</code>、<code>ld</code>，整个目录之后可以搬到任何地方。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>source /opt/rh/devtoolset-11/enable
+</span><span style="color:#ffb964;">prefix</span><span>=</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/dev-tools/GCC/gcc-14.4.0</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#ffb964;">mkdir</span><span> build-binutils &amp;&amp; cd build-binutils
+</span><span style="color:#ffb964;">../binutils-2.47/configure --prefix</span><span>=</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">prefix</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot; </span><span>\
+</span><span style="color:#ffb964;">  --disable-nls --disable-werror --enable-plugins </span><span>\
+</span><span style="color:#ffb964;">  --disable-gdb --disable-gdbserver --disable-sim --disable-gprofng
+</span><span style="color:#ffb964;">make -j</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$(</span><span style="color:#ffb964;">nproc</span><span style="color:#99ad6a;">)</span><span style="color:#556633;">&quot;</span><span> MAKEINFO=true
+</span><span style="color:#ffb964;">make</span><span> install-strip MAKEINFO=true
+</span><span>cd ..
+</span></code></pre>
+<h2 id="gou-jian-gcc">构建 GCC</h2>
+<p>先把刚装好的 binutils 放到 <code>PATH</code> 最前面，再编 GCC。
+默认是三阶段 bootstrap，72 核的机器上大约 40 分钟。</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">PATH</span><span>=</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">prefix</span><span style="color:#99ad6a;">}/bin:${</span><span style="color:#ffb964;">PATH</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span><span>
+</span><span style="color:#ffb964;">mkdir</span><span> build-gcc &amp;&amp; cd build-gcc
+</span><span style="color:#ffb964;">../gcc-14.4.0/configure --prefix</span><span>=</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">prefix</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot; </span><span>\
+</span><span style="color:#ffb964;">  --enable-languages</span><span>=c,c++</span><span style="color:#ffb964;"> --disable-multilib --disable-nls </span><span>\
+</span><span style="color:#ffb964;">  --enable-checking</span><span>=release</span><span style="color:#ffb964;"> --enable-threads</span><span>=posix</span><span style="color:#ffb964;"> --enable-__cxa_atexit </span><span>\
+</span><span style="color:#ffb964;">  --enable-clocale</span><span>=gnu</span><span style="color:#ffb964;"> --enable-gnu-unique-object --enable-linker-build-id </span><span>\
+</span><span style="color:#ffb964;">  --with-linker-hash-style</span><span>=gnu</span><span style="color:#ffb964;"> --enable-plugin --enable-initfini-array </span><span>\
+</span><span style="color:#ffb964;">  --enable-gnu-indirect-function --with-tune</span><span>=generic
+</span><span style="color:#ffb964;">make -j</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$(</span><span style="color:#ffb964;">nproc</span><span style="color:#99ad6a;">)</span><span style="color:#556633;">&quot;</span><span> MAKEINFO=true
+</span><span style="color:#ffb964;">make</span><span> install-strip MAKEINFO=true
+</span><span>cd ..
+</span></code></pre>
+<ul>
+<li><code>--disable-multilib</code>：不编 32 位的库，省得装 <code>glibc-devel.i686</code>。</li>
+<li><code>install-strip</code>：去掉调试符号，安装目录约 264 MB，打包后约 43 MB。</li>
+</ul>
+<p>确认 <code>as</code>、<code>ld</code> 用的是新编的：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">prefix</span><span style="color:#99ad6a;">}/bin/g++</span><span style="color:#556633;">&quot;</span><span style="color:#ffb964;"> --version
+</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">prefix</span><span style="color:#99ad6a;">}/bin/g++</span><span style="color:#556633;">&quot;</span><span style="color:#ffb964;"> -print-prog-name</span><span>=as
+</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">prefix</span><span style="color:#99ad6a;">}/bin/g++</span><span style="color:#556633;">&quot;</span><span style="color:#ffb964;"> -print-prog-name</span><span>=ld
+</span></code></pre>
+<h2 id="da-bao-yu-shi-yong">打包与使用</h2>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span>cd </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/dev-tools/GCC</span><span style="color:#556633;">&quot;
+</span><span style="color:#ffb964;">tar -cJf</span><span> gcc-14.4.0-centos-7.9-x64.tar.xz gcc-14.4.0
+</span></code></pre>
+<p>其他机器解压到任意目录即可使用。
+因为机器上通常还有别的项目在用老版本 GCC，所以不写进 <code>.bashrc</code>，用到时再设置：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">PATH</span><span>=</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/dev-tools/GCC/gcc-14.4.0/bin:${</span><span style="color:#ffb964;">PATH</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">LD_LIBRARY_PATH</span><span>=</span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/dev-tools/GCC/gcc-14.4.0/lib64:${</span><span style="color:#ffb964;">LD_LIBRARY_PATH</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot;
+</span><span style="color:#8fbfdc;">export </span><span style="color:#ffb964;">CC</span><span>=</span><span style="color:#99ad6a;">gcc </span><span style="color:#ffb964;">CXX</span><span>=</span><span style="color:#99ad6a;">g++
+</span><span>
+</span><span style="color:#ffb964;">g++ --version
+</span></code></pre>
+<p><code>LD_LIBRARY_PATH</code> 是为了在本机直接运行编出来的程序，比如跑 <code>ctest</code>。</p>
+<h2 id="bu-shu">部署</h2>
+<p>编出来的程序依赖 GCC 14 的 <code>libstdc++.so.6</code>（<code>GLIBCXX_3.4.32</code>），而 CentOS 7 自带的只到 <code>GLIBCXX_3.4.19</code>。
+这里选择把 <code>libstdc++.so.6</code> 与 <code>libgcc_s.so.1</code> 跟程序放在同一个目录，链接时加 RPATH <code>$ORIGIN</code>：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">g++ -std</span><span>=c++23</span><span style="color:#ffb964;"> -O2</span><span> main.cpp</span><span style="color:#ffb964;"> -o</span><span> main</span><span style="color:#ffb964;"> -Wl</span><span>,-rpath,</span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">$ORIGIN</span><span style="color:#556633;">&#39;
+</span><span style="color:#ffb964;">cp -L </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/dev-tools/GCC/gcc-14.4.0/lib64/libstdc++.so.6</span><span style="color:#556633;">&quot;</span><span> .
+</span><span style="color:#ffb964;">cp -L </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">HOME</span><span style="color:#99ad6a;">}/dev-tools/GCC/gcc-14.4.0/lib64/libgcc_s.so.1</span><span style="color:#556633;">&quot;</span><span> .
+</span></code></pre>
+<p>CMake 里对应：</p>
+<pre data-lang="cmake" style="background-color:#151515;color:#e8e8d3;" class="language-cmake "><code class="language-cmake" data-lang="cmake"><span>set(</span><span style="color:#ffb964;">CMAKE_INSTALL_RPATH </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">$ORIGIN</span><span style="color:#556633;">&quot;</span><span>)
+</span></code></pre>
+<p>也可以用 <code>-static-libstdc++ -static-libgcc</code> 把运行时静态链进去，就不用带这两个 so 了。</p>
+<h3 id="rpath-yu-runpath">RPATH 与 RUNPATH</h3>
+<p>动态段里记录搜索路径的有两种：</p>
+<ul>
+<li><code>DT_RPATH</code>：优先级高于 <code>LD_LIBRARY_PATH</code>。</li>
+<li><code>DT_RUNPATH</code>：优先级低于 <code>LD_LIBRARY_PATH</code>。</li>
+</ul>
+<p>如果部署机的环境变量把 <code>LD_LIBRARY_PATH</code> 指向了老版本的 <code>libstdc++</code>，用 <code>DT_RUNPATH</code> 的程序就会加载到老版本，启动时报 <code>GLIBCXX_3.4.32 not found</code>。</p>
+<p>上游 binutils 的 <code>ld</code> 默认生成 <code>DT_RPATH</code>，可以检查一下：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">readelf -d</span><span> main | </span><span style="color:#ffb964;">grep -E </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">RPATH|RUNPATH</span><span style="color:#556633;">&#39;
+</span></code></pre>
+<pre style="background-color:#151515;color:#e8e8d3;"><code><span> 0x000000000000000f (RPATH)              Library rpath: [$ORIGIN]
+</span></code></pre>
+<p>不要加 <code>-Wl,--enable-new-dtags</code>，加了就会变成 <code>DT_RUNPATH</code>。</p>
+<h2 id="yan-zheng">验证</h2>
+<p>查看程序和随附的库依赖的 glibc 最高版本，不能超过 2.17：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#8fbfdc;">for</span><span> f </span><span style="color:#8fbfdc;">in</span><span> main libstdc++.so.6 libgcc_s.so.1; </span><span style="color:#8fbfdc;">do
+</span><span>  echo </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">f</span><span style="color:#99ad6a;">}: $(</span><span style="color:#ffb964;">objdump -T </span><span style="color:#556633;">&quot;</span><span style="color:#99ad6a;">${</span><span style="color:#ffb964;">f</span><span style="color:#99ad6a;">}</span><span style="color:#556633;">&quot; </span><span style="color:#99ad6a;">| </span><span style="color:#ffb964;">grep -o -E </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">GLIBC_[0-9.]+</span><span style="color:#556633;">&#39; </span><span style="color:#99ad6a;">| </span><span style="color:#ffb964;">sort -uV </span><span style="color:#99ad6a;">| </span><span style="color:#ffb964;">tail -1</span><span style="color:#99ad6a;">)</span><span style="color:#556633;">&quot;
+</span><span style="color:#8fbfdc;">done
+</span></code></pre>
+<pre style="background-color:#151515;color:#e8e8d3;"><code><span>main: GLIBC_2.14
+</span><span>libstdc++.so.6: GLIBC_2.17
+</span><span>libgcc_s.so.1: GLIBC_2.14
+</span></code></pre>
+<p>在干净环境下运行，并确认加载的是同目录的库：</p>
+<pre data-lang="sh" style="background-color:#151515;color:#e8e8d3;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#ffb964;">env -i</span><span> ./main
+</span><span style="color:#ffb964;">env -i</span><span> ldd ./main | </span><span style="color:#ffb964;">grep -E </span><span style="color:#556633;">&#39;</span><span style="color:#99ad6a;">stdc|gcc_s</span><span style="color:#556633;">&#39;
+</span></code></pre>
+<p>把 <code>LD_LIBRARY_PATH</code> 指向老版本 <code>libstdc++</code> 再运行一次，加载的仍然是同目录那份。</p>
+<p>顺带一提，GCC 14 的 <code>libstdc++</code> 里 <code>std::chrono::system_clock::now()</code> 走的是 vDSO。
+用 <code>strace -c -e trace=clock_gettime</code> 统计，调用 2000 次 <code>now()</code> 没有产生 <code>clock_gettime</code> 系统调用；
+而 CentOS 7 自带的 <code>libstdc++</code> 每次调用都是一次真正的系统调用。</p>
+<h2 id="zhu-yi-shi-xiang">注意事项</h2>
+<ul>
+<li>GCC 11 起调试信息默认是 DWARF 5，CentOS 7 自带的 gdb 7.6 读不了，编译时加 <code>-gdwarf-4</code> 或者用 devtoolset-11 的 gdb。</li>
+<li>GCC 14 的 C++23 不完整，比如直接格式化容器 <code>std::println("{}", vec)</code>（P2286）要 GCC 15。</li>
+<li>进程里最好只有一份 <code>libstdc++</code>，不要再链接老版本 GCC 编的 C++ 动态库，三方库也都用这套工具链从源码编。</li>
+</ul>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://paakmau.github.io/202606142125/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">SVN 命令速查笔记</span>
+                            </a>
+                        </span>
+                    
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2026
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>
